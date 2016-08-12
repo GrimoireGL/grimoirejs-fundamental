@@ -1,0 +1,57 @@
+{
+  "name": "grimoirejs-fundamental",
+  "version": "0.0.0",
+  "description": "Awesome addon ever!",
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
+  "files": [
+    "./lib",
+    "./samples"
+  ],
+  "keywords": [
+    "grimoire.js"
+  ],
+  "dependencies": {
+    "buffer": "^4.9.0",
+    "events": "^1.1.1",
+    "utils": "^0.3.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-plugin-transform-runtime": "^6.12.0",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-stage-2": "^6.13.0",
+    "babel-runtime": "^6.11.6",
+    "chalk": "^1.1.3",
+    "fs-extra": "^0.30.0",
+    "grimoirejs": "^0.1.9",
+    "handlebars": "^4.0.5",
+    "http-server": "^0.9.0",
+    "rollup": "^0.34.7",
+    "rollup-plugin-babel": "^2.6.1",
+    "rollup-plugin-commonjs": "^3.3.1",
+    "rollup-plugin-node-builtins": "^1.0.7",
+    "rollup-plugin-node-globals": "^1.0.6",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-plugin-replace": "^1.1.1",
+    "rollup-plugin-typescript": "^0.7.7",
+    "typings": "^1.3.2",
+    "watch": "^0.19.1",
+    "yargs": "^4.8.1"
+  },
+  "repository": "",
+  "scripts": {
+    "compile": "tsc @./lib-ts/entry_files --declaration --outDir ./lib -m es6 -t es6 --moduleResolution node ",
+    "build": "babel-node rollup.config.js --presets es2015,stage-2 --plugins transform-runtime",
+    "postinstall": "typings install",
+    "bundle": "babel ./product/index.es2016.js --out-file ./product/index.js",
+    "prepublish": "babel-node ./build/prepublish.js --presets es2015,stage-2 --plugins transform-runtime",
+    "start": "npm run build & npm run serve",
+    "serve": "hs ./"
+  },
+  "grimoire": {
+    "namespace": "HTTP://GRIMOIRE.GL/NS/DEFAULT",
+    "dependencies": []
+  },
+  "license": "MIT"
+}

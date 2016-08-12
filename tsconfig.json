@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "es6",
+    "noImplicitAny": true,
+    "outDir": "./lib"
+  },
+  "filesGlob": [
+    "./src/**/*.ts"
+  ],
+  "files": [
+    "./src/Components/CanvasInitializerComponent.ts",
+    "./src/Converters/StringConverter.ts",
+    "./src/index.ts",
+    "./src/typings/globals/node/index.d.ts",
+    "./src/typings/index.d.ts"
+  ],
+  "exclude": [],
+  "atom": {
+    "rewriteTsconfig": true
+  }
+}
