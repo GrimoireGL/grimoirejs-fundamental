@@ -8,5 +8,6 @@ import GrimoireInterface from "grimoirejs";
 
 GrimoireInterface.register(async () => {
     //<%=REGISTER%>
-    GrimoireInterface.registerNode("goml", ["CanvasInitializer"]);
+    GrimoireInterface.registerNode("goml", ["CanvasInitializer", "LoopManager"]);
+    GrimoireInterface.registerNode("empty", []);
 });

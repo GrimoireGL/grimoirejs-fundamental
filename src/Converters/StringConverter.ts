@@ -1,10 +1,10 @@
-function StringConverter(input: any): any {
-    if (typeof input === "string") {
-        return input;
-    } else if (typeof input.toString === "function") {
-        return input.toString();
+function StringConverter(val: any): any {
+    if (typeof val === "string") {
+        return val;
+    } else if (typeof val.toString === "function") {
+        return val.toString();
     } else {
-     throw new Error(`The provided object type(${typeof input}) couldn't be parsed as string. The object should either be 'string' or any object having toString method`);
+     throw new Error(`The provided object type(${typeof val}) couldn't be parsed as string. The object should either be 'string' or any object having toString method`);
     }
 }
 

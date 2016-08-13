@@ -59,17 +59,11 @@ export function unlinkAsync(filePath) {
 export function execAsync(command) {
     return new Promise((resolve, reject) => {
         exec(command, (err, stdout, stderr) => {
-            if (stdout) {
-                console.log(stdout);
-            }
-            if (stderr) {
-                console.error(chalk.red(stderr));
-            }
-            if (err) {
-                console.error(chalk.white.bgRed(err));
-                reject(err);
-            }
-            resolve();
+            resolve({
+              stdout:stdout,
+              stderr:stderr,
+              err:err
+            });
         });
     });
 }

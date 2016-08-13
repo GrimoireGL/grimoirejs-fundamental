@@ -10,6 +10,9 @@
   ],
   "files": [
     "./src/Components/CanvasInitializerComponent.ts",
+    "./src/Components/LoopManagerComponent.ts",
+    "./src/Converters/BooleanConverter.ts",
+    "./src/Converters/NumberConverter.ts",
     "./src/Converters/StringConverter.ts",
     "./src/index.ts",
     "./src/typings/globals/node/index.d.ts",

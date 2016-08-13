@@ -55,17 +55,22 @@ const main = async() => {
     const config = JSON.parse(await readFileAsync("./package.json"));
     config.grimoire = config.grimoire ? config.grimoire : {};
     await generate(config);
-    await execAsync("npm run compile");
+    const tsResult = await execAsync("npm run compile");
+    if(!tsResult.err){
+      console.log(chalk.white.bgBlue("COMPILATION SUCCESS"));
+    }else{
+      console.log(chalk.red(tsResult.stdout));
+      return;
+    }
     let bundle = null;
     try {
         bundle = await buildTask();
     } catch (e) {
-        console.error(chalk.white.bgRed("COMPILATION FAILED"));
+        console.error(chalk.white.bgRed("BUNDLING FAILED"));
         console.error(chalk.red(e));
         console.error(chalk.yellow(e.stack));
         return;
     }
-    console.log(chalk.white.bgBlue("COMPILATION SUCCESS"));
     bundle.write({
         format: 'cjs',
         dest: './product/index.es2016.js'
@@ -77,7 +82,7 @@ const main = async() => {
 const task = async() => {
     if (!argv.w) await main();
     else {
-      console.log(chalk.white.bgGreen("WATCH MODE ENABLED"));
+        console.log(chalk.white.bgGreen("WATCH MODE ENABLED"));
         for (let changedChunk of watchItr("./src", {
                 interval: 500
             })) {
