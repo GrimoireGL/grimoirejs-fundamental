@@ -9,6 +9,7 @@
     "./src/**/*.ts"
   ],
   "files": [
+    "./src/Assets/AssetLoader.ts",
     "./src/Components/CanvasInitializerComponent.ts",
     "./src/Components/LoopManagerComponent.ts",
     "./src/Converters/BooleanConverter.ts",
