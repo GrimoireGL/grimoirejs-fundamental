@@ -20,17 +20,21 @@ import npm from 'rollup-plugin-node-resolve';
 import builtin from 'rollup-plugin-node-builtins';
 import commonjs from 'rollup-plugin-commonjs';
 import globals from 'rollup-plugin-node-globals';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 import chalk from 'chalk';
 import generate from './build/generate-index';
 import {
     argv
 } from 'yargs';
+import ProgressBar from 'progress';
 
 const buildTask = () => {
     return new Promise((resolve, reject) => {
         rollup({
             entry: './lib/index.js',
+            sourceMap: true,
             plugins: [
+                sourcemaps(),
                 builtin(),
                 commonjs({
                     ignoreGlobal: true,
@@ -50,21 +54,37 @@ const buildTask = () => {
     });
 };
 
-
-const main = async() => {
+const parseConfig = async() => {
     const config = JSON.parse(await readFileAsync("./package.json"));
     config.grimoire = config.grimoire ? config.grimoire : {};
+    return config;
+};
+
+const bar = new ProgressBar(':bar\nMoving files...\n', {
+    total: argv.m ? 24 : 20
+});
+
+const tickBar = (message) => {
+    bar.fmt = `:percent[:bar](${message})\n`;
+    bar.tick(4);
+};
+
+
+const main = async() => {
+    const config = await parseConfig();
+    tickBar("Generating code from template...");
     await generate(config);
+    tickBar("Compiling typescript files...");
     const tsResult = await execAsync("npm run compile");
-    if(!tsResult.err){
-      console.log(chalk.white.bgBlue("COMPILATION SUCCESS"));
-    }else{
-      console.log(chalk.red(tsResult.stdout));
-      return;
+    if (tsResult.err) {
+        console.log(chalk.red(tsResult.stdout));
+        return;
     }
+    tickBar("Bundling es2016 javascript files...");
     let bundle = null;
     try {
         bundle = await buildTask();
+        bar.tick();
     } catch (e) {
         console.error(chalk.white.bgRed("BUNDLING FAILED"));
         console.error(chalk.red(e));
@@ -73,10 +93,16 @@ const main = async() => {
     }
     bundle.write({
         format: 'cjs',
+        sourceMap: true,
         dest: './product/index.es2016.js'
     });
-    await execAsync("npm run bundle");
-    console.log(chalk.white.bgGreen("BUNDLING FINISHED"));
+    tickBar("Transpiling into es2015 javascript files...");
+    await execAsync("npm run babel");
+    if (argv.m) {
+        tickBar("Uglifying generated javascript");
+        await execAsync("npm run minify");
+    }
+    tickBar("DONE!");
 }
 
 const task = async() => {
@@ -93,4 +119,14 @@ const task = async() => {
     }
 }
 
+const server = async() => {
+    const serverLog = await execAsync("npm run serve");
+    if (serverLog.err) {
+        console.error(chalk.red(serverLog.stderr));
+    }
+}
+
 task();
+if (argv.s) {
+    server();
+}
