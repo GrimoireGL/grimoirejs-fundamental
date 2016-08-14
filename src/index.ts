@@ -10,5 +10,8 @@ GrimoireInterface.register(async () => {
   //<%=REGISTER%>
   GrimoireInterface.registerNode("goml", ["CanvasInitializer", "LoopManager", "AssetLoadingManager"]);
   GrimoireInterface.registerNode("renderers", ["RendererManager"]);
+  GrimoireInterface.registerNode("renderer", []);
+  GrimoireInterface.registerNode("scenes", []);
+  GrimoireInterface.registerNode("scene", []);
   GrimoireInterface.registerNode("empty", []);
 });

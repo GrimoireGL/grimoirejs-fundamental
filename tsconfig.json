@@ -16,6 +16,7 @@
     "./src/Components/RendererManagerComponent.ts",
     "./src/Constants.ts",
     "./src/Converters/BooleanConverter.ts",
+    "./src/Converters/Color4Converter.ts",
     "./src/Converters/NumberConverter.ts",
     "./src/Converters/StringConverter.ts",
     "./src/index.ts",
@@ -24,6 +25,7 @@
     "./src/Resource/ResourceBase.ts",
     "./src/Resource/Shader.ts",
     "./src/Resource/Texture2D.ts",
+    "./src/typings/gl-matrix/gl-matrix.d.ts",
     "./src/typings/globals/node/index.d.ts",
     "./src/typings/index.d.ts"
   ],

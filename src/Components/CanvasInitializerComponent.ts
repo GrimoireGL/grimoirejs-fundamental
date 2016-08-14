@@ -1,6 +1,5 @@
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
-import ITreeInitializedInfo from "grimoirejs/lib/Core/Node/ITreeInitializedInfo";
 import gr from "grimoirejs";
 const ns = gr.ns("HTTP://GRIMOIRE.GL/NS/DEFAULT");
 class CanvasInitializerComponent extends Component {
@@ -15,10 +14,10 @@ class CanvasInitializerComponent extends Component {
     }
   };
 
-  public $treeInitialized(c: ITreeInitializedInfo): void {
-    if (this._isContainedInBody(c.ownerScriptTag)) {
+  public $treeInitializing(c: HTMLScriptElement): void {
+    if (this._isContainedInBody(c)) {
       // canvas should be placed siblings of the script tag
-      this._generateCanvas(c.ownerScriptTag.parentElement);
+      this._generateCanvas(c.parentElement);
     } else {
       // TODO for the script element not included in body tag
     }
