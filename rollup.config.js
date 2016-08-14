@@ -1,8 +1,5 @@
 import babelHelpers from 'babel-helpers';
 import {
-    glob
-} from './build/globAsync';
-import {
     getFileNameBody,
     getRelativePath
 } from './build/pathUtil';
@@ -10,8 +7,9 @@ import {
     readFileAsync,
     templateAsync,
     execAsync,
-    watchItr
-} from './build/fsAsync';
+    watchItr,
+    glob
+} from 'grimoirejs-build-env-base';
 
 import {
     rollup

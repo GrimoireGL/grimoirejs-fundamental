@@ -5,7 +5,7 @@ import {
 import {
     templateAsync,
     writeFileAsync
-} from './fsAsync';
+} from 'grimoirejs-build-env-base';
 
 const scafold = async() => {
     if (argv.t === "component") {

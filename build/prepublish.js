@@ -4,11 +4,9 @@ import {
   writeFileAsync,
   templateAsync,
   unlinkAsync,
-  execAsync
-} from './fsAsync';
-import {
+  execAsync,
   glob
-} from './globAsync';
+} from 'grimoirejs-build-env-base';
 import generate from './generate-index';
 
 

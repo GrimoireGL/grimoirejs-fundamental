@@ -5,11 +5,9 @@ import {
     templateAsync,
     unlinkAsync,
     execAsync,
-    emptyDir
-} from './fsAsync';
-import {
+    emptyDir,
     glob
-} from './globAsync';
+} from 'grimoirejs-build-env-base';
 import {
     getFileNameBody,
     getRelativePath

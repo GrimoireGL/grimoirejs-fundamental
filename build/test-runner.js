@@ -5,7 +5,7 @@ import {
     execAsync,
     readFileAsync,
     watchItr
-} from './fsAsync';
+} from 'grimoirejs-build-env-base';
 import generator from './generate-index';
 import Progress from 'progress';
 import chalk from 'chalk';
