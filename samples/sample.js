@@ -1,3 +1,3 @@
 setTimeout(() => {
-    gr("#main")("empty").attr("loopEnabled", true);
+    gr("#main")("goml").attr("loopEnabled", true);
 }, 3000);

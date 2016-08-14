@@ -1,4 +1,5 @@
-class AssetLoader {
+import EEObject from "grimoirejs/lib/Core/Base/EEObject";
+class AssetLoader extends EEObject {
     public registerCount: number = 0;
     public loadCount: number = 0;
     public completeCount: number = 0;
@@ -22,6 +23,7 @@ class AssetLoader {
         });
     }
     private _checkLoadCompleted(): void {
+        this.emit("progress", this);
         if (this.registerCount === this.completeCount) {
             this._resolve();
         }

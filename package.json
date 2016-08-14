@@ -41,6 +41,7 @@
   },
   "repository": "",
   "scripts": {
+    "scafold":"babel-node ./build/scafold.js --presets es2015,stage-2 --plugins transform-runtime",
     "compile": "tsc @./lib-ts/entry_files --declaration --outDir ./lib -m es6 -t es6 --moduleResolution node ",
     "build": "babel-node rollup.config.js --presets es2015,stage-2 --plugins transform-runtime",
     "postinstall": "typings install",

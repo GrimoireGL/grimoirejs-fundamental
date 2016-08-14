@@ -9,13 +9,21 @@
     "./src/**/*.ts"
   ],
   "files": [
-    "./src/Assets/AssetLoader.ts",
+    "./src/Asset/AssetLoader.ts",
+    "./src/Components/AssetLoadingManagerComponent.ts",
     "./src/Components/CanvasInitializerComponent.ts",
     "./src/Components/LoopManagerComponent.ts",
+    "./src/Components/RendererManagerComponent.ts",
+    "./src/Constants.ts",
     "./src/Converters/BooleanConverter.ts",
     "./src/Converters/NumberConverter.ts",
     "./src/Converters/StringConverter.ts",
     "./src/index.ts",
+    "./src/Resource/Buffer.ts",
+    "./src/Resource/Program.ts",
+    "./src/Resource/ResourceBase.ts",
+    "./src/Resource/Shader.ts",
+    "./src/Resource/Texture2D.ts",
     "./src/typings/globals/node/index.d.ts",
     "./src/typings/index.d.ts"
   ],
