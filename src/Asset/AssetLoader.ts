@@ -9,24 +9,24 @@ class AssetLoader extends EEObject {
     public register<T>(promise: Promise<T>): Promise<T> {
         this.registerCount++;
         return new Promise<T>((resolve, reject) => {
-            (async function() {
-                try {
-                    resolve(await promise);
-                    this.loadCount++;
-                } catch (e) {
-                    reject(e);
-                    this.errorCount++;
-                }
-                this.completeCount++;
-                this._checkLoadCompleted();
-            }).bind(this)();
-        });
-    }
+            (async function(this: AssetLoader) {
+            try {
+                resolve(await promise);
+                this.loadCount++;
+            } catch (e) {
+                reject(e);
+                this.errorCount++;
+            }
+            this.completeCount++;
+            this._checkLoadCompleted();
+        }).bind(this)();
+    });
+}
     private _checkLoadCompleted(): void {
-        this.emit("progress", this);
-        if (this.registerCount === this.completeCount) {
-            this._resolve();
-        }
+    this.emit("progress", this);
+    if (this.registerCount === this.completeCount) {
+    this._resolve();
+}
     }
 }
 export default AssetLoader;

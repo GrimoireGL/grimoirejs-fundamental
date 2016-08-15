@@ -51,8 +51,12 @@ class CanvasInitializerComponent extends Component {
    * @return {boolean}     [description]
    */
   private _isContainedInBody(tag: Element): boolean {
-    if (!tag.parentElement) return false;
-    if (tag.parentNode.nodeName === "BODY") return true;
+    if (!tag.parentElement) {
+      return false;
+    }
+    if (tag.parentNode.nodeName === "BODY") {
+      return true;
+    }
     return this._isContainedInBody(tag.parentElement);
   }
 }

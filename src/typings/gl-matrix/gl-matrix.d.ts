@@ -5,7 +5,7 @@
 
 declare module "gl-matrix" {
 
-    export module GLM {
+    export namespace GLM {
         export interface IArray {
             /**
              * Must be indexable like an array
@@ -15,7 +15,7 @@ declare module "gl-matrix" {
     }
 
     // Common
-    export module glMatrix {
+    export namespace glMatrix {
         /**
          * Convert Degree To Radian
          *
@@ -25,7 +25,7 @@ declare module "gl-matrix" {
     }
 
     // vec2
-    export module vec2 {
+    export namespace vec2 {
         /**
          * Creates a new, empty vec2
          *
@@ -403,7 +403,7 @@ declare module "gl-matrix" {
     }
 
     // vec3
-    export module vec3 {
+    export namespace vec3 {
 
         /**
          * Creates a new, empty vec3
@@ -812,7 +812,7 @@ declare module "gl-matrix" {
     }
 
     // vec4
-    export module vec4 {
+    export namespace vec4 {
 
         /**
          * Creates a new, empty vec4
@@ -1163,7 +1163,7 @@ declare module "gl-matrix" {
     }
 
     // mat2
-    export module mat2 {
+    export namespace mat2 {
 
         /**
          * Creates a new identity mat2
@@ -1299,7 +1299,7 @@ declare module "gl-matrix" {
     }
 
     // mat2d
-    export module mat2d {
+    export namespace mat2d {
 
         /**
          * Creates a new identity mat2d
@@ -1418,7 +1418,7 @@ declare module "gl-matrix" {
     }
 
     // mat3
-    export module mat3 {
+    export namespace mat3 {
 
         /**
          * Creates a new identity mat3
@@ -1593,7 +1593,7 @@ declare module "gl-matrix" {
     }
 
     // mat4
-    export module mat4 {
+    export namespace mat4 {
 
         /**
          * Creates a new identity mat4
@@ -1886,7 +1886,7 @@ declare module "gl-matrix" {
     }
 
     // quat
-    export module quat {
+    export namespace quat {
 
         /**
          * Creates a new identity quat

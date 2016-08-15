@@ -17,7 +17,6 @@
     "./src/Constants.ts",
     "./src/Converters/BooleanConverter.ts",
     "./src/Converters/Color4Converter.ts",
-    "./src/Converters/FunctionConverter.ts",
     "./src/Converters/NumberConverter.ts",
     "./src/Converters/StringConverter.ts",
     "./src/index.ts",
