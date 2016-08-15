@@ -2,7 +2,7 @@ import babelHelpers from 'babel-helpers';
 import {
     getFileNameBody,
     getRelativePath
-} from './build/pathUtil';
+} from './scripts/pathUtil';
 import {
     readFileAsync,
     templateAsync,
@@ -20,7 +20,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import globals from 'rollup-plugin-node-globals';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import chalk from 'chalk';
-import generate from './build/generate-index';
+import generate from './scripts/generate-index';
 import {
     argv
 } from 'yargs';

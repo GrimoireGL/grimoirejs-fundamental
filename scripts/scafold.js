@@ -13,7 +13,7 @@ const scafold = async() => {
             console.log("please specify component name you want to scafold with -n option");
             return;
         }
-        const templated = await templateAsync("./build/templates/component.template", {
+        const templated = await templateAsync("./scripts/templates/component.template", {
             name: argv.n
         });
         await writeFileAsync("./src/Components/" + argv.n + "Component.ts", templated);
@@ -22,7 +22,7 @@ const scafold = async() => {
             console.log("please specify converter name you want to scafold with -n option");
             return;
         }
-        const templated = await templateAsync("./build/templates/converter.template", {
+        const templated = await templateAsync("./scripts/templates/converter.template", {
             name: argv.n
         });
         await writeFileAsync("./src/Converters/" + argv.n + "Converter.ts", templated);

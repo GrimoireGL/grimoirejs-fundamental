@@ -45,12 +45,12 @@ export default async function(config) {
             path: getRelativePath(v)
         };
     });
-    const imports = await templateAsync("./build/templates/imports.template", {
+    const imports = await templateAsync("./scripts/templates/imports.template", {
         externals: config.grimoire.dependencies,
         components: components,
         converters: converters
     });
-    const register = await templateAsync("./build/templates/register.template", {
+    const register = await templateAsync("./scripts/templates/register.template", {
         namespace: config.grimoire.namespace ? config.grimoire.namespace : "HTTP://GRIMOIRE.GL/NS/CUSTOM",
         components: components,
         converters: converters
