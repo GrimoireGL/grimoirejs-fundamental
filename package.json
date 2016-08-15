@@ -38,6 +38,7 @@
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-typescript": "^0.7.7",
+    "tslint": "^3.14.0",
     "typings": "^1.3.2",
     "watch": "^0.19.1",
     "yargs": "^4.8.1"
@@ -55,7 +56,9 @@
     "serve": "hs ./",
     "babel-test": "babel ./lib  --out-dir ./lib-es5",
     "ava": "ava --verbose",
-    "test": "babel-node ./scripts/test-runner.js --presets es2015,stage-2 --plugins transform-runtime"
+    "test": "babel-node ./scripts/test-runner.js --presets es2015,stage-2 --plugins transform-runtime",
+    "prelint": "tsc ./scripts/lint/*.ts --outDir ./scripts/lint -m commonjs -t es5",
+    "lint": ""
   },
   "grimoire": {
     "namespace": "HTTP://GRIMOIRE.GL/NS/DEFAULT",

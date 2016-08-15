@@ -26,6 +26,11 @@ const scafold = async() => {
             name: argv.n
         });
         await writeFileAsync("./src/Converters/" + argv.n + "Converter.ts", templated);
+        const test = await templateAsync("./scripts/templates/converter_test.template",{
+          key:argv.n + "Converter",
+          path:argv.n + "Converter.ts"
+        });
+        await writeFileAsync("./test/Converters/" + argv.n +"ConverterTest.js",test);
     } else {
         console.log("Please specify valid type to scafold with -t option. 'component' or 'converter' are available.")
     }
