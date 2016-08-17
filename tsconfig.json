@@ -15,6 +15,7 @@
     "./src/Components/CanvasInitializerComponent.ts",
     "./src/Components/LoopManagerComponent.ts",
     "./src/Components/MaterialComponent.ts",
+    "./src/Components/MeshRendererComponent.ts",
     "./src/Components/RendererComponent.ts",
     "./src/Components/RendererManagerComponent.ts",
     "./src/Components/SceneComponent.ts",

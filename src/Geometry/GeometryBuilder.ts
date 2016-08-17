@@ -30,7 +30,7 @@ export default class GeometryBuilder {
       for (let attribKey in buffer.size) {
         attribs[attribKey].stride = sizeSum * byteWidth;
       }
-      // generate vertex buffer
+      // generate source array of vertex buffer
       const bufferSource = new Array(sizeSum * buffer.count);
       const bufferGenerator = buffer.getGenerators();
       const generators: Iterator<number>[] = [];
@@ -59,6 +59,7 @@ export default class GeometryBuilder {
           }
         }
       }
+      // instanciate buffers
       buffers[bufferKey] = new Buffer(gl, WebGLRenderingContext.ARRAY_BUFFER, buffer.usage ? buffer.usage : WebGLRenderingContext.STATIC_DRAW);
       buffers[bufferKey].update(new Float32Array(bufferSource));
     }
@@ -76,7 +77,9 @@ export default class GeometryBuilder {
     return {
       count: indicies.length,
       index: buffer,
-      type: bufferType.format
+      type: bufferType.format,
+      topology: WebGLRenderingContext.TRIANGLES,
+      offset: 0
     };
   }
 

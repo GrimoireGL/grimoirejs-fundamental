@@ -1,6 +1,6 @@
 <goml width="1024">
   <renderers bgColor="#F00">
-    <renderer/>
+    <renderer camera="camera"/>
   </renderers>
   <scenes>
     <scene>

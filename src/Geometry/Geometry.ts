@@ -28,7 +28,7 @@ export default class Geometry {
     }
   }
 
-  public use(attribNames: string[], program: Program) {
+  public draw(attribNames: string[], program: Program) {
     attribNames.forEach(name => {
       const attribInfo = this.attribInfo[name];
       if (!attribInfo) {
@@ -43,5 +43,6 @@ export default class Geometry {
     });
     this.index.index.bind();
     this._gl.useProgram(program.program);
+    this._gl.drawElements(this.index.topology, this.index.count, this.index.type, this.index.offset);
   }
 }

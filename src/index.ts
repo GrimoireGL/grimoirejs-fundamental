@@ -14,4 +14,5 @@ GrimoireInterface.register(async () => {
   GrimoireInterface.registerNode("scene", ["Scene"]);
   GrimoireInterface.registerNode("camera", ["Camera"]);
   GrimoireInterface.registerNode("empty", []);
+  GrimoireInterface.registerNode("mesh", ["MeshRenderer"]);
 });

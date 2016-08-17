@@ -21,7 +21,6 @@ export default class RendererManagerComponent extends Component {
   private _enabled: boolean;
 
   public $mount() {
-    this.tree("goml")("LoopManager").get<LoopManagerComponent>().register(this.onloop.bind(this), 1000);
     this.gl = this.sharedObject.get("gl");
     const e = this.attributes.get("enabled");
     this._enabled = e.Value;
@@ -30,12 +29,17 @@ export default class RendererManagerComponent extends Component {
     });
   }
 
+  public $treeInitialized() {
+    this.tree("goml")("LoopManager").get<LoopManagerComponent>().register(this.onloop.bind(this), 1000);
+  }
+
+
   public onloop(): void {
     if (this._enabled) {
       const c: Color4 = this.attributes.get("bgColor").Value as Color4;
       this.gl.clearColor(c.R, c.G, c.B, c.A);
       this.gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
-      this.node.broadcastMessage(1, "render");
+      this.node.broadcastMessage(1, "renderScene");
     }
   }
 }

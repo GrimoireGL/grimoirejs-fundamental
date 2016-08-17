@@ -19,9 +19,14 @@ export default class RendererComponent extends Component {
     });
   }
 
-  public $render() {
-    const gl: WebGLRenderingContext = this.sharedObject.get("gl");
-    gl.drawElements(WebGLRenderingContext.TRIANGLES, 3, WebGLRenderingContext.UNSIGNED_BYTE, 0);
-    gl.flush();
+  public $treeInitialized() {
+    // TODO camera should be obtained by attribute
+    this._camera = this.tree("camera")("Camera").get() as CameraComponent;
+  }
+
+  public $renderScene() {
+    if (this._camera) {
+      this._camera.node.sendMessage("renderScene", this);
+    }
   }
 }
