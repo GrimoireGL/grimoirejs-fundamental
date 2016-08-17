@@ -28,7 +28,7 @@ const scafold = async() => {
         await writeFileAsync("./src/Converters/" + argv.n + "Converter.ts", templated);
         const test = await templateAsync("./scripts/templates/converter_test.template",{
           key:argv.n + "Converter",
-          path:argv.n + "Converter.ts"
+          path:argv.n + "Converter"
         });
         await writeFileAsync("./test/Converters/" + argv.n +"ConverterTest.js",test);
     } else {

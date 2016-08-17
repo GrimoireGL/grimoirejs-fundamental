@@ -1,8 +1,10 @@
-<goml width="1024">
-  <renderers bgColor="#CCC">
-    <renderer/>
+<goml width="100" height="100" autoStart="true">
+  <renderers bgColor="#CCC" enabled="true">
+    <renderer camera=".cam"/>
   </renderers>
   <scenes>
-    <scene/>
+    <scene>
+      <camera class="cam"/>
+    </scene>
   </scenes>
 </goml>

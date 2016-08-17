@@ -25,13 +25,22 @@ import {
     argv
 } from 'yargs';
 import ProgressBar from 'progress';
+import string from 'rollup-plugin-string';
 
-const buildTask = () => {
+const buildTask = (config) => {
+  let stringIncludes = [];
+  if(config.grimoire && config.grimoire.txt2js){
+    stringIncludes = config.grimoire.txt2js.map(v=>'**/'+v);
+  }
     return new Promise((resolve, reject) => {
         rollup({
             entry: './lib/index.js',
             sourceMap: true,
             plugins: [
+                string({
+                    // Required to be specified
+                    include: stringIncludes,
+                }),
                 sourcemaps(),
                 builtin(),
                 commonjs({
@@ -81,7 +90,7 @@ const main = async() => {
     tickBar("Bundling es2016 javascript files...");
     let bundle = null;
     try {
-        bundle = await buildTask();
+        bundle = await buildTask(config);
         bar.tick();
     } catch (e) {
         console.error(chalk.white.bgRed("BUNDLING FAILED"));

@@ -1,5 +1,5 @@
 <goml width="1024">
-  <renderers bgColor="#CCC">
+  <renderers bgColor="#F00">
     <renderer/>
   </renderers>
   <scenes>

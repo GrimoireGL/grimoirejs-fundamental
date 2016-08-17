@@ -14,13 +14,32 @@ class CanvasInitializerComponent extends Component {
     }
   };
 
+  /**
+   * The canvas managed by this component
+   * @type {HTMLCanvasElement}
+   */
+  public canvas: HTMLCanvasElement;
+
+  private _scriptTag: HTMLScriptElement;
+
   public $treeInitializing(c: HTMLScriptElement): void {
-    if (this._isContainedInBody(c)) {
+    this._scriptTag = c;
+  }
+
+  public $awake(): void {
+    if (this._isContainedInBody(this._scriptTag)) {
       // canvas should be placed siblings of the script tag
-      this._generateCanvas(c.parentElement);
+      this._generateCanvas(this._scriptTag.parentElement);
     } else {
       // TODO for the script element not included in body tag
     }
+    // apply sizes on changed
+    this.attributes.get("width").addObserver((v) => {
+      this.canvas.width = v.Value;
+    });
+    this.attributes.get("height").addObserver((v) => {
+      this.canvas.height = v.Value;
+    });
   }
 
   /**
@@ -34,6 +53,7 @@ class CanvasInitializerComponent extends Component {
     generatedCanvas.height = this.attributes.get("height").Value;
     this.sharedObject.set(ns("gl"), this._getContext(generatedCanvas));
     parent.appendChild(generatedCanvas);
+    this.canvas = generatedCanvas;
     return generatedCanvas;
   }
 
