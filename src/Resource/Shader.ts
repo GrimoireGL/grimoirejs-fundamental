@@ -13,7 +13,6 @@ export default class Shader extends ResourceBase {
   }
 
   public update(source: string): void {
-    this.shader = source;
     this.gl.shaderSource(this.shader, source);
     this.gl.compileShader(this.shader);
     if (!this.gl.getShaderParameter(this.shader, WebGLRenderingContext.COMPILE_STATUS)) {

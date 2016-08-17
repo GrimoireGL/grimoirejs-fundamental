@@ -35,6 +35,7 @@ export default class RendererManagerComponent extends Component {
       const c: Color4 = this.attributes.get("bgColor").Value as Color4;
       this.gl.clearColor(c.R, c.G, c.B, c.A);
       this.gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
+      this.node.broadcastMessage(1, "render");
     }
   }
 }

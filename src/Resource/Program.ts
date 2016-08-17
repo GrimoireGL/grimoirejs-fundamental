@@ -4,6 +4,11 @@ export default class Program extends ResourceBase {
   public readonly program: WebGLProgram;
 
   public valid: boolean = false;
+
+  private _uniformLocations: { [variableName: string]: WebGLUniformLocation } = {};
+
+  private _attributeLocations: { [variableName: string]: number } = {};
+
   constructor(gl: WebGLRenderingContext) {
     super(gl);
     this.program = gl.createProgram();
@@ -16,7 +21,7 @@ export default class Program extends ResourceBase {
       preciousShaders.forEach(s => this.gl.detachShader(this.program, s));
     }
     shaders.forEach(shader => {
-      this.gl.attachShader(this.program, shader);
+      this.gl.attachShader(this.program, shader.shader);
     });
     this.gl.linkProgram(this.program);
     if (!this.gl.getProgramParameter(this.program, WebGLRenderingContext.LINK_STATUS)) {
@@ -26,12 +31,26 @@ export default class Program extends ResourceBase {
     this.valid = true;
   }
 
-  public bindAttribLocation(index: number, name: string): void {
-    this.gl.bindAttribLocation(this.program, index, name);
-  }
-
   public destroy(): void {
     super.destroy();
     this.gl.deleteProgram(this.program);
+  }
+
+  public findAttributeLocation(variableName: string): number {
+    if (typeof this._attributeLocations[variableName] === "undefined") {
+      this._attributeLocations[variableName] = this.gl.getAttribLocation(this.program, variableName);
+      this.gl.enableVertexAttribArray(this._attributeLocations[variableName]);
+      return this._attributeLocations[variableName];
+    } else {
+      return this._attributeLocations[variableName];
+    }
+  }
+
+  public findUniformLocation(variableName: string): WebGLUniformLocation {
+    if (typeof this._uniformLocations[variableName] === "undefined") {
+      return this._uniformLocations[variableName] = this.gl.getUniformLocation(this.program, variableName);
+    } else {
+      return this._uniformLocations[variableName];
+    }
   }
 }

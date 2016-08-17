@@ -26,16 +26,18 @@
     "./src/Converters/NumberConverter.ts",
     "./src/Converters/StringConverter.ts",
     "./src/Geometry/Geometry.ts",
+    "./src/Geometry/GeometryBufferConstructionInfo.ts",
     "./src/Geometry/GeometryBuilder.ts",
     "./src/Geometry/IndexBufferInfo.ts",
     "./src/Geometry/VertexBufferAttribInfo.ts",
-    "./src/Geometry/VertexBufferConstructionInfo.ts",
     "./src/index.ts",
     "./src/Resource/Buffer.ts",
     "./src/Resource/Program.ts",
     "./src/Resource/ResourceBase.ts",
     "./src/Resource/Shader.ts",
-    "./src/Resource/Texture2D.ts"
+    "./src/Resource/Texture2D.ts",
+    "./src/TestShader/Sample_frag.glsl.d.ts",
+    "./src/TestShader/Sample_vert.glsl.d.ts"
   ],
   "exclude": [],
   "atom": {

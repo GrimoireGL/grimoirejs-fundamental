@@ -1,12 +1,12 @@
 import IndexBufferInfo from "./IndexBufferInfo";
 import Buffer from "../Resource/Buffer";
 import Geometry from "./Geometry";
-import VertexBufferConstructionInfo from "./VertexBufferConstructionInfo";
+import GeometryBufferConstructionInfo from "./GeometryBufferConstructionInfo";
 import VertexBufferAttribInfo from "./VertexBufferAttribInfo";
 
 
 export default class GeometryBuilder {
-  public static build(gl: WebGLRenderingContext, info: VertexBufferConstructionInfo): Geometry {
+  public static build(gl: WebGLRenderingContext, info: GeometryBufferConstructionInfo): Geometry {
     const buffers: { [key: string]: Buffer } = {};
     const attribs: { [key: string]: VertexBufferAttribInfo } = {};
     for (let bufferKey in info.verticies) {
@@ -19,7 +19,7 @@ export default class GeometryBuilder {
         }
         const size = buffer.size[attribKey];
         attribs[attribKey] = {
-          size: size * byteWidth,
+          size: size,
           offset: sizeSum * byteWidth,
           bufferName: bufferKey,
           type: buffer.type ? buffer.type : WebGLRenderingContext.FLOAT,
@@ -28,14 +28,36 @@ export default class GeometryBuilder {
         sizeSum += size;
       }
       for (let attribKey in buffer.size) {
-        attribs[attribKey].stride = sizeSum * byteWidth - attribs[attribKey].size;
+        attribs[attribKey].stride = sizeSum * byteWidth;
       }
       // generate vertex buffer
       const bufferSource = new Array(sizeSum * buffer.count);
+      const bufferGenerator = buffer.getGenerators();
+      const generators: Iterator<number>[] = [];
+      const sizes: number[] = [];
+      const beforeEach = bufferGenerator.beforeEach ? bufferGenerator.beforeEach() : undefined;
+      for (let attribKey in buffer.size) { // instanciate iterables
+        if (attribKey === "beforeEach") continue;
+        const generator = bufferGenerator[attribKey] as () => IterableIterator<number>;
+        generators.push(generator());
+        sizes.push(buffer.size[attribKey]);
+      }
       let i = 0;
-      for (let elem of buffer.generator()) {
-        bufferSource[i] = elem;
-        i++;
+      for (let vertCount = 0; vertCount < buffer.count; vertCount++) {
+        if (beforeEach && beforeEach.next().done) {
+          throw new Error("before each was ended before reaching count.");
+        }
+        for (let genIndex = 0; genIndex < generators.length; genIndex++) {
+          const generator = generators[genIndex];
+          for (let sizeIndex = 0; sizeIndex < sizes[genIndex]; sizeIndex++) {
+            const genResult = generator.next();
+            if (genResult.done) {
+              throw new Error("Generator function finished before reaching specified count");
+            }
+            bufferSource[i] = genResult.value;
+            i++;
+          }
+        }
       }
       buffers[bufferKey] = new Buffer(gl, WebGLRenderingContext.ARRAY_BUFFER, buffer.usage ? buffer.usage : WebGLRenderingContext.STATIC_DRAW);
       buffers[bufferKey].update(new Float32Array(bufferSource));
@@ -43,7 +65,7 @@ export default class GeometryBuilder {
     return new Geometry(buffers, attribs, this._getIndexInfo(gl, info.index));
   }
 
-  private static _getIndexInfo(gl: WebGLRenderingContext, indexGenerator: () => Iterable<number>): IndexBufferInfo {
+  private static _getIndexInfo(gl: WebGLRenderingContext, indexGenerator: () => IterableIterator<number>): IndexBufferInfo {
     const indicies: number[] = [];
     for (let variable of indexGenerator()) {
       indicies.push(variable);

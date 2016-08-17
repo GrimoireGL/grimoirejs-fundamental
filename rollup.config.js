@@ -80,7 +80,11 @@ const tickBar = (message) => {
 const main = async() => {
     const config = await parseConfig();
     tickBar("Generating code from template...");
+    try{
     await generate(config);
+  }catch(e){
+    console.log(e);
+  }
     tickBar("Compiling typescript files...");
     const tsResult = await execAsync("npm run compile");
     if (tsResult.err) {

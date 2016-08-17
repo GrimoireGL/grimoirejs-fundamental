@@ -20,8 +20,8 @@ export default class RendererComponent extends Component {
   }
 
   public $render() {
-    if (this._camera) {
-
-    }
+    const gl: WebGLRenderingContext = this.sharedObject.get("gl");
+    gl.drawElements(WebGLRenderingContext.TRIANGLES, 3, WebGLRenderingContext.UNSIGNED_BYTE, 0);
+    gl.flush();
   }
 }

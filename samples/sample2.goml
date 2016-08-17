@@ -3,6 +3,8 @@
     <renderer/>
   </renderers>
   <scenes>
-    <scene/>
+    <scene>
+      <camera/>
+    </scene>
   </scenes>
 </goml>
