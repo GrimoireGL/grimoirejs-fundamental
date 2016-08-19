@@ -5,6 +5,7 @@
   <scenes>
     <scene>
       <camera/>
+      <mesh/>
     </scene>
   </scenes>
 </goml>

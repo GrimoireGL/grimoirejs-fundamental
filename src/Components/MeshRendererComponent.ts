@@ -1,9 +1,11 @@
+import Vector3 from "grimoirejs/lib/Core/Math/Vector3";
 import Geometry from "../Geometry/Geometry";
 import Program from "../Resource/Program";
 import GeometryBuilder from "../Geometry/GeometryBuilder";
 import Shader from "../Resource/Shader";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
+import GeometryUtility from "../Geometry/GeometryUtility";
 
 import fs from "../TestShader/Sample_frag.glsl";
 import vs from "../TestShader/Sample_vert.glsl";
@@ -17,8 +19,19 @@ export default class MeshRenderer extends Component {
 
   public $awake() {
     this.geom = GeometryBuilder.build(this.sharedObject.get("gl"), {
-      index: function* () {
-        yield* [0, 1, 2];
+      indicies: {
+        default: {
+          generator: function* () {
+            yield* GeometryUtility.ellipseIndex(0, 100);
+          },
+          topology: WebGLRenderingContext.TRIANGLES
+        },
+        wireframe: {
+          generator: function* () {
+            yield* GeometryUtility.linesFromTriangles(GeometryUtility.ellipseIndex(0, 100));
+          },
+          topology: WebGLRenderingContext.LINES
+        }
       },
       verticies: {
         main: {
@@ -26,13 +39,11 @@ export default class MeshRenderer extends Component {
             position: 3,
             normal: 3,
           },
-          count: 3,
+          count: GeometryUtility.ellipseSize(100),
           getGenerators: () => {
             return {
               position: function* () {
-                yield* [0, 0, 0];
-                yield* [1, 0, 0];
-                yield* [0, -1, 0];
+                yield* GeometryUtility.ellipsePosition(Vector3.Zero, Vector3.YUnit.multiplyWith(0.3), Vector3.XUnit, 100);
               },
               normal: function* () {
                 while (true) {
@@ -51,7 +62,7 @@ export default class MeshRenderer extends Component {
   }
 
   public $render() {
-    this.geom.draw(["position"], this.prog);
+    this.geom.draw("default", ["position"], this.prog);
     this.sharedObject.get("gl").flush();
   }
 }

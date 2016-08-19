@@ -1,11 +1,17 @@
 <goml width="100" height="100" autoStart="true">
-  <renderers bgColor="#CCC">
-    <renderer camera="camera"/>
-  </renderers>
-  <scenes>
-    <scene>
-      <camera/>
-      <mesh/>
-    </scene>
-  </scenes>
+    <renderers bgColor="blue">
+        <renderer camera=".camera"/>
+    </renderers>
+    <scenes>
+        <scene>
+            <camera class="camera"/>
+            <mesh rotation="y(90d)">
+                <mesh id="middle" rotation="y(90d)">
+                    <mesh rotation="y(90d)">
+                        <mesh rotation=" y(90d)"></mesh>
+                    </mesh>
+                </mesh>
+            </mesh>
+        </scene>
+    </scenes>
 </goml>

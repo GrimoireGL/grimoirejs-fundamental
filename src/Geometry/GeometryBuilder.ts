@@ -63,24 +63,29 @@ export default class GeometryBuilder {
       buffers[bufferKey] = new Buffer(gl, WebGLRenderingContext.ARRAY_BUFFER, buffer.usage ? buffer.usage : WebGLRenderingContext.STATIC_DRAW);
       buffers[bufferKey].update(new Float32Array(bufferSource));
     }
-    return new Geometry(buffers, attribs, this._getIndexInfo(gl, info.index));
+    return new Geometry(buffers, attribs, this._generateIndicies(gl, info.indicies));
   }
 
-  private static _getIndexInfo(gl: WebGLRenderingContext, indexGenerator: () => IterableIterator<number>): IndexBufferInfo {
-    const indicies: number[] = [];
-    for (let variable of indexGenerator()) {
-      indicies.push(variable);
+  private static _generateIndicies(gl: WebGLRenderingContext, indexGenerator: { [indexName: string]: { generator: () => IterableIterator<number>, topology: number } }): { [indexName: string]: IndexBufferInfo } {
+    const indexMap: { [indexName: string]: IndexBufferInfo } = {};
+    for (let indexName in indexGenerator) {
+      const indicies: number[] = [];
+      const generatorInfo = indexGenerator[indexName];
+      for (let variable of generatorInfo.generator()) {
+        indicies.push(variable);
+      }
+      const bufferType = this._getIndexType(indicies.length);
+      const buffer = new Buffer(gl, WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, WebGLRenderingContext.STATIC_DRAW);
+      buffer.update(new bufferType.ctor(indicies));
+      indexMap[indexName] = {
+        count: indicies.length,
+        index: buffer,
+        type: bufferType.format,
+        topology: generatorInfo.topology ? generatorInfo.topology : WebGLRenderingContext.TRIANGLES,
+        offset: 0
+      };
     }
-    const bufferType = this._getIndexType(indicies.length);
-    const buffer = new Buffer(gl, WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, WebGLRenderingContext.STATIC_DRAW);
-    buffer.update(new bufferType.ctor(indicies));
-    return {
-      count: indicies.length,
-      index: buffer,
-      type: bufferType.format,
-      topology: WebGLRenderingContext.TRIANGLES,
-      offset: 0
-    };
+    return indexMap;
   }
 
   /**

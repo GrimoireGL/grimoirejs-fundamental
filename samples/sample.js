@@ -1,5 +1,6 @@
-setTimeout(() => {
-  // gr("script")("renderers").attr("bgColor","#000");
-  //gr("#main2")("renderers").attr("bgColor","#FF00FF");
-
-}, 3000);
+var colors = ["red","orange","rgb(128,0,64)"];
+var i = 0;
+setInterval(()=>{
+  //gr("#main")("renderers").attr("bgColor",colors[i % colors.length]);
+  i++;
+},1000);

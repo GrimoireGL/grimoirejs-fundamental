@@ -11,7 +11,12 @@ interface GeometryBufferConstructionInfo {
       usage?: number;
     }
   };
-  index: () => IterableIterator<number>;
+  indicies: {
+    [indexName: string]: {
+      generator: () => IterableIterator<number>;
+      topology: number;
+    }
+  }
 }
 
 export default GeometryBufferConstructionInfo;
