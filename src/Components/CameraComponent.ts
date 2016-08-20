@@ -10,8 +10,8 @@ import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaratio
 export default class CameraComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     fovy: {
-      defaultValue: "45d",
-      converter: "angle2d"
+      defaultValue: 0.3,
+      converter: "number"
     },
     near: {
       defaultValue: 0.01,
@@ -27,9 +27,9 @@ export default class CameraComponent extends Component {
     }
   };
 
-  private camera: ICamera;
+  public camera: ICamera;
 
-  private containedScene: SceneComponent;
+  public containedScene: SceneComponent;
 
   public $awake(): void {
     this.containedScene = CameraComponent._findContainedScene(this.node);
@@ -37,8 +37,8 @@ export default class CameraComponent extends Component {
     const t = this.node.getComponent("Transform") as TransformComponent;
     t.addObserver(this._updateViewMatrix);
     this._updateViewMatrix(t);
-    this.camera.setFar(this.attributes.get("far").Value);
-    this.camera.setNear(this.attributes.get("near").Value);
+    c.setFar(this.attributes.get("far").Value);
+    c.setNear(this.attributes.get("near").Value);
     c.setFovy(this.attributes.get("fovy").Value);
     c.setAspect(this.attributes.get("aspect").Value);
   }

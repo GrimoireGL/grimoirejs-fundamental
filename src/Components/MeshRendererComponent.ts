@@ -1,4 +1,8 @@
+import IRenderMessageArgs from "../Camera/IRenderMessageArgs";
+import TransformComponent from "./TransformComponent";
 import Vector3 from "grimoirejs/lib/Core/Math/Vector3";
+import Vector4 from "grimoirejs/lib/Core/Math/Vector4";
+import Matrix from "grimoirejs/lib/Core/Math/Matrix";
 import Geometry from "../Geometry/Geometry";
 import Program from "../Resource/Program";
 import GeometryBuilder from "../Geometry/GeometryBuilder";
@@ -11,6 +15,7 @@ import fs from "../TestShader/Sample_frag.glsl";
 import vs from "../TestShader/Sample_vert.glsl";
 
 export default class MeshRenderer extends Component {
+  private _transformComponent: TransformComponent;
   public prog: Program;
   public geom: Geometry;
   public static attributes: { [key: string]: IAttributeDeclaration } = {
@@ -43,7 +48,7 @@ export default class MeshRenderer extends Component {
           getGenerators: () => {
             return {
               position: function* () {
-                yield* GeometryUtility.ellipsePosition(Vector3.Zero, Vector3.YUnit.multiplyWith(0.3), Vector3.XUnit, 100);
+                yield* GeometryUtility.ellipsePosition(new Vector3(0, 0, -0.3), Vector3.YUnit.multiplyWith(0.3), Vector3.XUnit, 100);
               },
               normal: function* () {
                 while (true) {
@@ -61,7 +66,14 @@ export default class MeshRenderer extends Component {
     this.prog.update([fshader, vshader]);
   }
 
-  public $render() {
+  public $mount() {
+    this._transformComponent = this.node.getComponent("Transform") as TransformComponent;
+  }
+
+  public $render(args: IRenderMessageArgs) {
+    this.prog.use();
+    this.prog.uniforms.uniformMatrix("_matPVW", this._transformComponent.calcPVW(args.camera.camera));
+    console.log(Matrix.transform(this._transformComponent.calcPVW(args.camera.camera), new Vector4(0, 0, 0.6, 1)).toString());
     this.geom.draw("default", ["position"], this.prog);
     this.sharedObject.get("gl").flush();
   }

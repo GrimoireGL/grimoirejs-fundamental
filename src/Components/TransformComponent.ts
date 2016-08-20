@@ -1,10 +1,13 @@
+import ICamera from "../Camera/ICamera";
 import Matrix from "../../node_modules/grimoirejs/lib/Core/Math/Matrix";
 import {mat4} from "gl-matrix";
 import Quaternion from "grimoirejs/lib/Core/Math/Quaternion";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import Vector3 from "grimoirejs/lib/Core/Math/Vector3";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
-
+/**
+ * Provides object transformation like translation,rotation,scaling.
+ */
 export default class TransformComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     "position": {
@@ -24,6 +27,8 @@ export default class TransformComponent extends Component {
   private _parentTransform: TransformComponent;
 
   private _observers: ((t: TransformComponent) => void)[] = [];
+
+  private _cachePVM: Matrix = new Matrix();
 
   public localTransform: Matrix = new Matrix();
 
@@ -71,10 +76,16 @@ export default class TransformComponent extends Component {
     this._observers.push(observer);
   }
 
+  public calcPVW(camera: ICamera): Matrix {
+    mat4.mul(this._cachePVM.rawElements, camera.getProjectionViewMatrix().rawElements, this.globalTransform.rawElements);
+    return this._cachePVM;
+  }
+
   public $awake(): void {
-    this.attributes.get("position").addObserver(() => this.updateTransform());
-    this.attributes.get("rotation").addObserver(() => this.updateTransform());
-    this.attributes.get("scale").addObserver(() => this.updateTransform());
+    this.attributes.get("position").addObserver(() => this.updateGlobalTransform());
+    this.attributes.get("rotation").addObserver(() => this.updateGlobalTransform());
+    this.attributes.get("scale").addObserver(() => this.updateGlobalTransform());
+    this.updateTransform();
   }
 
   public $mount(): void {

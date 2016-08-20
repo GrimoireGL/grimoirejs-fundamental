@@ -1,17 +1,19 @@
 import TransformComponent from "../Components/TransformComponent";
 import Vector3 from "grimoirejs/lib/Core/Math/Vector3";
+import Vector4 from "grimoirejs/lib/Core/Math/Vector4";
 import Quaternion from "grimoirejs/lib/Core/Math/Quaternion";
 import Matrix from "grimoirejs/lib/Core/Math/Matrix";
 import ICamera from "./ICamera";
-import {mat4, vec3} from "gl-matrix";
+import {mat4, vec3, vec4} from "gl-matrix";
 export default class PerspectiveCamera implements ICamera {
-  private static _invertedUnitZ: Vector3 = new Vector3(0, 0, -1);
+  private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
+  private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
   private _viewMatrix: Matrix = new Matrix();
   private _invViewMatrix: Matrix = new Matrix();
   private _projectionMatrix: Matrix = new Matrix();
   private _invProjectionMatrix: Matrix = new Matrix();
-  private _viewProjectionMatrix: Matrix = new Matrix();
-  private _invViewProjectionMatrix: Matrix = new Matrix();
+  private _projectionViewMatrix: Matrix = new Matrix();
+  private _invProjectionViewMatrix: Matrix = new Matrix();
   private _far: number;
   private _near: number;
   private _fovy: number;
@@ -32,10 +34,10 @@ export default class PerspectiveCamera implements ICamera {
   public getInvProjectionMatrix(): Matrix {
     return null; // TODO
   }
-  public getViewProjectionMatrix(): Matrix {
-    return this._viewProjectionMatrix;
+  public getProjectionViewMatrix(): Matrix {
+    return this._projectionViewMatrix;
   }
-  public getInvViewProjectionMatrix(): Matrix {
+  public getInvProjectionViewMatrix(): Matrix {
     return null; // TODO
   }
   public getFar(): number {
@@ -68,15 +70,18 @@ export default class PerspectiveCamera implements ICamera {
   }
 
   public updateTransform(transform: TransformComponent): void {
+    console.log(transform.position.toString());
     vec3.transformMat4(this._eyeCache.rawElements, Vector3.Zero.rawElements, transform.globalTransform.rawElements);
-    vec3.transformMat4(this._lookAtCache.rawElements, PerspectiveCamera._invertedUnitZ.rawElements, transform.globalTransform.rawElements);
+    vec4.transformMat4(this._lookAtCache.rawElements, PerspectiveCamera._frontOrigin.rawElements, transform.globalTransform.rawElements);
     vec3.add(this._lookAtCache.rawElements, this._lookAtCache.rawElements, this._eyeCache.rawElements);
-    vec3.transformMat4(this._upCache.rawElements, Vector3.YUnit.rawElements, transform.globalTransform.rawElements);
+    vec4.transformMat4(this._upCache.rawElements, PerspectiveCamera._upOrigin.rawElements, transform.globalTransform.rawElements);
     mat4.lookAt(this._viewMatrix.rawElements, this._eyeCache.rawElements, this._lookAtCache.rawElements, this._upCache.rawElements);
+    mat4.mul(this._projectionViewMatrix.rawElements, this._projectionMatrix.rawElements, this._viewMatrix.rawElements);
   }
 
   private _recalculateProjection(): void {
     mat4.perspective(this._projectionMatrix.rawElements, this._fovy, this._aspect, this._near, this._far);
+    mat4.mul(this._projectionViewMatrix.rawElements, this._projectionMatrix.rawElements, this._viewMatrix.rawElements);
   }
 
 }

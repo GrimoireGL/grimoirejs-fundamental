@@ -6,8 +6,8 @@ interface ICamera {
   getInvViewMatrix(): Matrix;
   getProjectionMatrix(): Matrix;
   getInvProjectionMatrix(): Matrix;
-  getViewProjectionMatrix(): Matrix;
-  getInvViewProjectionMatrix(): Matrix;
+  getProjectionViewMatrix(): Matrix;
+  getInvProjectionViewMatrix(): Matrix;
   getFar(): number;
   setFar(far: number): void;
   getNear(): number;

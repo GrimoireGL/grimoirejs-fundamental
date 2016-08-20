@@ -1,3 +1,4 @@
+import UniformProxy from "./UniformProxy";
 import ResourceBase from "./ResourceBase";
 import Shader from "./Shader";
 export default class Program extends ResourceBase {
@@ -5,12 +6,15 @@ export default class Program extends ResourceBase {
 
   public valid: boolean = false;
 
+  public uniforms: UniformProxy;
+
   private _uniformLocations: { [variableName: string]: WebGLUniformLocation } = {};
 
   private _attributeLocations: { [variableName: string]: number } = {};
 
   constructor(gl: WebGLRenderingContext) {
     super(gl);
+    this.uniforms = new UniformProxy(this);
     this.program = gl.createProgram();
   }
 
@@ -29,6 +33,10 @@ export default class Program extends ResourceBase {
       throw new Error(`LINK FAILED\n${errorLog}`);
     }
     this.valid = true;
+  }
+
+  public use(): void {
+    this.gl.useProgram(this.program);
   }
 
   public destroy(): void {
