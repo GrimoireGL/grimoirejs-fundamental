@@ -18,7 +18,7 @@ class LoopManagerComponent extends Component {
 
   private _registerNextLoop: () => void;
 
-  public $awake() {
+  public $awake(): void {
     this.attributes.get("loopEnabled").addObserver((attr) => {
       this._begin();
     });
@@ -35,7 +35,7 @@ class LoopManagerComponent extends Component {
 
   }
 
-  public register(action: () => void, priorty: number) {
+  public register(action: () => void, priorty: number): void {
     this._loopActions.push({
       action: action,
       priorty: priorty
@@ -43,11 +43,11 @@ class LoopManagerComponent extends Component {
     this._loopActions.sort((a, b) => a.priorty - b.priorty);
   }
 
-  private _begin() {
+  private _begin(): void {
     this._registerNextLoop();
   }
 
-  private _loop() {
+  private _loop(): void {
     this._loopActions.forEach((a) => a.action());
     this._registerNextLoop();
   }
