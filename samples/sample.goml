@@ -1,12 +1,11 @@
 <goml width="512" height="512" autoStart="true">
-    <renderers bgColor="blue">
-        <renderer camera=".camera"/>
-    </renderers>
-    <scenes>
-        <scene>
-            <camera class="camera" near="0.01" far="20.0" fovy="45d" position="0,0,8" rotation="y(30d)"/>
-            <mesh>
-            </mesh>
-        </scene>
-    </scenes>
+  <renderers bgColor="blue">
+    <renderer camera=".camera"/>
+  </renderers>
+  <scenes>
+    <scene>
+      <camera class="camera" near="0.01" far="20.0" fovy="45d" position="0,0,14" rotation="y(0d)"/>
+      <mesh position="10,0,0" rotation="z(30d)"></mesh>
+    </scene>
+  </scenes>
 </goml>

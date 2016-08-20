@@ -73,7 +73,7 @@ export default class MeshRenderer extends Component {
   public $render(args: IRenderMessageArgs) {
     this.prog.use();
     this.prog.uniforms.uniformMatrix("_matPVW", this._transformComponent.calcPVW(args.camera.camera));
-    console.log(Matrix.transform(this._transformComponent.calcPVW(args.camera.camera), new Vector4(0, 0, 0.6, 1)).toString());
+    console.log(this._transformComponent.calcPVW(args.camera.camera).toString());
     this.geom.draw("default", ["position"], this.prog);
     this.sharedObject.get("gl").flush();
   }

@@ -54,6 +54,11 @@ export default class CameraComponent extends Component {
     this.camera.updateTransform(t);
   }
 
+  /**
+   * Find scene tag recursively.
+   * @param  {GomlNode}       node [the node to searching currently]
+   * @return {SceneComponent}      [the scene component found]
+   */
   private static _findContainedScene(node: GomlNode): SceneComponent {
     if (node.parent) {
       const scene = node.parent.getComponent("Scene");

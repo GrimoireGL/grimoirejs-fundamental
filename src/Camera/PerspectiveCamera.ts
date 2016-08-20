@@ -5,6 +5,9 @@ import Quaternion from "grimoirejs/lib/Core/Math/Quaternion";
 import Matrix from "grimoirejs/lib/Core/Math/Matrix";
 import ICamera from "./ICamera";
 import {mat4, vec3, vec4} from "gl-matrix";
+/**
+ * Provides perspective camera as implementation of ICamera.
+ */
 export default class PerspectiveCamera implements ICamera {
   private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
   private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
