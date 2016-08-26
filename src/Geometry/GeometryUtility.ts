@@ -81,7 +81,7 @@ export default class GeometryUtility {
 
   public static *quadIndex(offset: number): IterableIterator<number> {
     const o = offset;
-    yield* [o, o + 1, o + 2, o, o + 2, o + 3];
+    yield* [o, o + 2, o + 1, o, o + 3, o + 2];
   }
 
   public static *cubeIndex(offset: number): IterableIterator<number> {

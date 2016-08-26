@@ -52,7 +52,6 @@ export default class CameraComponent extends Component {
   public $transformUpdated(t: TransformComponent) {
     if (this.camera) {
       this.camera.updateTransform(t);
-      console.log("updated");
     }
   }
 

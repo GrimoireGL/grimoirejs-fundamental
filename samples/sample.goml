@@ -1,4 +1,4 @@
-<goml width="512" height="512" autoStart="true">
+<goml width="512" height="512">
   <renderers bgColor="blue">
     <renderer camera=".camera"/>
   </renderers>
@@ -6,7 +6,7 @@
     <scene>
       <camera class="camera" near="0.01" far="20.0" fovy="45d" position="0,0,14" rotation="y(0d)">
         <camera.components>
-          <MouseCameraControl/>
+          <MouseCameraControl rotateX="1000"/>
         </camera.components>
       </camera>
       <mesh position="0,0,0" rotation="z(30d)"></mesh>

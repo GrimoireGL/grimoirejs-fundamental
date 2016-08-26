@@ -31,6 +31,8 @@ export default class RendererManagerComponent extends Component {
 
   public $treeInitialized() {
     this.tree("goml")("LoopManager").get<LoopManagerComponent>().register(this.onloop.bind(this), 1000);
+    this.gl.enable(WebGLRenderingContext.DEPTH_TEST);
+    this.gl.enable(WebGLRenderingContext.CULL_FACE);
   }
 
 
@@ -38,7 +40,7 @@ export default class RendererManagerComponent extends Component {
     if (this._enabled) {
       const c: Color4 = this.attributes.get("bgColor").Value as Color4;
       this.gl.clearColor(c.R, c.G, c.B, c.A);
-      this.gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
+      this.gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);
       this.node.broadcastMessage(1, "renderScene");
     }
   }
