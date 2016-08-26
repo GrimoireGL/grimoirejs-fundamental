@@ -35,8 +35,7 @@ export default class CameraComponent extends Component {
     this.containedScene = CameraComponent._findContainedScene(this.node);
     const c = this.camera = new PerspectiveCamera();
     const t = this.node.getComponent("Transform") as TransformComponent;
-    t.addObserver(this._updateViewMatrix);
-    this._updateViewMatrix(t);
+    this.$transformUpdated(t);
     c.setFar(this.attributes.get("far").Value);
     c.setNear(this.attributes.get("near").Value);
     c.setFovy(this.attributes.get("fovy").Value);
@@ -50,8 +49,11 @@ export default class CameraComponent extends Component {
     }
   }
 
-  private _updateViewMatrix(t: TransformComponent): void {
-    this.camera.updateTransform(t);
+  public $transformUpdated(t: TransformComponent) {
+    if (this.camera) {
+      this.camera.updateTransform(t);
+      console.log("updated");
+    }
   }
 
   /**

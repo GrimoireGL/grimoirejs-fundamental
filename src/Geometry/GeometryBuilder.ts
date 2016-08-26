@@ -4,7 +4,9 @@ import Geometry from "./Geometry";
 import GeometryBufferConstructionInfo from "./GeometryBufferConstructionInfo";
 import VertexBufferAttribInfo from "./VertexBufferAttribInfo";
 
-
+/**
+ * Helper class to instanciate Geometry easily.
+ */
 export default class GeometryBuilder {
   public static build(gl: WebGLRenderingContext, info: GeometryBufferConstructionInfo): Geometry {
     const buffers: { [key: string]: Buffer } = {};
@@ -37,7 +39,9 @@ export default class GeometryBuilder {
       const sizes: number[] = [];
       const beforeEach = bufferGenerator.beforeEach ? bufferGenerator.beforeEach() : undefined;
       for (let attribKey in buffer.size) { // instanciate iterables
-        if (attribKey === "beforeEach") continue;
+        if (attribKey === "beforeEach") {
+          continue;
+        }
         const generator = bufferGenerator[attribKey] as () => IterableIterator<number>;
         generators.push(generator());
         sizes.push(buffer.size[attribKey]);

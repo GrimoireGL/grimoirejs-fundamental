@@ -27,7 +27,7 @@ export default class MeshRenderer extends Component {
       indicies: {
         default: {
           generator: function* () {
-            yield* GeometryUtility.ellipseIndex(0, 100);
+            yield* GeometryUtility.cubeIndex(0);
           },
           topology: WebGLRenderingContext.TRIANGLES
         },
@@ -44,11 +44,12 @@ export default class MeshRenderer extends Component {
             position: 3,
             normal: 3,
           },
-          count: GeometryUtility.ellipseSize(100),
+          count: GeometryUtility.cubeSize(),
           getGenerators: () => {
             return {
               position: function* () {
-                yield* GeometryUtility.ellipsePosition(new Vector3(0, 0, -0.3), Vector3.YUnit.multiplyWith(0.3), Vector3.XUnit, 100);
+                yield* GeometryUtility.cubePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis());
+                // yield* GeometryUtility.ellipsePosition(new Vector3(0, 0, -0.3), Vector3.YUnit.multiplyWith(0.3), Vector3.XUnit, 100);
               },
               normal: function* () {
                 while (true) {
@@ -73,7 +74,6 @@ export default class MeshRenderer extends Component {
   public $render(args: IRenderMessageArgs) {
     this.prog.use();
     this.prog.uniforms.uniformMatrix("_matPVW", this._transformComponent.calcPVW(args.camera.camera));
-    console.log(this._transformComponent.calcPVW(args.camera.camera).toString());
     this.geom.draw("default", ["position"], this.prog);
     this.sharedObject.get("gl").flush();
   }

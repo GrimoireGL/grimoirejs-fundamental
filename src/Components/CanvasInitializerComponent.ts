@@ -22,11 +22,8 @@ class CanvasInitializerComponent extends Component {
 
   private _scriptTag: HTMLScriptElement;
 
-  public $treeInitializing(c: HTMLScriptElement): void {
-    this._scriptTag = c;
-  }
-
   public $awake(): void {
+    this._scriptTag = this.sharedObject.get("scriptElement");
     if (this._isContainedInBody(this._scriptTag)) {
       // canvas should be placed siblings of the script tag
       this._generateCanvas(this._scriptTag.parentElement);
@@ -52,6 +49,7 @@ class CanvasInitializerComponent extends Component {
     generatedCanvas.width = this.attributes.get("width").Value;
     generatedCanvas.height = this.attributes.get("height").Value;
     this.sharedObject.set(ns("gl"), this._getContext(generatedCanvas));
+    this.sharedObject.set(ns("canvasElement"), generatedCanvas);
     parent.appendChild(generatedCanvas);
     this.canvas = generatedCanvas;
     return generatedCanvas;

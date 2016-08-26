@@ -73,7 +73,7 @@ export default class PerspectiveCamera implements ICamera {
   }
 
   public updateTransform(transform: TransformComponent): void {
-    console.log(transform.position.toString());
+    console.log(transform.globalTransform.toString());
     vec3.transformMat4(this._eyeCache.rawElements, Vector3.Zero.rawElements, transform.globalTransform.rawElements);
     vec4.transformMat4(this._lookAtCache.rawElements, PerspectiveCamera._frontOrigin.rawElements, transform.globalTransform.rawElements);
     vec3.add(this._lookAtCache.rawElements, this._lookAtCache.rawElements, this._eyeCache.rawElements);
