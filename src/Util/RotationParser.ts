@@ -1,5 +1,4 @@
-import Quaternion from "grimoirejs/lib/Core/Math/Quaternion";
-import Vector3 from "grimoirejs/lib/Core/Math/Vector3";
+import {Vector3, Quaternion} from "grimoirejs-math";
 /**
  * Utility class to parse the arguments of attributes.
  */

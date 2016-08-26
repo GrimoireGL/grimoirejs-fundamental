@@ -1,5 +1,5 @@
 import RotationParser from "../Util/RotationParser";
-import Quaternion from "grimoirejs/lib/Core/Math/Quaternion";
+import {Quaternion} from "grimoirejs-math";
 function Rotation3Converter(val: any): any {
   if (val instanceof Quaternion) {
     return val;

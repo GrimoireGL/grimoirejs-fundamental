@@ -1,4 +1,4 @@
-import Color4 from "grimoirejs/lib/Core/Math/Color4";
+import {Color4} from "grimoirejs-math";
 function Color4Converter(val: any): any {
   if (val instanceof Color4) {
     return val;

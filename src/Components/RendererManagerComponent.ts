@@ -1,4 +1,4 @@
-import Color4 from "grimoirejs/lib/Core/Math/Color4";
+import {Color4} from "grimoirejs-math";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
 import LoopManagerComponent from "./LoopManagerComponent";
 import Component from "grimoirejs/lib/Core/Node/Component";
@@ -21,7 +21,7 @@ export default class RendererManagerComponent extends Component {
   private _enabled: boolean;
 
   public $mount() {
-    this.gl = this.sharedObject.get("gl");
+    this.gl = this.companion.get("gl");
     const e = this.attributes.get("enabled");
     this._enabled = e.Value;
     e.addObserver((a) => {

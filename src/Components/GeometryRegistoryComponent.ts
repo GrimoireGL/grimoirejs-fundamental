@@ -12,8 +12,8 @@ export default class GeometryRegistoryComponent extends Component {
   private _geometries: { [key: string]: Geometry } = {};
 
   public $awake(): void {
-    this.sharedObject.set(this.name, this);
-    this.sharedObject.set(GrimoireInterface.ns(this.name.ns)("GeometryFactory"), new GeometryFactory(this.sharedObject.get("gl")));
+    this.companion.set(this.name, this);
+    this.companion.set(GrimoireInterface.ns(this.name.ns)("GeometryFactory"), new GeometryFactory(this.companion.get("gl")));
   }
 
   public addGeometry(name: string, geometry: Geometry): void {

@@ -1,8 +1,6 @@
 import IRenderMessageArgs from "../Camera/IRenderMessageArgs";
 import TransformComponent from "./TransformComponent";
-import Vector3 from "grimoirejs/lib/Core/Math/Vector3";
-import Vector4 from "grimoirejs/lib/Core/Math/Vector4";
-import Matrix from "grimoirejs/lib/Core/Math/Matrix";
+import {Vector3} from "grimoirejs-math";
 import Geometry from "../Geometry/Geometry";
 import Program from "../Resource/Program";
 import GeometryBuilder from "../Geometry/GeometryBuilder";
@@ -15,15 +13,16 @@ import fs from "../TestShader/Sample_frag.glsl";
 import vs from "../TestShader/Sample_vert.glsl";
 
 export default class MeshRenderer extends Component {
-  private _transformComponent: TransformComponent;
-  public prog: Program;
-  public geom: Geometry;
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     // Specify the attributes user can intaract
   };
 
+  public prog: Program;
+  public geom: Geometry;
+  private _transformComponent: TransformComponent;
+
   public $awake() {
-    this.geom = GeometryBuilder.build(this.sharedObject.get("gl"), {
+    this.geom = GeometryBuilder.build(this.companion.get("gl"), {
       indicies: {
         default: {
           generator: function* () {
@@ -61,12 +60,11 @@ export default class MeshRenderer extends Component {
         }
       }
     });
-    const fshader: Shader = new Shader(this.sharedObject.get("gl"), WebGLRenderingContext.FRAGMENT_SHADER, fs);
-    const vshader: Shader = new Shader(this.sharedObject.get("gl"), WebGLRenderingContext.VERTEX_SHADER, vs);
-    this.prog = new Program(this.sharedObject.get("gl"));
+    const fshader: Shader = new Shader(this.companion.get("gl"), WebGLRenderingContext.FRAGMENT_SHADER, fs);
+    const vshader: Shader = new Shader(this.companion.get("gl"), WebGLRenderingContext.VERTEX_SHADER, vs);
+    this.prog = new Program(this.companion.get("gl"));
     this.prog.update([fshader, vshader]);
   }
-
   public $mount() {
     this._transformComponent = this.node.getComponent("Transform") as TransformComponent;
   }
@@ -75,6 +73,6 @@ export default class MeshRenderer extends Component {
     this.prog.use();
     this.prog.uniforms.uniformMatrix("_matPVW", this._transformComponent.calcPVW(args.camera.camera));
     this.geom.draw("default", ["position"], this.prog);
-    this.sharedObject.get("gl").flush();
+    this.companion.get("gl").flush();
   }
 }

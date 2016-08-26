@@ -44,7 +44,6 @@
     "./src/Geometry/GeometryUtility.ts",
     "./src/Geometry/IGeometryFactoryDelegate.ts",
     "./src/Geometry/IndexBufferInfo.ts",
-    "./src/Geometry/PromitiveRegistory.ts",
     "./src/Geometry/VertexBufferAttribInfo.ts",
     "./src/index.ts",
     "./src/Resource/Buffer.ts",

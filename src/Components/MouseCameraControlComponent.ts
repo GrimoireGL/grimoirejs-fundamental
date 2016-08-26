@@ -1,5 +1,5 @@
-import Attribute from "grimoirejs/lib/Core/Node/Attribute.d";
-import Quaternion from "grimoirejs/lib/Core/Math/Quaternion";
+import Attribute from "grimoirejs/lib/Core/Node/Attribute";
+import {Quaternion} from "grimoirejs-math";
 import TransformComponent from "./TransformComponent";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
@@ -39,7 +39,7 @@ export default class MouseCameraControlComponent extends Component {
 
   public $awake(): void {
     this.transform = this.node.getComponent("Transform") as TransformComponent;
-    this.scriptTag = this.sharedObject.get("canvasElement");
+    this.scriptTag = this.companion.get("canvasElement");
     this._rotateXAttr = this.attributes.get("rotateX");
     this._rotateYAttr = this.attributes.get("rotateY");
     this._moveZAttr = this.attributes.get("moveZ");

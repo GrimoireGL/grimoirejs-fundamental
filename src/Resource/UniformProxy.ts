@@ -1,4 +1,4 @@
-import Matrix from "grimoirejs/lib/Core/Math/Matrix";
+import {Matrix} from "grimoirejs-math";
 import Program from "./Program";
 export default class UniformProxy {
   private _gl: WebGLRenderingContext;

@@ -1,4 +1,4 @@
-import Vector3 from "grimoirejs/lib/Core/Math/Vector3";
+import {Vector3} from "grimoirejs-math";
 function Vector3Converter(val: any): any {
   if (val instanceof Vector3) {
     return val;
