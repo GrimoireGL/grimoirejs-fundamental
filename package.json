@@ -1,12 +1,11 @@
 {
   "name": "grimoirejs-fundamental",
-  "version": "0.0.1",
-  "description": "Awesome addon ever!",
+  "version": "0.0.3",
+  "description": "Base components,converters and nodes for Web3D with Grimoire.js",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
   "files": [
-    "./lib",
-    "./samples"
+    "lib"
   ],
   "keywords": [
     "grimoire.js"
