@@ -57,7 +57,7 @@
     "minify": "uglifyjs ./product/index.js --compress -o ./product/index.min.js",
     "compile": "tsc @./lib-ts/entry_files --declaration --outDir ./lib -m es6 -t es6 --moduleResolution node --sourcemap --noEmitHelpers",
     "build": "babel-node rollup.config.js --presets es2015,stage-2 --plugins transform-runtime",
-    "babel": "babel ./product/index.es2016.js --out-file ./lib-es5/index.js --inputSourceMap ./product/index.es2016.js.map --sourceMaps true -sourceMapTarget ./index.js.map",
+    "babel": "babel ./product/index.es2016.js --out-file ./product/index.js --inputSourceMap ./product/index.es2016.js.map --sourceMaps true -sourceMapTarget ./index.js.map --presets es2015 --compact false",
     "prepublish": "babel-node ./scripts/prepublish.js --presets es2015,stage-2 --plugins transform-runtime",
     "start": "npm run build -- -w -s",
     "serve": "hs ./",
