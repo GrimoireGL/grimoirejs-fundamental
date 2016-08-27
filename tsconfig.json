@@ -37,6 +37,7 @@
     "./src/Converters/Rotation3Converter.ts",
     "./src/Converters/StringConverter.ts",
     "./src/Converters/Vector3Converter.ts",
+    "./src/Geometry/DefaultPrimitives.ts",
     "./src/Geometry/Geometry.ts",
     "./src/Geometry/GeometryBufferConstructionInfo.ts",
     "./src/Geometry/GeometryBuilder.ts",
@@ -54,8 +55,6 @@
     "./src/Resource/UniformProxy.ts",
     "./src/TestShader/Sample_frag.glsl.d.ts",
     "./src/TestShader/Sample_vert.glsl.d.ts",
-    "./src/typings/gl-matrix/gl-matrix.d.ts",
-    "./src/typings/index.d.ts",
     "./src/Util/RotationParser.ts"
   ],
   "exclude": [],

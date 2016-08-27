@@ -1,7 +1,6 @@
 import Program from "../Resource/Program";
 import IndexBufferInfo from "./IndexBufferInfo";
 import Buffer from "../Resource/Buffer";
-import IDObject from "grimoirejs/lib/Core/Base/IDObject";
 import VertexBufferAttribInfo from "./VertexBufferAttribInfo";
 
 /**

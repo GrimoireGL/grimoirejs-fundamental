@@ -1,3 +1,4 @@
+import DefaultPrimitives from "./Geometry/DefaultPrimitives";
 //
 // DO NOT REMOVE THE LINE BELOW.
 //
@@ -13,6 +14,8 @@ GrimoireInterface.register(async () => {
   GrimoireInterface.registerNode("scene", ["Scene"]);
   GrimoireInterface.registerNode("camera", ["Transform", "Camera"]);
   GrimoireInterface.registerNode("empty", []);
-  GrimoireInterface.registerNode("geometry", []);
+  GrimoireInterface.registerNode("geometry", ["Geometry"]);
   GrimoireInterface.registerNode("mesh", ["Transform", "MeshRenderer"]);
+
+  DefaultPrimitives.register();
 });

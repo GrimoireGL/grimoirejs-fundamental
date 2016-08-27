@@ -1,3 +1,4 @@
+import GeometryRegistory from "./GeometryRegistoryComponent";
 import IRenderMessageArgs from "../Camera/IRenderMessageArgs";
 import TransformComponent from "./TransformComponent";
 import {Vector3} from "grimoirejs-math";
@@ -14,7 +15,10 @@ import vs from "../TestShader/Sample_vert.glsl";
 
 export default class MeshRenderer extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
-    // Specify the attributes user can intaract
+    geometry: {
+      converter: "string",
+      defaultValue: "quad"
+    }
   };
 
   public prog: Program;
@@ -22,44 +26,7 @@ export default class MeshRenderer extends Component {
   private _transformComponent: TransformComponent;
 
   public $awake() {
-    this.geom = GeometryBuilder.build(this.companion.get("gl"), {
-      indicies: {
-        default: {
-          generator: function* () {
-            yield* GeometryUtility.cubeIndex(0);
-          },
-          topology: WebGLRenderingContext.TRIANGLES
-        },
-        wireframe: {
-          generator: function* () {
-            yield* GeometryUtility.linesFromTriangles(GeometryUtility.ellipseIndex(0, 100));
-          },
-          topology: WebGLRenderingContext.LINES
-        }
-      },
-      verticies: {
-        main: {
-          size: {
-            position: 3,
-            normal: 3,
-          },
-          count: GeometryUtility.cubeSize(),
-          getGenerators: () => {
-            return {
-              position: function* () {
-                yield* GeometryUtility.cubePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis());
-                // yield* GeometryUtility.ellipsePosition(new Vector3(0, 0, -0.3), Vector3.YUnit.multiplyWith(0.3), Vector3.XUnit, 100);
-              },
-              normal: function* () {
-                while (true) {
-                  yield* [0, 0, 1];
-                }
-              }
-            };
-          }
-        }
-      }
-    });
+    this.geom = (this.companion.get("GeometryRegistory") as GeometryRegistory).getGeometry(this.getValue("geometry")); // geometry attribute should use geometry converter
     const fshader: Shader = new Shader(this.companion.get("gl"), WebGLRenderingContext.FRAGMENT_SHADER, fs);
     const vshader: Shader = new Shader(this.companion.get("gl"), WebGLRenderingContext.VERTEX_SHADER, vs);
     this.prog = new Program(this.companion.get("gl"));
