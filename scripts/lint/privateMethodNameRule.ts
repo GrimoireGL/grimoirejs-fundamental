@@ -13,7 +13,7 @@ export class Rule extends Lint.Rules.AbstractRule {
 class PrivateMethodNameWalker extends Lint.RuleWalker {
   public visitMethodDeclaration(node: ts.MethodDeclaration) {
     if (this._isPrivate(node)) {
-      const methodName = (<any>node.name).text;
+      const methodName = node.name.text;
       if (!/^_[a-z].+/m.test(methodName)) {
         this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + methodName));
       }
@@ -24,7 +24,7 @@ class PrivateMethodNameWalker extends Lint.RuleWalker {
 
   public visitPropertyDeclaration(node: ts.MethodDeclaration) {
     if (this._isPrivate(node)) {
-      const methodName = (<any>node.name).text;
+      const methodName = node.name.text;
       if (!/^_[a-z].+/m.test(methodName)) {
         this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + methodName));
       }

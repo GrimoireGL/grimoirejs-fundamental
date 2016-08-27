@@ -1,4 +1,3 @@
-import "babel-polyfill";
 //
 // DO NOT REMOVE THE LINE BELOW.
 //

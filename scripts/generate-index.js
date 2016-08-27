@@ -13,7 +13,9 @@ import {
     getRelativePath
 } from './pathUtil';
 import txt2js from './txt2js';
-
+import {
+    argv
+} from 'yargs';
 
 export default async function(config) {
     await copyDirAsync('./src', './lib-ts', true);
@@ -56,17 +58,20 @@ export default async function(config) {
         components: components,
         converters: converters
     });
+
+    if (argv.b) {
+        index = "import 'babel-polyfill';" + index;
+    }
     index = index.replace(/^\s*\/\/\<\%\=IMPORTS\%\>\s*$/m, imports);
     index = index.replace(/^\s*\/\/\<\%\=REGISTER\%\>\s*$/m, register);
     await unlinkAsync('./lib-ts/index.ts');
     await writeFileAsync('./lib-ts/index.ts', index);
-    await emptyDir('./lib-ts/typings');
     const files = await glob('./lib-ts/**/*.ts');
     await writeFileAsync('./lib-ts/entry_files', files.join('\n'));
-    if(config.grimoire.txt2js){
+    if (config.grimoire.txt2js) {
         const exts = config.grimoire.txt2js;
         for (var i = 0; i < exts.length; i++) {
-          await txt2js("./src/**/" + exts[i]);
+            await txt2js("./src/**/" + exts[i]);
         }
     }
 
