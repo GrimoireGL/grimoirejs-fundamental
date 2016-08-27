@@ -2,6 +2,7 @@
   <!-- <geometry name="cube" type="cube"/>
   <geometry name="quad" type="quad"/> -->
   <geometry name="sphere" type="sphere"/>
+  <texture src="./sample.png"/>
   <renderers bgColor="blue">
     <renderer camera=".camera"/>
   </renderers>

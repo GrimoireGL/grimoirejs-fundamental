@@ -15,6 +15,7 @@ GrimoireInterface.register(async () => {
   GrimoireInterface.registerNode("camera", ["Transform", "Camera"]);
   GrimoireInterface.registerNode("empty", []);
   GrimoireInterface.registerNode("geometry", ["Geometry"]);
+  GrimoireInterface.registerNode("texture", ["Texture"]);
   GrimoireInterface.registerNode("mesh", ["Transform", "MeshRenderer"]);
 
   DefaultPrimitives.register();

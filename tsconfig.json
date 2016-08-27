@@ -10,6 +10,9 @@
   ],
   "files": [
     "./src/Asset/AssetLoader.ts",
+    "./src/Asset/CacheResolver.ts",
+    "./src/Asset/ExternalResourceResolver.ts",
+    "./src/Asset/ImageResolver.ts",
     "./src/Camera/ICamera.ts",
     "./src/Camera/IRenderMessageArgs.ts",
     "./src/Camera/PerspectiveCamera.ts",
@@ -26,6 +29,7 @@
     "./src/Components/RendererManagerComponent.ts",
     "./src/Components/SceneComponent.ts",
     "./src/Components/SceneManagerComponent.ts",
+    "./src/Components/TextureComponent.ts",
     "./src/Components/TransformComponent.ts",
     "./src/Constants.ts",
     "./src/Converters/Angle2DConverter.ts",

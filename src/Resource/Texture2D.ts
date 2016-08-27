@@ -10,7 +10,7 @@ export default class Texture2D extends ResourceBase {
   }
 
   public update(level: number, width: number, height: number, border: number, format: number, type: number, pxiels: ArrayBufferView, flipY?: boolean): void;
-  public update(image: HTMLCanvasElement | HTMLImageElement | ImageData | ArrayBufferView, flipY: boolean): void;
+  public update(image: HTMLCanvasElement | HTMLImageElement | ImageData | ArrayBufferView, flipY?: boolean): void;
   public update(levelOrImage: any, widthOrFlipY: any, height?: number, border?: number, format?: number, type?: number, pixels?: ArrayBufferView, flipYForBuffer?: boolean): void {
     this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.texture);
     let flipY = false;
