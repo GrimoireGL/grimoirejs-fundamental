@@ -79,6 +79,22 @@ export default class GeometryUtility {
     yield* p3.rawElements as number[];
   }
 
+  public static *spherePosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, rowDiv: number, circleDiv: number): IterableIterator<number> {
+    yield* center.addWith(up).rawElements as number[];
+    yield* center.subtractWith(up).rawElements as number[];
+    const ia = 2 * Math.PI / circleDiv;
+    const ja = Math.PI / (rowDiv + 1);
+    for (let j = 1; j <= rowDiv; j++) {
+      const phi = ja * j;
+      const sinPhi = Math.sin(phi);
+      const upVector = up.multiplyWith(Math.cos(phi));
+      for (let i = 0; i < circleDiv; i++) {
+        const theta = ia * i;
+        yield* (right.multiplyWith(Math.cos(theta)).addWith(forward.multiplyWith(Math.sin(theta)))).multiplyWith(sinPhi).addWith(upVector).rawElements as number[];
+      }
+    }
+  }
+
   public static *quadIndex(offset: number): IterableIterator<number> {
     const o = offset;
     yield* [o, o + 2, o + 1, o, o + 3, o + 2];
@@ -91,11 +107,52 @@ export default class GeometryUtility {
     }
   }
 
+  public static *sphereIndex(offset: number, rowDiv: number, circleDiv: number): IterableIterator<number> {
+    const getIndex = (i: number, j: number) => offset + circleDiv * j + 2 + i;
+    const top = offset;
+    const bottom = offset + 1;
+    // upper side
+    for (let i = 0; i < circleDiv - 1; i++) {
+      yield top;
+      yield getIndex(i, 0);
+      yield getIndex(i + 1, 0)
+    }
+    yield* [top, getIndex(circleDiv - 1, 0), getIndex(0, 0)];
+    // middle
+    for (let j = 0; j < rowDiv - 1; j++) {
+      for (let i = 0; i < circleDiv - 1; i++) {
+        yield getIndex(i, j);
+        yield getIndex(i, j + 1);
+        yield getIndex(i + 1, j);
+        yield getIndex(i, j + 1);
+        yield getIndex(i + 1, j + 1);
+        yield getIndex(i + 1, j);
+      }
+      yield getIndex(circleDiv - 1, j);
+      yield getIndex(circleDiv - 1, j + 1);
+      yield getIndex(0, j);
+      yield getIndex(circleDiv - 1, j + 1);
+      yield getIndex(0, j + 1);
+      yield getIndex(0, j);
+    }
+    // lower side
+    for (let i = 0; i < circleDiv - 1; i++) {
+      yield bottom;
+      yield getIndex(i + 1, rowDiv - 1);
+      yield getIndex(i, rowDiv - 1);
+    }
+    yield* [bottom, getIndex(0, rowDiv - 1), getIndex(circleDiv - 1, rowDiv - 1)];
+  }
+
   public static quadSize(): number {
     return 4;
   }
 
   public static cubeSize(): number {
     return 6 * GeometryUtility.quadSize();
+  }
+
+  public static sphereSize(rowDiv: number, circleDiv: number): number {
+    return 2 + rowDiv * circleDiv;
   }
 }

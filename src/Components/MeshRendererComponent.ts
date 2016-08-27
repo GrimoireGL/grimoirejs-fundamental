@@ -1,14 +1,11 @@
 import GeometryRegistory from "./GeometryRegistoryComponent";
 import IRenderMessageArgs from "../Camera/IRenderMessageArgs";
 import TransformComponent from "./TransformComponent";
-import {Vector3} from "grimoirejs-math";
 import Geometry from "../Geometry/Geometry";
 import Program from "../Resource/Program";
-import GeometryBuilder from "../Geometry/GeometryBuilder";
 import Shader from "../Resource/Shader";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
-import GeometryUtility from "../Geometry/GeometryUtility";
 
 import fs from "../TestShader/Sample_frag.glsl";
 import vs from "../TestShader/Sample_vert.glsl";

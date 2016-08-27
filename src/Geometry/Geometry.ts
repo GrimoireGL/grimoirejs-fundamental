@@ -32,6 +32,7 @@ export default class Geometry {
         return;
       }
       const buffer = this.verticies[attribInfo.bufferName];
+      buffer.bind();
       this._gl.vertexAttribPointer(index, attribInfo.size, attribInfo.type, false, attribInfo.stride, attribInfo.offset);
     });
     targetIndex.index.bind();

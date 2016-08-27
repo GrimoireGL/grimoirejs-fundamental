@@ -1,5 +1,7 @@
 <goml width="512" height="512">
-  <geometry name="cube" type="cube"/>
+  <!-- <geometry name="cube" type="cube"/>
+  <geometry name="quad" type="quad"/> -->
+  <geometry name="sphere" type="sphere"/>
   <renderers bgColor="blue">
     <renderer camera=".camera"/>
   </renderers>
@@ -10,7 +12,7 @@
           <MouseCameraControl rotateX="1000"/>
         </camera.components>
       </camera>
-      <mesh position="0,0,0" rotation="z(30d)" geometry="cube"></mesh>
+      <mesh position="0,0,0" rotation="x(90d)" geometry="sphere"></mesh>
     </scene>
   </scenes>
 </goml>
