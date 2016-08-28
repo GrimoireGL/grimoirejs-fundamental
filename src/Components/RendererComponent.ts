@@ -7,17 +7,12 @@ export default class RendererComponent extends Component {
     camera: {
       converter: "component",
       defaultValue: "camera",
-      target: "Camera"
+      target: "Camera",
+      boundTo: "_camera"
     }
   };
 
   private _camera: CameraComponent;
-
-  public $awake() {
-    this.attributes.get("camera").addObserver((c) => {
-      this._camera = c.Value;
-    });
-  }
 
   public $treeInitialized() {
     // TODO camera should be obtained by attribute

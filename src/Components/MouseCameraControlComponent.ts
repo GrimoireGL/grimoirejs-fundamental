@@ -12,15 +12,18 @@ export default class MouseCameraControlComponent extends Component {
     // Specify the attributes user can intaract
     rotateX: {
       defaultValue: 1,
-      converter: "number"
+      converter: "number",
+      boundTo: "_rotateX"
     },
     rotateY: {
       defaultValue: 1,
-      converter: "number"
+      converter: "number",
+      boundTo: "_rotateY"
     },
     moveZ: {
       defaultValue: 1,
-      converter: "number"
+      converter: "number",
+      boundTo: "_moveZ"
     }
 
   };
@@ -31,31 +34,20 @@ export default class MouseCameraControlComponent extends Component {
 
   private lastScreenPos: { x: number, y: number } = { x: NaN, y: NaN };
 
-  private _rotateXAttr: Attribute;
+  private _rotateX: number;
 
-  private _rotateYAttr: Attribute;
+  private _rotateY: number;
 
-  private _moveZAttr: Attribute;
+  private _moveZ: number;
 
   public $awake(): void {
     this.transform = this.node.getComponent("Transform") as TransformComponent;
     this.scriptTag = this.companion.get("canvasElement");
-    this._rotateXAttr = this.attributes.get("rotateX");
-    this._rotateYAttr = this.attributes.get("rotateY");
-    this._moveZAttr = this.attributes.get("moveZ");
   }
 
   public $mount(): void {
     this.scriptTag.addEventListener("mousemove", this._mouseMove.bind(this));
     this.scriptTag.addEventListener("mousewheel", this._mouseWheel.bind(this));
-  }
-
-  public $unmount(): void {
-
-  }
-
-  public $update(): void {
-
   }
 
   private _mouseMove(m: MouseEvent): void {
@@ -69,7 +61,7 @@ export default class MouseCameraControlComponent extends Component {
       const diffX = m.screenX - this.lastScreenPos.x, diffY = m.screenY - this.lastScreenPos.y;
       this.transform.rotation = Quaternion.multiply(
         this.transform.rotation,
-        Quaternion.eulerXYZ(diffY * MouseCameraControlComponent.rotateCoefficient * this._rotateYAttr.Value, diffX * MouseCameraControlComponent.rotateCoefficient * this._rotateXAttr.Value, 0));
+        Quaternion.eulerXYZ(diffY * MouseCameraControlComponent.rotateCoefficient * this._rotateY, diffX * MouseCameraControlComponent.rotateCoefficient * this._rotateX, 0));
     }
     this.lastScreenPos = {
       x: m.screenX,
@@ -78,6 +70,6 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   private _mouseWheel(m: MouseWheelEvent): void {
-    this.transform.position = this.transform.position.addWith(this.transform.forward.multiplyWith(m.deltaY * this._moveZAttr.Value * MouseCameraControlComponent.moveCoefficient));
+    this.transform.position = this.transform.position.addWith(this.transform.forward.multiplyWith(m.deltaY * this._moveZ * MouseCameraControlComponent.moveCoefficient));
   }
 }

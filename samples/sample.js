@@ -1,6 +1,3 @@
-var colors = ["red","orange","rgb(128,0,64)"];
-var i = 0;
 setInterval(()=>{
-  //gr("#main")("renderers").attr("bgColor",colors[i % colors.length]);
-  i++;
+  gr("#main2")("renderers").attr("bgColor","red");
 },1000);
