@@ -1,5 +1,5 @@
 import Attribute from "grimoirejs/lib/Core/Node/Attribute";
-import {Quaternion} from "grimoirejs-math";
+import {Quaternion, Vector3, Matrix} from "grimoirejs-math";
 import TransformComponent from "./TransformComponent";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
@@ -40,6 +40,7 @@ export default class MouseCameraControlComponent extends Component {
 
   private _moveZ: number;
 
+  private _origin: Vector3 = new Vector3(0, 0, 0);
   public $awake(): void {
     this.transform = this.node.getComponent("Transform") as TransformComponent;
     this.scriptTag = this.companion.get("canvasElement");
@@ -59,9 +60,15 @@ export default class MouseCameraControlComponent extends Component {
     }
     if ((m.buttons & 1) > 0) { // When left button was pressed
       const diffX = m.screenX - this.lastScreenPos.x, diffY = m.screenY - this.lastScreenPos.y;
+      const rotation = Quaternion.euler(0.01 * diffY, 0.01 * diffX, 0);
+      let direction = this.transform.position.subtractWith(this._origin);
+      const rotationMat = Matrix.rotationQuaternion(rotation);
+      direction = Matrix.transformNormal(rotationMat, direction);
+      this.transform.position = this._origin.addWith(direction);
       this.transform.rotation = Quaternion.multiply(
         this.transform.rotation,
-        Quaternion.eulerXYZ(diffY * MouseCameraControlComponent.rotateCoefficient * this._rotateY, diffX * MouseCameraControlComponent.rotateCoefficient * this._rotateX, 0));
+        rotation
+      )
     }
     this.lastScreenPos = {
       x: m.screenX,
