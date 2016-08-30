@@ -1,5 +1,5 @@
 import ExternalResourceResolver from "./ExternalResourceResolver";
-export default class ImageResolver extends ExternalResourceResolver<HTMLImageElement> {
+export class ImageResolver extends ExternalResourceResolver<HTMLImageElement> {
   public resolve(path: string): Promise<HTMLImageElement> {
     return super.resolve(path, (abs) => {
       return new Promise((resolve, reject) => {
@@ -15,3 +15,5 @@ export default class ImageResolver extends ExternalResourceResolver<HTMLImageEle
     });
   }
 }
+
+export default new ImageResolver();

@@ -3,8 +3,6 @@ import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
 import ImageResolver from "../Asset/ImageResolver";
 export default class TextureComponent extends Component {
-  private static _resolver = new ImageResolver();
-
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     src: {
       converter: "string",
@@ -23,7 +21,7 @@ export default class TextureComponent extends Component {
   }
 
   private async loadTask(src: string): Promise<void> {
-    const img = await TextureComponent._resolver.resolve(src);
+    const img = await ImageResolver.resolve(src);
     this.texture.update(img);
   }
 }

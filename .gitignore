@@ -109,4 +109,4 @@ lib-ts
 product
 lib-es5
 scripts/lint/**/*.js
-src/**/*.d.ts
+src/**/*.*.d.ts
