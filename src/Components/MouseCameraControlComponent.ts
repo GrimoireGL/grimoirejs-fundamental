@@ -41,6 +41,15 @@ export default class MouseCameraControlComponent extends Component {
   private _moveZ: number;
 
   private _origin: Vector3 = new Vector3(0, 0, 0);
+
+  private _xsum: number = 0;
+
+  private _ysum: number = 0;
+
+  private _initialDirection: Vector3;
+
+  private _initialRotation: Quaternion;
+
   public $awake(): void {
     this.transform = this.node.getComponent("Transform") as TransformComponent;
     this.scriptTag = this.companion.get("canvasElement");
@@ -53,6 +62,8 @@ export default class MouseCameraControlComponent extends Component {
 
   private _mouseMove(m: MouseEvent): void {
     if (isNaN(this.lastScreenPos.x)) {
+      this._initialDirection = this.transform.position.subtractWith(this._origin);
+      this._initialRotation = this.transform.rotation;
       this.lastScreenPos = {
         x: m.screenX,
         y: m.screenY
@@ -60,15 +71,13 @@ export default class MouseCameraControlComponent extends Component {
     }
     if ((m.buttons & 1) > 0) { // When left button was pressed
       const diffX = m.screenX - this.lastScreenPos.x, diffY = m.screenY - this.lastScreenPos.y;
-      const rotation = Quaternion.euler(0.01 * diffY, 0.01 * diffX, 0);
-      let direction = this.transform.position.subtractWith(this._origin);
+      this._xsum += diffX;
+      this._ysum += diffY;
+      const rotation = Quaternion.euler(this._ysum * 0.01, this._xsum * 0.01, 0);
       const rotationMat = Matrix.rotationQuaternion(rotation);
-      direction = Matrix.transformNormal(rotationMat, direction);
+      const direction = Matrix.transformNormal(rotationMat, this._initialDirection);
       this.transform.position = this._origin.addWith(direction);
-      this.transform.rotation = Quaternion.multiply(
-        this.transform.rotation,
-        rotation
-      )
+      this.transform.rotation = Quaternion.multiply(this._initialRotation, rotation);
     }
     this.lastScreenPos = {
       x: m.screenX,
