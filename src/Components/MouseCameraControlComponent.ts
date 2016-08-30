@@ -57,7 +57,12 @@ export default class MouseCameraControlComponent extends Component {
 
   public $mount(): void {
     this.scriptTag.addEventListener("mousemove", this._mouseMove.bind(this));
+    this.scriptTag.addEventListener("contextmenu", this._contextMenu.bind(this));
     this.scriptTag.addEventListener("mousewheel", this._mouseWheel.bind(this));
+  }
+
+  private _contextMenu(m: MouseEvent): void {
+    m.preventDefault();
   }
 
   private _mouseMove(m: MouseEvent): void {
@@ -69,10 +74,19 @@ export default class MouseCameraControlComponent extends Component {
         y: m.screenY
       };
     }
+    let updated = false;
+    const diffX = m.screenX - this.lastScreenPos.x, diffY = m.screenY - this.lastScreenPos.y;
     if ((m.buttons & 1) > 0) { // When left button was pressed
-      const diffX = m.screenX - this.lastScreenPos.x, diffY = m.screenY - this.lastScreenPos.y;
       this._xsum += diffX;
       this._ysum += diffY;
+      updated = true;
+    }
+    if ((m.buttons & 2) > 0) {
+      this._origin = this._origin.addWith(this.transform.right.multiplyWith(diffX * 0.01)).addWith(this.transform.up.multiplyWith(diffY * 0.01));
+      updated = true;
+    }
+
+    if (updated) {
       const rotation = Quaternion.euler(this._ysum * 0.01, this._xsum * 0.01, 0);
       const rotationMat = Matrix.rotationQuaternion(rotation);
       const direction = Matrix.transformNormal(rotationMat, this._initialDirection);
