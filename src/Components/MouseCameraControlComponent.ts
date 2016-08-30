@@ -24,6 +24,11 @@ export default class MouseCameraControlComponent extends Component {
       defaultValue: 1,
       converter: "number",
       boundTo: "_moveZ"
+    },
+    moveSpeed:{
+      defaultValue:1,
+      converter:"number",
+      boundTo: "_moveSpeed"
     }
 
   };
@@ -41,6 +46,8 @@ export default class MouseCameraControlComponent extends Component {
   private _moveZ: number;
 
   private _origin: Vector3 = new Vector3(0, 0, 0);
+
+  private _moveSpeed: number;
 
   private _xsum: number = 0;
 
@@ -82,7 +89,7 @@ export default class MouseCameraControlComponent extends Component {
       updated = true;
     }
     if ((m.buttons & 2) > 0) {
-      this._origin = this._origin.addWith(this.transform.right.multiplyWith(diffX * 0.01)).addWith(this.transform.up.multiplyWith(diffY * 0.01));
+      this._origin = this._origin.addWith(this.transform.right.multiplyWith(-diffX * 0.05 * this._moveSpeed)).addWith(this.transform.up.multiplyWith(diffY * 0.05 * this._moveSpeed));
       updated = true;
     }
 
