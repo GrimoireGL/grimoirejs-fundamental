@@ -88,18 +88,28 @@ export default class DefaultPrimitives {
 
   private static _registerSphere(): void {
     GeometryFactory.addType("sphere", {
+      divVertical: {
+        converter: "number",
+        defaultValue: 10
+      },
+      divHorizontal: {
+        converter: "number",
+        defaultValue: 10
+      }
     }, (gl, attrs) => {
+      const dH = attrs["divHorizontal"];
+      const dV = attrs["divVertical"];
       return GeometryBuilder.build(gl, {
         indicies: {
           default: {
             generator: function* () {
-              yield* GeometryUtility.sphereIndex(0, 10, 10);
+              yield* GeometryUtility.sphereIndex(0, dH, dV);
             },
             topology: WebGLRenderingContext.TRIANGLES
           },
           wireframe: {
             generator: function* () {
-              yield* GeometryUtility.linesFromTriangles(GeometryUtility.sphereIndex(0, 10, 10));
+              yield* GeometryUtility.linesFromTriangles(GeometryUtility.sphereIndex(0, dH, dV));
             },
             topology: WebGLRenderingContext.LINES
           }
@@ -109,11 +119,11 @@ export default class DefaultPrimitives {
             size: {
               position: 3
             },
-            count: GeometryUtility.sphereSize(10, 10),
+            count: GeometryUtility.sphereSize(dH, dV),
             getGenerators: () => {
               return {
                 position: function* () {
-                  yield* GeometryUtility.spherePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), 10, 10);
+                  yield* GeometryUtility.spherePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), dH, dV);
                 }
               };
             }

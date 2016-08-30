@@ -60,6 +60,7 @@ class CanvasInitializerComponent extends Component {
     if (!context) {
       context = canvas.getContext("webgl-experimental") as WebGLRenderingContext;
     }
+    context.getExtension("OES_element_index_uint");
     return context;
   }
 

@@ -23,11 +23,12 @@ export default class GeometryComponent extends Component {
     if (type) {
       const gf = this.companion.get("GeometryFactory") as GeometryFactory;
       const attrs = GeometryFactory.factoryArgumentDeclarations[type];
+      const geometryArgument = {};
       for (let key in attrs) {
         this.__addAtribute(key, attrs[key]);
+        geometryArgument[key] = this.getValue(key);
       }
-      const divX = this.getValue("divX"); // TODO
-      this.geometry = gf.instanciate(type, {});
+      this.geometry = gf.instanciate(type, geometryArgument);
       const gr = this.companion.get("GeometryRegistory") as GeometryRegistory;
       const name = this.getValue("name");
       if (!name) {
