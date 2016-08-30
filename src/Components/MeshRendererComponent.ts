@@ -6,9 +6,12 @@ import Program from "../Resource/Program";
 import Shader from "../Resource/Shader";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
+import ProgramTransformer from "../Material/ProgramTransformer";
 
 import fs from "../TestShader/Sample_frag.glsl";
 import vs from "../TestShader/Sample_vert.glsl";
+
+import testShader from "../TestShader/Test.glsl";
 
 export default class MeshRenderer extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
@@ -31,6 +34,9 @@ export default class MeshRenderer extends Component {
   }
   public $mount() {
     this._transformComponent = this.node.getComponent("Transform") as TransformComponent;
+    ProgramTransformer.transform(testShader).then((p) => {
+      console.log(p);
+    });
   }
 
   public $render(args: IRenderMessageArgs) {

@@ -26,7 +26,7 @@ class CanvasInitializerComponent extends Component {
     this._scriptTag = this.companion.get("scriptElement");
     if (this._isContainedInBody(this._scriptTag)) {
       // canvas should be placed siblings of the script tag
-      this._generateCanvas(this._scriptTag.parentElement);
+      this._generateCanvas(this._scriptTag);
     } else {
       // TODO for the script element not included in body tag
     }
@@ -44,13 +44,13 @@ class CanvasInitializerComponent extends Component {
    * @param  {Element}           parent [description]
    * @return {HTMLCanvasElement}        [description]
    */
-  private _generateCanvas(parent: Element): HTMLCanvasElement {
+  private _generateCanvas(scriptTag: Element): HTMLCanvasElement {
     const generatedCanvas = document.createElement("canvas");
     generatedCanvas.width = this.attributes.get("width").Value;
     generatedCanvas.height = this.attributes.get("height").Value;
     this.companion.set(ns("gl"), this._getContext(generatedCanvas));
     this.companion.set(ns("canvasElement"), generatedCanvas);
-    parent.appendChild(generatedCanvas);
+    scriptTag.parentElement.insertBefore(generatedCanvas, scriptTag.nextSibling);
     this.canvas = generatedCanvas;
     return generatedCanvas;
   }

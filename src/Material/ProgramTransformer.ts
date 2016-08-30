@@ -2,13 +2,26 @@ import ITransformingInfo from "./Transformers/ITransformingInfo";
 import ITransformer from "./Transformers/ITransformer";
 import IProgramTransformInfo from "./IProgramTransformInfo";
 
-import RemoveCommentTransformer from "./Transformers/RemoveCommentTransformer";
-import ImportResolver from "./ImportResolver";
+import CommentRemover from "./Transformers/CommentRemover";
+import ImportTransformer from "./Transformers/ImportTransformer";
+import VariableParser from "./Transformers/VariableParser";
+import ShaderSeparator from "./Transformers/ShaderSeparator";
+import AttributeVariableRemover from "./Transformers/AttributeVariableRemover";
+import VariableAnnotationRemover from "./Transformers/VariableAnnotationRemover";
+import PrecisionParser from "./Transformers/PrecisionParser";
+import PrecisionComplementer from "./Transformers/PrecisionComplementer";
 
 export default class ProgramTransformer {
   public static transformers: ITransformer[] = [
-    RemoveCommentTransformer,
-    ImportResolver,
+    CommentRemover,
+    ImportTransformer,
+    VariableParser("uniform"),
+    VariableParser("attribute"),
+    ShaderSeparator,
+    AttributeVariableRemover,
+    VariableAnnotationRemover,
+    PrecisionParser,
+    PrecisionComplementer
   ] as ITransformer[];
 
   public static async transform(source: string): Promise<IProgramTransformInfo> {
@@ -19,7 +32,9 @@ export default class ProgramTransformer {
         fragment: "",
         vertex: "",
         uniforms: {},
-        attributes: {}
+        attributes: {},
+        vertexPrecision: {},
+        fragmentPrecision: {}
       }
     };
     for (let i = 0; i < ProgramTransformer.transformers.length; i++) {
