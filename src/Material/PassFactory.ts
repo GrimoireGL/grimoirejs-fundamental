@@ -15,7 +15,11 @@ export default class PassFactory {
     for (let key in passInfo.gomlAttributes) {
       registerers.push((p, v) => passInfo.gomlAttributes[key].register(p, v[key]));
     }
-    return new GLSLXPass(program, (p, args) => {
+    const attributes: string[] = [];
+    for (let key in passInfo.attributes) {
+      attributes.push(key);
+    }
+    return new GLSLXPass(program, attributes, (p, args) => {
       passInfo.configurator.forEach((configurator) => configurator(p.gl)); // gl configuration
       registerers.forEach((r) => r(p.uniforms, args.attributeValues)); // user variables
       passInfo.systemRegisterers.forEach((r) => r(p.uniforms, args)); // system variables
