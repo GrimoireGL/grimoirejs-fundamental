@@ -1,3 +1,4 @@
+import {Vector2, Vector3, Vector4} from "grimoirejs-math";
 import IMaterialArgument from "../IMaterialArgument";
 import UniformProxy from "../../Resource/UniformProxy";
 import UniformValueResolver from "../UniformValueResolver";
@@ -21,7 +22,33 @@ async function _registerUserAttributes(input: ITransformingInfo): Promise<void> 
             proxy.uniformFloat(variableName, val as number);
           }
         };
-
+        break;
+      case "vec2":
+        attributes[variableName] = {
+          converter: "vector2",
+          defaultValue: "0,0",
+          register: (proxy, val) => {
+            proxy.uniformVector2(variableName, val as Vector2);
+          }
+        };
+        break;
+      case "vec3":
+        attributes[variableName] = {
+          converter: "vector3",
+          defaultValue: "0,0,0",
+          register: (proxy, val) => {
+            proxy.uniformVector3(variableName, val as Vector3);
+          }
+        };
+        break;
+      case "vec4":
+        attributes[variableName] = {
+          converter: "vector4",
+          defaultValue: "0,0,0,0",
+          register: (proxy, val) => {
+            proxy.uniformVector4(variableName, val as Vector4);
+          }
+        };
         break;
       default:
         throw new Error("Unsupported type was found");

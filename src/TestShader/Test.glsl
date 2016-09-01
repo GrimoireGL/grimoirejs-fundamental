@@ -6,14 +6,13 @@ uniform mediump float _time;
     gl_Position = _matPVM * vec4(position,1.);
     gl_Position.x *= abs(sin(_time/1000.) + position.x);
     gl_Position.y *= abs(cos(_time/200.) + position.y * position.z);
-
   }
 }
 
 @frag{
-  uniform float value;
+  uniform vec4 color;
 
   void main(){
-    gl_FragColor = vec4(1,value * abs(sin(_time/1000.)),0,1);
+    gl_FragColor = color;
   }
 }
