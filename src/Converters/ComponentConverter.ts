@@ -7,9 +7,13 @@ function ComponentConverter(val: any): any {
     throw new Error("Component converter require to be specified target");
   }
   if (val instanceof GomlNode) {
-    // TODO should be implemented
+    return (val as GomlNode).getComponent(this.declaration.target);
   } else if (val instanceof Component) {
-    return val; // check component type?
+    if ((val as Component).name === this.declaration.target) {
+      return val; // check component type?
+    } else {
+      throw new Error(`Specified component must be ${this.declaration.target}`);
+    }
   } else {
     return this.tree(val)(this.declaration.target).get(0, 0, 0);
   }

@@ -11,14 +11,14 @@ export default class Material {
     this._waitForInitializing();
   }
 
-  private async _waitForInitializing(): Promise<void> {
-    this.pass = await (this.initializePromise = Promise.all(this.passFactories));
-    this.initialized = true;
-  }
-
   public draw(arg: IMaterialArgument): void {
     if (this.initialized) {
       this.pass.forEach(p => p.draw(arg));
     }
+  }
+
+  private async _waitForInitializing(): Promise<void> {
+    this.pass = await (this.initializePromise = Promise.all(this.passFactories));
+    this.initialized = true;
   }
 }
