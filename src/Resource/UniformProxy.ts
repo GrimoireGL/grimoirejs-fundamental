@@ -12,4 +12,11 @@ export default class UniformProxy {
       this._gl.uniformMatrix4fv(location, false, mat.rawElements as number[]);
     }
   }
+
+  public uniformFloat(variableName: string, val: number): void {
+    const location = this.program.findUniformLocation(variableName)
+    if (location) {
+      this._gl.uniform1f(location, val);
+    }
+  }
 }

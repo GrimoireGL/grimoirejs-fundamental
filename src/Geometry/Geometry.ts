@@ -36,7 +36,6 @@ export default class Geometry {
       this._gl.vertexAttribPointer(index, attribInfo.size, attribInfo.type, false, attribInfo.stride, attribInfo.offset);
     });
     targetIndex.index.bind();
-    this._gl.useProgram(program.program);
     this._gl.drawElements(targetIndex.topology, targetIndex.count, targetIndex.type, targetIndex.offset);
   }
 

@@ -25,9 +25,9 @@ export default class MouseCameraControlComponent extends Component {
       converter: "number",
       boundTo: "_moveZ"
     },
-    moveSpeed:{
-      defaultValue:1,
-      converter:"number",
+    moveSpeed: {
+      defaultValue: 1,
+      converter: "number",
       boundTo: "_moveSpeed"
     }
 
@@ -108,5 +108,6 @@ export default class MouseCameraControlComponent extends Component {
 
   private _mouseWheel(m: MouseWheelEvent): void {
     this.transform.position = this.transform.position.addWith(this.transform.forward.multiplyWith(m.deltaY * this._moveZ * MouseCameraControlComponent.moveCoefficient));
+    m.preventDefault();
   }
 }

@@ -1,3 +1,4 @@
+import UniformRegisterer from "./Transformers/UniformRegisterer";
 import ITransformingInfo from "./Transformers/ITransformingInfo";
 import ITransformer from "./Transformers/ITransformer";
 import IProgramTransformInfo from "./IProgramTransformInfo";
@@ -10,6 +11,8 @@ import AttributeVariableRemover from "./Transformers/AttributeVariableRemover";
 import VariableAnnotationRemover from "./Transformers/VariableAnnotationRemover";
 import PrecisionParser from "./Transformers/PrecisionParser";
 import PrecisionComplementer from "./Transformers/PrecisionComplementer";
+import BasicGLConfigParser from "./Transformers/BasicGLConfigParser";
+import AnnotationRemover from "./Transformers/AnnotationRemover";
 
 export default class ProgramTransformer {
   public static transformers: ITransformer[] = [
@@ -17,11 +20,14 @@ export default class ProgramTransformer {
     ImportTransformer,
     VariableParser("uniform"),
     VariableParser("attribute"),
+    BasicGLConfigParser,
+    AnnotationRemover,
     ShaderSeparator,
     AttributeVariableRemover,
     VariableAnnotationRemover,
     PrecisionParser,
-    PrecisionComplementer
+    PrecisionComplementer,
+    UniformRegisterer
   ] as ITransformer[];
 
   public static async transform(source: string): Promise<IProgramTransformInfo> {
@@ -34,7 +40,9 @@ export default class ProgramTransformer {
         uniforms: {},
         attributes: {},
         vertexPrecision: {},
-        fragmentPrecision: {}
+        fragmentPrecision: {},
+        configurator: [],
+        gomlAttributes: {}
       }
     };
     for (let i = 0; i < ProgramTransformer.transformers.length; i++) {

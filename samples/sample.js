@@ -1,3 +1,5 @@
 setInterval(()=>{
-  gr("#main2")("renderers").attr("bgColor","red");
+  gr("script")("renderers").attr("bgColor","green");
+  var $ = gr("#main");
+  $("re")
 },1000);

@@ -1,3 +1,6 @@
+import MaterialComponent from "./MaterialComponent";
+import GLSLXPass from "../Material/GLSLXPass";
+import PassFactory from "../Material/PassFactory";
 import GeometryRegistory from "./GeometryRegistoryComponent";
 import IRenderMessageArgs from "../Camera/IRenderMessageArgs";
 import TransformComponent from "./TransformComponent";
@@ -6,23 +9,29 @@ import Program from "../Resource/Program";
 import Shader from "../Resource/Shader";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
-import ProgramTransformer from "../Material/ProgramTransformer";
+import Material from "../Material/Material";
 
 import fs from "../TestShader/Sample_frag.glsl";
 import vs from "../TestShader/Sample_vert.glsl";
-
-import testShader from "../TestShader/Test.glsl";
 
 export default class MeshRenderer extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     geometry: {
       converter: "string",
       defaultValue: "quad"
+    },
+    material: {
+      converter: "material",
+      defaultValue: undefined,
+      boundTo: "_material",
+      componentBoundTo: "_materialComponent"
     }
   };
 
   public prog: Program;
   public geom: Geometry;
+  private _material: Material;
+  private _materialComponent: MaterialComponent;
   private _transformComponent: TransformComponent;
 
   public $awake() {
@@ -34,15 +43,18 @@ export default class MeshRenderer extends Component {
   }
   public $mount() {
     this._transformComponent = this.node.getComponent("Transform") as TransformComponent;
-    ProgramTransformer.transform(testShader).then((p) => {
-      console.log(p);
-    });
   }
 
   public $render(args: IRenderMessageArgs) {
     this.prog.use();
     this.prog.uniforms.uniformMatrix("_matPVW", this._transformComponent.calcPVW(args.camera.camera));
     this.geom.draw("wireframe", ["position"], this.prog);
+    if (this._materialComponent) {
+      this._materialComponent.material.draw({
+        geometry: this.geom,
+        attributeValues: this._materialComponent.materialArgs
+      });
+    }
     this.companion.get("gl").flush();
   }
 }

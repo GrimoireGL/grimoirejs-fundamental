@@ -17,6 +17,6 @@ GrimoireInterface.register(async () => {
   GrimoireInterface.registerNode("geometry", ["Geometry"]);
   GrimoireInterface.registerNode("texture", ["Texture"]);
   GrimoireInterface.registerNode("mesh", ["Transform", "MeshRenderer"]);
-
+  GrimoireInterface.registerNode("material", ["Material"]);
   DefaultPrimitives.register();
 });
