@@ -8,6 +8,6 @@ export default class Pass {
   public draw(arg: IMaterialArgument): void {
     this.program.use();
     this.beforePath(this.program, arg);
-    arg.geometry.draw("default", ["position"], this.program);
+    arg.geometry.draw(arg.targetBuffer, ["position"], this.program);
   }
 }

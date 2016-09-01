@@ -42,6 +42,7 @@ export default class ProgramTransformer {
         vertexPrecision: {},
         fragmentPrecision: {},
         configurator: [],
+        systemRegisterers: [],
         gomlAttributes: {}
       }
     };

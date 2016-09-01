@@ -2,7 +2,7 @@
   <!-- <geometry name="cube" type="cube"/>
   <geometry name="quad" type="quad"/> -->
   <geometry name="sphere" type="sphere" divHorizontal="40" divVertical="40"/>
-  <material value="1.0"/>
+  <material type="test" value="1.0"/>
   <texture src="./sample.png"/>
   <renderers bgColor="#0000">
     <renderer camera=".camera"/>
@@ -14,7 +14,7 @@
           <MouseCameraControl rotateX="10" moveSpeed="0.1"/>
         </camera.components>
       </camera>
-      <mesh position="0,0,0" rotation="x(90d)" geometry="sphere" material="material"></mesh>
+      <mesh position="0,0,0" rotation="x(90d)" geometry="sphere" material="material" targetBuffer="wireframe"></mesh>
     </scene>
   </scenes>
 </goml>

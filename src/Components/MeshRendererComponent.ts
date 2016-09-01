@@ -1,18 +1,12 @@
 import MaterialComponent from "./MaterialComponent";
-import GLSLXPass from "../Material/GLSLXPass";
-import PassFactory from "../Material/PassFactory";
 import GeometryRegistory from "./GeometryRegistoryComponent";
 import IRenderMessageArgs from "../Camera/IRenderMessageArgs";
 import TransformComponent from "./TransformComponent";
 import Geometry from "../Geometry/Geometry";
-import Program from "../Resource/Program";
-import Shader from "../Resource/Shader";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
 import Material from "../Material/Material";
 
-import fs from "../TestShader/Sample_frag.glsl";
-import vs from "../TestShader/Sample_vert.glsl";
 
 export default class MeshRenderer extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
@@ -25,34 +19,35 @@ export default class MeshRenderer extends Component {
       defaultValue: undefined,
       boundTo: "_material",
       componentBoundTo: "_materialComponent"
+    },
+    targetBuffer: {
+      converter: "string",
+      defaultValue: "default",
+      boundTo: "_targetBuffer"
     }
   };
 
-  public prog: Program;
   public geom: Geometry;
   private _material: Material;
+  private _targetBuffer: string;
   private _materialComponent: MaterialComponent;
   private _transformComponent: TransformComponent;
 
   public $awake() {
     this.geom = (this.companion.get("GeometryRegistory") as GeometryRegistory).getGeometry(this.getValue("geometry")); // geometry attribute should use geometry converter
-    const fshader: Shader = new Shader(this.companion.get("gl"), WebGLRenderingContext.FRAGMENT_SHADER, fs);
-    const vshader: Shader = new Shader(this.companion.get("gl"), WebGLRenderingContext.VERTEX_SHADER, vs);
-    this.prog = new Program(this.companion.get("gl"));
-    this.prog.update([fshader, vshader]);
   }
   public $mount() {
     this._transformComponent = this.node.getComponent("Transform") as TransformComponent;
   }
 
   public $render(args: IRenderMessageArgs) {
-    this.prog.use();
-    this.prog.uniforms.uniformMatrix("_matPVW", this._transformComponent.calcPVW(args.camera.camera));
-    this.geom.draw("wireframe", ["position"], this.prog);
     if (this._materialComponent) {
       this._materialComponent.material.draw({
+        targetBuffer: this._targetBuffer,
         geometry: this.geom,
-        attributeValues: this._materialComponent.materialArgs
+        attributeValues: this._materialComponent.materialArgs,
+        camera: args.camera.camera,
+        transform: this._transformComponent
       });
     }
     this.companion.get("gl").flush();

@@ -16,8 +16,9 @@ export default class PassFactory {
       registerers.push((p, v) => passInfo.gomlAttributes[key].register(p, v[key]));
     }
     return new GLSLXPass(program, (p, args) => {
-      passInfo.configurator.forEach((configurator) => configurator(p.gl));
-      registerers.forEach((r) => r(p.uniforms, args.attributeValues));
+      passInfo.configurator.forEach((configurator) => configurator(p.gl)); // gl configuration
+      registerers.forEach((r) => r(p.uniforms, args.attributeValues)); // user variables
+      passInfo.systemRegisterers.forEach((r) => r(p.uniforms, args)); // system variables
     }, passInfo);
   }
 }

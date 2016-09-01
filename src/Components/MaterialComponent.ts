@@ -1,15 +1,16 @@
+import MaterialFactory from "../Material/MaterialFactory";
 import GLSLXPass from "../Material/GLSLXPass";
-import PassFactory from "../Material/PassFactory";
 import Material from "../Material/Material";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
 
-import testShader from "../TestShader/Test.glsl";
-
 
 export default class MaterialComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
-    // Specify the attributes user can intaract
+    type: {
+      converter: "string",
+      defaultValue: undefined
+    }
   };
 
   public material: Material;
@@ -17,8 +18,11 @@ export default class MaterialComponent extends Component {
   public materialArgs: { [key: string]: any } = {};
 
   public $mount(): void {
-    this.material = new Material([PassFactory.fromGLSLX(this.companion.get("gl"), testShader)]);
-    this._registerAttributes();
+    const typeName = this.getValue("type");
+    if (typeName) {
+      this.material = (this.companion.get("MaterialFactory") as MaterialFactory).instanciate(typeName);
+      this._registerAttributes();
+    }
   }
 
   private async _registerAttributes(): Promise<void> {

@@ -1,3 +1,5 @@
+import IMaterialArgument from "./IMaterialArgument";
+import UniformProxy from "../Resource/UniformProxy";
 import IMaterialAttributeDeclaration from "./IMaterialAttributeDeclaration";
 import IVariableInfo from "./IVariableInfo";
 
@@ -9,6 +11,7 @@ interface IProgramTransformInfo {
   fragmentPrecision: { [key: string]: string };
   vertexPrecision: { [key: string]: string };
   configurator: ((gl: WebGLRenderingContext) => void)[];
+  systemRegisterers: ((proxy: UniformProxy, args: IMaterialArgument) => void)[];
   gomlAttributes: { [key: string]: IMaterialAttributeDeclaration; };
 }
 
