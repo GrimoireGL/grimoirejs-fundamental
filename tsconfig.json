@@ -35,6 +35,7 @@
     "./src/Components/TransformComponent.ts",
     "./src/Constants.ts",
     "./src/Constraint/ChildrenComponentConstraint.ts",
+    "./src/Constraint/NoChildConstraint.ts",
     "./src/Constraint/RootConstraint.ts",
     "./src/Converters/Angle2DConverter.ts",
     "./src/Converters/BooleanConverter.ts",
