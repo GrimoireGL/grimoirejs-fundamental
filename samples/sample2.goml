@@ -1,19 +1,20 @@
 <goml width="512" height="512">
   <!-- <geometry name="cube" type="cube"/>
   <geometry name="quad" type="quad"/> -->
-  <geometry name="sphere" type="sphere" divHorizontal="4"/>
+  <geometry name="sphere" type="sphere" divHorizontal="40" divVertical="40"/>
+  <material type="test" color="blue" testTex="./sample.png" />
   <texture src="./sample.png"/>
-  <renderers bgColor="blue">
-    <renderer camera=".camera"/>
+  <renderers bgColor="#F003">
+    <renderer camera=".camera" viewport="0,0,50%,50%"/>
   </renderers>
   <scenes>
     <scene>
-      <camera class="camera" near="0.01" far="40.0" fovy="45d" position="0,0,14" rotation="y(0d)">
+      <camera class="camera" near="0.01" far="40.0" aspect="1.0" fovy="45d" position="0,0,10" rotation="y(0d)">
         <camera.components>
-          <MouseCameraControl/>
+          <MouseCameraControl rotateX="10" moveSpeed="0.1"/>
         </camera.components>
       </camera>
-      <mesh position="0,0,0" rotation="x(0d)" geometry="sphere"></mesh>
+      <mesh position="0,0,0" geometry="sphere" material="new(test)" targetBuffer="default" testTex="./sample.png"></mesh>
     </scene>
   </scenes>
 </goml>

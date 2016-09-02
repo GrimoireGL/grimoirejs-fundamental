@@ -6,9 +6,6 @@
   <texture src="./sample.png"/>
   <renderers bgColor="#F003">
     <renderer camera=".camera" viewport="0,0,50%,50%"/>
-    <renderer camera=".camera" viewport="50%,0,50%,50%"/>
-    <renderer camera=".camera" viewport="0,50%,50%,50%"/>
-    <renderer camera=".camera" viewport="50%,50%,50%,50%"/>
   </renderers>
   <scenes>
     <scene>
@@ -17,7 +14,7 @@
           <MouseCameraControl rotateX="10" moveSpeed="0.1"/>
         </camera.components>
       </camera>
-      <mesh position="0,0,0" geometry="sphere" material="new(test)" targetBuffer="default" testTex="./sample.png"></mesh>
+      <!-- <mesh position="0,0,0" geometry="sphere" material="new(test)" targetBuffer="default" testTex="./sample.png"></mesh> -->
     </scene>
   </scenes>
 </goml>
