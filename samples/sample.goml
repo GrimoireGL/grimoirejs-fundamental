@@ -2,10 +2,13 @@
   <!-- <geometry name="cube" type="cube"/>
   <geometry name="quad" type="quad"/> -->
   <geometry name="sphere" type="sphere" divHorizontal="40" divVertical="40"/>
-  <material type="test" color="blue" testTex="./sample.png"/>
+  <material type="test" color="blue" testTex="./sample.png" />
   <texture src="./sample.png"/>
-  <renderers bgColor="#0000">
-    <renderer camera=".camera"/>
+  <renderers bgColor="#F003">
+    <renderer camera=".camera" viewport="0,0,50%,50%"/>
+    <renderer camera=".camera" viewport="50%,0,50%,50%"/>
+    <renderer camera=".camera" viewport="0,50%,50%,50%"/>
+    <renderer camera=".camera" viewport="50%,50%,50%,50%"/>
   </renderers>
   <scenes>
     <scene>
