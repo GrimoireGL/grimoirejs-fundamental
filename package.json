@@ -42,6 +42,7 @@
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-sourcemaps": "^0.3.6",
+    "rollup-plugin-string": "^2.0.2",
     "rollup-plugin-typescript": "^0.7.7",
     "tslint": "^3.14.0",
     "typescript": "^2.0.0",
