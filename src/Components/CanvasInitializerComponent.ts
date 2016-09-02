@@ -1,4 +1,3 @@
-import Texture2DResolver from "../Resource/Texture2DResolver";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
 import gr from "grimoirejs";
