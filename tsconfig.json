@@ -34,6 +34,7 @@
     "./src/Components/TextureComponent.ts",
     "./src/Components/TransformComponent.ts",
     "./src/Constants.ts",
+    "./src/Constraint/RootConstraint.ts",
     "./src/Converters/Angle2DConverter.ts",
     "./src/Converters/BooleanConverter.ts",
     "./src/Converters/Color3Converter.ts",
