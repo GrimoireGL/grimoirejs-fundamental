@@ -1,80 +1,80 @@
 {
-  "name": "grimoirejs-fundamental",
-  "version": "0.0.3",
-  "description": "Base components,converters and nodes for Web3D with Grimoire.js",
-  "main": "./lib/index.js",
-  "typings": "./lib/index.d.ts",
-  "files": [
-    "lib"
-  ],
-  "keywords": [
-    "grimoire.js"
-  ],
-  "dependencies": {
-    "@types/json5": "0.0.28",
-    "buffer": "^4.9.1",
-    "events": "^1.1.1",
-    "grimoirejs-math": "^1.2.3",
-    "json5": "^0.5.0",
-    "utils": "^0.3.1"
-  },
-  "devDependencies": {
-    "ava": "^0.16.0",
-    "babel-cli": "^6.14.0",
-    "babel-plugin-transform-require-ignore": "0.0.2",
-    "babel-plugin-transform-runtime": "^6.12.0",
-    "babel-preset-es2015": "^6.14.0",
-    "babel-preset-stage-2": "^6.13.0",
-    "babel-runtime": "^6.11.6",
-    "chalk": "^1.1.3",
-    "fs-extra": "^0.30.0",
-    "grimoirejs": "^0.1.10",
-    "grimoirejs-build-env-base": "^1.0.6",
-    "handlebars": "^4.0.5",
-    "http-server": "^0.9.0",
-    "progress": "^1.1.8",
-    "rollup": "^0.34.10",
-    "rollup-plugin-babel": "^2.6.1",
-    "rollup-plugin-commonjs": "^3.3.1",
-    "rollup-plugin-inject": "^1.4.1",
-    "rollup-plugin-node-builtins": "^1.0.7",
-    "rollup-plugin-node-globals": "^1.0.6",
-    "rollup-plugin-node-resolve": "^2.0.0",
-    "rollup-plugin-replace": "^1.1.1",
-    "rollup-plugin-sourcemaps": "^0.3.6",
-    "rollup-plugin-typescript": "^0.7.7",
-    "tslint": "^3.14.0",
-    "typescript": "^2.0.0",
-    "typescript-awaiter": "^1.0.0",
-    "typings": "^1.3.2",
-    "uglifyjs": "^2.4.10",
-    "watch": "^0.19.2",
-    "yargs": "^4.8.1"
-  },
-  "repository": "",
-  "scripts": {
-    "scaffold": "babel-node ./scripts/scaffold.js --presets es2015,stage-2 --plugins transform-runtime",
-    "clean": "rm -rf -r ./lib ./lib-ts",
-    "minify": "uglifyjs ./product/index.js --compress -o ./product/index.min.js",
-    "compile": "tsc @./lib-ts/entry_files --declaration --outDir ./lib -m es6 -t es6 --moduleResolution node --sourcemap --noEmitHelpers",
-    "build": "babel-node rollup.config.js --presets es2015,stage-2 --plugins transform-runtime",
-    "babel": "babel ./product/index.es2016.js --out-file ./product/index.js --inputSourceMap ./product/index.es2016.js.map --sourceMaps true -sourceMapTarget ./index.js.map --presets es2015 --compact false",
-    "prepublish": "babel-node ./scripts/prepublish.js --presets es2015,stage-2 --plugins transform-runtime",
-    "start": "npm run build -- -w -s",
-    "serve": "hs ./",
-    "babel-test": "babel ./lib  --out-dir ./lib-es5",
-    "ava": "ava --verbose",
-    "test": "babel-node ./scripts/test-runner.js --presets es2015,stage-2 --plugins transform-runtime",
-    "prelint": "tsc ./scripts/lint/*.ts --outDir ./scripts/lint -m commonjs -t es5",
-    "lint": "tslint ./src/**/*.ts"
-  },
-  "grimoire": {
-    "namespace": "HTTP://GRIMOIRE.GL/NS/DEFAULT",
-    "dependencies": [],
-    "txt2js": [
-      "*.html",
-      "*.glsl"
-    ]
-  },
-  "license": "MIT"
+    "name": "grimoirejs-fundamental",
+    "version": "0.0.4",
+    "description": "Base components,converters and nodes for Web3D with Grimoire.js",
+    "main": "./lib/index.js",
+    "typings": "./lib/index.d.ts",
+    "files": [
+        "lib"
+    ],
+    "keywords": [
+        "grimoire.js"
+    ],
+    "dependencies": {
+        "@types/json5": "0.0.28",
+        "buffer": "^4.9.1",
+        "events": "^1.1.1",
+        "grimoirejs-math": "^1.2.3",
+        "grimoirejs": "^0.1.10",
+        "json5": "^0.5.0",
+        "utils": "^0.3.1"
+    },
+    "devDependencies": {
+        "ava": "^0.16.0",
+        "babel-cli": "^6.14.0",
+        "babel-plugin-transform-require-ignore": "0.0.2",
+        "babel-plugin-transform-runtime": "^6.12.0",
+        "babel-preset-es2015": "^6.14.0",
+        "babel-preset-stage-2": "^6.13.0",
+        "babel-runtime": "^6.11.6",
+        "chalk": "^1.1.3",
+        "fs-extra": "^0.30.0",
+        "grimoirejs-build-env-base": "^1.0.6",
+        "handlebars": "^4.0.5",
+        "http-server": "^0.9.0",
+        "progress": "^1.1.8",
+        "rollup": "^0.34.10",
+        "rollup-plugin-babel": "^2.6.1",
+        "rollup-plugin-commonjs": "^3.3.1",
+        "rollup-plugin-inject": "^1.4.1",
+        "rollup-plugin-node-builtins": "^1.0.7",
+        "rollup-plugin-node-globals": "^1.0.6",
+        "rollup-plugin-node-resolve": "^2.0.0",
+        "rollup-plugin-replace": "^1.1.1",
+        "rollup-plugin-sourcemaps": "^0.3.6",
+        "rollup-plugin-typescript": "^0.7.7",
+        "tslint": "^3.14.0",
+        "typescript": "^2.0.0",
+        "typescript-awaiter": "^1.0.0",
+        "typings": "^1.3.2",
+        "uglifyjs": "^2.4.10",
+        "watch": "^0.19.2",
+        "yargs": "^4.8.1"
+    },
+    "repository": "",
+    "scripts": {
+        "scaffold": "babel-node ./scripts/scaffold.js --presets es2015,stage-2 --plugins transform-runtime",
+        "clean": "rm -rf -r ./lib ./lib-ts",
+        "minify": "uglifyjs ./product/index.js --compress -o ./product/index.min.js",
+        "compile": "tsc @./lib-ts/entry_files --declaration --outDir ./lib -m es6 -t es6 --moduleResolution node --sourcemap --noEmitHelpers",
+        "build": "babel-node rollup.config.js --presets es2015,stage-2 --plugins transform-runtime",
+        "babel": "babel ./product/index.es2016.js --out-file ./product/index.js --inputSourceMap ./product/index.es2016.js.map --sourceMaps true -sourceMapTarget ./index.js.map --presets es2015 --compact false",
+        "prepublish": "babel-node ./scripts/prepublish.js --presets es2015,stage-2 --plugins transform-runtime",
+        "start": "npm run build -- -w -s",
+        "serve": "hs ./",
+        "babel-test": "babel ./lib  --out-dir ./lib-es5",
+        "ava": "ava --verbose",
+        "test": "babel-node ./scripts/test-runner.js --presets es2015,stage-2 --plugins transform-runtime",
+        "prelint": "tsc ./scripts/lint/*.ts --outDir ./scripts/lint -m commonjs -t es5",
+        "lint": "tslint ./src/**/*.ts"
+    },
+    "grimoire": {
+        "namespace": "HTTP://GRIMOIRE.GL/NS/DEFAULT",
+        "dependencies": [],
+        "txt2js": [
+            "*.html",
+            "*.glsl"
+        ]
+    },
+    "license": "MIT"
 }

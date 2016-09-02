@@ -3,6 +3,60 @@ type ImageSource = HTMLCanvasElement | HTMLImageElement | ImageData | ArrayBuffe
 export default class Texture2D extends ResourceBase {
   public readonly texture: WebGLTexture;
 
+  public get magFilter(): number {
+    return this._magFilter;
+  }
+
+  public set magFilter(filter: number) {
+    if (this._magFilter !== filter) {
+      this._texParameterChanged = true;
+      this._magFilter = filter;
+    }
+  }
+
+  public get minFilter(): number {
+    return this._minFilter;
+  }
+
+  public set minFilter(filter: number) {
+    if (this._minFilter !== filter) {
+      this._texParameterChanged = true;
+      this._minFilter = filter;
+    }
+  }
+
+  public get wrapS(): number {
+    return this._wrapS;
+  }
+
+  public set wrapS(filter: number) {
+    if (this._wrapS !== filter) {
+      this._texParameterChanged = true;
+      this._wrapS = filter;
+    }
+  }
+
+  public get wrapT(): number {
+    return this._wrapT;
+  }
+
+  public set wrapT(filter: number) {
+    if (this._wrapT !== filter) {
+      this._texParameterChanged = true;
+      this._wrapT = filter;
+    }
+  }
+
+  private _texParameterChanged = true;
+
+  private _magFilter: number = WebGLRenderingContext.LINEAR;
+
+  private _minFilter: number = WebGLRenderingContext.LINEAR;
+
+  private _wrapS: number = WebGLRenderingContext.REPEAT;
+
+  private _wrapT: number = WebGLRenderingContext.REPEAT;
+
   constructor(gl: WebGLRenderingContext) {
     super(gl);
     this.texture = gl.createTexture();
@@ -35,8 +89,9 @@ export default class Texture2D extends ResourceBase {
   public register(registerNumber: number): void {
     this.gl.activeTexture(WebGLRenderingContext.TEXTURE0 + registerNumber);
     this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.texture);
-    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.NEAREST);
-    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.NEAREST);
+    if (this._texParameterChanged) {
+      this._updateTexParameter();
+    }
   }
 
   public destroy(): void {
@@ -55,5 +110,13 @@ export default class Texture2D extends ResourceBase {
       return canv;
     }
     return img;
+  }
+
+  private _updateTexParameter(): void {
+    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, this._minFilter);
+    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, this._magFilter);
+    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, this._wrapS);
+    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, this._wrapT);
+    this._texParameterChanged = false;
   }
 }

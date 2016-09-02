@@ -8,8 +8,7 @@ export default class RendererComponent extends Component {
     camera: {
       converter: "component",
       defaultValue: "camera",
-      target: "Camera",
-      boundTo: "_camera"
+      target: "Camera"
     },
     viewport: {
       converter: "viewport",
@@ -25,6 +24,8 @@ export default class RendererComponent extends Component {
 
   public $mount() {
     this._gl = this.companion.get("gl") as WebGLRenderingContext;
+    this._camera = this.getValue("camera");
+    this.attributes.get("camera").addObserver((v) => this._camera = v.Value);
     this._viewport = this.getValue("viewport");
     this.attributes.get("viewport").addObserver((v) => this._viewport = v.Value);
   }
