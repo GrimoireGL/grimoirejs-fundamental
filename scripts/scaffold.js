@@ -1,11 +1,6 @@
-import {
-  argv
-} from 'yargs';
+import { argv } from 'yargs';
 
-import {
-  templateAsync,
-  writeFileAsync
-} from 'grimoirejs-build-env-base';
+import { templateAsync, writeFileAsync } from 'grimoirejs-build-env-base';
 
 const scaffold = async() => {
   if (argv.t === "component") {
@@ -31,10 +26,18 @@ const scaffold = async() => {
       path: argv.n + "Converter"
     });
     await writeFileAsync("./test/Converters/" + argv.n + "ConverterTest.js", test);
+  } else if (argv.t === "constraint") {
+    if (!argv.n) {
+      console.log("please specify converter name you want to scaffold with -n option");
+      return;
+    }
+    const templated = await templateAsync("./scripts/templates/constraint.template", {
+      name: argv.n
+    });
+    await writeFileAsync("./src/Constraint/" + argv.n + "Constraint.ts", templated);
   } else {
     console.log("Please specify valid type to scaffold with -t option. 'component' or 'converter' are available.")
   }
-
 }
 
 scaffold();
