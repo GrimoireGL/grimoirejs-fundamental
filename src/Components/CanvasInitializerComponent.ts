@@ -1,3 +1,4 @@
+import Texture2DResolver from "../Resource/Texture2DResolver";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
 import gr from "grimoirejs";
@@ -48,8 +49,10 @@ class CanvasInitializerComponent extends Component {
     const generatedCanvas = document.createElement("canvas");
     generatedCanvas.width = this.attributes.get("width").Value;
     generatedCanvas.height = this.attributes.get("height").Value;
-    this.companion.set(ns("gl"), this._getContext(generatedCanvas));
+    const gl = this._getContext(generatedCanvas);
+    this.companion.set(ns("gl"), gl);
     this.companion.set(ns("canvasElement"), generatedCanvas);
+    this.companion.set(ns("Texture2DResolver"), new Texture2DResolver(gl));
     scriptTag.parentElement.insertBefore(generatedCanvas, scriptTag.nextSibling);
     this.canvas = generatedCanvas;
     return generatedCanvas;

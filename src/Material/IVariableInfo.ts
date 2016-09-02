@@ -1,5 +1,5 @@
 export interface IVariableAnnotation {
-  defaultValue: any;
+  default: string;
   [key: string]: any;
 }
 interface IVariableInfo {
@@ -9,6 +9,5 @@ interface IVariableInfo {
   variableAnnotation: IVariableAnnotation;
   isArray: boolean;
   arrayLength: number;
-  value?: any;
 }
 export default IVariableInfo;

@@ -30,6 +30,14 @@ export default class Texture2D extends ResourceBase {
     } else {
       this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, level, format, width, height, border, format, type, pixels);
     }
+    this.valid = true;
+  }
+
+  public register(registerNumber: number): void {
+    this.gl.activeTexture(WebGLRenderingContext.TEXTURE0 + registerNumber);
+    this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.texture);
+    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, WebGLRenderingContext.NEAREST);
+    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, WebGLRenderingContext.NEAREST);
   }
 
   public destroy(): void {
