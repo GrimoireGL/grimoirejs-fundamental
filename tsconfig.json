@@ -40,6 +40,7 @@
     "./src/Converters/Color3Converter.ts",
     "./src/Converters/Color4Converter.ts",
     "./src/Converters/ComponentConverter.ts",
+    "./src/Converters/EnumConverter.ts",
     "./src/Converters/GeometryConverter.ts",
     "./src/Converters/MaterialConverter.ts",
     "./src/Converters/NumberConverter.ts",

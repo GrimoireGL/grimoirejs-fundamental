@@ -20,10 +20,13 @@ export default class RendererComponent extends Component {
 
   private _gl: WebGLRenderingContext;
 
+  private _canvas: HTMLCanvasElement;
+
   private _viewport: Rectangle;
 
   public $mount() {
     this._gl = this.companion.get("gl") as WebGLRenderingContext;
+    this._canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
     this._camera = this.getValue("camera");
     this.attributes.get("camera").addObserver((v) => this._camera = v.Value);
     this._viewport = this.getValue("viewport");
@@ -32,7 +35,7 @@ export default class RendererComponent extends Component {
 
   public $renderScene() {
     if (this._camera) {
-      this._gl.viewport(this._viewport.Left, this._viewport.Height - this._viewport.Top, this._viewport.Width, this._viewport.Height);
+      this._gl.viewport(this._viewport.Left, this._canvas.height - this._viewport.Bottom, this._viewport.Width, this._viewport.Height);
       this._camera.node.sendMessage("renderScene", this);
     }
   }
