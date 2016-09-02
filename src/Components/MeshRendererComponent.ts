@@ -1,3 +1,4 @@
+import ResourceBase from "../Resource/ResourceBase";
 import GLSLXPass from "../Material/GLSLXPass";
 import MaterialComponent from "./MaterialComponent";
 import GeometryRegistory from "./GeometryRegistoryComponent";
@@ -31,6 +32,7 @@ export default class MeshRenderer extends Component {
   private _material: Material;
   private _materialArgs: { [key: string]: any } = {};
   private _targetBuffer: string;
+  private _internalMaterialReady: boolean;
   private _materialComponent: MaterialComponent;
   private _transformComponent: TransformComponent;
 
@@ -55,9 +57,15 @@ export default class MeshRenderer extends Component {
       transform: this._transformComponent
     };
     if (this._materialComponent) {
+      if (!this._materialComponent.ready) {
+        return;
+      }
       renderArgs.attributeValues = this._materialComponent.materialArgs;
       this._materialComponent.material.draw(renderArgs);
     } else if (this._material) {
+      if (!this._internalMaterialReady) {
+        return;
+      }
       renderArgs.attributeValues = this._materialArgs;
       this._material.draw(renderArgs);
     }
@@ -73,6 +81,7 @@ export default class MeshRenderer extends Component {
 
   private async _registerMaterialAttributes(): Promise<void> {
     await this._material.initializePromise;
+    const promises: Promise<any>[] = [];
     this._material.pass.forEach((p) => {
       if (p instanceof GLSLXPass) {
         for (let key in p.programInfo.gomlAttributes) {
@@ -81,9 +90,14 @@ export default class MeshRenderer extends Component {
           this.attributes.get(key).addObserver((v) => {
             this._materialArgs[key] = v.Value;
           });
-          this._materialArgs[key] = this.getValue(key);
+          const value = this._materialArgs[key] = this.getValue(key);
+          if (value instanceof ResourceBase) {
+            promises.push((value as ResourceBase).validPromise);
+          }
         }
       }
     });
+    await Promise.all(promises);
+    this._internalMaterialReady = true;
   }
 }

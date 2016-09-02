@@ -2,8 +2,6 @@ import ResourceBase from "./ResourceBase";
 export default class Buffer extends ResourceBase {
   public readonly buffer: WebGLBuffer;
 
-  public containsData: boolean = false;
-
   constructor(gl: WebGLRenderingContext, public readonly target: number, public usage: number) {
     super(gl);
     this.buffer = gl.createBuffer();
@@ -13,10 +11,9 @@ export default class Buffer extends ResourceBase {
   public update(buffer: BufferSource): void;
   public update(offset: number, buffer: BufferSource): void;
   public update(length: number | BufferSource, subBuffer?: BufferSource): void {
-    this.containsData = true;
     this.bind();
     if (subBuffer) {
-      if (!this.containsData) {
+      if (!this.valid) {
         this.gl.bufferData(this.target, length as number + subBuffer.byteLength, this.usage);
       }
       this.gl.bufferSubData(this.target, length as number, subBuffer);
@@ -27,6 +24,7 @@ export default class Buffer extends ResourceBase {
         this.gl.bufferData(this.target, length as BufferSource, this.usage);
       }
     }
+    this.valid = true;
   }
 
   public bind(): void {

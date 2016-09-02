@@ -52,7 +52,6 @@ class CanvasInitializerComponent extends Component {
     const gl = this._getContext(generatedCanvas);
     this.companion.set(ns("gl"), gl);
     this.companion.set(ns("canvasElement"), generatedCanvas);
-    this.companion.set(ns("Texture2DResolver"), new Texture2DResolver(gl));
     scriptTag.parentElement.insertBefore(generatedCanvas, scriptTag.nextSibling);
     this.canvas = generatedCanvas;
     return generatedCanvas;

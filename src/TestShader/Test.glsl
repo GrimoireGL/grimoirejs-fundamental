@@ -18,6 +18,7 @@ varying vec2 posXY;
   uniform sampler2D testTex;
 
   void main(){
-    gl_FragColor = texture2D(testTex,posXY);
+    gl_FragColor = vec4(1.0,1.0,1.0,1.0) - texture2D(testTex,posXY);
+    gl_FragColor.a = 1.0;
   }
 }

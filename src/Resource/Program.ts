@@ -4,8 +4,6 @@ import Shader from "./Shader";
 export default class Program extends ResourceBase {
   public readonly program: WebGLProgram;
 
-  public valid: boolean = false;
-
   public uniforms: UniformProxy;
 
   private _uniformLocations: { [variableName: string]: WebGLUniformLocation } = {};

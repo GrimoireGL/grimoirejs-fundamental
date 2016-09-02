@@ -3,6 +3,7 @@ import GLSLXPass from "../Material/GLSLXPass";
 import Material from "../Material/Material";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
+import ResourceBase from "../Resource/ResourceBase";
 
 
 export default class MaterialComponent extends Component {
@@ -14,6 +15,8 @@ export default class MaterialComponent extends Component {
   };
 
   public material: Material;
+
+  public ready: boolean;
 
   public materialArgs: { [key: string]: any } = {};
 
@@ -27,6 +30,7 @@ export default class MaterialComponent extends Component {
 
   private async _registerAttributes(): Promise<void> {
     await this.material.initializePromise;
+    const promises: Promise<any>[] = [];
     this.material.pass.forEach(p => {
       if (p instanceof GLSLXPass) {
         for (let key in p.programInfo.gomlAttributes) {
@@ -34,10 +38,15 @@ export default class MaterialComponent extends Component {
           this.attributes.get(key).addObserver((v) => {
             this.materialArgs[key] = v.Value;
           });
-          this.materialArgs[key] = this.getValue(key);
+          const value = this.materialArgs[key] = this.getValue(key);
+          if (value instanceof ResourceBase) {
+            promises.push((value as ResourceBase).validPromise);
+          }
         }
       }
     });
+    await Promise.all(promises);
+    this.ready = true;
   }
 
 }

@@ -14,7 +14,7 @@
           <MouseCameraControl rotateX="10" moveSpeed="0.1"/>
         </camera.components>
       </camera>
-      <mesh position="0,0,0" rotation="x(90d)" geometry="sphere" material="new(test)" targetBuffer="wireframe" testTex="./sample.png"></mesh>
+      <mesh position="0,0,0" geometry="sphere" material="new(test)" targetBuffer="default" testTex="./sample.png"></mesh>
     </scene>
   </scenes>
 </goml>
