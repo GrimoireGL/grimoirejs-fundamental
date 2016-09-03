@@ -1,6 +1,7 @@
 <goml width="512" height="512">
   <!-- <geometry name="cube" type="cube"/>
   <geometry name="quad" type="quad"/> -->
+  <import-material type="test" src="./sample.sort"/>
   <geometry name="sphere" type="sphere" divHorizontal="40" divVertical="40"/>
   <material type="test" testTex="./sample.png"/>
   <renderers bgColor="#F003">

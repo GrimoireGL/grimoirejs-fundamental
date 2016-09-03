@@ -1,3 +1,4 @@
+import AssetLoader from "../Asset/AssetLoader";
 import ResourceBase from "../Resource/ResourceBase";
 import SORTPass from "../Material/SORTPass";
 import MaterialComponent from "./MaterialComponent";
@@ -71,13 +72,18 @@ export default class MeshRenderer extends Component {
   }
 
   private async _prepareExternalMaterial(): Promise<void> {
-    const material = await (this.getValue("material") as Promise<Material>);
+    const materialPromise = this.getValue("material") as Promise<Material>
+    const loader = this.companion.get("loader") as AssetLoader;
+    loader.register(materialPromise);
+    const material = await materialPromise;
     this._material = material;
   }
 
   private async _prepareInternalMaterial(): Promise<void> {
     // obtain promise of instanciating material
     const materialPromise = this.getValue("material") as Promise<Material>;
+    const loader = this.companion.get("loader") as AssetLoader;
+    loader.register(materialPromise);
     if (!materialPromise) {
       return;
     }

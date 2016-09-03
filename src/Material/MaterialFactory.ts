@@ -1,18 +1,33 @@
+import PassFactory from "./PassFactory";
+import TextFileResolver from "../Asset/TextFileResolver";
 import Material from "./Material";
 /**
  * Manage factories for materials.
  * Materials can be instanciated with this instance.
  */
 export default class MaterialFactory {
-  public static factories: { [key: string]: ((gl: WebGLRenderingContext) => Promise<Material>) } = {};
+  public static factories: { [key: string]: ((gl: WebGLRenderingContext) => Material) } = {};
 
   public static registerdHandlers: { [key: string]: (() => void)[] } = {};
 
-  public static addMaterialType(typeName: string, factory: (gl: WebGLRenderingContext) => Promise<Material>): void {
+  public static addMaterialType(typeName: string, factory: (gl: WebGLRenderingContext) => Material): void {
     MaterialFactory.factories[typeName] = factory;
     if (MaterialFactory.registerdHandlers[typeName]) { // Check registered handler are exisiting
       MaterialFactory.registerdHandlers[typeName].forEach((t) => t());
     }
+  }
+
+  public static async addSORTMaterial(typeName: string, source: string): Promise<void> {
+    const sortInfos = await PassFactory.passInfoFromSORT(source);
+    MaterialFactory.addMaterialType(typeName, (gl) => {
+      const sorts = sortInfos.map(p => PassFactory.fromSORTPassInfo(gl, p));
+      return new Material(sorts);
+    });
+  }
+
+  public static async addSORTMaterialFromURL(typeName: string, url: string): Promise<void> {
+    const source = await TextFileResolver.resolve(url);
+    await MaterialFactory.addSORTMaterial(typeName, source);
   }
 
   private static _onRegister(factoryName: string, handler: () => void): void {

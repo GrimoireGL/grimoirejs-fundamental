@@ -24,8 +24,6 @@ GrimoireInterface.register(async () => {
   GrimoireInterface.registerNode("texture", ["Texture"]);
   GrimoireInterface.registerNode("mesh", ["Transform", "MeshRenderer"]);
   GrimoireInterface.registerNode("material", ["Material"]);
+  GrimoireInterface.registerNode("import-material", ["MaterialImporter"]);
   DefaultPrimitives.register();
-  MaterialFactory.addMaterialType("test", async (gl) => {
-    return new Material([await PassFactory.fromSORT(gl, testShader)]);
-  });
 });

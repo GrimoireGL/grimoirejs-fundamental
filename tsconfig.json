@@ -10,6 +10,7 @@
   "files": [
     "./src/Asset/AssetLoader.ts",
     "./src/Asset/CacheResolver.ts",
+    "./src/Asset/defaultLoader.html.d.ts",
     "./src/Asset/ExternalResourceResolver.ts",
     "./src/Asset/ImageResolver.ts",
     "./src/Asset/TextFileResolver.ts",
@@ -23,6 +24,7 @@
     "./src/Components/GeometryRegistoryComponent.ts",
     "./src/Components/LoopManagerComponent.ts",
     "./src/Components/MaterialComponent.ts",
+    "./src/Components/MaterialImporterComponent.ts",
     "./src/Components/MaterialManagerComponent.ts",
     "./src/Components/MeshRendererComponent.ts",
     "./src/Components/MouseCameraControlComponent.ts",
@@ -71,6 +73,7 @@
     "./src/Material/Pass.ts",
     "./src/Material/PassFactory.ts",
     "./src/Material/SORTPass.ts",
+    "./src/Material/SORTPassInfoResolver.ts",
     "./src/Material/SORTPassParser.ts",
     "./src/Material/Transformers/AnnotationRemover.ts",
     "./src/Material/Transformers/AttributeVariableRemover.ts",
