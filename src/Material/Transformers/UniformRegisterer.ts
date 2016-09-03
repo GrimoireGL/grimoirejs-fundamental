@@ -91,7 +91,15 @@ async function _registerSystemAttributes(input: ITransformingArgument): Promise<
     if (variableName.charAt(0) === "_") {
       const variableInfo = input.info.uniforms[variableName];
       const resolver = UniformValueResolver.resolve(variableName, variableInfo);
-      promises.push(resolver);
+      if (resolver) {
+        promises.push(resolver);
+      } else {
+        if (variableInfo.variableType === "sampler2D" && variableInfo.variableAnnotation["type"] === "backbuffer") {
+          registerers.push((proxy, mat) => {
+            proxy.uniformTexture2D(variableName, mat.buffers[variableInfo.variableAnnotation["name"]]);
+          });
+        }
+      }
     }
   }
   const resolved = await Promise.all(promises);

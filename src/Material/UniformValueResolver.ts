@@ -8,11 +8,9 @@ export default class UniformValueResolver {
     UniformValueResolver.resolvers[name] = resolvers;
   }
 
-  public static async resolve(name: string, valInfo: IVariableInfo): Promise<((proxy: UniformProxy, args: IMaterialArgument) => void)> {
+  public static resolve(name: string, valInfo: IVariableInfo): Promise<((proxy: UniformProxy, args: IMaterialArgument) => void)> {
     if (UniformValueResolver.resolvers[name]) {
-      return await UniformValueResolver.resolvers[name](valInfo, name);
-    } else {
-      throw new Error("Unknown system variable");
+      return UniformValueResolver.resolvers[name](valInfo, name);
     }
   }
 }

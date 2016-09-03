@@ -1,19 +1,18 @@
+import Texture2D from "../Resource/Texture2D";
 import CameraComponent from "../Components/CameraComponent";
-import RendererComponent from "../Components/RendererComponent";
 /**
  * The message args of $render called by RendererComponent.
  */
-interface IRenderMessageArgs {
+interface IRenderMessage {
   /**
    * Reference to CameraComponent used for rendering in this time.
    * @type {CameraComponent}
    */
   camera: CameraComponent;
-  /**
-   * The renderer reference called this rendering.
-   * @type {RendererComponent}
-   */
-  renderer: RendererComponent;
+
+  buffers: { [key: string]: Texture2D };
+
+  layer: string;
 }
 
-export default IRenderMessageArgs;
+export default IRenderMessage;

@@ -1,9 +1,10 @@
+import IMaterialArgument from "../Material/IMaterialArgument";
 import AssetLoader from "../Asset/AssetLoader";
 import ResourceBase from "../Resource/ResourceBase";
 import SORTPass from "../Material/SORTPass";
 import MaterialComponent from "./MaterialComponent";
 import GeometryRegistory from "./GeometryRegistoryComponent";
-import IRenderMessageArgs from "../Camera/IRenderMessageArgs";
+import IRenderMessage from "../Messages/IRenderMessage";
 import TransformComponent from "./TransformComponent";
 import Geometry from "../Geometry/Geometry";
 import Component from "grimoirejs/lib/Core/Node/Component";
@@ -26,6 +27,11 @@ export default class MeshRenderer extends Component {
       converter: "string",
       defaultValue: "default",
       boundTo: "_targetBuffer"
+    },
+    layer: {
+      converter: "string",
+      defaultValue: "default",
+      boundTo: "_layer"
     }
   };
 
@@ -35,6 +41,7 @@ export default class MeshRenderer extends Component {
   private _targetBuffer: string;
   private _materialComponent: MaterialComponent;
   private _transformComponent: TransformComponent;
+  private _layer: string;
 
   public $mount() {
     this._transformComponent = this.node.getComponent("Transform") as TransformComponent;
@@ -43,16 +50,21 @@ export default class MeshRenderer extends Component {
     this._onMaterialChanged();
   }
 
-  public $render(args: IRenderMessageArgs) {
-    if (!this._material) {
+  public $treeInitialized() {
+
+  }
+
+  public $render(args: IRenderMessage) {
+    if (!this._material || this._layer !== args.layer) {
       return; // material is not instanciated yet.
     }
-    const renderArgs = {
+    const renderArgs = <IMaterialArgument>{
       targetBuffer: this._targetBuffer,
       geometry: this.geom,
       attributeValues: {},
       camera: args.camera.camera,
-      transform: this._transformComponent
+      transform: this._transformComponent,
+      buffers: args.buffers
     };
     if (this._materialComponent) {
       renderArgs.attributeValues = this._materialComponent.materialArgs;

@@ -1,3 +1,7 @@
+import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
+import IResizeBufferMessage from "../Messages/IResizeBufferMessage";
+import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
+import Texture2D from "../Resource/Texture2D";
 import CameraComponent from "./CameraComponent";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
@@ -24,6 +28,8 @@ export default class RendererComponent extends Component {
 
   private _viewport: Rectangle;
 
+  private _buffers: { [key: string]: Texture2D } = {};
+
   public $mount() {
     this._gl = this.companion.get("gl") as WebGLRenderingContext;
     this._canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
@@ -33,10 +39,24 @@ export default class RendererComponent extends Component {
     this.attributes.get("viewport").addObserver((v) => this._viewport = v.Value);
   }
 
+  public $treeInitialized(): void {
+    this.node.broadcastMessage(1, "resizeBuffer", <IResizeBufferMessage>{ // TODO apply when viewport was changed
+      width: this._viewport.Width,
+      height: this._viewport.Height,
+      buffers: this._buffers
+    });
+    this.node.broadcastMessage(1, "bufferUpdated", <IBufferUpdatedMessage>{
+      buffers: this._buffers
+    });
+  }
+
   public $renderScene() {
     if (this._camera) {
-      this._gl.viewport(this._viewport.Left, this._canvas.height - this._viewport.Bottom, this._viewport.Width, this._viewport.Height);
-      this._camera.node.sendMessage("renderScene", this);
+      this.node.broadcastMessage(1, "render", <IRenderRendererMessage>{
+        camera: this._camera,
+        viewport: this._viewport,
+        buffers: this._buffers
+      });
     }
   }
 }

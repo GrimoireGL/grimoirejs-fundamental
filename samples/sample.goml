@@ -1,14 +1,31 @@
 <goml width="512" height="512">
-  <!-- <geometry name="cube" type="cube"/>
-  <geometry name="quad" type="quad"/> -->
+  <!-- <geometry name="cube" type="cube"/>-->
+  <geometry name="quad" type="quad"/>
   <import-material type="test" src="./sample.sort"/>
+  <import-material type="post" src="./post.sort"/>
   <geometry name="sphere" type="sphere" divHorizontal="40" divVertical="40"/>
   <material type="test" testTex="./sample.png"/>
   <renderers bgColor="#F003">
-    <renderer camera=".camera" viewport="0,0,50%,50%"/>
-    <renderer camera=".camera" viewport="0,50%,50%,50%"/>
-    <renderer camera=".camera" viewport="50%,0,50%,50%"/>
-    <renderer camera=".camera" viewport="50%,50%,50%,50%"/>
+    <renderer camera=".camera" viewport="0,0,50%,50%">
+      <backbuffer name="backbuffer1"/>
+      <render-scene out="backbuffer1"/>
+      <render-quad material="new(post)" baseColor="red"/>
+    </renderer>
+    <renderer camera=".camera" viewport="0,50%,50%,50%">
+      <backbuffer name="backbuffer1"/>
+      <render-scene out="backbuffer1" layer="other"/>
+      <render-quad material="new(post)" baseColor="green"/>
+    </renderer>
+    <renderer camera=".camera" viewport="50%,0,50%,50%">
+      <backbuffer name="backbuffer1"/>
+      <render-scene out="backbuffer1"/>
+      <render-quad material="new(post)" baseColor="blue"/>
+    </renderer>
+    <renderer camera=".camera" viewport="50%,50%,50%,50%">
+      <backbuffer name="backbuffer1"/>
+      <render-scene out="backbuffer1"/>
+      <render-quad material="new(post)" baseColor="white"/>
+    </renderer>
   </renderers>
     <scene>
       <camera class="camera" near="0.01" far="40.0" aspect="1.0" fovy="45d" position="0,0,10" rotation="y(0d)">
@@ -17,5 +34,6 @@
         </camera.components>
       </camera>
       <mesh position="0,0,0" geometry="sphere" material="material" targetBuffer="default" testTex="./earthmap.jpeg"></mesh>
+      <mesh position="1,0,0" layer="other" geometry="sphere" material="material" targetBuffer="default" testTex="./earthmap.jpeg"></mesh>
     </scene>
 </goml>

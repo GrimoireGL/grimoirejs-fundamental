@@ -1,0 +1,23 @@
+@Pass
+@NoBlend()
+attribute vec3 position;
+varying vec2 uv;
+@vert{
+void main(){
+  gl_Position = vec4(position,1);
+  uv = (position.xy + vec2(1,1))/2.0;
+}
+}
+
+@frag{
+@{type:"backbuffer",name:"backbuffer1"}
+uniform sampler2D _bb1;
+
+@{type:"color"}
+uniform vec3 baseColor;
+
+void main(){
+  gl_FragColor = texture2D(_bb1,uv);
+  gl_FragColor.rgb *= baseColor;
+}
+}

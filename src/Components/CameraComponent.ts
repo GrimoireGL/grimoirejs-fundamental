@@ -1,7 +1,7 @@
+import IRenderSceneMessage from "../Messages/IRenderSceneMessage";
 import TransformComponent from "./TransformComponent";
 import PerspectiveCamera from "../Camera/PerspectiveCamera";
 import ICamera from "../Camera/ICamera";
-import RendererComponent from "./RendererComponent";
 import GomlNode from "grimoirejs/lib/Core/Node/GomlNode";
 import SceneComponent from "./SceneComponent";
 import Component from "grimoirejs/lib/Core/Node/Component";
@@ -42,10 +42,10 @@ export default class CameraComponent extends Component {
     c.setAspect(this.attributes.get("aspect").Value);
   }
 
-  public $renderScene(renderer: RendererComponent): void {
+  public $renderScene(args: IRenderSceneMessage): void {
     if (this.containedScene) {
       this.containedScene.node.broadcastMessage("update");
-      this.containedScene.node.broadcastMessage("render", { renderer: renderer, camera: this });
+      this.containedScene.node.broadcastMessage("render", { camera: this, buffers: args.buffers, layer: args.layer });
     }
   }
 

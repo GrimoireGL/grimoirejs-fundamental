@@ -25,5 +25,8 @@ GrimoireInterface.register(async () => {
   GrimoireInterface.registerNode("mesh", ["Transform", "MeshRenderer"]);
   GrimoireInterface.registerNode("material", ["Material"]);
   GrimoireInterface.registerNode("import-material", ["MaterialImporter"]);
+  GrimoireInterface.registerNode("backbuffer", ["BackBuffer"]);
+  GrimoireInterface.registerNode("render-scene", ["RenderScene"]);
+  GrimoireInterface.registerNode("render-quad", ["RenderQuad"]);
   DefaultPrimitives.register();
 });
