@@ -1,11 +1,12 @@
-import GLSLXPass from "./GLSLXPass";
+import SORTPass from "./SORTPass";
 import UniformProxy from "../Resource/UniformProxy";
 import Program from "../Resource/Program";
 import Shader from "../Resource/Shader";
 import Pass from "./Pass";
 import ProgramTransformer from "./ProgramTransformer";
 export default class PassFactory {
-  public static async fromGLSLX(gl: WebGLRenderingContext, src: string): Promise<Pass> {
+
+  public static async fromSORT(gl: WebGLRenderingContext, src: string): Promise<Pass> {
     const passInfo = await ProgramTransformer.transform(src);
     const vs = new Shader(gl, WebGLRenderingContext.VERTEX_SHADER, passInfo.vertex);
     const fs = new Shader(gl, WebGLRenderingContext.FRAGMENT_SHADER, passInfo.fragment);
@@ -19,7 +20,7 @@ export default class PassFactory {
     for (let key in passInfo.attributes) {
       attributes.push(key);
     }
-    return new GLSLXPass(program, attributes, (p, args) => {
+    return new SORTPass(program, attributes, (p, args) => {
       passInfo.configurator.forEach((configurator) => configurator(p.gl)); // gl configuration
       registerers.forEach((r) => r(p.uniforms, args.attributeValues)); // user variables
       passInfo.systemRegisterers.forEach((r) => r(p.uniforms, args)); // system variables

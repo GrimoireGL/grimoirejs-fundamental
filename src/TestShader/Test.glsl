@@ -1,3 +1,5 @@
+@NoCull()
+@BlendEquation(FUNC_SUBTRACT)
 attribute vec3 position;
 uniform mediump float _time;
 varying vec3 pos;

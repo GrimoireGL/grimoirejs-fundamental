@@ -16,18 +16,37 @@ function* _regexGLConfigs(source: string): IterableIterator<GLConfigAnnotation> 
   }
 }
 
-function _asNumberArray(args: string[]): number[] {
-  return args.map(arg => Number.parseFloat(arg));
+function _enablingFunc(target: number, enabled: boolean): (gl: WebGLRenderingContext) => void {
+  if (enabled) {
+    return (gl: WebGLRenderingContext) => {
+      gl.enable(target);
+    };
+  } else {
+    return (gl: WebGLRenderingContext) => {
+      gl.disable(target);
+    };
+  }
 }
 
-function _asBooleanArray(args: string[]): boolean[] {
-  return args.map(arg => Boolean(arg));
+function _asGLConstants(args: string[], length: number): number[] {
+  if (args.length !== length) {
+    throw new Error(`The arguments should contain ${length} of items but there was ${args.length}`);
+  }
+  return args.map(arg => {
+    const value = WebGLRenderingContext[arg.toUpperCase()];
+    if (value) {
+      return value;
+    } else {
+      throw new Error(`Specified WebGL constant ${arg} was not found`);
+    }
+  });
 }
 
 function _parseGLConfigs(source: string): ((gl: WebGLRenderingContext) => void)[] {
   const configs = _regexGLConfigs(source);
   let configResult: IteratorResult<GLConfigAnnotation>;
   const result: ((gl: WebGLRenderingContext) => void)[] = [];
+  let depthEnabled = true, blendEnabled = true, cullEnabled = true;
   while ((configResult = configs.next())) {
     if (configResult.done) {
       break;
@@ -35,36 +54,61 @@ function _parseGLConfigs(source: string): ((gl: WebGLRenderingContext) => void)[
     const config = configResult.value;
     switch (config.name) {
       case "NoDepth":
-        result.push((gl) => gl.disable(WebGLRenderingContext.DEPTH_TEST));
+        depthEnabled = false;
         break;
-      case "Depth":
-        let depthFunc = WebGLRenderingContext[config.args[0].toUpperCase()];
-        depthFunc = depthFunc ? depthFunc : WebGLRenderingContext.LEQUAL; // default value is lequal
+      case "DepthFunc":
+        depthEnabled = true;
+        const depth = _asGLConstants(config.args, 1);
         result.push((gl) => {
-          gl.enable(WebGLRenderingContext.DEPTH_TEST);
-          gl.depthMask(depthFunc);
+          gl.depthFunc(depth[0]);
         });
         break;
       case "NoBlend":
-        result.push((gl) => gl.disable(WebGLRenderingContext.BLEND));
+        blendEnabled = false;
         break;
       case "NoCull":
-        result.push((gl) => gl.disable(WebGLRenderingContext.CULL_FACE));
+        cullEnabled = false;
         break;
-      case "Enable":
-        const flag1 = WebGLRenderingContext[config.args[0].toUpperCase()];
-        if (flag1) {
-          result.push((gl) => gl.enable(flag1));
-        }
+      case "CullFace":
+        cullEnabled = true;
+        const cullConfig = _asGLConstants(config.args, 1);
+        result.push((gl) => {
+          gl.cullFace(cullConfig[0]);
+        });
         break;
-      case "Disable":
-        const flag2 = WebGLRenderingContext[config.args[0].toUpperCase()];
-        if (flag2) {
-          result.push((gl) => gl.enable(flag2));
-        }
+      case "BlendFunc":
+        blendEnabled = true;
+        const blendFuncConfig = _asGLConstants(config.args, 2);
+        result.push((gl) => {
+          gl.blendFunc(blendFuncConfig[0], blendFuncConfig[1]);
+        });
+        break;
+      case "BlendFuncSeparate":
+        blendEnabled = true;
+        const blendFuncSeparate = _asGLConstants(config.args, 4);
+        result.push((gl) => {
+          gl.blendFuncSeparate(blendFuncSeparate[0], blendFuncSeparate[1], blendFuncSeparate[2], blendFuncSeparate[3]);
+        });
+        break;
+      case "BlendEquation":
+        blendEnabled = true;
+        const blendEquation = _asGLConstants(config.args, 1);
+        result.push((gl) => {
+          gl.blendEquation(blendEquation[0]);
+        });
+        break;
+      case "BlendEquationSeparate":
+        blendEnabled = true;
+        const blendEquationSeparate = _asGLConstants(config.args, 2);
+        result.push((gl) => {
+          gl.blendEquationSeparate(blendEquationSeparate[0], blendEquationSeparate[1]);
+        });
         break;
     }
   }
+  result.unshift(_enablingFunc(WebGLRenderingContext.DEPTH_TEST, depthEnabled));
+  result.unshift(_enablingFunc(WebGLRenderingContext.BLEND, blendEnabled));
+  result.unshift(_enablingFunc(WebGLRenderingContext.CULL_FACE, cullEnabled));
   return result;
 }
 

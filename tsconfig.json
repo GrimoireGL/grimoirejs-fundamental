@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "es6",
     "module": "es6",
-    "noImplicitAny": true,
     "outDir": "./lib"
   },
   "filesGlob": [
@@ -30,7 +29,6 @@
     "./src/Components/RendererComponent.ts",
     "./src/Components/RendererManagerComponent.ts",
     "./src/Components/SceneComponent.ts",
-    "./src/Components/SceneManagerComponent.ts",
     "./src/Components/TextureComponent.ts",
     "./src/Components/TransformComponent.ts",
     "./src/Constants.ts",
@@ -63,7 +61,6 @@
     "./src/Geometry/VertexBufferAttribInfo.ts",
     "./src/index.ts",
     "./src/json5.d.ts",
-    "./src/Material/GLSLXPass.ts",
     "./src/Material/IMaterialArgument.ts",
     "./src/Material/IMaterialAttributeDeclaration.ts",
     "./src/Material/ImportResolver.ts",
@@ -74,6 +71,7 @@
     "./src/Material/Pass.ts",
     "./src/Material/PassFactory.ts",
     "./src/Material/ProgramTransformer.ts",
+    "./src/Material/SORTPass.ts",
     "./src/Material/Transformers/AnnotationRemover.ts",
     "./src/Material/Transformers/AttributeVariableRemover.ts",
     "./src/Material/Transformers/BasicGLConfigParser.ts",

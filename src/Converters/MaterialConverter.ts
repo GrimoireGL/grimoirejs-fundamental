@@ -11,7 +11,7 @@ function MaterialConverter(val: any): any {
     } else {
       const mc = this.tree(val)("Material").get() as MaterialComponent;
       this.component[this.declaration.componentBoundTo] = mc;
-      return mc.material;
+      return mc.materialPromise;
     }
   }
 }
