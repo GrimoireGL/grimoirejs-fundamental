@@ -30,7 +30,7 @@ export default class RendererManagerComponent extends Component {
   }
 
   public $treeInitialized() {
-    this.tree("goml")("LoopManager").get<LoopManagerComponent>().register(this.onloop.bind(this), 1000);
+    this.tree("goml")("LOOPMANAGER").get<LoopManagerComponent>().register(this.onloop.bind(this), 1000);
     this.gl.enable(WebGLRenderingContext.DEPTH_TEST);
     this.gl.enable(WebGLRenderingContext.CULL_FACE);
   }

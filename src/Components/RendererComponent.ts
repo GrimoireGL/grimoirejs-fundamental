@@ -8,7 +8,7 @@ export default class RendererComponent extends Component {
     camera: {
       converter: "component",
       defaultValue: "camera",
-      target: "Camera"
+      target: "CAMERA"
     },
     viewport: {
       converter: "viewport",
