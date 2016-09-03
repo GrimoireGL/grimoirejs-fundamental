@@ -1,4 +1,4 @@
-import ITransformingInfo from "./ITransformingInfo";
+import ITransformingArgument from "./ITransformingArgument";
 
 function _obtainPrecisions(source: string): { [key: string]: string } {
   const regex = /\s*precision\s+([a-z]+)\s+([a-z0-9]+)/g;
@@ -13,7 +13,7 @@ function _obtainPrecisions(source: string): { [key: string]: string } {
   return result;
 }
 
-export default async function(input: ITransformingInfo): Promise<ITransformingInfo> {
+export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
   input.info.fragmentPrecision = _obtainPrecisions(input.info.fragment);
   input.info.vertexPrecision = _obtainPrecisions(input.info.vertex);
   return input;

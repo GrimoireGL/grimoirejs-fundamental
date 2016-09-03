@@ -1,4 +1,4 @@
-import ITransforimingInfo from "./ITransformingInfo";
+import ITransforimingInfo from "./ITransformingArgument";
 interface ITransformer {
   (transformArg: ITransforimingInfo): Promise<ITransforimingInfo>;
 }

@@ -5,7 +5,7 @@ import {Vector2, Vector3, Vector4, Color3, Color4} from "grimoirejs-math";
 import IMaterialArgument from "../IMaterialArgument";
 import UniformProxy from "../../Resource/UniformProxy";
 import UniformValueResolver from "../UniformValueResolver";
-import ITransformingInfo from "./ITransformingInfo";
+import ITransformingArgument from "./ITransformingArgument";
 
 function _getDecl(converter: string, defaultValue: any, register: (proxy: UniformProxy, val: any) => void): IMaterialAttributeDeclaration {
   return {
@@ -24,7 +24,7 @@ function _resolveDefault(vi: IVariableInfo, defaultValue: string | any): string 
   }
 }
 
-async function _registerUserAttributes(input: ITransformingInfo): Promise<void> {
+async function _registerUserAttributes(input: ITransformingArgument): Promise<void> {
   const promises: Promise<void>[] = [];
   const attributes = input.info.gomlAttributes;
   for (let variableName in input.info.uniforms) {
@@ -81,10 +81,10 @@ async function _registerUserAttributes(input: ITransformingInfo): Promise<void> 
 
 /**
  * Register system shader variables whose name starts with _.
- * @param  {ITransformingInfo} input [description]
+ * @param  {ITransformingArgument} input [description]
  * @return {Promise<void>}           [description]
  */
-async function _registerSystemAttributes(input: ITransformingInfo): Promise<void> {
+async function _registerSystemAttributes(input: ITransformingArgument): Promise<void> {
   const registerers = input.info.systemRegisterers;
   const promises: Promise<((proxy: UniformProxy, args: IMaterialArgument) => void)>[] = [];
   for (let variableName in input.info.uniforms) {
@@ -102,7 +102,7 @@ async function _registerSystemAttributes(input: ITransformingInfo): Promise<void
   });
 }
 
-export default async function(input: ITransformingInfo): Promise<ITransformingInfo> {
+export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
   await _registerUserAttributes(input);
   await _registerSystemAttributes(input);
   return input;

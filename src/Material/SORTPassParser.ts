@@ -1,7 +1,7 @@
 import UniformRegisterer from "./Transformers/UniformRegisterer";
-import ITransformingInfo from "./Transformers/ITransformingInfo";
+import ITransformingArgument from "./Transformers/ITransformingArgument";
 import ITransformer from "./Transformers/ITransformer";
-import IProgramTransformInfo from "./IProgramTransformInfo";
+import ISORTPassInfo from "./ISORTPassInfo";
 
 import CommentRemover from "./Transformers/CommentRemover";
 import ImportTransformer from "./Transformers/ImportTransformer";
@@ -14,7 +14,7 @@ import PrecisionComplementer from "./Transformers/PrecisionComplementer";
 import BasicGLConfigParser from "./Transformers/BasicGLConfigParser";
 import AnnotationRemover from "./Transformers/AnnotationRemover";
 
-export default class ProgramTransformer {
+export default class SORTPassParser {
   public static transformers: ITransformer[] = [
     CommentRemover,
     ImportTransformer,
@@ -30,8 +30,8 @@ export default class ProgramTransformer {
     UniformRegisterer
   ] as ITransformer[];
 
-  public static async transform(source: string): Promise<IProgramTransformInfo> {
-    let transformingInfo: ITransformingInfo = {
+  public static async parse(source: string): Promise<ISORTPassInfo> {
+    let transformingInfo: ITransformingArgument = {
       origin: source,
       transforming: source,
       info: {
@@ -46,8 +46,8 @@ export default class ProgramTransformer {
         gomlAttributes: {}
       }
     };
-    for (let i = 0; i < ProgramTransformer.transformers.length; i++) {
-      transformingInfo = await ProgramTransformer.transformers[i](transformingInfo);
+    for (let i = 0; i < SORTPassParser.transformers.length; i++) {
+      transformingInfo = await SORTPassParser.transformers[i](transformingInfo);
     }
     return transformingInfo.info;
   }

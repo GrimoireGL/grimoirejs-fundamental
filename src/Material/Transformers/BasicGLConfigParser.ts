@@ -1,4 +1,4 @@
-import ITransformingInfo from "./ITransformingInfo";
+import ITransformingArgument from "./ITransformingArgument";
 
 interface GLConfigAnnotation {
   name: string;
@@ -112,7 +112,7 @@ function _parseGLConfigs(source: string): ((gl: WebGLRenderingContext) => void)[
   return result;
 }
 
-export default async function(input: ITransformingInfo): Promise<ITransformingInfo> {
+export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
   input.info.configurator = _parseGLConfigs(input.transforming);
   return input;
 }

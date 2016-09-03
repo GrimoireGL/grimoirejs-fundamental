@@ -1,4 +1,4 @@
-import ITransformingInfo from "./ITransformingInfo";
+import ITransformingArgument from "./ITransformingArgument";
 function _removeVariableAnnotations(source: string): string {
   let regexResult: RegExpExecArray;
   while (regexResult = /@\{.+\}/g.exec(source)) {
@@ -7,7 +7,7 @@ function _removeVariableAnnotations(source: string): string {
   return source;
 }
 
-export default async function(input: ITransformingInfo): Promise<ITransformingInfo> {
+export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
   input.info.fragment = _removeVariableAnnotations(input.info.fragment);
   input.info.vertex = _removeVariableAnnotations(input.info.vertex);
   return input;

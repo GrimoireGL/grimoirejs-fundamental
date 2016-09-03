@@ -1,4 +1,4 @@
-import ITransformingInfo from "./ITransformingInfo";
+import ITransformingArgument from "./ITransformingArgument";
 function _removeAnnotations(source: string): string {
   const regex = /(\s*@[a-zA-Z]*\([^)]*\))/;
   while (true) {
@@ -11,7 +11,7 @@ function _removeAnnotations(source: string): string {
   return source;
 }
 
-export default async function(input: ITransformingInfo): Promise<ITransformingInfo> {
+export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
   input.transforming = _removeAnnotations(input.transforming);
   return input;
 }

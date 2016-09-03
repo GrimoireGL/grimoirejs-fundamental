@@ -1,4 +1,4 @@
-import ITransformingInfo from "./ITransformingInfo";
+import ITransformingArgument from "./ITransformingArgument";
 import ImportResolver from "../ImportResolver";
 async function _parseImport(source: string): Promise<string> {
   while (true) {
@@ -14,7 +14,7 @@ async function _parseImport(source: string): Promise<string> {
   return source;
 }
 
-export default async function(input: ITransformingInfo): Promise<ITransformingInfo> {
+export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
   const transformed = await _parseImport(input.transforming);
   input.transforming = transformed;
   return input;

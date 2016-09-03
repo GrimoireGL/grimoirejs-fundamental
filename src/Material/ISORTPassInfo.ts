@@ -3,7 +3,7 @@ import UniformProxy from "../Resource/UniformProxy";
 import IMaterialAttributeDeclaration from "./IMaterialAttributeDeclaration";
 import IVariableInfo from "./IVariableInfo";
 
-interface IProgramTransformInfo {
+interface ISORTPassInfo {
   fragment: string;
   vertex: string;
   uniforms: { [variableName: string]: IVariableInfo };
@@ -15,4 +15,4 @@ interface IProgramTransformInfo {
   gomlAttributes: { [key: string]: IMaterialAttributeDeclaration; };
 }
 
-export default IProgramTransformInfo;
+export default ISORTPassInfo;

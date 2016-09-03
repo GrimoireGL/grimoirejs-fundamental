@@ -1,5 +1,5 @@
 import IVariableInfo from "../IVariableInfo";
-import ITransformingInfo from "./ITransformingInfo";
+import ITransformingArgument from "./ITransformingArgument";
 import JSON5 from "json5";
 function _parseVariableAttributes(attributes: string): { [key: string]: string } {
   return JSON5.parse(attributes);
@@ -30,8 +30,8 @@ function _parseVariables(source: string, variableType: string): { [key: string]:
   return result;
 }
 
-export default function(type: string): (info: ITransformingInfo) => Promise<ITransformingInfo> {
-  return async function(info: ITransformingInfo): Promise<ITransformingInfo> {
+export default function(type: string): (info: ITransformingArgument) => Promise<ITransformingArgument> {
+  return async function(info: ITransformingArgument): Promise<ITransformingArgument> {
     const variables = _parseVariables(info.transforming, type);
     switch (type) {
       case "uniform":

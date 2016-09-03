@@ -1,4 +1,4 @@
-import ITransformingInfo from "./ITransformingInfo";
+import ITransformingArgument from "./ITransformingArgument";
 
 function _removeLineComment(source: string): string {
   let text: string = source;
@@ -33,7 +33,7 @@ function _removeMultiLineComment(source: string): string {
   return source;
 }
 
-export default async function(input: ITransformingInfo): Promise<ITransformingInfo> {
+export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
   input.transforming = _removeMultiLineComment(input.transforming);
   input.transforming = _removeLineComment(input.transforming);
   return input;

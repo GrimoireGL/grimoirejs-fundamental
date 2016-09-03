@@ -1,4 +1,4 @@
-import ITransformingInfo from "./ITransformingInfo";
+import ITransformingArgument from "./ITransformingArgument";
 function _removeAttributeVariables(source: string): string {
   const regex = /(\s*attribute\s+[a-zA-Z0-9_]+\s+[a-zA-Z0-9_]+;)/;
   while (true) {
@@ -11,7 +11,7 @@ function _removeAttributeVariables(source: string): string {
   return source;
 }
 
-export default async function(input: ITransformingInfo): Promise<ITransformingInfo> {
+export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
   input.info.fragment = _removeAttributeVariables(input.info.fragment);
   return input;
 }

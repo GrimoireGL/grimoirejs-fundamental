@@ -3,11 +3,11 @@ import UniformProxy from "../Resource/UniformProxy";
 import Program from "../Resource/Program";
 import Shader from "../Resource/Shader";
 import Pass from "./Pass";
-import ProgramTransformer from "./ProgramTransformer";
+import SORTPassParser from "./SORTPassParser";
 export default class PassFactory {
 
   public static async fromSORT(gl: WebGLRenderingContext, src: string): Promise<Pass> {
-    const passInfo = await ProgramTransformer.transform(src);
+    const passInfo = await SORTPassParser.parse(src);
     const vs = new Shader(gl, WebGLRenderingContext.VERTEX_SHADER, passInfo.vertex);
     const fs = new Shader(gl, WebGLRenderingContext.FRAGMENT_SHADER, passInfo.fragment);
     const program = new Program(gl);

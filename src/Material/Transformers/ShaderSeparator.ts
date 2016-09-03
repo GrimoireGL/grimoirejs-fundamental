@@ -1,4 +1,4 @@
-import ITransformingInfo from "./ITransformingInfo";
+import ITransformingArgument from "./ITransformingArgument";
 
 function _removeOtherPart(source: string, partFlag: string): string {
   const regex = new RegExp(`\s*(?:\/\/+)?\s*@${partFlag}`, "g");
@@ -76,7 +76,7 @@ function _getEndBracketIndex(source: string, startIndex: number, beginBracket: s
   return index;
 }
 
-export default async function(input: ITransformingInfo): Promise<ITransformingInfo> {
+export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
   let fragment = _removeSelfOnlyTag(_removeOtherPart(input.transforming, "vert"), "frag");
   let vertex = _removeSelfOnlyTag(_removeOtherPart(input.transforming, "frag"), "vert");
   input.info.fragment = fragment;
