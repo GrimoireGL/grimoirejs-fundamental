@@ -45,7 +45,7 @@ export default class CameraComponent extends Component {
   public $renderScene(args: IRenderSceneMessage): void {
     if (this.containedScene) {
       this.containedScene.node.broadcastMessage("update");
-      this.containedScene.node.broadcastMessage("render", { camera: this, buffers: args.buffers, layer: args.layer });
+      this.containedScene.node.broadcastMessage("render", args);
     }
   }
 

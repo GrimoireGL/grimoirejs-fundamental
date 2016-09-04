@@ -1,3 +1,8 @@
+import ResourceBase from "../Resource/ResourceBase";
+import SORTPass from "../Material/SORTPass";
+import AssetLoader from "../Asset/AssetLoader";
+import MaterialComponent from "./MaterialComponent";
+import Material from "../Material/Material";
 import {Color4} from "grimoirejs-math";
 import IRenderSceneMessage from "../Messages/IRenderSceneMessage";
 import Component from "grimoirejs/lib/Core/Node/Component";
@@ -25,7 +30,12 @@ export default class RenderSceneComponent extends Component {
       defaultValue: true,
       converter: "boolean",
       boundTo: "_clearColorEnabled"
-    }
+    },
+    material: {
+      defaultValue: undefined,
+      converter: "material",
+      componentBoundTo: "_materialComponent"
+    },
   };
 
   private _gl: WebGLRenderingContext;
@@ -36,14 +46,25 @@ export default class RenderSceneComponent extends Component {
 
   private _layer: string;
 
-
   private _clearColor: Color4;
 
   private _clearColorEnabled: boolean;
 
+  private _materialComponent: MaterialComponent;
+
+  private _useMaterial: boolean = false;
+
+  private _material: Material;
+
+  private _materialArgs: { [key: string]: any } = {};
+
   public $mount() {
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
+    if (typeof this.getValue("material") !== "undefined") {
+      this._onMaterialChanged();
+      this._useMaterial = true;
+    }
   }
 
   public $bufferUpdated(args: IBufferUpdatedMessage) {
@@ -62,7 +83,6 @@ export default class RenderSceneComponent extends Component {
       this._gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
       this._gl.viewport(args.viewport.Left, this._canvas.height - args.viewport.Bottom, args.viewport.Width, args.viewport.Height);
     }
-
     // clear buffer if needed
     if (this._fbo && this._clearColorEnabled) {
       this._gl.clearColor(this._clearColor.R, this._clearColor.G, this._clearColor.B, this._clearColor.A);
@@ -71,7 +91,56 @@ export default class RenderSceneComponent extends Component {
     args.camera.node.sendMessage("renderScene", <IRenderSceneMessage>{
       camera: args.camera,
       buffers: args.buffers,
-      layer: this._layer
+      layer: this._layer,
+      material: this._useMaterial ? this._material : undefined,
+      materialArgs: this._useMaterial ? this._materialArgs : undefined
     });
   }
+
+
+  private _onMaterialChanged(): void {
+    if (!this._materialComponent) { // the material must be instanciated by attribute.
+      this._prepareInternalMaterial();
+    } else {
+      this._prepareExternalMaterial();
+    }
+  }
+
+  private async _prepareExternalMaterial(): Promise<void> {
+    const materialPromise = this.getValue("material") as Promise<Material>
+    const loader = this.companion.get("loader") as AssetLoader;
+    loader.register(materialPromise);
+    const material = await materialPromise;
+    this._material = material;
+  }
+
+  private async _prepareInternalMaterial(): Promise<void> {
+    // obtain promise of instanciating material
+    const materialPromise = this.getValue("material") as Promise<Material>;
+    const loader = this.companion.get("loader") as AssetLoader;
+    loader.register(materialPromise);
+    if (!materialPromise) {
+      return;
+    }
+    const material = await materialPromise;
+    const promises: Promise<any>[] = [];
+    material.pass.forEach((p) => {
+      if (p instanceof SORTPass) {
+        for (let key in p.programInfo.gomlAttributes) {
+          const val = p.programInfo.gomlAttributes[key];
+          this.__addAtribute(key, val);
+          this.attributes.get(key).addObserver((v) => {
+            this._materialArgs[key] = v.Value;
+          });
+          const value = this._materialArgs[key] = this.getValue(key);
+          if (value instanceof ResourceBase) {
+            promises.push((value as ResourceBase).validPromise);
+          }
+        }
+      }
+    });
+    await Promise.all(promises);
+    this._material = material;
+  }
+
 }

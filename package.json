@@ -63,7 +63,7 @@
     "prepublish": "babel-node ./scripts/prepublish.js --presets es2015,stage-2 --plugins transform-runtime",
     "start": "npm run build -- -w -s",
     "serve": "hs ./",
-    "babel-test": "babel ./lib  --out-dir ./lib-es5",
+    "babel-test": "echo 'skip babel'",
     "ava": "ava --verbose",
     "test": "babel-node ./scripts/test-runner.js --presets es2015,stage-2 --plugins transform-runtime",
     "prelint": "tsc ./scripts/lint/*.ts --outDir ./scripts/lint -m commonjs -t es5",

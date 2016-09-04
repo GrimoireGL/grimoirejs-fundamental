@@ -4,7 +4,7 @@ import IMaterialAttributeDeclaration from "../IMaterialAttributeDeclaration";
 import {Vector2, Vector3, Vector4, Color3, Color4} from "grimoirejs-math";
 import IMaterialArgument from "../IMaterialArgument";
 import UniformProxy from "../../Resource/UniformProxy";
-import UniformValueResolver from "../UniformValueResolver";
+import EnvUniformValueResolver from "../EnvUniformValueResolver";
 import ITransformingArgument from "./ITransformingArgument";
 
 function _getDecl(converter: string, defaultValue: any, register: (proxy: UniformProxy, val: any) => void): IMaterialAttributeDeclaration {
@@ -24,7 +24,7 @@ function _resolveDefault(vi: IVariableInfo, defaultValue: string | any): string 
   }
 }
 
-async function _registerUserAttributes(input: ITransformingArgument): Promise<void> {
+async function _registerUserUniforms(input: ITransformingArgument): Promise<void> {
   const promises: Promise<void>[] = [];
   const attributes = input.info.gomlAttributes;
   for (let variableName in input.info.uniforms) {
@@ -34,46 +34,64 @@ async function _registerUserAttributes(input: ITransformingArgument): Promise<vo
     }
     const variableInfo = input.info.uniforms[variableName];
     const annotations = variableInfo.variableAnnotation;
-    switch (variableInfo.variableType) {
-      case "float":
-        attributes[variableName] = _getDecl("number", _resolveDefault(variableInfo, 0), (proxy, val) => {
-          proxy.uniformFloat(variableName, val as number);
-        });
-        break;
-      case "vec2":
-        attributes[variableName] = _getDecl("vector2", _resolveDefault(variableInfo, "0,0"), (proxy, val) => {
-          proxy.uniformVector2(variableName, val as Vector2);
-        });
-        break;
-      case "vec3":
-        if (annotations["type"] === "color") {
-          attributes[variableName] = _getDecl("color3", _resolveDefault(variableInfo, "#000"), (proxy, val) => {
-            proxy.uniformColor3(variableName, val as Color3);
+    if (variableInfo.isArray) {
+      switch (variableInfo.variableType) {
+        case "float":
+          let defaultArray = new Array(variableInfo.arrayLength) as number[];
+          defaultArray = defaultArray.map((p) => 0);
+          attributes[variableName] = _getDecl("numberarray", _resolveDefault(variableInfo, defaultArray), (proxy, val) => {
+            proxy.uniformFloatArray(variableName, val);
           });
-        } else {
-          attributes[variableName] = _getDecl("vector3", _resolveDefault(variableInfo, "0,0,0"), (proxy, val) => {
-            proxy.uniformVector3(variableName, val as Vector3);
+          break;
+        default:
+          throw new Error(`Unsupported array type ${variableInfo.variableType}`);
+      }
+    } else {
+      switch (variableInfo.variableType) {
+        case "bool":
+          attributes[variableName] = _getDecl("boolean", _resolveDefault(variableInfo, false), (proxy, val) => {
+            proxy.uniformBool(variableName, val);
           });
-        }
-        break;
-      case "vec4":
-        if (annotations["type"] === "color") {
-          attributes[variableName] = _getDecl("color4", _resolveDefault(variableInfo, "#0000"), (proxy, val) => {
-            proxy.uniformColor4(variableName, val as Color4);
+        case "float":
+          attributes[variableName] = _getDecl("number", _resolveDefault(variableInfo, 0), (proxy, val) => {
+            proxy.uniformFloat(variableName, val as number);
           });
-        } else {
-          attributes[variableName] = _getDecl("vector4", _resolveDefault(variableInfo, "0,0,0,0"), (proxy, val) => {
-            proxy.uniformVector4(variableName, val as Vector4);
+          break;
+        case "vec2":
+          attributes[variableName] = _getDecl("vector2", _resolveDefault(variableInfo, "0,0"), (proxy, val) => {
+            proxy.uniformVector2(variableName, val as Vector2);
           });
-        }
-        break;
-      case "sampler2D":
-        attributes[variableName] = _getDecl("texture2D", _resolveDefault(variableInfo, undefined), (proxy, val) => {
-          proxy.uniformTexture2D(variableName, val as Texture2D);
-        });
-        break;
-      default:
-        throw new Error("Unsupported type was found");
+          break;
+        case "vec3":
+          if (annotations["type"] === "color") {
+            attributes[variableName] = _getDecl("color3", _resolveDefault(variableInfo, "#000"), (proxy, val) => {
+              proxy.uniformColor3(variableName, val as Color3);
+            });
+          } else {
+            attributes[variableName] = _getDecl("vector3", _resolveDefault(variableInfo, "0,0,0"), (proxy, val) => {
+              proxy.uniformVector3(variableName, val as Vector3);
+            });
+          }
+          break;
+        case "vec4":
+          if (annotations["type"] === "color") {
+            attributes[variableName] = _getDecl("color4", _resolveDefault(variableInfo, "#0000"), (proxy, val) => {
+              proxy.uniformColor4(variableName, val as Color4);
+            });
+          } else {
+            attributes[variableName] = _getDecl("vector4", _resolveDefault(variableInfo, "0,0,0,0"), (proxy, val) => {
+              proxy.uniformVector4(variableName, val as Vector4);
+            });
+          }
+          break;
+        case "sampler2D":
+          attributes[variableName] = _getDecl("texture2D", _resolveDefault(variableInfo, undefined), (proxy, val) => {
+            proxy.uniformTexture2D(variableName, val as Texture2D);
+          });
+          break;
+        default:
+          throw new Error("Unsupported type was found");
+      }
     }
   }
   await Promise.all(promises);
@@ -84,34 +102,23 @@ async function _registerUserAttributes(input: ITransformingArgument): Promise<vo
  * @param  {ITransformingArgument} input [description]
  * @return {Promise<void>}           [description]
  */
-async function _registerSystemAttributes(input: ITransformingArgument): Promise<void> {
+function _registerEnvUniforms(input: ITransformingArgument): void {
   const registerers = input.info.systemRegisterers;
-  const promises: Promise<((proxy: UniformProxy, args: IMaterialArgument) => void)>[] = [];
   for (let variableName in input.info.uniforms) {
     if (variableName.charAt(0) === "_") {
       const variableInfo = input.info.uniforms[variableName];
-      const resolver = UniformValueResolver.resolve(variableName, variableInfo);
+      let resolver = EnvUniformValueResolver.resolve(variableName, variableInfo);
       if (resolver) {
-        promises.push(resolver);
-      } else {
-        if (variableInfo.variableType === "sampler2D" && variableInfo.variableAnnotation["type"] === "backbuffer") {
-          registerers.push((proxy, mat) => {
-            proxy.uniformTexture2D(variableName, mat.buffers[variableInfo.variableAnnotation["name"]]);
-          });
-        }
+        registerers.push(resolver);
+        continue;
       }
+      throw new Error(`Unknown environment uniform variable ${variableName}`);
     }
   }
-  const resolved = await Promise.all(promises);
-  resolved.forEach((r) => {
-    if (r) {
-      registerers.push(r);
-    }
-  });
 }
 
 export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
-  await _registerUserAttributes(input);
-  await _registerSystemAttributes(input);
+  await _registerUserUniforms(input);
+  _registerEnvUniforms(input);
   return input;
 }

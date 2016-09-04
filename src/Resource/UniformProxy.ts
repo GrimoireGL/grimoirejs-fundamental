@@ -8,6 +8,13 @@ export default class UniformProxy {
     this._gl = program.gl;
   }
 
+  public uniformBool(variableName: string, val: boolean): void {
+    const location = this.program.findUniformLocation(variableName);
+    if (location) {
+      this._gl.uniform1i(variableName, val ? 1 : 0);
+    }
+  }
+
   public uniformMatrix(variableName: string, mat: Matrix): void {
     const location = this.program.findUniformLocation(variableName);
     if (location) {
@@ -19,6 +26,13 @@ export default class UniformProxy {
     const location = this.program.findUniformLocation(variableName);
     if (location) {
       this._gl.uniform1f(location, val);
+    }
+  }
+
+  public uniformFloatArray(variableName: string, val: number[]): void {
+    const location = this.program.findUniformLocation(variableName);
+    if (location) {
+      this._gl.uniform1fv(location, val);
     }
   }
 

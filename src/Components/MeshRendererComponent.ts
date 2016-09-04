@@ -50,10 +50,6 @@ export default class MeshRenderer extends Component {
     this._onMaterialChanged();
   }
 
-  public $treeInitialized() {
-
-  }
-
   public $render(args: IRenderMessage) {
     if (!this._material || this._layer !== args.layer) {
       return; // material is not instanciated yet.
@@ -66,12 +62,17 @@ export default class MeshRenderer extends Component {
       transform: this._transformComponent,
       buffers: args.buffers
     };
-    if (this._materialComponent) {
-      renderArgs.attributeValues = this._materialComponent.materialArgs;
+    if (args.material) {
+      renderArgs.attributeValues = args.materialArgs;
+      args.material.draw(renderArgs);
     } else {
-      renderArgs.attributeValues = this._materialArgs;
+      if (this._materialComponent) {
+        renderArgs.attributeValues = this._materialComponent.materialArgs;
+      } else {
+        renderArgs.attributeValues = this._materialArgs;
+      }
+      this._material.draw(renderArgs);
     }
-    this._material.draw(renderArgs);
     this.companion.get("gl").flush();
   }
 

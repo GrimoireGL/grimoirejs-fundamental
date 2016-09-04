@@ -3,28 +3,22 @@
   <geometry name="quad" type="quad"/>
   <import-material type="test" src="./sample.sort"/>
   <import-material type="post" src="./post.sort"/>
+  <import-material type="depth" src="./depth.sort"/>
+  <import-material type="gaussian" src="./blur.sort"/>
+  <import-material type="gaussian2" src="./blur1.sort"/>
   <geometry name="sphere" type="sphere" divHorizontal="40" divVertical="40"/>
   <material type="test" testTex="./sample.png"/>
   <renderers bgColor="#F003">
-    <renderer camera=".camera" viewport="0,0,50%,50%">
-      <backbuffer name="backbuffer1"/>
-      <render-scene out="backbuffer1"/>
-      <render-quad material="new(post)" baseColor="red"/>
-    </renderer>
-    <renderer camera=".camera" viewport="0,50%,50%,50%">
-      <backbuffer name="backbuffer1"/>
-      <render-scene out="backbuffer1" layer="other"/>
-      <render-quad material="new(post)" baseColor="green"/>
-    </renderer>
-    <renderer camera=".camera" viewport="50%,0,50%,50%">
-      <backbuffer name="backbuffer1"/>
-      <render-scene out="backbuffer1"/>
-      <render-quad material="new(post)" baseColor="blue"/>
-    </renderer>
-    <renderer camera=".camera" viewport="50%,50%,50%,50%">
-      <backbuffer name="backbuffer1"/>
-      <render-scene out="backbuffer1"/>
-      <render-quad material="new(post)" baseColor="white"/>
+    <renderer camera=".camera" viewport="0,0,100%,100%">
+      <backbuffer name="depthbuffer"/>
+      <backbuffer name="nonblur"/>
+      <backbuffer name="blurHorizontal"/>
+      <backbuffer name="blured"/>
+      <render-scene out="depthbuffer" material="new(depth)"/>
+      <render-scene out="nonblur"/>
+      <render-quad out="blurHorizontal" material="new(gaussian)" horizontal="true" weight="0.11133445546052693, 0.1045890418008441, 0.09229950543353568, 0.07651897759805117, 0.05959303967318552, 0.043599199201339804, 0.02996526217495277, 0.019347027367283706, 0.011734565272556957, 0.006686153747986896"/>
+      <render-quad out="blured" material="new(gaussian2)" horizontal="false" weight="0.11133445546052693, 0.1045890418008441, 0.09229950543353568, 0.07651897759805117, 0.05959303967318552, 0.043599199201339804, 0.02996526217495277, 0.019347027367283706, 0.011734565272556957, 0.006686153747986896"/>
+      <render-quad material="new(post)" baseColor="red" blurArg="0,1,0,1"/>
     </renderer>
   </renderers>
     <scene>
@@ -33,7 +27,6 @@
           <MouseCameraControl rotateX="10" moveSpeed="0.1"/>
         </camera.components>
       </camera>
-      <mesh position="0,0,0" geometry="sphere" material="material" targetBuffer="default" testTex="./earthmap.jpeg"></mesh>
-      <mesh position="1,0,0" layer="other" geometry="sphere" material="material" targetBuffer="default" testTex="./earthmap.jpeg"></mesh>
+      <mesh position="0,0,0" geometry="sphere" material="new(test)" targetBuffer="default" testTex="./earthmap.jpeg"></mesh>
     </scene>
 </goml>

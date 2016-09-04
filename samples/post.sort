@@ -10,14 +10,16 @@ void main(){
 }
 
 @frag{
-@{type:"backbuffer",name:"backbuffer1"}
+@{type:"backbuffer",name:"blurHorizontal"}
 uniform sampler2D _bb1;
 
 @{type:"color"}
 uniform vec3 baseColor;
 
+uniform float blurArg[100];
+
 void main(){
   gl_FragColor = texture2D(_bb1,uv);
-  gl_FragColor.rgb *= baseColor;
+  //gl_FragColor.rgb *= vec3(blurArg[0],blurArg[1],blurArg[2]);
 }
 }
