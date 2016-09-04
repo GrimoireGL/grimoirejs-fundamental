@@ -5,7 +5,6 @@
   <import-material type="post" src="./post.sort"/>
   <import-material type="depth" src="./depth.sort"/>
   <import-material type="gaussian" src="./blur.sort"/>
-  <import-material type="gaussian2" src="./blur1.sort"/>
   <geometry name="sphere" type="sphere" divHorizontal="40" divVertical="40"/>
   <material type="test" testTex="./sample.png"/>
   <renderers bgColor="#F003">
@@ -16,8 +15,8 @@
       <backbuffer name="blured"/>
       <render-scene out="depthbuffer" material="new(depth)"/>
       <render-scene out="nonblur"/>
-      <render-quad out="blurHorizontal" material="new(gaussian)" horizontal="true" weight="0.11133445546052693, 0.1045890418008441, 0.09229950543353568, 0.07651897759805117, 0.05959303967318552, 0.043599199201339804, 0.02996526217495277, 0.019347027367283706, 0.011734565272556957, 0.006686153747986896"/>
-      <render-quad out="blured" material="new(gaussian2)" horizontal="false" weight="0.11133445546052693, 0.1045890418008441, 0.09229950543353568, 0.07651897759805117, 0.05959303967318552, 0.043599199201339804, 0.02996526217495277, 0.019347027367283706, 0.011734565272556957, 0.006686153747986896"/>
+      <render-quad out="blurHorizontal" texture="backbuffer(nonblur)" horizontal="true" material="new(gaussian)" weight="0.05272301421719853, 0.0527177421793831, 0.05270719968523177, 0.05269138989691302, 0.052670317555703464, 0.052643988979618146, 0.052612412060253494, 0.052575596258845114, 0.05253355260154329, 0.05248629367390932"/>
+      <render-quad out="blured" material="new(gaussian)" texture="backbuffer(blurHorizontal)" weight="0.05272301421719853, 0.0527177421793831, 0.05270719968523177, 0.05269138989691302, 0.052670317555703464, 0.052643988979618146, 0.052612412060253494, 0.052575596258845114, 0.05253355260154329, 0.05248629367390932"/>
       <render-quad material="new(post)" baseColor="red" blurArg="0,1,0,1"/>
     </renderer>
   </renderers>

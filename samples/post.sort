@@ -10,7 +10,7 @@ void main(){
 }
 
 @frag{
-@{type:"backbuffer",name:"blurHorizontal"}
+@{type:"backbuffer",name:"blured"}
 uniform sampler2D _bb1;
 
 @{type:"color"}

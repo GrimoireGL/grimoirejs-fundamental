@@ -7,7 +7,7 @@ import UniformProxy from "../../Resource/UniformProxy";
 import EnvUniformValueResolver from "../EnvUniformValueResolver";
 import ITransformingArgument from "./ITransformingArgument";
 
-function _getDecl(converter: string, defaultValue: any, register: (proxy: UniformProxy, val: any) => void): IMaterialAttributeDeclaration {
+function _getDecl(converter: string, defaultValue: any, register: (proxy: UniformProxy, val: any, matInfo: IMaterialArgument) => void): IMaterialAttributeDeclaration {
   return {
     converter: converter,
     defaultValue: defaultValue,
@@ -85,8 +85,8 @@ async function _registerUserUniforms(input: ITransformingArgument): Promise<void
           }
           break;
         case "sampler2D":
-          attributes[variableName] = _getDecl("texture2D", _resolveDefault(variableInfo, undefined), (proxy, val) => {
-            proxy.uniformTexture2D(variableName, val as Texture2D);
+          attributes[variableName] = _getDecl("materialtexture", _resolveDefault(variableInfo, undefined), (proxy, val, matArgs) => {
+            proxy.uniformTexture2D(variableName, val(matArgs.buffers) as Texture2D);
           });
           break;
         default:

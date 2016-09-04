@@ -92,6 +92,7 @@ export default class RenderSceneComponent extends Component {
       camera: args.camera,
       buffers: args.buffers,
       layer: this._layer,
+      viewport: args.viewport,
       material: this._useMaterial ? this._material : undefined,
       materialArgs: this._useMaterial ? this._materialArgs : undefined
     });

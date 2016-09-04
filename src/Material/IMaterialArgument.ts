@@ -1,3 +1,4 @@
+import Rectangle from "grimoirejs-math/lib/Rectangle";
 import Texture2D from "../Resource/Texture2D";
 import TransformComponent from "../Components/TransformComponent";
 import ICamera from "../Camera/ICamera";
@@ -7,6 +8,7 @@ interface IMaterialArgument {
   geometry: Geometry;
   attributeValues: { [key: string]: any };
   camera: ICamera;
+  viewport: Rectangle;
   transform: TransformComponent;
   buffers: { [key: string]: Texture2D; };
 }

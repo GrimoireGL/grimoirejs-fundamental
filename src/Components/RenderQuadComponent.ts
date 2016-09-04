@@ -148,7 +148,8 @@ export default class RenderQuadComponent extends Component {
       attributeValues: {},
       camera: args.camera.camera,
       transform: null,
-      buffers: args.buffers
+      buffers: args.buffers,
+      viewport: args.viewport
     };
     if (this._materialComponent) {
       renderArgs.attributeValues = this._materialComponent.materialArgs;

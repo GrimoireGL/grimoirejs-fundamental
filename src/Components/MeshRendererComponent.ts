@@ -60,7 +60,8 @@ export default class MeshRenderer extends Component {
       attributeValues: {},
       camera: args.camera.camera,
       transform: this._transformComponent,
-      buffers: args.buffers
+      buffers: args.buffers,
+      viewport: args.viewport
     };
     if (args.material) {
       renderArgs.attributeValues = args.materialArgs;

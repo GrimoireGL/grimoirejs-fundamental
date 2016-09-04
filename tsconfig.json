@@ -48,6 +48,7 @@
     "./src/Converters/EnumConverter.ts",
     "./src/Converters/GeometryConverter.ts",
     "./src/Converters/MaterialConverter.ts",
+    "./src/Converters/MaterialTextureConverter.ts",
     "./src/Converters/NumberArrayConverter.ts",
     "./src/Converters/NumberConverter.ts",
     "./src/Converters/ObjectConverter.ts",

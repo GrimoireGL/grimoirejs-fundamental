@@ -1,3 +1,4 @@
+import IMaterialArgument from "./IMaterialArgument";
 import SORTPassInfoResolver from "./SORTPassInfoResolver";
 import ISORTPassInfo from "./ISORTPassInfo";
 import SORTPass from "./SORTPass";
@@ -19,9 +20,9 @@ export default class PassFactory {
     const fs = new Shader(gl, WebGLRenderingContext.FRAGMENT_SHADER, passInfo.fragment);
     const program = new Program(gl);
     program.update([vs, fs]);
-    const registerers: ((proxy: UniformProxy, values: { [key: string]: any }) => void)[] = [];
+    const registerers: ((proxy: UniformProxy, matInfo: IMaterialArgument) => void)[] = [];
     for (let key in passInfo.gomlAttributes) {
-      registerers.push((p, v) => passInfo.gomlAttributes[key].register(p, v[key]));
+      registerers.push((p, m) => passInfo.gomlAttributes[key].register(p, m.attributeValues[key], m));
     }
     const attributes: string[] = [];
     for (let key in passInfo.attributes) {
@@ -29,7 +30,7 @@ export default class PassFactory {
     }
     return new SORTPass(program, attributes, (p, args) => {
       passInfo.configurator.forEach((configurator) => configurator(p.gl)); // gl configuration
-      registerers.forEach((r) => r(p.uniforms, args.attributeValues)); // user variables
+      registerers.forEach((r) => r(p.uniforms, args)); // user variables
       passInfo.systemRegisterers.forEach((r) => r(p.uniforms, args)); // system variables
     }, passInfo);
   }

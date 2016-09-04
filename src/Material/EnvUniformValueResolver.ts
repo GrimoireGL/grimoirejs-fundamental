@@ -1,3 +1,4 @@
+import {Vector2} from "grimoirejs-math";
 import IMaterialArgument from "./IMaterialArgument";
 import UniformProxy from "../Resource/UniformProxy";
 import IVariableInfo from "./IVariableInfo";
@@ -54,6 +55,14 @@ export default class EnvUniformValueResolver {
 
 EnvUniformValueResolver.addResolver("_matPVM", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.transform.calcPVW(args.camera)));
 EnvUniformValueResolver.addResolver("_time", (valInfo, name) => (proxy, args) => proxy.uniformFloat(name, Date.now() % 1000000));
+EnvUniformValueResolver.addResolver("_viewportSize", (valInfo, name) => {
+  const cacheVec = new Vector2(0, 0);
+  return (proxy, args) => {
+    cacheVec.X = args.viewport.Width;
+    cacheVec.Y = args.viewport.Height;
+    proxy.uniformVector2(name, cacheVec);
+  }
+});
 EnvUniformValueResolver.addDynamicResolver((valInfo, name) => {
   if (valInfo.variableType === "sampler2D" && valInfo.variableAnnotation["type"] === "backbuffer") {
     return (proxy, mat) => {
