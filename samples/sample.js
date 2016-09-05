@@ -5,3 +5,10 @@
 //   // gr("#main")("renderers").attr("bgColor","green");
 //   i++;
 // },3);
+
+var dof = document.getElementById("dof");
+
+dof.addEventListener('input', function()
+{
+    gr("#main")("#depth").attr("depthOffset",dof.value/100);
+});

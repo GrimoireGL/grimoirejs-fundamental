@@ -1,12 +1,12 @@
 @DepthFunc(LEQUAL)
+@BlendFunc(SRC_ALPHA,ONE_MINUS_SRC_ALPHA)
 attribute vec3 position;
-uniform mediump float _time;
-varying vec3 pos;
+varying vec2 uv;
 @vert{
   uniform mat4 _matPVM;
   void main(){
     gl_Position = _matPVM * vec4(position,1.);
-    pos = position.xyz;
+    uv = (position.xy + vec2(1.0))/2.0;
   }
 }
 
@@ -14,7 +14,9 @@ varying vec3 pos;
   @{type:"color",default:"#6E183D"}
   uniform vec4 color;
 
+  uniform sampler2D texture;
+
   void main(){
-    gl_FragColor = color;
+    gl_FragColor = texture2D(texture,uv)*color;
   }
 }

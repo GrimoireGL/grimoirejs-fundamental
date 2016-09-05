@@ -35,6 +35,7 @@ export default class Program extends ResourceBase {
 
   public use(): void {
     this.gl.useProgram(this.program);
+    this.uniforms.onUse();
   }
 
   public destroy(): void {

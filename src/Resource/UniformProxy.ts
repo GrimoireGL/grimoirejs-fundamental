@@ -4,6 +4,8 @@ import {Matrix} from "grimoirejs-math";
 import Program from "./Program";
 export default class UniformProxy {
   private _gl: WebGLRenderingContext;
+
+  private _currentTextureRegister: number = 0;
   constructor(public program: Program) {
     this._gl = program.gl;
   }
@@ -80,9 +82,14 @@ export default class UniformProxy {
 
   public uniformTexture2D(variableName: string, val: Texture2D): void {
     if (val.valid) {
-      val.register(0);
-      this.uniformInt(variableName, 0);
+      val.register(this._currentTextureRegister);
+      this.uniformInt(variableName, this._currentTextureRegister);
+      this._currentTextureRegister++;
     } // TODO pass alt texture
+  }
+
+  public onUse(): void {
+    this._currentTextureRegister = 0;
   }
 
 }
