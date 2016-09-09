@@ -14,10 +14,31 @@ attribute vec3 position;
   @{type:"color", default:"pink"}
   uniform vec4 color;
 
-  uniform float _time;
-
   void main(){
      gl_FragColor = color;
-     gl_FragColor.rgb *=vec3(sin(_time / 100.),cos(_time / 100. + 50.),sin(_time / 100. + 100.));
+  }
+}
+
+@Pass
+@DepthFunc(LEQUAL)
+@CullFace(FRONT)
+attribute vec3 position;
+
+@vert{
+   uniform mat4 _matPVM;
+
+   @{default:"1.1"}
+   uniform float edgeScale;
+   void main(){
+      gl_Position = _matPVM * vec4(position * edgeScale,1);
+   }
+}
+
+@frag{
+  @{type:"color", default:"black"}
+  uniform vec4 edgeColor;
+
+  void main(){
+     gl_FragColor = edgeColor;
   }
 }

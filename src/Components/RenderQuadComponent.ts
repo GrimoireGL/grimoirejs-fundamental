@@ -15,6 +15,10 @@ export default class RenderQuadComponent extends Component {
       defaultValue: "default",
       converter: "string"
     },
+    depthBuffer: {
+      defaultValue: undefined,
+      converter: "string"
+    },
     targetBuffer: {
       defaultValue: "default",
       converter: "string",
@@ -54,9 +58,9 @@ export default class RenderQuadComponent extends Component {
 
   private _clearColor: Color4;
 
-  private _clearDepth: number;
-
   private _clearColorEnabled: boolean;
+
+  private _clearDepth: number;
 
   private _clearDepthEnabled: boolean;
 
@@ -75,6 +79,10 @@ export default class RenderQuadComponent extends Component {
     if (out !== "default") {
       this._fbo = new Framebuffer(this.companion.get("gl"));
       this._fbo.update(args.buffers[out]);
+    }
+    const depthBuffer = this.getValue("depthBuffer");
+    if (depthBuffer && this._fbo) {
+      this._fbo.update(args.buffers[depthBuffer]);
     }
   }
 

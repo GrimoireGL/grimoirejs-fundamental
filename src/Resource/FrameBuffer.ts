@@ -1,3 +1,4 @@
+import RenderBuffer from "./RenderBuffer";
 import Texture2D from "./Texture2D";
 import ResourceBase from "./ResourceBase";
 export default class FrameBuffer extends ResourceBase {
@@ -7,7 +8,9 @@ export default class FrameBuffer extends ResourceBase {
     this.fbo = gl.createFramebuffer();
   }
 
-  public update(boundTo: Texture2D, level?: number, bindIndex?: number): void {
+  public update(boundTo: RenderBuffer, attachTo?: number): void;
+  public update(boundTo: Texture2D, level?: number, bindIndex?: number): void;
+  public update(boundTo: Texture2D | RenderBuffer, level?: number, bindIndex?: number): void {
     this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, this.fbo);
     if (boundTo instanceof Texture2D) {
       if (typeof bindIndex === "undefined") {
@@ -20,6 +23,12 @@ export default class FrameBuffer extends ResourceBase {
       if (this.gl.checkFramebufferStatus(WebGLRenderingContext.FRAMEBUFFER) !== WebGLRenderingContext.FRAMEBUFFER_COMPLETE) {
         throw new Error("INCOMPLETE framebuffer");
       }
+    } else if (boundTo instanceof RenderBuffer) {
+      let registerTarget: number = level;
+      if (typeof level === "undefined") {
+        registerTarget = WebGLRenderingContext.DEPTH_ATTACHMENT;
+      }
+      this.gl.framebufferRenderbuffer(WebGLRenderingContext.FRAMEBUFFER, registerTarget, WebGLRenderingContext.RENDERBUFFER, boundTo.renderBuffer);
     }
     this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
   }

@@ -1,5 +1,7 @@
 @Pass
 @NoBlend()
+@NoDepth()
+@NoCull()
 attribute vec3 position;
 varying vec2 uv;
 @vert{

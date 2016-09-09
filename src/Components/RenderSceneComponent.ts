@@ -17,6 +17,10 @@ export default class RenderSceneComponent extends Component {
       defaultValue: "default",
       boundTo: "_layer"
     },
+    depthBuffer: {
+      defaultValue: undefined,
+      converter: "string"
+    },
     out: {
       converter: "string",
       defaultValue: "default"
@@ -30,6 +34,16 @@ export default class RenderSceneComponent extends Component {
       defaultValue: true,
       converter: "boolean",
       boundTo: "_clearColorEnabled"
+    },
+    clearDepthEnabled: {
+      defaultValue: true,
+      converter: "boolean",
+      boundTo: "_clearDepthEnabled"
+    },
+    clearDepth: {
+      defaultValue: 1.0,
+      converter: "number",
+      boundTo: "_clearDepth"
     },
     material: {
       defaultValue: undefined,
@@ -58,6 +72,10 @@ export default class RenderSceneComponent extends Component {
 
   private _materialArgs: { [key: string]: any } = {};
 
+  private _clearDepth: number;
+
+  private _clearDepthEnabled: boolean;
+
   public $mount() {
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
@@ -73,6 +91,10 @@ export default class RenderSceneComponent extends Component {
       this._fbo = new Framebuffer(this.companion.get("gl"));
       this._fbo.update(args.buffers[out]);
     }
+    const depthBuffer = this.getValue("depthBuffer");
+    if (depthBuffer && this._fbo) {
+      this._fbo.update(args.buffers[depthBuffer]);
+    }
   }
 
   public $render(args: IRenderRendererMessage) {
@@ -87,6 +109,10 @@ export default class RenderSceneComponent extends Component {
     if (this._fbo && this._clearColorEnabled) {
       this._gl.clearColor(this._clearColor.R, this._clearColor.G, this._clearColor.B, this._clearColor.A);
       this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
+    }
+    if (this._clearDepthEnabled) {
+      this._gl.clearDepth(this._clearDepth);
+      this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
     }
     args.camera.node.sendMessage("renderScene", <IRenderSceneMessage>{
       camera: args.camera,

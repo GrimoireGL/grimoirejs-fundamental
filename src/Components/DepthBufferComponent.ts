@@ -1,9 +1,9 @@
 import IResizeBufferMessage from "../Messages/IResizeBufferMessage";
-import Texture2D from "../Resource/Texture2D";
+import RenderBuffer from "../Resource/RenderBuffer";
 import Component from "grimoirejs/lib/Core/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
 
-export default class BackBufferComponent extends Component {
+export default class DepthBufferComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
       converter: "string",
@@ -11,10 +11,10 @@ export default class BackBufferComponent extends Component {
     }
   };
 
-  public buffer: Texture2D;
+  public buffer: RenderBuffer;
 
   public $mount(): void {
-    this.buffer = new Texture2D(this.companion.get("gl"));
+    this.buffer = new RenderBuffer(this.companion.get("gl"));
   }
 
   public $unmount(): void {
@@ -26,7 +26,7 @@ export default class BackBufferComponent extends Component {
     if (!this.getValue("name")) {
       throw new Error(`Attribute 'name' must be specified.`);
     }
-    this.buffer.update(0, arg.width, arg.height, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, null);
+    this.buffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, arg.width, arg.height);
     arg.buffers[this.getValue("name")] = this.buffer;
   }
 }
