@@ -67,7 +67,8 @@
     "ava": "ava --verbose",
     "test": "babel-node ./scripts/test-runner.js --presets es2015,stage-2 --plugins transform-runtime",
     "prelint": "tsc ./scripts/lint/*.ts --outDir ./scripts/lint -m commonjs -t es5",
-    "lint": "tslint ./src/**/*.ts"
+    "lint": "tslint ./src/**/*.ts",
+    "doc":"babel-node ./scripts/generate-markdown.js --presets es2015,stage-2 --plugins transform-runtime"
   },
   "grimoire": {
     "namespace": "HTTP://GRIMOIRE.GL/NS/DEFAULT",
