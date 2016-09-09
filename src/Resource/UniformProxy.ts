@@ -85,7 +85,9 @@ export default class UniformProxy {
       val.register(this._currentTextureRegister);
       this.uniformInt(variableName, this._currentTextureRegister);
       this._currentTextureRegister++;
-    } // TODO pass alt texture
+    } else {
+      console.warn(`The texture assigned to '${variableName}' is not valid.`);
+    }
   }
 
   public onUse(): void {

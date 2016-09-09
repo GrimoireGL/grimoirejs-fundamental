@@ -87,7 +87,11 @@ async function _registerUserUniforms(input: ITransformingArgument): Promise<void
           break;
         case "sampler2D":
           attributes[variableName] = _getDecl("materialtexture", _resolveDefault(variableInfo, undefined), (proxy, val, matArgs) => {
-            proxy.uniformTexture2D(variableName, val(matArgs.buffers) as Texture2D);
+            if (val) {
+              proxy.uniformTexture2D(variableName, val(matArgs.buffers) as Texture2D);
+            } else {
+              throw new Error(`The material require a texture(${variableName}) as argument. But there was no texture specified`);
+            }
           });
           break;
         default:

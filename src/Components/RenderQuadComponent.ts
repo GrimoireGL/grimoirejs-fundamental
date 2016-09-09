@@ -29,6 +29,16 @@ export default class RenderQuadComponent extends Component {
       defaultValue: true,
       converter: "boolean",
       boundTo: "_clearColorEnabled"
+    },
+    clearDepthEnabled: {
+      defaultValue: true,
+      converter: "boolean",
+      boundTo: "_clearDepthEnabled"
+    },
+    clearDepth: {
+      defaultValue: 1.0,
+      converter: "number",
+      boundTo: "_clearDepth"
     }
   };
 
@@ -44,7 +54,11 @@ export default class RenderQuadComponent extends Component {
 
   private _clearColor: Color4;
 
+  private _clearDepth: number;
+
   private _clearColorEnabled: boolean;
+
+  private _clearDepthEnabled: boolean;
 
   private _materialContainer: MaterialContainerComponent;
 
@@ -80,6 +94,10 @@ export default class RenderQuadComponent extends Component {
     if (this._fbo && this._clearColorEnabled) {
       this._gl.clearColor(this._clearColor.R, this._clearColor.G, this._clearColor.B, this._clearColor.A);
       this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
+    }
+    if (this._clearDepthEnabled) {
+      this._gl.clearDepth(this._clearDepth);
+      this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
     }
     // make rendering argument
     const renderArgs = <IMaterialArgument>{

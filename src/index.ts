@@ -1,12 +1,8 @@
-import PassFactory from "./Material/PassFactory";
-import Material from "./Material/Material";
-import MaterialFactory from "./Material/MaterialFactory";
 import DefaultPrimitives from "./Geometry/DefaultPrimitives";
 //
 // DO NOT REMOVE THE LINE BELOW.
 //
 import GrimoireInterface from "grimoirejs";
-import testShader from "./TestShader/Test.glsl";
 
 //<%=IMPORTS%>
 
