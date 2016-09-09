@@ -1,8 +1,8 @@
-import Attribute from "grimoirejs/lib/Core/Node/Attribute";
+import Attribute from "grimoirejs/lib/Node/Attribute";
 import {Quaternion, Vector3, Matrix} from "grimoirejs-math";
 import TransformComponent from "./TransformComponent";
-import Component from "grimoirejs/lib/Core/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
+import Component from "grimoirejs/lib/Node/Component";
+import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 
 export default class MouseCameraControlComponent extends Component {
   public static rotateCoefficient = 0.003;

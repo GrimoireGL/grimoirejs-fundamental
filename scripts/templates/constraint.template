@@ -1,4 +1,4 @@
-import GomlNode from "grimoirejs/lib/Core/Node/GomlNode";
+import GomlNode from "grimoirejs/lib/Node/GomlNode";
 
 function {{name}}Constraint(arg1: any, arg2: any/*replace args*/): ((self: GomlNode) => string) {
   return (self: GomlNode) => {

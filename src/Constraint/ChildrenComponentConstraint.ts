@@ -1,5 +1,5 @@
-import GomlNode from "grimoirejs/lib/Core/Node/GomlNode";
-import NSIdentity from "grimoirejs/lib/Core/Base/NSIdentity";
+import GomlNode from "grimoirejs/lib/Node/GomlNode";
+import NSIdentity from "grimoirejs/lib/Base/NSIdentity";
 
 function ChildrenComponentConstraint(componentIds: NSIdentity[]): ((self: GomlNode) => string) {
   return (self: GomlNode) => {

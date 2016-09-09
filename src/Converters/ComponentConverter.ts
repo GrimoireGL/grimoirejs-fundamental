@@ -1,5 +1,5 @@
-import Component from "grimoirejs/lib/Core/Node/Component";
-import GomlNode from "grimoirejs/lib/Core/Node/GomlNode";
+import Component from "grimoirejs/lib/Node/Component";
+import GomlNode from "grimoirejs/lib/Node/GomlNode";
 
 
 function ComponentConverter(val: any): any {

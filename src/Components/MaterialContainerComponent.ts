@@ -2,8 +2,8 @@ import MaterialComponent from "./MaterialComponent";
 import SORTPass from "../Material/SORTPass";
 import Material from "../Material/Material";
 import AssetLoader from "../Asset/AssetLoader";
-import Component from "grimoirejs/lib/Core/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
+import Component from "grimoirejs/lib/Node/Component";
+import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 
 export default class MaterialContainerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {

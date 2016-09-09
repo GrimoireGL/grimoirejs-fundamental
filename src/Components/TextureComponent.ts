@@ -1,6 +1,6 @@
 import Texture2D from "../Resource/Texture2D";
-import Component from "grimoirejs/lib/Core/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
+import Component from "grimoirejs/lib/Node/Component";
+import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 import ImageResolver from "../Asset/ImageResolver";
 export default class TextureComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {

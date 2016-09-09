@@ -1,8 +1,8 @@
 import MaterialFactory from "../Material/MaterialFactory";
 import SORTPass from "../Material/SORTPass";
 import Material from "../Material/Material";
-import Component from "grimoirejs/lib/Core/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
+import Component from "grimoirejs/lib/Node/Component";
+import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 import ResourceBase from "../Resource/ResourceBase";
 
 
