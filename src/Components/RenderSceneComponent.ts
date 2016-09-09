@@ -14,8 +14,7 @@ export default class RenderSceneComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     layer: {
       converter: "string",
-      defaultValue: "default",
-      boundTo: "_layer"
+      defaultValue: "default"
     },
     depthBuffer: {
       defaultValue: undefined,
@@ -28,22 +27,18 @@ export default class RenderSceneComponent extends Component {
     clearColor: {
       defaultValue: "#0000",
       converter: "color4",
-      boundTo: "_clearColor"
     },
     clearColorEnabled: {
       defaultValue: true,
       converter: "boolean",
-      boundTo: "_clearColorEnabled"
     },
     clearDepthEnabled: {
       defaultValue: true,
       converter: "boolean",
-      boundTo: "_clearDepthEnabled"
     },
     clearDepth: {
       defaultValue: 1.0,
       converter: "number",
-      boundTo: "_clearDepth"
     },
     material: {
       defaultValue: undefined,
@@ -75,6 +70,15 @@ export default class RenderSceneComponent extends Component {
   private _clearDepth: number;
 
   private _clearDepthEnabled: boolean;
+
+  public $awake(): void {
+    this.getAttribute("layer").boundTo("_layer");
+    this.getAttribute("clearColor").boundTo("_clearColor");
+    this.getAttribute("clearColorEnabled").boundTo("_clearColorEnabled");
+    this.getAttribute("clearDepthEnabled").boundTo("_clearDepthEnabled");
+    this.getAttribute("clearDepth").boundTo("_clearDepth");
+  }
+
 
   public $mount() {
     this._gl = this.companion.get("gl");

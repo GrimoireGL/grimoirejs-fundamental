@@ -16,13 +16,11 @@ export default class MeshRenderer extends Component {
     },
     targetBuffer: {
       converter: "string",
-      defaultValue: "default",
-      boundTo: "_targetBuffer"
+      defaultValue: "default"
     },
     layer: {
       converter: "string",
-      defaultValue: "default",
-      boundTo: "_layer"
+      defaultValue: "default"
     }
   };
 
@@ -31,6 +29,11 @@ export default class MeshRenderer extends Component {
   private _materialContainer: MaterialContainerComponent;
   private _transformComponent: TransformComponent;
   private _layer: string;
+
+  public $awake(): void {
+    this.getAttribute("targetBuffer").boundTo("_targetBuffer");
+    this.getAttribute("layer").boundTo("_layer");
+  }
 
   public $mount() {
     this._transformComponent = this.node.getComponent("Transform") as TransformComponent;

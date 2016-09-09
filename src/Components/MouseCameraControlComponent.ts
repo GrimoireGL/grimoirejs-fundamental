@@ -12,23 +12,19 @@ export default class MouseCameraControlComponent extends Component {
     // Specify the attributes user can intaract
     rotateX: {
       defaultValue: 1,
-      converter: "number",
-      boundTo: "_rotateX"
+      converter: "number"
     },
     rotateY: {
       defaultValue: 1,
-      converter: "number",
-      boundTo: "_rotateY"
+      converter: "number"
     },
     moveZ: {
       defaultValue: 1,
-      converter: "number",
-      boundTo: "_moveZ"
+      converter: "number"
     },
     moveSpeed: {
       defaultValue: 1,
-      converter: "number",
-      boundTo: "_moveSpeed"
+      converter: "number"
     }
 
   };
@@ -58,6 +54,10 @@ export default class MouseCameraControlComponent extends Component {
   private _initialRotation: Quaternion;
 
   public $awake(): void {
+    this.getAttribute("rotateX").boundTo("_rotateX");
+    this.getAttribute("rotateY").boundTo("_rotateY");
+    this.getAttribute("moveZ").boundTo("_moveZ");
+    this.getAttribute("moveSpeed").boundTo("_moveSpeed");
     this.transform = this.node.getComponent("Transform") as TransformComponent;
     this.scriptTag = this.companion.get("canvasElement");
   }

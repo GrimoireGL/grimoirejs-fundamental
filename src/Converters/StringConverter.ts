@@ -1,4 +1,6 @@
-function StringConverter(val: any): any {
+import Attribute from "grimoirejs/lib/Node/Attribute";
+
+function StringConverter(this: Attribute, val: any): any {
   if (typeof val === "string") {
     return val;
   } else if (typeof val === "undefined") {
