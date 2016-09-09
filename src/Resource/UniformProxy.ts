@@ -13,7 +13,7 @@ export default class UniformProxy {
   public uniformBool(variableName: string, val: boolean): void {
     const location = this.program.findUniformLocation(variableName);
     if (location) {
-      this._gl.uniform1i(variableName, val ? 1 : 0);
+      this._gl.uniform1i(location, val ? 1 : 0);
     }
   }
 

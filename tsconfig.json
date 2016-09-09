@@ -24,6 +24,7 @@
     "./src/Components/GeometryRegistoryComponent.ts",
     "./src/Components/LoopManagerComponent.ts",
     "./src/Components/MaterialComponent.ts",
+    "./src/Components/MaterialContainerComponent.ts",
     "./src/Components/MaterialImporterComponent.ts",
     "./src/Components/MaterialManagerComponent.ts",
     "./src/Components/MeshRendererComponent.ts",

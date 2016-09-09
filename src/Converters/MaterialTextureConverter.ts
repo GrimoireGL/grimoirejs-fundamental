@@ -21,7 +21,8 @@ function MaterialTextureConverter(val: any): any {
     const tex = new Texture2D(this.companion.get("gl"));
     ImageResolver.resolve(val).then(t => {
       tex.update(t);
-    })
+    });
+    this.companion.get("loader").register(tex.validPromise);
     return () => tex;
   }
 }

@@ -52,6 +52,7 @@ async function _registerUserUniforms(input: ITransformingArgument): Promise<void
           attributes[variableName] = _getDecl("boolean", _resolveDefault(variableInfo, false), (proxy, val) => {
             proxy.uniformBool(variableName, val);
           });
+          break;
         case "float":
           attributes[variableName] = _getDecl("number", _resolveDefault(variableInfo, 0), (proxy, val) => {
             proxy.uniformFloat(variableName, val as number);

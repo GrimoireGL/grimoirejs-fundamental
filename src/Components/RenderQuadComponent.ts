@@ -1,12 +1,7 @@
+import MaterialContainerComponent from "./MaterialContainerComponent";
 import GeometryRegistoryComponent from "./GeometryRegistoryComponent";
 import Geometry from "../Geometry/Geometry";
 import IMaterialArgument from "../Material/IMaterialArgument";
-import ResourceBase from "../Resource/ResourceBase";
-import SORTPass from "../Material/SORTPass";
-import AssetLoader from "../Asset/AssetLoader";
-import MaterialComponent from "./MaterialComponent";
-import Material from "../Material/Material";
-import IRenderSceneMessage from "../Messages/IRenderSceneMessage";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
 import Framebuffer from "../Resource/FrameBuffer";
@@ -16,11 +11,6 @@ import {Color4} from "grimoirejs-math";
 
 export default class RenderQuadComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
-    material: {
-      defaultValue: undefined,
-      converter: "material",
-      componentBoundTo: "_materialComponent"
-    },
     out: {
       defaultValue: "default",
       converter: "string"
@@ -50,70 +40,20 @@ export default class RenderQuadComponent extends Component {
 
   private _fbo: Framebuffer;
 
-  private _material: Material;
-
-  private _materialComponent: MaterialComponent;
-
-  private _materialArgs: { [key: string]: any } = {};
-
   private _geom: Geometry;
 
   private _clearColor: Color4;
 
   private _clearColorEnabled: boolean;
 
+  private _materialContainer: MaterialContainerComponent;
+
   public $mount() {
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
     const gr = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
     this._geom = gr.getGeometry("quad");
-    this.attributes.get("material").addObserver(this._onMaterialChanged);
-    this._onMaterialChanged();
-  }
-
-  private _onMaterialChanged(): void {
-    if (!this._materialComponent) { // the material must be instanciated by attribute.
-      this._prepareInternalMaterial();
-    } else {
-      this._prepareExternalMaterial();
-    }
-  }
-
-  private async _prepareExternalMaterial(): Promise<void> {
-    const materialPromise = this.getValue("material") as Promise<Material>
-    const loader = this.companion.get("loader") as AssetLoader;
-    loader.register(materialPromise);
-    const material = await materialPromise;
-    this._material = material;
-  }
-
-  private async _prepareInternalMaterial(): Promise<void> {
-    // obtain promise of instanciating material
-    const materialPromise = this.getValue("material") as Promise<Material>;
-    const loader = this.companion.get("loader") as AssetLoader;
-    loader.register(materialPromise);
-    if (!materialPromise) {
-      return;
-    }
-    const material = await materialPromise;
-    const promises: Promise<any>[] = [];
-    material.pass.forEach((p) => {
-      if (p instanceof SORTPass) {
-        for (let key in p.programInfo.gomlAttributes) {
-          const val = p.programInfo.gomlAttributes[key];
-          this.__addAtribute(key, val);
-          this.attributes.get(key).addObserver((v) => {
-            this._materialArgs[key] = v.Value;
-          });
-          const value = this._materialArgs[key] = this.getValue(key);
-          if (value instanceof ResourceBase) {
-            promises.push((value as ResourceBase).validPromise);
-          }
-        }
-      }
-    });
-    await Promise.all(promises);
-    this._material = material;
+    this._materialContainer = this.node.getComponent("MaterialContainer") as MaterialContainerComponent;
   }
 
   public $bufferUpdated(args: IBufferUpdatedMessage) {
@@ -125,7 +65,7 @@ export default class RenderQuadComponent extends Component {
   }
 
   public $render(args: IRenderRendererMessage) {
-    if (!this._material) {
+    if (!this._materialContainer.ready) {
       return;
     }
     // bound render target
@@ -151,12 +91,9 @@ export default class RenderQuadComponent extends Component {
       buffers: args.buffers,
       viewport: args.viewport
     };
-    if (this._materialComponent) {
-      renderArgs.attributeValues = this._materialComponent.materialArgs;
-    } else {
-      renderArgs.attributeValues = this._materialArgs;
-    }
+    renderArgs.attributeValues = this._materialContainer.materialArgs;
     // do render
-    this._material.draw(renderArgs);
+    this._materialContainer.material.draw(renderArgs);
+    this._gl.flush();
   }
 }
