@@ -69,7 +69,7 @@ export default class RenderQuadComponent extends Component {
     this.getAttribute("clearDepth").boundTo("_clearDepth");
   }
 
-  public $mount() {
+  public $mount(): void {
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
     const gr = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
@@ -77,7 +77,7 @@ export default class RenderQuadComponent extends Component {
     this._materialContainer = this.node.getComponent("MaterialContainer") as MaterialContainerComponent;
   }
 
-  public $bufferUpdated(args: IBufferUpdatedMessage) {
+  public $bufferUpdated(args: IBufferUpdatedMessage): void {
     const out = this.getValue("out");
     if (out !== "default") {
       this._fbo = new Framebuffer(this.companion.get("gl"));
@@ -89,7 +89,7 @@ export default class RenderQuadComponent extends Component {
     }
   }
 
-  public $render(args: IRenderRendererMessage) {
+  public $render(args: IRenderRendererMessage): void {
     if (!this._materialContainer.ready) {
       return;
     }

@@ -80,7 +80,7 @@ export default class RenderSceneComponent extends Component {
   }
 
 
-  public $mount() {
+  public $mount(): void {
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
     if (typeof this.getValue("material") !== "undefined") {
@@ -89,7 +89,7 @@ export default class RenderSceneComponent extends Component {
     }
   }
 
-  public $bufferUpdated(args: IBufferUpdatedMessage) {
+  public $bufferUpdated(args: IBufferUpdatedMessage): void {
     const out = this.getValue("out");
     if (out !== "default") {
       this._fbo = new Framebuffer(this.companion.get("gl"));
@@ -101,7 +101,7 @@ export default class RenderSceneComponent extends Component {
     }
   }
 
-  public $render(args: IRenderRendererMessage) {
+  public $render(args: IRenderRendererMessage): void {
     if (this._fbo) {
       this._fbo.bind();
       this._gl.viewport(0, 0, args.viewport.Width, args.viewport.Height);
@@ -138,7 +138,7 @@ export default class RenderSceneComponent extends Component {
   }
 
   private async _prepareExternalMaterial(): Promise<void> {
-    const materialPromise = this.getValue("material") as Promise<Material>
+    const materialPromise = this.getValue("material") as Promise<Material>;
     const loader = this.companion.get("loader") as AssetLoader;
     loader.register(materialPromise);
     const material = await materialPromise;

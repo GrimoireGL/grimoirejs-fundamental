@@ -12,7 +12,7 @@ function Texture2DConverter(this: Attribute, val: any): any {
       const tex = new Texture2D(this.companion.get("gl"));
       ImageResolver.resolve(val).then(t => {
         tex.update(t);
-      })
+      });
       return tex;
     }
   }

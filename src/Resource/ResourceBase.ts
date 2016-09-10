@@ -4,9 +4,9 @@ import IDObject from "grimoirejs/lib/Base/IDObject";
 abstract class ResourceBase extends IDObject {
   public destroyed: boolean = false;
 
-  private _valid: boolean;
-
   public validPromise: Promise<ResourceBase>;
+
+  private _valid: boolean;
 
   private _validResolve: (r: ResourceBase) => void;
 

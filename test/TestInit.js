@@ -1,5 +1,4 @@
 const xmldom = require("xmldom");
-const chalk = require("chalk");
 global.DOMParser = xmldom.DOMParser;
 const Module = module.constructor;
 const require0 = Module.prototype.require;

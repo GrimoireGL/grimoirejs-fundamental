@@ -61,7 +61,7 @@ EnvUniformValueResolver.addResolver("_viewportSize", (valInfo, name) => {
     cacheVec.X = args.viewport.Width;
     cacheVec.Y = args.viewport.Height;
     proxy.uniformVector2(name, cacheVec);
-  }
+  };
 });
 EnvUniformValueResolver.addDynamicResolver((valInfo, name) => {
   if (valInfo.variableType === "sampler2D" && valInfo.variableAnnotation["type"] === "backbuffer") {

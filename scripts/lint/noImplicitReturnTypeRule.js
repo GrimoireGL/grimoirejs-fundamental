@@ -1,3 +1,4 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -14,7 +15,7 @@ var Rule = (function (_super) {
     };
     Rule.FAILURE_STRING = "No implicit return value type is forbidden";
     return Rule;
-})(Lint.Rules.AbstractRule);
+}(Lint.Rules.AbstractRule));
 exports.Rule = Rule;
 // The walker takes care of all the work.
 var NoImplicitReturnTypeWalker = (function (_super) {
@@ -24,7 +25,7 @@ var NoImplicitReturnTypeWalker = (function (_super) {
     }
     NoImplicitReturnTypeWalker.prototype.visitMethodDeclaration = function (node) {
         if (!node.type) {
-            this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + node.name.text));
+            this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + node.name.getText()));
         }
         //if(node.type)console.log(this.sourceFile.text.substring(node.type.pos,node.type.end));
         // call the base version of this visitor to actually parse this node
@@ -32,17 +33,10 @@ var NoImplicitReturnTypeWalker = (function (_super) {
     };
     NoImplicitReturnTypeWalker.prototype.visitPropertyDeclaration = function (node) {
         if (!node.type) {
-            this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + node.name.text));
+            this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + node.name.getText()));
         }
         // call the base version of this visitor to actually parse this node
         _super.prototype.visitPropertyDeclaration.call(this, node);
     };
-    NoImplicitReturnTypeWalker.prototype.visitAccessorDeclaration = function (node) {
-        if (!node.type) {
-            this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + node.name.text));
-        }
-        // call the base version of this visitor to actually parse this node
-        _super.prototype.visitAccessorDeclaration.call(this, node);
-    };
     return NoImplicitReturnTypeWalker;
-})(Lint.RuleWalker);
+}(Lint.RuleWalker));

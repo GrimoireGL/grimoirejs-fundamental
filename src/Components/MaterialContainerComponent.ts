@@ -14,14 +14,13 @@ export default class MaterialContainerComponent extends Component {
     }
   };
 
-
-  private _materialComponent: MaterialComponent;
-
   public material: Material;
 
   public materialArgs: { [key: string]: any; } = {};
 
   public ready: boolean = false;
+
+  private _materialComponent: MaterialComponent;
 
   public $mount(): void {
     this.attributes.get("material").addObserver(this._onMaterialChanged);
@@ -32,7 +31,7 @@ export default class MaterialContainerComponent extends Component {
    * When the material attribute is changed.
    */
   private async _onMaterialChanged(): Promise<void> {
-    const materialPromise = this.getValue("material") as Promise<Material>
+    const materialPromise = this.getValue("material") as Promise<Material>;
     if (!this._materialComponent) { // the material must be instanciated by attribute.
       this._prepareInternalMaterial(materialPromise);
     } else {

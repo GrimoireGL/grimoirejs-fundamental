@@ -20,7 +20,7 @@ export default class Geometry {
     }
   }
 
-  public draw(indexName: string, attribNames: string[], program: Program) {
+  public draw(indexName: string, attribNames: string[], program: Program): void {
     const targetIndex = this.indicies[indexName];
     attribNames.forEach(name => {
       const attribInfo = this.attribInfo[name];

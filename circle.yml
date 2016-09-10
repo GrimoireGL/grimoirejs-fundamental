@@ -1,0 +1,12 @@
+general:
+  branches:
+    ignore:
+      - gh-pages
+machine:
+    timezone: Asia/Tokyo
+    node:
+      version: 6.5.0
+test:
+  override:
+    - sh ./scripts/test.sh:
+        parallel: true

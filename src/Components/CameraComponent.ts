@@ -31,6 +31,24 @@ export default class CameraComponent extends Component {
 
   public containedScene: SceneComponent;
 
+  /**
+ * Find scene tag recursively.
+ * @param  {GomlNode}       node [the node to searching currently]
+ * @return {SceneComponent}      [the scene component found]
+ */
+  private static _findContainedScene(node: GomlNode): SceneComponent {
+    if (node.parent) {
+      const scene = node.parent.getComponent("Scene");
+      if (!scene) {
+        return CameraComponent._findContainedScene(node.parent);
+      } else {
+        return scene;
+      }
+    } else {
+      return null;
+    }
+  }
+
   public $awake(): void {
     this.containedScene = CameraComponent._findContainedScene(this.node);
     const c = this.camera = new PerspectiveCamera();
@@ -49,27 +67,9 @@ export default class CameraComponent extends Component {
     }
   }
 
-  public $transformUpdated(t: TransformComponent) {
+  public $transformUpdated(t: TransformComponent): void {
     if (this.camera) {
       this.camera.updateTransform(t);
-    }
-  }
-
-  /**
-   * Find scene tag recursively.
-   * @param  {GomlNode}       node [the node to searching currently]
-   * @return {SceneComponent}      [the scene component found]
-   */
-  private static _findContainedScene(node: GomlNode): SceneComponent {
-    if (node.parent) {
-      const scene = node.parent.getComponent("Scene");
-      if (!scene) {
-        return CameraComponent._findContainedScene(node.parent);
-      } else {
-        return scene;
-      }
-    } else {
-      return null;
     }
   }
 }

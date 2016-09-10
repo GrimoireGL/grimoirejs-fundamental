@@ -5,9 +5,10 @@ import Component from "grimoirejs/lib/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 
 export default class MouseCameraControlComponent extends Component {
-  public static rotateCoefficient = 0.003;
+  public static rotateCoefficient: number = 0.003;
 
-  public static moveCoefficient = 0.05;
+  public static moveCoefficient: number = 0.05;
+
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     // Specify the attributes user can intaract
     rotateX: {
@@ -29,11 +30,11 @@ export default class MouseCameraControlComponent extends Component {
 
   };
 
-  private transform: TransformComponent;
+  private _transform: TransformComponent;
 
-  private scriptTag: HTMLScriptElement;
+  private _scriptTag: HTMLScriptElement;
 
-  private lastScreenPos: { x: number, y: number } = { x: NaN, y: NaN };
+  private _lastScreenPos: { x: number, y: number } = { x: NaN, y: NaN };
 
   private _rotateX: number;
 
@@ -58,14 +59,14 @@ export default class MouseCameraControlComponent extends Component {
     this.getAttribute("rotateY").boundTo("_rotateY");
     this.getAttribute("moveZ").boundTo("_moveZ");
     this.getAttribute("moveSpeed").boundTo("_moveSpeed");
-    this.transform = this.node.getComponent("Transform") as TransformComponent;
-    this.scriptTag = this.companion.get("canvasElement");
+    this._transform = this.node.getComponent("Transform") as TransformComponent;
+    this._scriptTag = this.companion.get("canvasElement");
   }
 
   public $mount(): void {
-    this.scriptTag.addEventListener("mousemove", this._mouseMove.bind(this));
-    this.scriptTag.addEventListener("contextmenu", this._contextMenu.bind(this));
-    this.scriptTag.addEventListener("mousewheel", this._mouseWheel.bind(this));
+    this._scriptTag.addEventListener("mousemove", this._mouseMove.bind(this));
+    this._scriptTag.addEventListener("contextmenu", this._contextMenu.bind(this));
+    this._scriptTag.addEventListener("mousewheel", this._mouseWheel.bind(this));
   }
 
   private _contextMenu(m: MouseEvent): void {
@@ -73,23 +74,23 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   private _mouseMove(m: MouseEvent): void {
-    if (isNaN(this.lastScreenPos.x)) {
-      this._initialDirection = this.transform.position.subtractWith(this._origin);
-      this._initialRotation = this.transform.rotation;
-      this.lastScreenPos = {
+    if (isNaN(this._lastScreenPos.x)) {
+      this._initialDirection = this._transform.position.subtractWith(this._origin);
+      this._initialRotation = this._transform.rotation;
+      this._lastScreenPos = {
         x: m.screenX,
         y: m.screenY
       };
     }
     let updated = false;
-    const diffX = m.screenX - this.lastScreenPos.x, diffY = m.screenY - this.lastScreenPos.y;
+    const diffX = m.screenX - this._lastScreenPos.x, diffY = m.screenY - this._lastScreenPos.y;
     if ((m.buttons & 1) > 0) { // When left button was pressed
       this._xsum += diffX;
       this._ysum += diffY;
       updated = true;
     }
     if ((m.buttons & 2) > 0) {
-      this._origin = this._origin.addWith(this.transform.right.multiplyWith(-diffX * 0.05 * this._moveSpeed)).addWith(this.transform.up.multiplyWith(diffY * 0.05 * this._moveSpeed));
+      this._origin = this._origin.addWith(this._transform.right.multiplyWith(-diffX * 0.05 * this._moveSpeed)).addWith(this._transform.up.multiplyWith(diffY * 0.05 * this._moveSpeed));
       updated = true;
     }
 
@@ -97,17 +98,17 @@ export default class MouseCameraControlComponent extends Component {
       const rotation = Quaternion.euler(this._ysum * 0.01, this._xsum * 0.01, 0);
       const rotationMat = Matrix.rotationQuaternion(rotation);
       const direction = Matrix.transformNormal(rotationMat, this._initialDirection);
-      this.transform.position = this._origin.addWith(direction);
-      this.transform.rotation = Quaternion.multiply(this._initialRotation, rotation);
+      this._transform.position = this._origin.addWith(direction);
+      this._transform.rotation = Quaternion.multiply(this._initialRotation, rotation);
     }
-    this.lastScreenPos = {
+    this._lastScreenPos = {
       x: m.screenX,
       y: m.screenY
     };
   }
 
   private _mouseWheel(m: MouseWheelEvent): void {
-    this.transform.position = this.transform.position.addWith(this.transform.forward.multiplyWith(m.deltaY * this._moveZ * MouseCameraControlComponent.moveCoefficient));
+    this._transform.position = this._transform.position.addWith(this._transform.forward.multiplyWith(m.deltaY * this._moveZ * MouseCameraControlComponent.moveCoefficient));
     m.preventDefault();
   }
 }

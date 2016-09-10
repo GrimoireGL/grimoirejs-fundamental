@@ -30,7 +30,7 @@ export default class RendererComponent extends Component {
 
   private _buffers: { [key: string]: Texture2D } = {};
 
-  public $mount() {
+  public $mount(): void {
     this._gl = this.companion.get("gl") as WebGLRenderingContext;
     this._canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
     this._camera = this.getValue("camera");
@@ -50,7 +50,7 @@ export default class RendererComponent extends Component {
     });
   }
 
-  public $renderScene() {
+  public $renderScene(): void {
     if (this._camera) {
       this.node.broadcastMessage(1, "render", <IRenderRendererMessage>{
         camera: this._camera,

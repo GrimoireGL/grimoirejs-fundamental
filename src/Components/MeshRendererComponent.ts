@@ -35,13 +35,13 @@ export default class MeshRenderer extends Component {
     this.getAttribute("layer").boundTo("_layer");
   }
 
-  public $mount() {
+  public $mount(): void {
     this._transformComponent = this.node.getComponent("Transform") as TransformComponent;
     this.geom = (this.companion.get("GeometryRegistory") as GeometryRegistory).getGeometry(this.getValue("geometry")); // geometry attribute should use geometry converter
     this._materialContainer = this.node.getComponent("MaterialContainer") as MaterialContainerComponent;
   }
 
-  public $render(args: IRenderMessage) {
+  public $render(args: IRenderMessage): void {
     if (this._layer !== args.layer) {
       return; // material is not instanciated yet.
     }

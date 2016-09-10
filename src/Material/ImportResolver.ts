@@ -2,6 +2,12 @@ import CacheResolver from "../Asset/CacheResolver";
 export class ImportResolver extends CacheResolver<string> {
   public staticImports: { [key: string]: string } = {};
 
+  private static _toAbsolute(href: string): string {
+    const link = document.createElement("a");
+    link.href = href;
+    return (link.protocol + "//" + link.host + link.pathname + link.search + link.hash);
+  }
+
   constructor() {
     super((str) => {
       const regex = /^https?:\/\/.*/gm;
@@ -34,12 +40,6 @@ export class ImportResolver extends CacheResolver<string> {
       };
       xhr.send();
     });
-  }
-
-  private static _toAbsolute(href: string): string {
-    var link = document.createElement("a");
-    link.href = href;
-    return (link.protocol + "//" + link.host + link.pathname + link.search + link.hash);
   }
 }
 
