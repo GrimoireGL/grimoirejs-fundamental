@@ -1,3 +1,4 @@
+import "../TestInit";
 import test from 'ava';
 import Color3Converter from '../../lib-es5/Converters/Color3Converter';
 
