@@ -1,3 +1,4 @@
+import GLExtRequestor from "./Resource/GLExtRequestor";
 import DefaultPrimitives from "./Geometry/DefaultPrimitives";
 //
 // DO NOT REMOVE THE LINE BELOW.
@@ -5,8 +6,6 @@ import DefaultPrimitives from "./Geometry/DefaultPrimitives";
 import GrimoireInterface from "grimoirejs";
 
 //<%=IMPORTS%>
-
-
 
 GrimoireInterface.register(async () => {
   //<%=REGISTER%>
@@ -26,4 +25,9 @@ GrimoireInterface.register(async () => {
   GrimoireInterface.registerNode("render-scene", ["MaterialContainer", "RenderScene"]);
   GrimoireInterface.registerNode("render-quad", ["MaterialContainer", "RenderQuad"]);
   DefaultPrimitives.register();
+
+  GLExtRequestor.request("OES_texture_float", true);
+  GLExtRequestor.request("WEBGL_color_buffer_float", true);
+  GLExtRequestor.request("WEBGL_color_buffer_float2", true);
+
 });

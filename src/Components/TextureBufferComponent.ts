@@ -8,6 +8,14 @@ export default class TextureBufferComponent extends Component {
     name: {
       converter: "string",
       defaultValue: undefined
+    },
+    format: {
+      converter: "enum",
+      defaultValue: WebGLRenderingContext.RGBA,
+      table: {
+        RGBA: WebGLRenderingContext.RGBA,
+        RGB: WebGLRenderingContext.RGB
+      }
     }
   };
 

@@ -1,3 +1,4 @@
+import GLExtRequestor from "../Resource/GLExtRequestor";
 import Component from "grimoirejs/lib/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 import gr from "grimoirejs";
@@ -51,6 +52,7 @@ class CanvasInitializerComponent extends Component {
     const gl = this._getContext(generatedCanvas);
     this.companion.set(ns("gl"), gl);
     this.companion.set(ns("canvasElement"), generatedCanvas);
+    this.companion.set(ns("GLExtRequestor"), new GLExtRequestor(gl));
     scriptTag.parentElement.insertBefore(generatedCanvas, scriptTag.nextSibling);
     this.canvas = generatedCanvas;
     return generatedCanvas;
@@ -61,7 +63,6 @@ class CanvasInitializerComponent extends Component {
     if (!context) {
       context = canvas.getContext("webgl-experimental") as WebGLRenderingContext;
     }
-    context.getExtension("OES_element_index_uint");
     return context;
   }
 

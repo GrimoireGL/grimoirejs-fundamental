@@ -105,6 +105,7 @@
     "./src/Messages/IResizeBufferMessage.ts",
     "./src/Resource/Buffer.ts",
     "./src/Resource/FrameBuffer.ts",
+    "./src/Resource/GLExtRequestor.ts",
     "./src/Resource/Program.ts",
     "./src/Resource/RenderBuffer.ts",
     "./src/Resource/ResourceBase.ts",
