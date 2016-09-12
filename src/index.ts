@@ -25,9 +25,4 @@ GrimoireInterface.register(async () => {
   GrimoireInterface.registerNode("render-scene", ["MaterialContainer", "RenderScene"]);
   GrimoireInterface.registerNode("render-quad", ["MaterialContainer", "RenderQuad"]);
   DefaultPrimitives.register();
-
-  GLExtRequestor.request("OES_texture_float", true);
-  GLExtRequestor.request("WEBGL_color_buffer_float", true);
-  GLExtRequestor.request("WEBGL_color_buffer_float2", true);
-
 });
