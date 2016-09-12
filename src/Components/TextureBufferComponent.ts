@@ -3,7 +3,7 @@ import Texture2D from "../Resource/Texture2D";
 import Component from "grimoirejs/lib/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 
-export default class ColorBufferComponent extends Component {
+export default class TextureBufferComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
       converter: "string",

@@ -10,11 +10,11 @@
   <material id="sprite" type="sprite" texture="./tri.png"/>
   <renderers bgColor="#F003">
     <renderer camera=".camera" viewport="0,0,100%,100%">
-      <colorbuffer name="depthbuffer"/>
-      <colorbuffer name="nonblur"/>
-      <colorbuffer name="blurHorizontal"/>
-      <colorbuffer name="blured1"/>
-      <colorbuffer name="blured2"/>
+      <texture-buffer name="depthbuffer"/>
+      <texture-buffer name="nonblur"/>
+      <texture-buffer name="blurHorizontal"/>
+      <texture-buffer name="blured1"/>
+      <texture-buffer name="blured2"/>
       <render-scene id="depth" out="depthbuffer" material="new(depth)" depthOffset="10"/>
       <render-scene out="nonblur"/>
       <render-quad out="blurHorizontal" texture="backbuffer(nonblur)" horizontal="true" material="new(gaussian)" weight="0.09068343122470346, 0.0871276830267911, 0.0804289884248243, 0.07133411353846439, 0.060786921793212934, 0.04976812225704962, 0.039148991560361675, 0.029588171315708768, 0.02148542210967332, 0.014989870361562185"/>

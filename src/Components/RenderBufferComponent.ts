@@ -3,7 +3,7 @@ import RenderBuffer from "../Resource/RenderBuffer";
 import Component from "grimoirejs/lib/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 
-export default class DepthBufferComponent extends Component {
+export default class RenderBufferComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
       converter: "string",

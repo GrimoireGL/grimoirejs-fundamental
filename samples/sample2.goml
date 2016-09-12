@@ -8,8 +8,8 @@
   <material id="sprite" type="edge"/>
   <renderers bgColor="#0000">
     <renderer camera=".camera" viewport="0,0,100%,100%">
-      <depthbuffer name="depth1"/>
-      <colorbuffer name="col1"/>
+      <render-buffer name="depth1"/>
+      <texture-buffer name="col1"/>
       <render-scene out="col1" depthBuffer="depth1"/>
       <render-quad material="new(fxaa)" source="backbuffer(col1)"/>
     </renderer>
