@@ -11,7 +11,7 @@ import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 export default class MeshRenderer extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     geometry: {
-      converter: "string",
+      converter: "geometry",
       defaultValue: "quad"
     },
     targetBuffer: {
@@ -32,7 +32,7 @@ export default class MeshRenderer extends Component {
     }
   };
 
-  public geom: Geometry;
+  private _geometry: Geometry;
   private _targetBuffer: string;
   private _materialContainer: MaterialContainerComponent;
   private _transformComponent: TransformComponent;
@@ -45,24 +45,24 @@ export default class MeshRenderer extends Component {
     this.getAttribute("layer").boundTo("_layer");
     this.getAttribute("drawOffset").boundTo("_drawOffset");
     this.getAttribute("drawCount").boundTo("_drawCount");
+    this.getAttribute("geometry").boundTo("_geometry");
   }
 
   public $mount(): void {
     this._transformComponent = this.node.getComponent("Transform") as TransformComponent;
-    this.geom = (this.companion.get("GeometryRegistory") as GeometryRegistory).getGeometry(this.getValue("geometry")); // geometry attribute should use geometry converter
     this._materialContainer = this.node.getComponent("MaterialContainer") as MaterialContainerComponent;
   }
 
   public $render(args: IRenderMessage): void {
     if (this._layer !== args.layer) {
-      return; // material is not instanciated yet.
-    }
-    if (!args.material && !this._materialContainer.ready) {
       return;
+    }
+    if (!this._geometry || (!args.material && !this._materialContainer.ready)) {
+      return;// material is not instanciated yet.
     }
     const renderArgs = <IMaterialArgument>{
       targetBuffer: this._targetBuffer,
-      geometry: this.geom,
+      geometry: this._geometry,
       attributeValues: null,
       camera: args.camera.camera,
       transform: this._transformComponent,
