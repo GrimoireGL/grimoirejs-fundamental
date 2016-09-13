@@ -1,6 +1,6 @@
 import MaterialFactory from "../Material/MaterialFactory";
-import Component from "grimoirejs/lib/Core/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
+import Component from "grimoirejs/lib/Node/Component";
+import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 
 export default class MaterialImporterComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {

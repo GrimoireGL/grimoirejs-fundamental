@@ -1,7 +1,8 @@
+import Attribute from "grimoirejs/lib/Node/Attribute";
 import Texture2D from "../Resource/Texture2D";
 import ImageResolver from "../Asset/ImageResolver";
 
-function MaterialTextureConverter(val: any): any {
+function MaterialTextureConverter(this: Attribute, val: any): any {
   if (val instanceof Texture2D) {
     return val;
   }

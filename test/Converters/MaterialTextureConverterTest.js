@@ -1,3 +1,4 @@
+import "../TestInit";
 import test from 'ava';
 import MaterialTextureConverter from '../../lib-es5/Converters/MaterialTextureConverter';
 

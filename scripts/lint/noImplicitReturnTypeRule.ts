@@ -1,3 +1,4 @@
+/* tslint:disable */ 
 import * as ts from "typescript";
 import * as Lint from "tslint/lib/lint";
 
@@ -13,7 +14,7 @@ export class Rule extends Lint.Rules.AbstractRule {
 class NoImplicitReturnTypeWalker extends Lint.RuleWalker {
   public visitMethodDeclaration(node: ts.MethodDeclaration) {
     if (!node.type) {
-      this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + node.name.text));
+      this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + node.name.getText()));
     }
     //if(node.type)console.log(this.sourceFile.text.substring(node.type.pos,node.type.end));
     // call the base version of this visitor to actually parse this node
@@ -22,18 +23,18 @@ class NoImplicitReturnTypeWalker extends Lint.RuleWalker {
 
   public visitPropertyDeclaration(node: ts.PropertyDeclaration) {
    if (!node.type) {
-     this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + node.name.text));
+     this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + node.name.getText()));
    }
    // call the base version of this visitor to actually parse this node
    super.visitPropertyDeclaration(node);
   }
 
-  public visitAccessorDeclaration(node: ts.AccessorDeclaration) {
-   if (!node.type) {
-     this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + node.name.text));
-   }
-   // call the base version of this visitor to actually parse this node
-   super.visitAccessorDeclaration(node);
-  }
+  // public visitAccessorDeclaration(node: ts.AccessorDeclaration) {
+  //  if (!node.type) {
+  //    this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + node.name.getText()));
+  //  }
+  //  // call the base version of this visitor to actually parse this node
+  //  super.visitAccessorDeclaration(node);
+  // }
 
 }

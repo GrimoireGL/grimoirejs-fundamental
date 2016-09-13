@@ -5,8 +5,8 @@ import MaterialComponent from "./MaterialComponent";
 import Material from "../Material/Material";
 import {Color4} from "grimoirejs-math";
 import IRenderSceneMessage from "../Messages/IRenderSceneMessage";
-import Component from "grimoirejs/lib/Core/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
+import Component from "grimoirejs/lib/Node/Component";
+import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import Framebuffer from "../Resource/FrameBuffer";
 import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
@@ -14,8 +14,11 @@ export default class RenderSceneComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     layer: {
       converter: "string",
-      defaultValue: "default",
-      boundTo: "_layer"
+      defaultValue: "default"
+    },
+    depthBuffer: {
+      defaultValue: undefined,
+      converter: "string"
     },
     out: {
       converter: "string",
@@ -24,12 +27,18 @@ export default class RenderSceneComponent extends Component {
     clearColor: {
       defaultValue: "#0000",
       converter: "color4",
-      boundTo: "_clearColor"
     },
     clearColorEnabled: {
       defaultValue: true,
       converter: "boolean",
-      boundTo: "_clearColorEnabled"
+    },
+    clearDepthEnabled: {
+      defaultValue: true,
+      converter: "boolean",
+    },
+    clearDepth: {
+      defaultValue: 1.0,
+      converter: "number",
     },
     material: {
       defaultValue: undefined,
@@ -58,7 +67,20 @@ export default class RenderSceneComponent extends Component {
 
   private _materialArgs: { [key: string]: any } = {};
 
-  public $mount() {
+  private _clearDepth: number;
+
+  private _clearDepthEnabled: boolean;
+
+  public $awake(): void {
+    this.getAttribute("layer").boundTo("_layer");
+    this.getAttribute("clearColor").boundTo("_clearColor");
+    this.getAttribute("clearColorEnabled").boundTo("_clearColorEnabled");
+    this.getAttribute("clearDepthEnabled").boundTo("_clearDepthEnabled");
+    this.getAttribute("clearDepth").boundTo("_clearDepth");
+  }
+
+
+  public $mount(): void {
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
     if (typeof this.getValue("material") !== "undefined") {
@@ -67,15 +89,19 @@ export default class RenderSceneComponent extends Component {
     }
   }
 
-  public $bufferUpdated(args: IBufferUpdatedMessage) {
+  public $bufferUpdated(args: IBufferUpdatedMessage): void {
     const out = this.getValue("out");
     if (out !== "default") {
       this._fbo = new Framebuffer(this.companion.get("gl"));
       this._fbo.update(args.buffers[out]);
     }
+    const depthBuffer = this.getValue("depthBuffer");
+    if (depthBuffer && this._fbo) {
+      this._fbo.update(args.buffers[depthBuffer]);
+    }
   }
 
-  public $render(args: IRenderRendererMessage) {
+  public $render(args: IRenderRendererMessage): void {
     if (this._fbo) {
       this._fbo.bind();
       this._gl.viewport(0, 0, args.viewport.Width, args.viewport.Height);
@@ -87,6 +113,10 @@ export default class RenderSceneComponent extends Component {
     if (this._fbo && this._clearColorEnabled) {
       this._gl.clearColor(this._clearColor.R, this._clearColor.G, this._clearColor.B, this._clearColor.A);
       this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
+    }
+    if (this._clearDepthEnabled) {
+      this._gl.clearDepth(this._clearDepth);
+      this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
     }
     args.camera.node.sendMessage("renderScene", <IRenderSceneMessage>{
       camera: args.camera,
@@ -108,7 +138,7 @@ export default class RenderSceneComponent extends Component {
   }
 
   private async _prepareExternalMaterial(): Promise<void> {
-    const materialPromise = this.getValue("material") as Promise<Material>
+    const materialPromise = this.getValue("material") as Promise<Material>;
     const loader = this.companion.get("loader") as AssetLoader;
     loader.register(materialPromise);
     const material = await materialPromise;

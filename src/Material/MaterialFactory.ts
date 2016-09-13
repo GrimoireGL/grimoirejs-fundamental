@@ -46,11 +46,11 @@ export default class MaterialFactory {
     if (MaterialFactory.factories[typeName]) {
       return MaterialFactory.factories[typeName](this.gl);
     } else { // when the type is not registered yet.
-      return await this.waitForRegistered(typeName);
+      return await this._waitForRegistered(typeName);
     }
   }
 
-  private waitForRegistered(typeName: string): Promise<Material> {
+  private _waitForRegistered(typeName: string): Promise<Material> {
     return new Promise<Material>((resolve) => {
       MaterialFactory._onRegister(typeName, () => {
         resolve(MaterialFactory.factories[typeName](this.gl));

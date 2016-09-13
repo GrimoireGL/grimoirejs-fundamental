@@ -1,8 +1,10 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+/* tslint:disable */
 var ts = require("typescript");
 var Lint = require("tslint/lib/lint");
 var Rule = (function (_super) {
@@ -15,7 +17,7 @@ var Rule = (function (_super) {
     };
     Rule.FAILURE_STRING = "public method name must begin lowercase a-z";
     return Rule;
-})(Lint.Rules.AbstractRule);
+}(Lint.Rules.AbstractRule));
 exports.Rule = Rule;
 // The walker takes care of all the work.
 var PublicMethodNameWalker = (function (_super) {
@@ -25,8 +27,8 @@ var PublicMethodNameWalker = (function (_super) {
     }
     PublicMethodNameWalker.prototype.visitMethodDeclaration = function (node) {
         if (this._isPublic(node)) {
-            var methodName = node.name.text;
-            if (!/^[a-z].+/m.test(methodName)) {
+            var methodName = node.name.getText();
+            if (!/^[a-z$].+/m.test(methodName)) {
                 this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + methodName));
             }
         }
@@ -35,7 +37,7 @@ var PublicMethodNameWalker = (function (_super) {
     };
     PublicMethodNameWalker.prototype.visitPropertyDeclaration = function (node) {
         if (this._isPublic(node)) {
-            var methodName = node.name.text;
+            var methodName = node.name.getText();
             if (!/^[a-z].+/m.test(methodName)) {
                 this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + methodName));
             }
@@ -47,4 +49,4 @@ var PublicMethodNameWalker = (function (_super) {
         return Lint.hasModifier(node.modifiers, ts.SyntaxKind.PublicKeyword);
     };
     return PublicMethodNameWalker;
-})(Lint.RuleWalker);
+}(Lint.RuleWalker));

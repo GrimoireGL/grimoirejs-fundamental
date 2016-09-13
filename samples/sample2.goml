@@ -1,12 +1,31 @@
 <goml width="512" height="512">
   <import-material type="raymarching" src="./raymarching.sort"/>
+  <import-material type="edge" src="./edge-sprite.sort"/>
+  <import-material type="copy" src="./copy.sort"/>
+  <import-material type="fxaa" src="./fxaa.sort"/>
   <geometry name="sphere" type="sphere" divHorizontal="40" divVertical="40"/>
   <geometry name="quad" type="quad"/>
+  <material id="sprite" type="edge"/>
   <renderers bgColor="#0000">
     <renderer camera=".camera" viewport="0,0,100%,100%">
-      <render-quad material="new(raymarching)"/>
+      <render-buffer name="depth1"/>
+      <texture-buffer name="col1"/>
+      <render-scene out="col1" depthBuffer="depth1"/>
+      <render-quad material="new(fxaa)" source="backbuffer(col1)"/>
     </renderer>
   </renderers>
     <scene>
+      <camera class="camera" near="0.01" far="40.0" aspect="1.0" fovy="45d" position="0,0,10" rotation="y(0d)">
+        <camera.components>
+          <MouseCameraControl rotateX="10" moveSpeed="0.1"/>
+        </camera.components>
+      </camera>
+      <mesh position="0,0,0" rotation="y(30d)" geometry="sphere" material="#sprite"></mesh>
+      <mesh position="2,0,0" geometry="sphere" material="#sprite"></mesh>
+      <mesh position="-2,0,0" geometry="sphere" material="#sprite"></mesh>
+      <mesh position="4,0,0" geometry="sphere" material="#sprite"></mesh>
+      <mesh position="-4,0,0" geometry="sphere" material="#sprite"></mesh>
+      <mesh position="6,0,0" geometry="sphere" material="#sprite"></mesh>
+      <mesh position="-6,0,0" geometry="sphere" material="#sprite"></mesh>
     </scene>
 </goml>

@@ -115,7 +115,7 @@ export default class GeometryUtility {
     for (let i = 0; i < circleDiv - 1; i++) {
       yield top;
       yield getIndex(i, 0);
-      yield getIndex(i + 1, 0)
+      yield getIndex(i + 1, 0);
     }
     yield* [top, getIndex(circleDiv - 1, 0), getIndex(0, 0)];
     // middle

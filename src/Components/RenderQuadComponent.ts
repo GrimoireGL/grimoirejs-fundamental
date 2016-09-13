@@ -5,8 +5,8 @@ import IMaterialArgument from "../Material/IMaterialArgument";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
 import Framebuffer from "../Resource/FrameBuffer";
-import Component from "grimoirejs/lib/Core/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
+import Component from "grimoirejs/lib/Node/Component";
+import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 import {Color4} from "grimoirejs-math";
 
 export default class RenderQuadComponent extends Component {
@@ -15,30 +15,29 @@ export default class RenderQuadComponent extends Component {
       defaultValue: "default",
       converter: "string"
     },
+    depthBuffer: {
+      defaultValue: undefined,
+      converter: "string"
+    },
     targetBuffer: {
       defaultValue: "default",
       converter: "string",
-      boundTo: "_targetBuffer"
     },
     clearColor: {
       defaultValue: "#0000",
       converter: "color4",
-      boundTo: "_clearColor"
     },
     clearColorEnabled: {
       defaultValue: true,
       converter: "boolean",
-      boundTo: "_clearColorEnabled"
     },
     clearDepthEnabled: {
       defaultValue: true,
       converter: "boolean",
-      boundTo: "_clearDepthEnabled"
     },
     clearDepth: {
       defaultValue: 1.0,
       converter: "number",
-      boundTo: "_clearDepth"
     }
   };
 
@@ -54,15 +53,23 @@ export default class RenderQuadComponent extends Component {
 
   private _clearColor: Color4;
 
-  private _clearDepth: number;
-
   private _clearColorEnabled: boolean;
+
+  private _clearDepth: number;
 
   private _clearDepthEnabled: boolean;
 
   private _materialContainer: MaterialContainerComponent;
 
-  public $mount() {
+  public $awake(): void {
+    this.getAttribute("targetBuffer").boundTo("_targetBuffer");
+    this.getAttribute("clearColor").boundTo("_clearColor");
+    this.getAttribute("clearColorEnabled").boundTo("_clearColorEnabled");
+    this.getAttribute("clearDepthEnabled").boundTo("_clearDepthEnabled");
+    this.getAttribute("clearDepth").boundTo("_clearDepth");
+  }
+
+  public $mount(): void {
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
     const gr = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
@@ -70,15 +77,19 @@ export default class RenderQuadComponent extends Component {
     this._materialContainer = this.node.getComponent("MaterialContainer") as MaterialContainerComponent;
   }
 
-  public $bufferUpdated(args: IBufferUpdatedMessage) {
+  public $bufferUpdated(args: IBufferUpdatedMessage): void {
     const out = this.getValue("out");
     if (out !== "default") {
       this._fbo = new Framebuffer(this.companion.get("gl"));
       this._fbo.update(args.buffers[out]);
     }
+    const depthBuffer = this.getValue("depthBuffer");
+    if (depthBuffer && this._fbo) {
+      this._fbo.update(args.buffers[depthBuffer]);
+    }
   }
 
-  public $render(args: IRenderRendererMessage) {
+  public $render(args: IRenderRendererMessage): void {
     if (!this._materialContainer.ready) {
       return;
     }

@@ -4,55 +4,72 @@ import GeometryRegistory from "./GeometryRegistoryComponent";
 import IRenderMessage from "../Messages/IRenderMessage";
 import TransformComponent from "./TransformComponent";
 import Geometry from "../Geometry/Geometry";
-import Component from "grimoirejs/lib/Core/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
+import Component from "grimoirejs/lib/Node/Component";
+import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 
 
 export default class MeshRenderer extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     geometry: {
-      converter: "string",
+      converter: "geometry",
       defaultValue: "quad"
     },
     targetBuffer: {
       converter: "string",
-      defaultValue: "default",
-      boundTo: "_targetBuffer"
+      defaultValue: "default"
     },
     layer: {
       converter: "string",
-      defaultValue: "default",
-      boundTo: "_layer"
+      defaultValue: "default"
+    },
+    drawCount: {
+      converter: "number",
+      defaultValue: Number.MAX_VALUE
+    },
+    drawOffset: {
+      converter: "number",
+      defaultValue: 0
     }
   };
 
-  public geom: Geometry;
+  private _geometry: Geometry;
   private _targetBuffer: string;
   private _materialContainer: MaterialContainerComponent;
   private _transformComponent: TransformComponent;
   private _layer: string;
+  private _drawOffset: number;
+  private _drawCount: number;
 
-  public $mount() {
+  public $awake(): void {
+    this.getAttribute("targetBuffer").boundTo("_targetBuffer");
+    this.getAttribute("layer").boundTo("_layer");
+    this.getAttribute("drawOffset").boundTo("_drawOffset");
+    this.getAttribute("drawCount").boundTo("_drawCount");
+    this.getAttribute("geometry").boundTo("_geometry");
+  }
+
+  public $mount(): void {
     this._transformComponent = this.node.getComponent("Transform") as TransformComponent;
-    this.geom = (this.companion.get("GeometryRegistory") as GeometryRegistory).getGeometry(this.getValue("geometry")); // geometry attribute should use geometry converter
     this._materialContainer = this.node.getComponent("MaterialContainer") as MaterialContainerComponent;
   }
 
-  public $render(args: IRenderMessage) {
+  public $render(args: IRenderMessage): void {
     if (this._layer !== args.layer) {
-      return; // material is not instanciated yet.
-    }
-    if (!args.material && !this._materialContainer.ready) {
       return;
+    }
+    if (!this._geometry || (!args.material && !this._materialContainer.ready)) {
+      return;// material is not instanciated yet.
     }
     const renderArgs = <IMaterialArgument>{
       targetBuffer: this._targetBuffer,
-      geometry: this.geom,
+      geometry: this._geometry,
       attributeValues: null,
       camera: args.camera.camera,
       transform: this._transformComponent,
       buffers: args.buffers,
-      viewport: args.viewport
+      viewport: args.viewport,
+      drawCount: this._drawCount,
+      drawOffset: this._drawOffset
     };
     if (args.material) {
       renderArgs.attributeValues = args.materialArgs;

@@ -1,3 +1,4 @@
+/* tslint:disable */ 
 import * as ts from "typescript";
 import * as Lint from "tslint/lib/lint";
 
@@ -13,9 +14,9 @@ export class Rule extends Lint.Rules.AbstractRule {
 class NoPublicMemberWithoutCommentWalker extends Lint.RuleWalker {
   public visitMethodDeclaration(node: ts.MethodDeclaration) {
     if (this._isPublic(node) || this._isProtected(node)) {
-      const modifiers = this.sourceFile.text.substring(node.pos, node.modifiers.end);
+      const modifiers = this.getSourceFile().text.substring(node.pos, node.modifiers.end);
       if (!/\/\*\*/m.test(modifiers)) {
-       this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + node.name.text));
+       this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + node.name.getText()));
       }
     }
     // call the base version of this visitor to actually parse this node

@@ -1,6 +1,7 @@
+import Attribute from "grimoirejs/lib/Node/Attribute";
 import RotationParser from "../Util/RotationParser";
 
-function Angle2DConverter(val: any): any {
+function Angle2DConverter(this: Attribute, val: any): any {
   return RotationParser.parseAngle(val);
 }
 

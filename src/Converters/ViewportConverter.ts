@@ -1,5 +1,5 @@
 import {Rectangle} from "grimoirejs-math";
-
+import Attribute from "grimoirejs/lib/Node/Attribute";
 function _toPixel(parentSize: number, rep: string): number {
   let regex = /(\d+)\s*%/;
   let regexResult: RegExpExecArray;
@@ -11,7 +11,7 @@ function _toPixel(parentSize: number, rep: string): number {
   }
 }
 
-function ViewportConverter(val: any): any {
+function ViewportConverter(this: Attribute, val: any): any {
   if (val instanceof Rectangle) {
     return val;
   }

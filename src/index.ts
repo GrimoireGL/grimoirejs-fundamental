@@ -1,3 +1,4 @@
+import GLExtRequestor from "./Resource/GLExtRequestor";
 import DefaultPrimitives from "./Geometry/DefaultPrimitives";
 //
 // DO NOT REMOVE THE LINE BELOW.
@@ -5,8 +6,6 @@ import DefaultPrimitives from "./Geometry/DefaultPrimitives";
 import GrimoireInterface from "grimoirejs";
 
 //<%=IMPORTS%>
-
-
 
 GrimoireInterface.register(async () => {
   //<%=REGISTER%>
@@ -21,7 +20,8 @@ GrimoireInterface.register(async () => {
   GrimoireInterface.registerNode("mesh", ["Transform", "MaterialContainer", "MeshRenderer"]);
   GrimoireInterface.registerNode("material", ["Material"]);
   GrimoireInterface.registerNode("import-material", ["MaterialImporter"]);
-  GrimoireInterface.registerNode("backbuffer", ["BackBuffer"]);
+  GrimoireInterface.registerNode("texture-buffer", ["TextureBuffer"]);
+  GrimoireInterface.registerNode("render-buffer", ["RenderBuffer"]);
   GrimoireInterface.registerNode("render-scene", ["MaterialContainer", "RenderScene"]);
   GrimoireInterface.registerNode("render-quad", ["MaterialContainer", "RenderQuad"]);
   DefaultPrimitives.register();

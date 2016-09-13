@@ -1,4 +1,4 @@
-import EEObject from "grimoirejs/lib/Core/Base/EEObject";
+import EEObject from "grimoirejs/lib/Base/EEObject";
 /**
  * Provides managing all promise on initializing resources.
  */

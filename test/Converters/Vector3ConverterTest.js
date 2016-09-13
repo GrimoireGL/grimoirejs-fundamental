@@ -1,3 +1,4 @@
+import "../TestInit";
 import test from 'ava';
 import Vector3Converter from '../../lib-es5/Converters/Vector3Converter';
 

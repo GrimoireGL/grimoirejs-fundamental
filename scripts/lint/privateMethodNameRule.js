@@ -1,8 +1,10 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+/* tslint:disable */
 var ts = require("typescript");
 var Lint = require("tslint/lib/lint");
 var Rule = (function (_super) {
@@ -15,7 +17,7 @@ var Rule = (function (_super) {
     };
     Rule.FAILURE_STRING = "private method name must begin with a _ and lowercase";
     return Rule;
-})(Lint.Rules.AbstractRule);
+}(Lint.Rules.AbstractRule));
 exports.Rule = Rule;
 // The walker takes care of all the work.
 var PrivateMethodNameWalker = (function (_super) {
@@ -25,7 +27,7 @@ var PrivateMethodNameWalker = (function (_super) {
     }
     PrivateMethodNameWalker.prototype.visitMethodDeclaration = function (node) {
         if (this._isPrivate(node)) {
-            var methodName = node.name.text;
+            var methodName = node.name.getText();
             if (!/^_[a-z].+/m.test(methodName)) {
                 this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + methodName));
             }
@@ -35,7 +37,7 @@ var PrivateMethodNameWalker = (function (_super) {
     };
     PrivateMethodNameWalker.prototype.visitPropertyDeclaration = function (node) {
         if (this._isPrivate(node)) {
-            var methodName = node.name.text;
+            var methodName = node.name.getText();
             if (!/^_[a-z].+/m.test(methodName)) {
                 this.addFailure(this.createFailure(node.getStart(), node.getWidth(), Rule.FAILURE_STRING + " at: " + methodName));
             }
@@ -47,4 +49,4 @@ var PrivateMethodNameWalker = (function (_super) {
         return Lint.hasModifier(node.modifiers, ts.SyntaxKind.PrivateKeyword);
     };
     return PrivateMethodNameWalker;
-})(Lint.RuleWalker);
+}(Lint.RuleWalker));

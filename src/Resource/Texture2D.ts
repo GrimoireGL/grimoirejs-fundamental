@@ -47,7 +47,7 @@ export default class Texture2D extends ResourceBase {
     }
   }
 
-  private _texParameterChanged = true;
+  private _texParameterChanged: boolean = true;
 
   private _magFilter: number = WebGLRenderingContext.LINEAR;
 

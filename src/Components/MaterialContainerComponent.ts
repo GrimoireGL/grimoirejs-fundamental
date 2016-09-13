@@ -2,8 +2,8 @@ import MaterialComponent from "./MaterialComponent";
 import SORTPass from "../Material/SORTPass";
 import Material from "../Material/Material";
 import AssetLoader from "../Asset/AssetLoader";
-import Component from "grimoirejs/lib/Core/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Core/Node/IAttributeDeclaration";
+import Component from "grimoirejs/lib/Node/Component";
+import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 
 export default class MaterialContainerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
@@ -14,14 +14,13 @@ export default class MaterialContainerComponent extends Component {
     }
   };
 
-
-  private _materialComponent: MaterialComponent;
-
   public material: Material;
 
   public materialArgs: { [key: string]: any; } = {};
 
   public ready: boolean = false;
+
+  private _materialComponent: MaterialComponent;
 
   public $mount(): void {
     this.attributes.get("material").addObserver(this._onMaterialChanged);
@@ -32,7 +31,7 @@ export default class MaterialContainerComponent extends Component {
    * When the material attribute is changed.
    */
   private async _onMaterialChanged(): Promise<void> {
-    const materialPromise = this.getValue("material") as Promise<Material>
+    const materialPromise = this.getValue("material") as Promise<Material>;
     if (!this._materialComponent) { // the material must be instanciated by attribute.
       this._prepareInternalMaterial(materialPromise);
     } else {

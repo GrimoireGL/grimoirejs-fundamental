@@ -11,6 +11,8 @@ interface IMaterialArgument {
   viewport: Rectangle;
   transform: TransformComponent;
   buffers: { [key: string]: Texture2D; };
+  drawOffset: number;
+  drawCount: number;
 }
 
 export default IMaterialArgument;

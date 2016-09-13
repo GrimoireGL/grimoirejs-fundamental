@@ -1,4 +1,6 @@
-function NumberConverter(val: any): any {
+import Attribute from "grimoirejs/lib/Node/Attribute";
+
+function NumberConverter(this: Attribute, val: any): any {
   return Number.parseFloat(val);
 }
 
