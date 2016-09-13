@@ -60,13 +60,13 @@ function* attributeWalker(attributes) {
   };
 }
 
-const fetchFiles = async() => {
+const generateForComponents = async() => {
   const files = await glob("./src/**/*Component.ts");
   for (let i = 0; i < files.length; i++) {
     let content = await readFileAsync(files[i]);
     let contentName = getFileNameBody(files[i]).match(/.+(?=Component)/)[0];
     const regex = /static[\s\n]+attributes[\s\n]*:[^}]*}[\s\n]*=[\s\n*]{([\s\S]+})/g;
-    content = content.replace(/\/\*[\s\S]*\*\//, "").replace(/\/\/.*/, "");
+    content = content.replace(/\/\*[\s\S]*?\*\//, "").replace(/\/\/.*/, "");
     let result = regex.exec(content);
     const target = result[1];
     let bracketCount = 1;
@@ -94,21 +94,37 @@ const generatefiles = async(attributes, contentName) => {
     attributes: []
   }
   for (let attrs of attributeWalker(attributes)) {
+    if(attrs.name.length === 0 || attrs.body.length === 0){
+      continue;
+    }
     let converter = undefined;
     let defaultValue = undefined;
+    let other = "";
     for (let attrChild of attributeWalker(attrs.body)) {
       if (attrChild.name === "converter") {
         converter = attrChild.body.trim();
         converter = converter.substring(1, converter.length - 1);
+        continue;
       }
       if (attrChild.name === "defaultValue") {
         defaultValue = attrChild.body.trim();
+        continue;
       }
+      if(attrChild.name.length === 0 || attrChild.body.length === 0){
+        continue;
+      }
+      other += `\`${attrChild.name}\`</br>${attrChild.body}</br>`;
+    }
+    other = other.trim();
+    other = other.replace(/\n/g,"</br>");
+    if(other.length === 0 || other === ":"){
+      other = "なし";
     }
     component.attributes.push({
       name: attrs.name.replace(/[\s]/g, ""),
       converter: converter,
-      defaultValue: defaultValue
+      defaultValue: defaultValue,
+      other: other
     });
   }
   let fileBody = "";
@@ -139,9 +155,12 @@ const generatefiles = async(attributes, contentName) => {
     componentName: contentName,
     description: descriptions["@Component"]
   });
-  const tableTemplated = await templateAsync("./scripts/templates/markdown-attribute-table.template", {
+  let tableTemplated = await templateAsync("./scripts/templates/markdown-attribute-table.template", {
     attributes: component.attributes
   });
+  if(component.attributes.length === 0){
+    tableTemplated = "属性なし";
+  }
   const attributesDescription = await templateAsync("./scripts/templates/markdown-attribute.template", {
     attributes: component.attributes
   });
@@ -163,5 +182,14 @@ const generateIndex = async() => {
   });
   await writeFileAsync("./index.md", templated);
 }
-fetchFiles();
-generateIndex();
+
+const main = async() => {
+  try{
+  await generateForComponents();
+}catch(e){
+  console.log(e);
+}
+  await generateIndex();
+};
+
+main();

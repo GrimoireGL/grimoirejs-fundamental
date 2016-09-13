@@ -17,39 +17,22 @@
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| width | number | 640 |  |
-| height | number | 480 |  |
+| width | number | 640 | なし |
+| height | number | 480 | なし |
+
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
 ### width 属性
-converter: number / defaultValue: 640
+
+ * `converter`: number
+ * `defaultValue`: 640
 
 <!-- EDIT HERE(width)-->
-
-
-
-
-
-
-
-
-
-
-
 <!-- /EDIT HERE-->
 ### height 属性
-converter: number / defaultValue: 480
+
+ * `converter`: number
+ * `defaultValue`: 480
 
 <!-- EDIT HERE(height)-->
-
-
-
-
-
-
-
-
-
-
-
 <!-- /EDIT HERE-->

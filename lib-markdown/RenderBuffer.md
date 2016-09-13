@@ -1,30 +1,19 @@
-## MaterialContainer コンポーネント
+## RenderBuffer コンポーネント
 <!-- EDIT HERE(@Component)-->
-
-
-
-
-
-
-
-
-
-
-
 <!-- /EDIT HERE-->
 ### 属性
 <!-- DO NOT EDIT -->
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| material | material | undefined | `componentBoundTo`</br> "_materialComponent" </br>    </br>  </br> |
+| name | string | undefined | なし |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
-### material 属性
+### name 属性
 
- * `converter`: material
+ * `converter`: string
  * `defaultValue`: undefined
 
-<!-- EDIT HERE(material)-->
+<!-- EDIT HERE(name)-->
 <!-- /EDIT HERE-->

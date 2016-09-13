@@ -17,22 +17,14 @@
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| loopEnabled | boolean | false |  |
+| loopEnabled | boolean | false | なし |
+
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
 ### loopEnabled 属性
-converter: boolean / defaultValue: false
+
+ * `converter`: boolean
+ * `defaultValue`: false
 
 <!-- EDIT HERE(loopEnabled)-->
-
-
-
-
-
-
-
-
-
-
-
 <!-- /EDIT HERE-->

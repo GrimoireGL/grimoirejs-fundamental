@@ -17,39 +17,22 @@
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| camera | component | "camera" |  |
-| viewport | viewport | "auto" |  |
+| camera | component | "camera" | `target`</br> "CAMERA"</br>    </br> |
+| viewport | viewport | "auto" | なし |
+
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
 ### camera 属性
-converter: component / defaultValue: "camera"
+
+ * `converter`: component
+ * `defaultValue`: "camera"
 
 <!-- EDIT HERE(camera)-->
-
-
-
-
-
-
-
-
-
-
-
 <!-- /EDIT HERE-->
 ### viewport 属性
-converter: viewport / defaultValue: "auto"
+
+ * `converter`: viewport
+ * `defaultValue`: "auto"
 
 <!-- EDIT HERE(viewport)-->
-
-
-
-
-
-
-
-
-
-
-
 <!-- /EDIT HERE-->

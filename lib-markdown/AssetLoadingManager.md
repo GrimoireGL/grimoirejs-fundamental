@@ -8,28 +8,22 @@ abcde
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| loadingProgress | number | 0 |  |
-| autoStart | boolean | true |  |
+| loadingProgress | number | 0 | なし |
+| autoStart | boolean | true | なし |
+
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
 ### loadingProgress 属性
-converter: number / defaultValue: 0
+
+ * `converter`: number
+ * `defaultValue`: 0
 
 <!-- EDIT HERE(loadingProgress)-->
 <!-- /EDIT HERE-->
 ### autoStart 属性
-converter: boolean / defaultValue: true
+
+ * `converter`: boolean
+ * `defaultValue`: true
 
 <!-- EDIT HERE(autoStart)-->
-
-
-
-
-
-
-
-
-
-
-
 <!-- /EDIT HERE-->

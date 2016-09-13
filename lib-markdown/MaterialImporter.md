@@ -17,39 +17,22 @@
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| type | string | undefined |  |
-| src | string | undefined |  |
+| type | string | undefined | なし |
+| src | string | undefined | なし |
+
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
 ### type 属性
-converter: string / defaultValue: undefined
+
+ * `converter`: string
+ * `defaultValue`: undefined
 
 <!-- EDIT HERE(type)-->
-
-
-
-
-
-
-
-
-
-
-
 <!-- /EDIT HERE-->
 ### src 属性
-converter: string / defaultValue: undefined
+
+ * `converter`: string
+ * `defaultValue`: undefined
 
 <!-- EDIT HERE(src)-->
-
-
-
-
-
-
-
-
-
-
-
 <!-- /EDIT HERE-->

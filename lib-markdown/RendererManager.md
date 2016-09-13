@@ -17,39 +17,14 @@
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| enabled | boolean | true |  |
-| bgColor | color4 | new Color4(0, 0, 0, 1) |  |
+| bgColor | color4 | new Color4(0, 0, 0, 1) | なし |
+
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
-### enabled 属性
-converter: boolean / defaultValue: true
-
-<!-- EDIT HERE(enabled)-->
-
-
-
-
-
-
-
-
-
-
-
-<!-- /EDIT HERE-->
 ### bgColor 属性
-converter: color4 / defaultValue: new Color4(0, 0, 0, 1)
+
+ * `converter`: color4
+ * `defaultValue`: new Color4(0, 0, 0, 1)
 
 <!-- EDIT HERE(bgColor)-->
-
-
-
-
-
-
-
-
-
-
-
 <!-- /EDIT HERE-->

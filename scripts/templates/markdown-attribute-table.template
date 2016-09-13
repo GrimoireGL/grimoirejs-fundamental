@@ -6,5 +6,6 @@
 {{#each attributes}}
 | {{name}} | {{converter}} | {{defaultValue}} | {{other}} |
 {{/each}}
+
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
