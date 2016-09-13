@@ -85,8 +85,7 @@ export default class GeometryBuilder {
         count: indicies.length,
         index: buffer,
         type: bufferType.format,
-        topology: generatorInfo.topology ? generatorInfo.topology : WebGLRenderingContext.TRIANGLES,
-        offset: 0
+        topology: generatorInfo.topology ? generatorInfo.topology : WebGLRenderingContext.TRIANGLES
       };
     }
     return indexMap;

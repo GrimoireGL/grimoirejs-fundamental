@@ -21,6 +21,14 @@ export default class MeshRenderer extends Component {
     layer: {
       converter: "string",
       defaultValue: "default"
+    },
+    drawCount: {
+      converter: "number",
+      defaultValue: Number.MAX_VALUE
+    },
+    drawOffset: {
+      converter: "number",
+      defaultValue: 0
     }
   };
 
@@ -29,10 +37,14 @@ export default class MeshRenderer extends Component {
   private _materialContainer: MaterialContainerComponent;
   private _transformComponent: TransformComponent;
   private _layer: string;
+  private _drawOffset: number;
+  private _drawCount: number;
 
   public $awake(): void {
     this.getAttribute("targetBuffer").boundTo("_targetBuffer");
     this.getAttribute("layer").boundTo("_layer");
+    this.getAttribute("drawOffset").boundTo("_drawOffset");
+    this.getAttribute("drawCount").boundTo("_drawCount");
   }
 
   public $mount(): void {
@@ -55,7 +67,9 @@ export default class MeshRenderer extends Component {
       camera: args.camera.camera,
       transform: this._transformComponent,
       buffers: args.buffers,
-      viewport: args.viewport
+      viewport: args.viewport,
+      drawCount: this._drawCount,
+      drawOffset: this._drawOffset
     };
     if (args.material) {
       renderArgs.attributeValues = args.materialArgs;
