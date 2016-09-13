@@ -1,7 +1,8 @@
 ## AssetLoadingManager コンポーネント
 <!-- EDIT HERE(@Component)-->
-abcde
-
+非同期的な解決を必要とするようなリソース群のロードを管理しているコンポーネント。
+このコンポーネントにより、初期時にロード画面を表示します。
+また、ロード終了後に他のコンポーネントに処理の開始を通知してレンダリングループを開始します。
 <!-- /EDIT HERE-->
 ### 属性
 <!-- DO NOT EDIT -->
@@ -19,6 +20,7 @@ abcde
  * `defaultValue`: 0
 
 <!-- EDIT HERE(loadingProgress)-->
+読み取り専用。現在のロード状況を100分率で返します。
 <!-- /EDIT HERE-->
 ### autoStart 属性
 
@@ -26,4 +28,6 @@ abcde
  * `defaultValue`: true
 
 <!-- EDIT HERE(autoStart)-->
+リソースのロード終了後に自動的にレンダリングループを開始するかどうか。
+これがfalseの場合、ユーザーが自らLoopManagerに対してbeginメソッドを呼ばなければ、一切の描画処理は行われません。
 <!-- /EDIT HERE-->
