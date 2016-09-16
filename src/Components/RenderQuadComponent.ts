@@ -13,31 +13,31 @@ export default class RenderQuadComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     out: {
       defaultValue: "default",
-      converter: "string"
+      converter: "String"
     },
     depthBuffer: {
       defaultValue: undefined,
-      converter: "string"
+      converter: "String"
     },
     targetBuffer: {
       defaultValue: "default",
-      converter: "string",
+      converter: "String",
     },
     clearColor: {
       defaultValue: "#0000",
-      converter: "color4",
+      converter: "Color4",
     },
     clearColorEnabled: {
       defaultValue: true,
-      converter: "boolean",
+      converter: "Boolean",
     },
     clearDepthEnabled: {
       defaultValue: true,
-      converter: "boolean",
+      converter: "Boolean",
     },
     clearDepth: {
       defaultValue: 1.0,
-      converter: "number",
+      converter: "Number",
     }
   };
 

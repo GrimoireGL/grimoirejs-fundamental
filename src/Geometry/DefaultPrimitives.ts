@@ -89,11 +89,11 @@ export default class DefaultPrimitives {
   private static _registerSphere(): void {
     GeometryFactory.addType("sphere", {
       divVertical: {
-        converter: "number",
+        converter: "Number",
         defaultValue: 10
       },
       divHorizontal: {
-        converter: "number",
+        converter: "Number",
         defaultValue: 10
       }
     }, (gl, attrs) => {

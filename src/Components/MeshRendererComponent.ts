@@ -11,23 +11,23 @@ import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 export default class MeshRenderer extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     geometry: {
-      converter: "geometry",
+      converter: "Geometry",
       defaultValue: "quad"
     },
     targetBuffer: {
-      converter: "string",
+      converter: "String",
       defaultValue: "default"
     },
     layer: {
-      converter: "string",
+      converter: "String",
       defaultValue: "default"
     },
     drawCount: {
-      converter: "number",
+      converter: "Number",
       defaultValue: Number.MAX_VALUE
     },
     drawOffset: {
-      converter: "number",
+      converter: "Number",
       defaultValue: 0
     }
   };
@@ -58,7 +58,7 @@ export default class MeshRenderer extends Component {
       return;
     }
     if (!this._geometry || (!args.material && !this._materialContainer.ready)) {
-      return;// material is not instanciated yet.
+      return; // material is not instanciated yet.
     }
     const renderArgs = <IMaterialArgument>{
       targetBuffer: this._targetBuffer,

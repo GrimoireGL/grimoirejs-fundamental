@@ -13,19 +13,19 @@ export default class MouseCameraControlComponent extends Component {
     // Specify the attributes user can intaract
     rotateX: {
       defaultValue: 1,
-      converter: "number"
+      converter: "Number"
     },
     rotateY: {
       defaultValue: 1,
-      converter: "number"
+      converter: "Number"
     },
     moveZ: {
       defaultValue: 1,
-      converter: "number"
+      converter: "Number"
     },
     moveSpeed: {
       defaultValue: 1,
-      converter: "number"
+      converter: "Number"
     }
 
   };

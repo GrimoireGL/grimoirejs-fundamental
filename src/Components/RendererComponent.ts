@@ -10,12 +10,12 @@ import {Rectangle} from "grimoirejs-math";
 export default class RendererComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     camera: {
-      converter: "component",
+      converter: "Component",
       defaultValue: "camera",
       target: "CAMERA"
     },
     viewport: {
-      converter: "viewport",
+      converter: "Viewport",
       defaultValue: "auto"
     }
   };

@@ -13,36 +13,36 @@ import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
 export default class RenderSceneComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     layer: {
-      converter: "string",
+      converter: "String",
       defaultValue: "default"
     },
     depthBuffer: {
       defaultValue: undefined,
-      converter: "string"
+      converter: "String"
     },
     out: {
-      converter: "string",
+      converter: "String",
       defaultValue: "default"
     },
     clearColor: {
       defaultValue: "#0000",
-      converter: "color4",
+      converter: "Color4",
     },
     clearColorEnabled: {
       defaultValue: true,
-      converter: "boolean",
+      converter: "Boolean",
     },
     clearDepthEnabled: {
       defaultValue: true,
-      converter: "boolean",
+      converter: "Boolean",
     },
     clearDepth: {
       defaultValue: 1.0,
-      converter: "number",
+      converter: "Number",
     },
     material: {
       defaultValue: undefined,
-      converter: "material",
+      converter: "Material",
       componentBoundTo: "_materialComponent"
     },
   };

@@ -11,19 +11,19 @@ export default class CameraComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     fovy: {
       defaultValue: 0.3,
-      converter: "number"
+      converter: "Number"
     },
     near: {
       defaultValue: 0.01,
-      converter: "number"
+      converter: "Number"
     },
     far: {
       defaultValue: 10,
-      converter: "number"
+      converter: "Number"
     },
     aspect: {
       defaultValue: 1.6,
-      converter: "number"
+      converter: "Number"
     }
   };
 

@@ -5,11 +5,11 @@ import ImageResolver from "../Asset/ImageResolver";
 export default class TextureComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     src: {
-      converter: "string",
+      converter: "String",
       defaultValue: undefined
     },
     minFilter: {
-      converter: "enum",
+      converter: "Enum",
       defaultValue: "LINEAR",
       table: {
         LINEAR: WebGLRenderingContext.LINEAR,
@@ -21,7 +21,7 @@ export default class TextureComponent extends Component {
       }
     },
     magFilter: {
-      converter: "enum",
+      converter: "Enum",
       defaultValue: "LINEAR",
       table: {
         LINEAR: WebGLRenderingContext.LINEAR,
@@ -29,7 +29,7 @@ export default class TextureComponent extends Component {
       }
     },
     wrapS: {
-      converter: "enum",
+      converter: "Enum",
       defaultValue: "REPEAT",
       table: {
         REPEAT: WebGLRenderingContext.REPEAT,
@@ -38,7 +38,7 @@ export default class TextureComponent extends Component {
       }
     },
     wrapT: {
-      converter: "enum",
+      converter: "Enum",
       defaultValue: "REPEAT",
       table: {
         REPEAT: WebGLRenderingContext.REPEAT,

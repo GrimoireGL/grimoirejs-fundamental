@@ -6,11 +6,11 @@ import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 export default class TextureBufferComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
-      converter: "string",
+      converter: "String",
       defaultValue: undefined
     },
     format: {
-      converter: "enum",
+      converter: "Enum",
       defaultValue: WebGLRenderingContext.RGBA,
       table: {
         RGBA: WebGLRenderingContext.RGBA,

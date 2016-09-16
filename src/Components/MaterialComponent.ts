@@ -9,7 +9,7 @@ import ResourceBase from "../Resource/ResourceBase";
 export default class MaterialComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     type: {
-      converter: "string",
+      converter: "String",
       defaultValue: undefined
     }
   };

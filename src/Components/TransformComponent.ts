@@ -9,15 +9,15 @@ import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 export default class TransformComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     "position": {
-      converter: "vector3",
+      converter: "Vector3",
       defaultValue: Vector3.Zero
     },
     "rotation": {
-      converter: "rotation3",
+      converter: "Rotation3",
       defaultValue: Quaternion.Identity
     },
     "scale": {
-      converter: "vector3",
+      converter: "Vector3",
       defaultValue: Vector3.One
     }
   };

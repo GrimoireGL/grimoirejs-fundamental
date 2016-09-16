@@ -7,11 +7,11 @@ class CanvasInitializerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     width: {
       defaultValue: 640,
-      converter: "number"
+      converter: "Number"
     },
     height: {
       defaultValue: 480,
-      converter: "number"
+      converter: "Number"
     }
   };
 

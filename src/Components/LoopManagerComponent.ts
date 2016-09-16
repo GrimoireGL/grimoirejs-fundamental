@@ -10,7 +10,7 @@ class LoopManagerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     loopEnabled: {
       defaultValue: false,
-      converter: "boolean"
+      converter: "Boolean"
     }
   };
 

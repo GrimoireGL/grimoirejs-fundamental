@@ -8,7 +8,7 @@ export default class RendererManagerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     bgColor: {
       defaultValue: new Color4(0, 0, 0, 1),
-      converter: "color4"
+      converter: "Color4"
     }
   };
 

@@ -6,7 +6,7 @@ import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 export default class RenderBufferComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
-      converter: "string",
+      converter: "String",
       defaultValue: undefined
     }
   };

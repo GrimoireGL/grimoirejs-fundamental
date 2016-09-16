@@ -6,11 +6,11 @@ export default class MaterialImporterComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     type: {
       defaultValue: undefined,
-      converter: "string"
+      converter: "String"
     },
     src: {
       defaultValue: undefined,
-      converter: "string"
+      converter: "String"
     }
   };
 

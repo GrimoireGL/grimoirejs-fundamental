@@ -8,7 +8,7 @@ import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 export default class MaterialContainerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     material: {
-      converter: "material",
+      converter: "Material",
       defaultValue: undefined,
       componentBoundTo: "_materialComponent" // When the material was specified with the other material tag, this field would be assigned.
     }

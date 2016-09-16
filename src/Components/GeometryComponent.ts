@@ -7,11 +7,11 @@ import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 export default class GeometryComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     type: {
-      converter: "string",
+      converter: "String",
       defaultValue: undefined
     },
     name: {
-      converter: "string",
+      converter: "String",
       defaultValue: undefined
     }
   };

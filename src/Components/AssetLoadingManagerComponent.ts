@@ -8,11 +8,11 @@ export default class AssetLoadingManagerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     loadingProgress: {
       defaultValue: 0,
-      converter: "number"
+      converter: "Number"
     },
     autoStart: {
       defaultValue: true,
-      converter: "boolean"
+      converter: "Boolean"
     }
   };
 
