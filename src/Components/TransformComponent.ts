@@ -145,9 +145,18 @@ export default class TransformComponent extends Component {
 
   public $awake(): void {
     // register observers
-    this.attributes.get("position").addObserver(() => this.updateTransform());
-    this.attributes.get("rotation").addObserver(() => this.updateTransform());
-    this.attributes.get("scale").addObserver(() => this.updateTransform());
+    this.attributes.get("position").addObserver(() => {
+      this._position = this.attributes.get("position").Value;
+      this.updateTransform();
+    });
+    this.attributes.get("rotation").addObserver(() => {
+      this._rotation = this.attributes.get("rotation").Value;
+      this.updateTransform();
+    });
+    this.attributes.get("scale").addObserver(() => {
+      this._scale = this.attributes.get("scale").Value;
+      this.updateTransform();
+    });
     // assign attribute values to field
     this._position = this.attributes.get("position").Value;
     this._rotation = this.attributes.get("rotation").Value;
