@@ -7,10 +7,7 @@
   <material id="sprite" type="edge" edgeColor="cyan" color="black"/>
   <renderers bgColor="#0000">
     <renderer camera=".camera" viewport="0,0,100%,100%">
-      <texture-buffer name="col1"/>
-      <render-buffer name="dep1"/>
-      <render-scene out="col1" depthBuffer="dep1"/>
-      <render-quad source="backbuffer(col1)" material="new(fxaa)"/>
+      <render-scene/>
     </renderer>
   </renderers>
     <scene>
@@ -20,9 +17,7 @@
         </camera.components>
       </camera>
       <mesh position="0,0,0" rotation="y(30d)" geometry="sphere" material="new(edge)" color="red" edgeColor="yellow"></mesh>
-      <mesh position="2,0,0" geometry="sphere" material="#sprite">
-        
-      </mesh>
+      <mesh position="2,0,0" geometry="sphere" material="#sprite"></mesh>
       <mesh position="-2,0,0" geometry="sphere" material="#sprite"></mesh>
       <mesh position="4,0,0" geometry="sphere" material="#sprite"></mesh>
       <mesh position="-4,0,0" geometry="sphere" material="#sprite"></mesh>
