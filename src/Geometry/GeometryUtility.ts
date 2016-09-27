@@ -79,11 +79,11 @@ export default class GeometryUtility {
     yield* p3.rawElements as number[];
   }
 
-  public static *quadNormal(up: Vector3): IterableIterator<number> {
-    yield* up.rawElements as number[];
-    yield* up.rawElements as number[];
-    yield* up.rawElements as number[];
-    yield* up.rawElements as number[];
+  public static *quadNormal(normal: Vector3): IterableIterator<number> {
+    yield* normal.rawElements as number[];
+    yield* normal.rawElements as number[];
+    yield* normal.rawElements as number[];
+    yield* normal.rawElements as number[];
   }
 
   public static *spherePosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, rowDiv: number, circleDiv: number): IterableIterator<number> {
@@ -100,6 +100,24 @@ export default class GeometryUtility {
         yield* (right.multiplyWith(Math.cos(theta)).addWith(forward.multiplyWith(Math.sin(theta)))).multiplyWith(sinPhi).addWith(upVector).rawElements as number[];
       }
     }
+  }
+
+  public static *sphereUV(rowDiv: number, circleDiv: number): IterableIterator<number> {
+    yield* [0, 1, 0, 0];
+    const ia = 2 * Math.PI / circleDiv;
+    const ja = Math.PI / (rowDiv + 1);
+    for (let j = 1; j <= rowDiv; j++) {
+      const phi = ja * j;
+      const sinPhi = Math.sin(phi);
+      for (let i = 0; i < circleDiv; i++) {
+        const theta = ia * i;
+        yield* [phi / Math.PI / 2, theta / Math.PI];
+      }
+    }
+  }
+
+  public static *sphereNormal(up: Vector3, right: Vector3, forward: Vector3, rowDiv: number, circleDiv: number): IterableIterator<number> {
+    yield* GeometryUtility.spherePosition(Vector3.Zero, up, right, forward, rowDiv, circleDiv);
   }
 
   public static *quadIndex(offset: number): IterableIterator<number> {

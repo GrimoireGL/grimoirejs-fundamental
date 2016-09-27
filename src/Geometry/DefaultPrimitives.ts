@@ -42,7 +42,7 @@ export default class DefaultPrimitives {
                   yield* GeometryUtility.quadPosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit);
                 },
                 normal: function* () {
-                  yield* GeometryUtility.quadNormal(Vector3.YUnit);
+                  yield* GeometryUtility.quadNormal(Vector3.ZUnit);
                 }
               };
             }
@@ -121,13 +121,17 @@ export default class DefaultPrimitives {
         verticies: {
           main: {
             size: {
-              position: 3
+              position: 3,
+              normal: 3
             },
             count: GeometryUtility.sphereSize(dH, dV),
             getGenerators: () => {
               return {
                 position: function* () {
                   yield* GeometryUtility.spherePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), dH, dV);
+                },
+                normal: function* () {
+                  yield* GeometryUtility.sphereNormal(Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), dH, dV);
                 }
               };
             }
