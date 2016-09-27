@@ -122,7 +122,8 @@ export default class DefaultPrimitives {
           main: {
             size: {
               position: 3,
-              normal: 3
+              normal: 3,
+              uv: 2
             },
             count: GeometryUtility.sphereSize(dH, dV),
             getGenerators: () => {
@@ -132,6 +133,9 @@ export default class DefaultPrimitives {
                 },
                 normal: function* () {
                   yield* GeometryUtility.sphereNormal(Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), dH, dV);
+                },
+                uv: function* () {
+                  yield* GeometryUtility.sphereUV(dH, dV);
                 }
               };
             }

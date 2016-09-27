@@ -1,7 +1,7 @@
 <goml width="512" height="512">
   <import-material type="solid" src="../sprite.sort"/>
-  <geometry name="quad" type="quad"/>
-  <material id="solid" type="solid" color="green"/>
+  <geometry name="quad" type="sphere"/>
+  <material id="solid" type="solid" color="green" texture="./theta.jpg"/>
   <renderers bgColor="#0000">
     <renderer camera=".camera" viewport="0,0,100%,100%">
       <render-scene/>
@@ -13,6 +13,6 @@
           <MouseCameraControl rotateX="10" moveSpeed="0.1"/>
         </camera.components>
       </camera>
-      <mesh position="0,0,0" rotation="y(30d)" geometry="quad" material="#solid"/>
+      <mesh position="0,0,0" scale="5" rotation="y(30d)" geometry="quad" material="#solid"/>
     </scene>
 </goml>
