@@ -5,103 +5,66 @@
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
   "files": [
-    "lib"
+    "src",
+    "lib",
+    "lib-es5"
   ],
   "keywords": [
     "grimoire"
   ],
   "dependencies": {
-    "@types/json5": "0.0.28",
-    "buffer": "^4.9.1",
+    "@types/json5": "0.0.29",
     "events": "^1.1.1",
-    "grimoirejs": "^0.6.0",
+    "grimoirejs": "^0.7.0",
+    "grimoirejs-cauldron": "^1.5.5",
     "grimoirejs-math": "^1.2.3",
-    "json5": "^0.5.0",
-    "utils": "^0.3.1"
+    "json5": "^0.5.0"
   },
   "devDependencies": {
     "ava": "^0.16.0",
-    "babel-cli": "^6.14.0",
-    "babel-plugin-transform-require-ignore": "0.0.2",
-    "babel-plugin-transform-runtime": "^6.12.0",
-    "babel-preset-es2015": "^6.14.0",
-    "babel-preset-stage-2": "^6.13.0",
-    "babel-runtime": "^6.11.6",
-    "chalk": "^1.1.3",
-    "fs-extra": "^0.30.0",
-    "grimoirejs-build-env-base": "^1.0.6",
-    "grimoirejs-math": "^1.2.4",
-    "handlebars": "^4.0.5",
-    "http-server": "^0.9.0",
-    "progress": "^1.1.8",
-    "rollup": "^0.35.11",
-    "rollup-plugin-babel": "^2.6.1",
-    "rollup-plugin-commonjs": "^5.0.0",
-    "rollup-plugin-inject": "^1.4.1",
-    "rollup-plugin-node-builtins": "^1.0.7",
-    "rollup-plugin-node-globals": "^1.0.6",
-    "rollup-plugin-node-resolve": "^2.0.0",
-    "rollup-plugin-replace": "^1.1.1",
-    "rollup-plugin-sourcemaps": "^0.4.1",
-    "rollup-plugin-string": "^2.0.2",
-    "rollup-plugin-typescript": "^0.8.1",
-    "tslint": "^3.14.0",
-    "typescript": "^2.0.0",
-    "typescript-awaiter": "^1.0.0",
-    "typings": "^1.3.2",
-    "uglifyjs": "^2.4.10",
-    "watch": "^0.19.2",
-    "xmldom": "^0.1.22",
-    "yargs": "^5.0.0"
+    "grimoirejs-cauldron": "^1.5.6",
+    "grimoirejs-inquisitor": "^1.0.3",
+    "xmldom": "^0.1.22"
   },
   "repository": "",
-  "scripts": {
-    "scaffold": "babel-node ./scripts/scaffold.js --presets es2015,stage-2 --plugins transform-runtime",
-    "clean": "rm -rf -r ./lib ./lib-ts ./lib-es5",
-    "minify": "uglifyjs ./product/index.js --compress -o ./product/index.min.js",
-    "compile": "tsc @./lib-ts/entry_files --declaration --outDir ./lib -m es6 -t es6 --moduleResolution node --sourcemap --noEmitHelpers",
-    "build": "babel-node rollup.config.js --presets es2015,stage-2 --plugins transform-runtime",
-    "babel": "babel ./product/index.es2016.js --out-file ./product/index.js --inputSourceMap ./product/index.es2016.js.map --sourceMaps true -sourceMapTarget ./index.js.map --presets es2015 --compact false",
-    "prepublish": "babel-node ./scripts/prepublish.js --presets es2015,stage-2 --plugins transform-runtime",
-    "start": "npm run build -- -w -s",
-    "serve": "hs ./",
-    "babel-test": "babel ./lib  --out-dir ./lib-es5",
-    "ava": "ava --verbose",
-    "test": "babel-node ./scripts/test-runner.js --presets es2015,stage-2 --plugins transform-runtime",
-    "prelint": "tsc ./scripts/lint/*.ts --outDir ./scripts/lint -m commonjs -t es5",
-    "lint": "tslint ./src/**/*.ts",
-    "doc": "babel-node ./scripts/generate-markdown.js --presets es2015,stage-2 --plugins transform-runtime",
-    "cauldron-test": "cauldron build"
-  },
   "grimoire": {
+    "isPlugin": true,
     "ts": {
       "lib": "./lib",
       "temp": "./lib-ts",
       "src": "./src",
-      "es5":"./lib-es5"
+      "es5": "./lib-es5"
     },
     "main": "index.ts",
-    "test":{
-      "src":"./test",
-      "lib":"./lib-test"
+    "test": {
+      "defaultGlob": "**/*Test.js",
+      "src": "./test",
+      "temp": "./lib-test"
     },
     "out": {
       "es6": "./product/grimoire.es2016.js",
       "es5": "./product/grimoire.js"
     },
     "txt-exts": [
-      ".glsl",
+      ".txt",
       ".html",
-      ".goml"
+      ".goml",
+      ".sort"
     ],
     "doc": {
       "src": "./doc",
       "header": "./doc/header.md",
       "footer": "./doc/footer.md",
-      "dest": "./lib-md/index.md"
+      "dest": "./README.md"
     },
-    "namespace": "HTTP://GRIMOIRE.GL/NS/DEFAULT",
-    "dependencies":[]
+    "namespace": "HTTP://GRIMOIRE.GL/NS/DEFAULT"
+  },
+  "scripts": {
+    "start": "cauldron build --watch --server",
+    "build": "cauldron build",
+    "test": "inquisitor",
+    "prepublish": "cauldron build && npm run doc",
+    "doc": "cauldron doc"
   },
   "license": "MIT"
 }

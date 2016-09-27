@@ -108,4 +108,6 @@ lib
 lib-ts
 product
 lib-es5
+lib-test
+lib-md
 src/**/*.*.d.ts
