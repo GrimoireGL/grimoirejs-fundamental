@@ -59,6 +59,15 @@ export default class GeometryUtility {
     return divide + 1;
   }
 
+  public static *trianglePosition(center: Vector3, up: Vector3, right: Vector3): IterableIterator<number> {
+    let p0 = center.subtractWith(right).addWith(up);
+    let p1 = center.addWith(right).addWith(up);
+    let p2 = center.subtractWith(up);
+    yield* p0.rawElements as number[];
+    yield* p1.rawElements as number[];
+    yield* p2.rawElements as number[];
+  }
+
   public static *cubePosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3): IterableIterator<number> {
     yield* GeometryUtility.quadPosition(center.subtractWith(forward), up, right); // 手前
     yield* GeometryUtility.quadPosition(center.addWith(forward), up, right.negateThis()); // 奥
@@ -120,6 +129,11 @@ export default class GeometryUtility {
     yield* GeometryUtility.spherePosition(Vector3.Zero, up, right, forward, rowDiv, circleDiv);
   }
 
+  public static *triangleIndex(offset: number): IterableIterator<number> {
+    const o = offset;
+    yield* [o, o + 2, o + 1];
+  }
+
   public static *quadIndex(offset: number): IterableIterator<number> {
     const o = offset;
     yield* [o, o + 2, o + 1, o, o + 3, o + 2];
@@ -163,6 +177,10 @@ export default class GeometryUtility {
 
   public static quadSize(): number {
     return 4;
+  }
+
+  public static triangleSize(): number {
+    return 3;
   }
 
   public static cubeSize(): number {

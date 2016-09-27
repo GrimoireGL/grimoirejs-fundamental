@@ -6,9 +6,47 @@ import GeometryBuilder from "./GeometryBuilder";
 // TODO apply attributes
 export default class DefaultPrimitives {
   public static register(): void {
+    DefaultPrimitives._registerTriangle();
     DefaultPrimitives._registerQuad();
     DefaultPrimitives._registerCube();
     DefaultPrimitives._registerSphere();
+  }
+
+  private static _registerTriangle(): void {
+    GeometryFactory.addType("triangle", {
+    }, (gl, attrs) => {
+      return GeometryBuilder.build(gl, {
+        indicies: {
+          default: {
+            generator: function* () {
+              yield* GeometryUtility.triangleIndex(0);
+            },
+            topology: WebGLRenderingContext.TRIANGLES
+          },
+          wireframe: {
+            generator: function* () {
+              yield* GeometryUtility.linesFromTriangles(GeometryUtility.triangleIndex(0));
+            },
+            topology: WebGLRenderingContext.LINES
+          }
+        },
+        verticies: {
+          main: {
+            size: {
+              position: 3
+            },
+            count: GeometryUtility.triangleSize(),
+            getGenerators: () => {
+              return {
+                position: function* () {
+                  yield* GeometryUtility.trianglePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit);
+                }
+              };
+            }
+          }
+        }
+      });
+    });
   }
 
   private static _registerQuad(): void {
@@ -50,7 +88,6 @@ export default class DefaultPrimitives {
         }
       });
     });
-
   }
 
   private static _registerCube(): void {
