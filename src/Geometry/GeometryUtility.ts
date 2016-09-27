@@ -79,6 +79,13 @@ export default class GeometryUtility {
     yield* p3.rawElements as number[];
   }
 
+  public static *quadNormal(up: Vector3): IterableIterator<number> {
+    yield* up.rawElements as number[];
+    yield* up.rawElements as number[];
+    yield* up.rawElements as number[];
+    yield* up.rawElements as number[];
+  }
+
   public static *spherePosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, rowDiv: number, circleDiv: number): IterableIterator<number> {
     yield* center.addWith(up).rawElements as number[];
     yield* center.subtractWith(up).rawElements as number[];

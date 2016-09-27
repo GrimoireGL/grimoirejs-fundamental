@@ -33,7 +33,7 @@ function _asGLConstants(args: string[], length: number): number[] {
     throw new Error(`The arguments should contain ${length} of items but there was ${args.length}`);
   }
   return args.map(arg => {
-    const value = WebGLRenderingContext[arg.toUpperCase()];
+    const value = WebGLRenderingContext[arg.toUpperCase().trim()];
     if (value) {
       return value;
     } else {

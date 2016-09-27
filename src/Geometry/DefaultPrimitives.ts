@@ -32,13 +32,17 @@ export default class DefaultPrimitives {
         verticies: {
           main: {
             size: {
-              position: 3
+              position: 3,
+              normal: 3
             },
             count: GeometryUtility.quadSize(),
             getGenerators: () => {
               return {
                 position: function* () {
                   yield* GeometryUtility.quadPosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit);
+                },
+                normal: function* () {
+                  yield* GeometryUtility.quadNormal(Vector3.YUnit);
                 }
               };
             }

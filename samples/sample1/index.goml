@@ -1,6 +1,6 @@
 <goml width="512" height="512">
-  <import-material type="solid" src="./solid.sort"/>
-  <geometry name="cube" type="cube"/>
+  <import-material type="solid" src="../sprite.sort"/>
+  <geometry name="quad" type="quad"/>
   <material id="solid" type="solid" color="green"/>
   <renderers bgColor="#0000">
     <renderer camera=".camera" viewport="0,0,100%,100%">
@@ -13,6 +13,6 @@
           <MouseCameraControl rotateX="10" moveSpeed="0.1"/>
         </camera.components>
       </camera>
-      <mesh position="0,0,0" rotation="y(30d)" geometry="cube" material="#solid"/>
+      <mesh position="0,0,0" rotation="y(30d)" geometry="quad" material="#solid"/>
     </scene>
 </goml>
