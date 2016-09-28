@@ -51,12 +51,10 @@ export default class RendererComponent extends Component {
   }
 
   public $renderScene(): void {
-    if (this._camera) {
-      this.node.broadcastMessage(1, "render", <IRenderRendererMessage>{
-        camera: this._camera,
-        viewport: this._viewport,
-        buffers: this._buffers
-      });
-    }
+    this.node.broadcastMessage(1, "render", <IRenderRendererMessage>{
+      camera: this._camera,
+      viewport: this._viewport,
+      buffers: this._buffers
+    });
   }
 }

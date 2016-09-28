@@ -115,7 +115,7 @@ export default class RenderQuadComponent extends Component {
       targetBuffer: this._targetBuffer,
       geometry: this._geom,
       attributeValues: {},
-      camera: args.camera.camera,
+      camera: null,
       transform: null,
       buffers: args.buffers,
       viewport: args.viewport
