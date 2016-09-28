@@ -40,6 +40,9 @@ export default class RendererComponent extends Component {
   }
 
   public $treeInitialized(): void {
+    if (this.node.children.length === 0) {
+      this.node.addNode("render-scene", {});
+    }
     this.node.broadcastMessage(1, "resizeBuffer", <IResizeBufferMessage>{ // TODO apply when viewport was changed
       width: this._viewport.Width,
       height: this._viewport.Height,
