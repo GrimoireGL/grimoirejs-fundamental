@@ -2,8 +2,6 @@
   <import-material type="edge" src="./edge-sprite.sort"/>
   <import-material type="copy" src="./copy.sort"/>
   <import-material type="fxaa" src="./fxaa.sort"/>
-  <geometry name="sphere" type="sphere" divHorizontal="40" divVertical="40"/>
-  <geometry name="quad" type="quad"/>
   <material id="sprite" type="edge" edgeColor="cyan" color="black"/>
   <renderers bgColor="#0000">
     <renderer camera=".camera" viewport="0,0,100%,100%">

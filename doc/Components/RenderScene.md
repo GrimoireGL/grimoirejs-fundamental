@@ -14,6 +14,7 @@
 | clearDepthEnabled | Boolean | true | なし |
 | clearDepth | Number | 1.0 | なし |
 | material | Material | undefined | `componentBoundTo`</br> "_materialComponent"</br>    </br> |
+| camera | Component | undefined | `target`</br> "CAMERA"</br>    </br>  </br> |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
@@ -72,4 +73,11 @@
  * `defaultValue`: undefined
 
 <!-- EDIT HERE(material)-->
+<!-- /EDIT HERE-->
+### camera 属性
+
+ * `converter`: Component
+ * `defaultValue`: undefined
+
+<!-- EDIT HERE(camera)-->
 <!-- /EDIT HERE-->

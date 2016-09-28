@@ -375,16 +375,24 @@
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| bgColor | Color4 | new Color4(0, 0, 0, 1) | なし |
+| bgColor | Color4 | new Color4(0, 0, 0, 0) | なし |
+| clearDepth | Number | 1.0 | なし |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
 ### bgColor 属性
 
  * `converter`: Color4
- * `defaultValue`: new Color4(0, 0, 0, 1)
+ * `defaultValue`: new Color4(0, 0, 0, 0)
 
 <!-- EDIT HERE(bgColor)-->
+<!-- /EDIT HERE-->
+### clearDepth 属性
+
+ * `converter`: Number
+ * `defaultValue`: 1.0
+
+<!-- EDIT HERE(clearDepth)-->
 <!-- /EDIT HERE-->
 
 ## RenderQuad コンポーネント
@@ -471,6 +479,7 @@
 | clearDepthEnabled | Boolean | true | なし |
 | clearDepth | Number | 1.0 | なし |
 | material | Material | undefined | `componentBoundTo`</br> "_materialComponent"</br>    </br> |
+| camera | Component | undefined | `target`</br> "CAMERA"</br>    </br>  </br> |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
@@ -529,6 +538,13 @@
  * `defaultValue`: undefined
 
 <!-- EDIT HERE(material)-->
+<!-- /EDIT HERE-->
+### camera 属性
+
+ * `converter`: Component
+ * `defaultValue`: undefined
+
+<!-- EDIT HERE(camera)-->
 <!-- /EDIT HERE-->
 
 ## Scene コンポーネント

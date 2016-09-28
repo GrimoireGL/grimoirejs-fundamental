@@ -37,4 +37,14 @@ export default class GeometryFactory {
     }
     return factoryDelegate(this.gl, args);
   }
+
+  public instanciateAsDefault(type: string): Geometry {
+    const decl = GeometryFactory.factoryArgumentDeclarations[type];
+    const args = {};
+    for (let attr in decl) {
+      const attrDecl = decl[attr];
+      args[attr] = attrDecl.defaultValue;
+    }
+    return this.instanciate(type, args);
+  }
 }
