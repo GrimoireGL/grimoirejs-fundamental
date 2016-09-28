@@ -1,6 +1,6 @@
 <goml width="512" height="512">
-  <import-material type="solid" src="../sprite.sort"/>
-  <geometry name="quad" type="quad"/>
+  <import-material type="solid" src="./solid.sort"/>
+  <geometry name="cylinder" type="cylinder" divide="50"/>
   <material id="solid" type="solid" color="green"/>
   <renderers bgColor="#0000">
     <renderer camera=".camera" viewport="0,0,100%,100%">
@@ -10,9 +10,9 @@
     <scene>
       <camera class="camera" near="0.01" far="40.0" aspect="1.0" fovy="45d" position="0,0,10" rotation="y(0d)">
         <camera.components>
-          <MouseCameraControl rotateX="10" moveSpeed="0.1"/>
+          <MouseCameraControl rotateX="10" moveSpeed="1"/>
         </camera.components>
       </camera>
-      <mesh position="0,0,0" rotation="y(30d)" geometry="quad" material="#solid"/>
+      <mesh position="0,0,0" geometry="cylinder" material="#solid"/>
     </scene>
 </goml>
