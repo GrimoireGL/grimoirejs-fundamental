@@ -40,8 +40,8 @@ export default class GeometryUtility {
     const step = 2 * Math.PI / divide;
     for (let i = 0; i < divide; i++) {
       const theta = step * i;
-      const sin = Math.sin(theta);
-      const cos = Math.cos(theta);
+      const sin = Math.sin(Math.PI * 2 - theta);
+      const cos = Math.cos(Math.PI * 2 - theta);
       yield center.X + cos * up.X + sin * right.X;
       yield center.Y + cos * up.Y + sin * right.Y;
       yield center.Z + cos * up.Z + sin * right.Z;
@@ -88,6 +88,21 @@ export default class GeometryUtility {
     yield* p3.rawElements as number[];
   }
 
+  public static *cylinderPosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, divide: number): IterableIterator<number> {
+    yield* GeometryUtility.ellipsePosition(center.addWith(up), forward, right, divide);
+    yield* GeometryUtility.ellipsePosition(center.subtractWith(up), forward, Vector3.negate(right), divide);
+    const step = 2 * Math.PI / divide;
+    const d = Math.cos(step / 2);
+    const d2 = Math.sin(step / 2);
+    for (let i = 0; i < divide; i++) {
+      const theta = step / 2 + step * i;
+      const sin = Math.sin((Math.PI - step) / 2 - theta);
+      const cos = Math.cos((Math.PI - step) / 2 - theta);
+      const currentCenter = new Vector3(d * cos, center.Y, d * sin);
+      const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
+      yield* GeometryUtility.quadPosition(currentCenter, up, Vector3.multiply(d2, currentRight));
+    }
+  }
   public static *quadNormal(normal: Vector3): IterableIterator<number> {
     yield* normal.rawElements as number[];
     yield* normal.rawElements as number[];
@@ -175,6 +190,16 @@ export default class GeometryUtility {
     }
   }
 
+  public static *cylinderIndex(offset: number, divide: number): IterableIterator<number> {
+    const s = GeometryUtility.ellipseSize(divide);
+    const t = GeometryUtility.quadSize();
+    yield* GeometryUtility.ellipseIndex(offset, divide);
+    yield* GeometryUtility.ellipseIndex(offset + s, divide);
+    for (let i = 0; i < divide; i++) {
+      yield* GeometryUtility.quadIndex(offset + s * 2 + t * i);
+    }
+  }
+
   public static quadSize(): number {
     return 4;
   }
@@ -189,5 +214,8 @@ export default class GeometryUtility {
 
   public static sphereSize(rowDiv: number, circleDiv: number): number {
     return 2 + rowDiv * (circleDiv + 1);
+  }
+  public static cylinderSize(divide: number): number {
+    return (GeometryUtility.ellipseSize(divide) * 2) + divide * GeometryUtility.quadSize();
   }
 }

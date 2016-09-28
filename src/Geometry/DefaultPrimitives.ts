@@ -10,6 +10,8 @@ export default class DefaultPrimitives {
     DefaultPrimitives._registerQuad();
     DefaultPrimitives._registerCube();
     DefaultPrimitives._registerSphere();
+    DefaultPrimitives._registerCircle();
+    DefaultPrimitives._registerCylinder();
   }
 
   private static _registerTriangle(): void {
@@ -173,6 +175,89 @@ export default class DefaultPrimitives {
                 },
                 uv: function* () {
                   yield* GeometryUtility.sphereUV(dH, dV);
+                }
+              };
+            }
+          }
+        }
+      });
+    });
+  }
+  private static _registerCircle(): void {
+    GeometryFactory.addType("circle", {
+      divide: {
+        converter: "Number",
+        defaultValue: 10
+      }
+    }, (gl, attrs) => {
+      const div = attrs["divide"];
+      return GeometryBuilder.build(gl, {
+        indicies: {
+          default: {
+            generator: function* () {
+              yield* GeometryUtility.ellipseIndex(0, div);
+            },
+            topology: WebGLRenderingContext.TRIANGLES
+          },
+          wireframe: {
+            generator: function* () {
+              yield* GeometryUtility.linesFromTriangles(GeometryUtility.ellipseIndex(0, div));
+            },
+            topology: WebGLRenderingContext.LINES
+          }
+        },
+        verticies: {
+          main: {
+            size: {
+              position: 3
+            },
+            count: GeometryUtility.ellipseSize(div),
+            getGenerators: () => {
+              return {
+                position: function* () {
+                  yield* GeometryUtility.ellipsePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit,div);
+                }
+              };
+            }
+          }
+        }
+      });
+    });
+  }
+
+  private static _registerCylinder(): void {
+    GeometryFactory.addType("cylinder", {
+      divide: {
+        converter: "Number",
+        defaultValue: 10
+      }
+    }, (gl, attrs) => {
+      const div = attrs["divide"];
+      return GeometryBuilder.build(gl, {
+        indicies: {
+          default: {
+            generator: function* () {
+              yield* GeometryUtility.cylinderIndex(0, div);
+            },
+            topology: WebGLRenderingContext.TRIANGLES
+          },
+          wireframe: {
+            generator: function* () {
+              yield* GeometryUtility.linesFromTriangles(GeometryUtility.cylinderIndex(0, div));
+            },
+            topology: WebGLRenderingContext.LINES
+          }
+        },
+        verticies: {
+          main: {
+            size: {
+              position: 3
+            },
+            count: GeometryUtility.cylinderSize(div),
+            getGenerators: () => {
+              return {
+                position: function* () {
+                  yield* GeometryUtility.cylinderPosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(),div);
                 }
               };
             }
