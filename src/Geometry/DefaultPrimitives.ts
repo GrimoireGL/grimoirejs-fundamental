@@ -13,6 +13,7 @@ export default class DefaultPrimitives {
     DefaultPrimitives._registerCircle();
     DefaultPrimitives._registerCylinder();
     DefaultPrimitives._registerCone();
+    DefaultPrimitives._registerPlane();
   }
 
   private static _registerTriangle(): void {
@@ -300,6 +301,47 @@ export default class DefaultPrimitives {
               return {
                 position: function* () {
                   yield* GeometryUtility.conePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
+                }
+              };
+            }
+          }
+        }
+      });
+    });
+  }
+  private static _registerPlane(): void {
+    GeometryFactory.addType("plane", {
+      divide: {
+        converter: "Number",
+        defaultValue: 10
+      }
+    }, (gl, attrs) => {
+      const div = attrs["divide"];
+      return GeometryBuilder.build(gl, {
+        indicies: {
+          default: {
+            generator: function* () {
+              yield* GeometryUtility.planeIndex(0, div);
+            },
+            topology: WebGLRenderingContext.TRIANGLES
+          },
+          wireframe: {
+            generator: function* () {
+              yield* GeometryUtility.linesFromTriangles(GeometryUtility.planeIndex(0, div));
+            },
+            topology: WebGLRenderingContext.LINES
+          }
+        },
+        verticies: {
+          main: {
+            size: {
+              position: 3
+            },
+            count: GeometryUtility.planeSize(div),
+            getGenerators: () => {
+              return {
+                position: function* () {
+                  yield* GeometryUtility.planePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, div);
                 }
               };
             }

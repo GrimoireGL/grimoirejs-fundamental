@@ -87,6 +87,18 @@ export default class GeometryUtility {
     yield* p2.rawElements as number[];
     yield* p3.rawElements as number[];
   }
+  public static *planePosition(center: Vector3, up: Vector3, right: Vector3, divide): IterableIterator<number> {
+
+    for (let i = 0; i < divide; i++) {
+      for (let j = 0; j < divide; j++) {
+        const vec = center.addWith(Vector3.multiply(divide / 4 - j * 2 / divide, up)).addWith(Vector3.multiply(divide / 4 - i * 2 / divide, right));
+        yield* GeometryUtility.quadPosition(vec, Vector3.multiply(1 / divide, up), Vector3.multiply(1 / divide, right));
+        yield* GeometryUtility.quadPosition(vec, Vector3.multiply(1 / divide, up), Vector3.multiply(1 / divide, right.negateThis()));
+      }
+    }
+
+
+  }
 
   public static *cylinderPosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, divide: number): IterableIterator<number> {
     yield* GeometryUtility.ellipsePosition(center.addWith(up), forward, right, divide);
@@ -221,6 +233,12 @@ export default class GeometryUtility {
       yield* GeometryUtility.triangleIndex(offset + s + t * i);
     }
   }
+  public static *planeIndex(offset: number, divide: number): IterableIterator<number> {
+    const s = GeometryUtility.quadSize();
+    for (let i = 0; i < 2 * divide * divide; i++) {
+      yield* GeometryUtility.quadIndex(offset + s * i);
+    }
+  }
 
   public static quadSize(): number {
     return 4;
@@ -242,5 +260,8 @@ export default class GeometryUtility {
   }
   public static coneSize(divide: number): number {
     return GeometryUtility.ellipseSize(divide) + divide * GeometryUtility.triangleSize();
+  }
+  public static planeSize(divide: number): number {
+    return 2 * divide * divide * GeometryUtility.quadSize();
   }
 }
