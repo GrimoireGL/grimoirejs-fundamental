@@ -85,6 +85,7 @@ export default class GeometryBuilder {
         count: indicies.length,
         index: buffer,
         type: bufferType.format,
+        byteSize: bufferType.byteSize,
         topology: generatorInfo.topology ? generatorInfo.topology : WebGLRenderingContext.TRIANGLES
       };
     }
@@ -98,22 +99,27 @@ export default class GeometryBuilder {
    */
   private static _getIndexType(length: number): {
     format: number,
-    ctor: new (input: number[]) => ArrayBufferView
+    ctor: new (input: number[]) => ArrayBufferView,
+    byteSize: number
   } {
     let format: number = WebGLRenderingContext.UNSIGNED_INT;
     let arrayConstructor: new (arr: number[]) => ArrayBufferView = Uint32Array;
+    let byteSize: number = 4;
     if (length < 256) {
       format = WebGLRenderingContext.UNSIGNED_BYTE;
       arrayConstructor = Uint8Array;
+      byteSize = 1;
     } else if (length < 65535) {
       format = WebGLRenderingContext.UNSIGNED_SHORT;
       arrayConstructor = Uint16Array;
+      byteSize = 2;
     } else if (length >= 4294967296) {
       throw new Error("Too many index of geometry!");
     }
     return {
       format: format,
-      ctor: arrayConstructor
+      ctor: arrayConstructor,
+      byteSize: byteSize
     };
   }
 }
