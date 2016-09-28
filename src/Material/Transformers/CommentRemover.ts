@@ -26,7 +26,6 @@ function _removeComment(source: string): string {
     }
     if (c === "\n" && isLineComment) {
       isLineComment = false;
-      i++;
       continue;
     }
     if (!isLineComment && !isMultiLineComment) {
