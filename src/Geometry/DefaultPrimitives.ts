@@ -6,11 +6,49 @@ import GeometryBuilder from "./GeometryBuilder";
 // TODO apply attributes
 export default class DefaultPrimitives {
   public static register(): void {
+    DefaultPrimitives._registerTriangle();
     DefaultPrimitives._registerQuad();
     DefaultPrimitives._registerCube();
     DefaultPrimitives._registerSphere();
     DefaultPrimitives._registerCircle();
     DefaultPrimitives._registerCylinder();
+  }
+
+  private static _registerTriangle(): void {
+    GeometryFactory.addType("triangle", {
+    }, (gl, attrs) => {
+      return GeometryBuilder.build(gl, {
+        indicies: {
+          default: {
+            generator: function* () {
+              yield* GeometryUtility.triangleIndex(0);
+            },
+            topology: WebGLRenderingContext.TRIANGLES
+          },
+          wireframe: {
+            generator: function* () {
+              yield* GeometryUtility.linesFromTriangles(GeometryUtility.triangleIndex(0));
+            },
+            topology: WebGLRenderingContext.LINES
+          }
+        },
+        verticies: {
+          main: {
+            size: {
+              position: 3
+            },
+            count: GeometryUtility.triangleSize(),
+            getGenerators: () => {
+              return {
+                position: function* () {
+                  yield* GeometryUtility.trianglePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit);
+                }
+              };
+            }
+          }
+        }
+      });
+    });
   }
 
   private static _registerQuad(): void {
@@ -52,7 +90,6 @@ export default class DefaultPrimitives {
         }
       });
     });
-
   }
 
   private static _registerCube(): void {
@@ -124,7 +161,8 @@ export default class DefaultPrimitives {
           main: {
             size: {
               position: 3,
-              normal: 3
+              normal: 3,
+              uv: 2
             },
             count: GeometryUtility.sphereSize(dH, dV),
             getGenerators: () => {
@@ -134,6 +172,9 @@ export default class DefaultPrimitives {
                 },
                 normal: function* () {
                   yield* GeometryUtility.sphereNormal(Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), dH, dV);
+                },
+                uv: function* () {
+                  yield* GeometryUtility.sphereUV(dH, dV);
                 }
               };
             }

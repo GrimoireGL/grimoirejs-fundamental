@@ -1,15 +1,17 @@
 @DepthFunc(LEQUAL)
 @BlendFunc(SRC_ALPHA,ONE_MINUS_SRC_ALPHA)
+@CullFace(BACK)
 attribute vec3 position;
 attribute vec3 normal;
-varying vec2 uv;
+attribute vec2 uv;
+varying vec2 vUV;
 varying vec3 vNormal;
 @vert{
   uniform mat4 _matPVM;
   void main(){
     gl_Position = _matPVM * vec4(position,1.);
     vNormal = (_matPVM * vec4(normal,0.)).xyz;
-    uv = (position.xy + vec2(1.0))/2.0;
+    vUV = uv;
   }
 }
 
@@ -17,7 +19,15 @@ varying vec3 vNormal;
   @{type:"color",default:"#6E183D"}
   uniform vec4 color;
 
+  uniform sampler2D texture;
+
   void main(){
-    gl_FragColor = vec4(vNormal,1);
+    // if(vUV.y > 0.5){
+    //   gl_FragColor = vec4(1,0,0,1);
+    // }else{
+    //   gl_FragColor = vec4(0,0,0,1);
+    // }
+    // return;
+    gl_FragColor = texture2D(texture,vUV);
   }
 }

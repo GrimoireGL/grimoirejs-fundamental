@@ -59,6 +59,15 @@ export default class GeometryUtility {
     return divide + 1;
   }
 
+  public static *trianglePosition(center: Vector3, up: Vector3, right: Vector3): IterableIterator<number> {
+    let p0 = center.subtractWith(right).addWith(up);
+    let p1 = center.addWith(right).addWith(up);
+    let p2 = center.subtractWith(up);
+    yield* p0.rawElements as number[];
+    yield* p1.rawElements as number[];
+    yield* p2.rawElements as number[];
+  }
+
   public static *cubePosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3): IterableIterator<number> {
     yield* GeometryUtility.quadPosition(center.subtractWith(forward), up, right); // 手前
     yield* GeometryUtility.quadPosition(center.addWith(forward), up, right.negateThis()); // 奥
@@ -110,7 +119,7 @@ export default class GeometryUtility {
       const phi = ja * j;
       const sinPhi = Math.sin(phi);
       const upVector = up.multiplyWith(Math.cos(phi));
-      for (let i = 0; i < circleDiv; i++) {
+      for (let i = 0; i <= circleDiv; i++) {
         const theta = ia * i;
         yield* (right.multiplyWith(Math.cos(theta)).addWith(forward.multiplyWith(Math.sin(theta)))).multiplyWith(sinPhi).addWith(upVector).rawElements as number[];
       }
@@ -118,21 +127,26 @@ export default class GeometryUtility {
   }
 
   public static *sphereUV(rowDiv: number, circleDiv: number): IterableIterator<number> {
-    yield* [0, 1, 0, 0];
+    yield* [0, 0, 0, 1];
     const ia = 2 * Math.PI / circleDiv;
     const ja = Math.PI / (rowDiv + 1);
     for (let j = 1; j <= rowDiv; j++) {
       const phi = ja * j;
       const sinPhi = Math.sin(phi);
-      for (let i = 0; i < circleDiv; i++) {
+      for (let i = 0; i <= circleDiv; i++) {
         const theta = ia * i;
-        yield* [phi / Math.PI / 2, theta / Math.PI];
+        yield* [theta / Math.PI / 2, phi / Math.PI];
       }
     }
   }
 
   public static *sphereNormal(up: Vector3, right: Vector3, forward: Vector3, rowDiv: number, circleDiv: number): IterableIterator<number> {
     yield* GeometryUtility.spherePosition(Vector3.Zero, up, right, forward, rowDiv, circleDiv);
+  }
+
+  public static *triangleIndex(offset: number): IterableIterator<number> {
+    const o = offset;
+    yield* [o, o + 2, o + 1];
   }
 
   public static *quadIndex(offset: number): IterableIterator<number> {
@@ -148,19 +162,18 @@ export default class GeometryUtility {
   }
 
   public static *sphereIndex(offset: number, rowDiv: number, circleDiv: number): IterableIterator<number> {
-    const getIndex = (i: number, j: number) => offset + circleDiv * j + 2 + i;
+    const getIndex = (i: number, j: number) => offset + (circleDiv + 1) * j + 2 + i;
     const top = offset;
     const bottom = offset + 1;
     // upper side
-    for (let i = 0; i < circleDiv - 1; i++) {
+    for (let i = 0; i < circleDiv; i++) {
       yield top;
       yield getIndex(i, 0);
       yield getIndex(i + 1, 0);
     }
-    yield* [top, getIndex(circleDiv - 1, 0), getIndex(0, 0)];
     // middle
     for (let j = 0; j < rowDiv - 1; j++) {
-      for (let i = 0; i < circleDiv - 1; i++) {
+      for (let i = 0; i < circleDiv; i++) {
         yield getIndex(i, j);
         yield getIndex(i, j + 1);
         yield getIndex(i + 1, j);
@@ -168,20 +181,13 @@ export default class GeometryUtility {
         yield getIndex(i + 1, j + 1);
         yield getIndex(i + 1, j);
       }
-      yield getIndex(circleDiv - 1, j);
-      yield getIndex(circleDiv - 1, j + 1);
-      yield getIndex(0, j);
-      yield getIndex(circleDiv - 1, j + 1);
-      yield getIndex(0, j + 1);
-      yield getIndex(0, j);
     }
     // lower side
-    for (let i = 0; i < circleDiv - 1; i++) {
+    for (let i = 0; i < circleDiv; i++) {
       yield bottom;
       yield getIndex(i + 1, rowDiv - 1);
       yield getIndex(i, rowDiv - 1);
     }
-    yield* [bottom, getIndex(0, rowDiv - 1), getIndex(circleDiv - 1, rowDiv - 1)];
   }
 
   public static *cylinderIndex(offset: number, divide: number): IterableIterator<number> {
@@ -198,12 +204,16 @@ export default class GeometryUtility {
     return 4;
   }
 
+  public static triangleSize(): number {
+    return 3;
+  }
+
   public static cubeSize(): number {
     return 6 * GeometryUtility.quadSize();
   }
 
   public static sphereSize(rowDiv: number, circleDiv: number): number {
-    return 2 + rowDiv * circleDiv;
+    return 2 + rowDiv * (circleDiv + 1);
   }
   public static cylinderSize(divide: number): number {
     return (GeometryUtility.ellipseSize(divide) * 2) + divide * GeometryUtility.quadSize();

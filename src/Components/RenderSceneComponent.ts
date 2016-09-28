@@ -10,6 +10,7 @@ import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import Framebuffer from "../Resource/FrameBuffer";
 import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
+import CameraComponent from "./CameraComponent";
 export default class RenderSceneComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     layer: {
@@ -45,19 +46,16 @@ export default class RenderSceneComponent extends Component {
       converter: "Material",
       componentBoundTo: "_materialComponent"
     },
+    camera: {
+      defaultValue: undefined,
+      converter: "Component",
+      target: "CAMERA"
+    }
   };
 
   private _gl: WebGLRenderingContext;
 
   private _canvas: HTMLCanvasElement;
-
-  private _fbo: Framebuffer;
-
-  private _layer: string;
-
-  private _clearColor: Color4;
-
-  private _clearColorEnabled: boolean;
 
   private _materialComponent: MaterialComponent;
 
@@ -67,9 +65,23 @@ export default class RenderSceneComponent extends Component {
 
   private _materialArgs: { [key: string]: any } = {};
 
-  private _clearDepth: number;
+  private _fbo: Framebuffer;
+
+  // backing fields
+
+  private _layer: string;
+
+  private _clearColor: Color4;
+
+  private _clearColorEnabled: boolean;
 
   private _clearDepthEnabled: boolean;
+
+  private _clearDepth: number;
+
+  private _camera: CameraComponent;
+
+  // messages
 
   public $awake(): void {
     this.getAttribute("layer").boundTo("_layer");
@@ -77,6 +89,7 @@ export default class RenderSceneComponent extends Component {
     this.getAttribute("clearColorEnabled").boundTo("_clearColorEnabled");
     this.getAttribute("clearDepthEnabled").boundTo("_clearDepthEnabled");
     this.getAttribute("clearDepth").boundTo("_clearDepth");
+    this.getAttribute("camera").boundTo("_camera");
   }
 
 
@@ -102,6 +115,10 @@ export default class RenderSceneComponent extends Component {
   }
 
   public $render(args: IRenderRendererMessage): void {
+    const camera = this._camera ? this._camera : args.camera;
+    if (!camera) {
+      return;
+    }
     if (this._fbo) {
       this._fbo.bind();
       this._gl.viewport(0, 0, args.viewport.Width, args.viewport.Height);
@@ -119,7 +136,7 @@ export default class RenderSceneComponent extends Component {
       this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
     }
     args.camera.node.sendMessage("renderScene", <IRenderSceneMessage>{
-      camera: args.camera,
+      camera: camera,
       buffers: args.buffers,
       layer: this._layer,
       viewport: args.viewport,
