@@ -60,9 +60,9 @@ export default class GeometryUtility {
   }
 
   public static *trianglePosition(center: Vector3, up: Vector3, right: Vector3): IterableIterator<number> {
-    let p0 = center.subtractWith(right).addWith(up);
-    let p1 = center.addWith(right).addWith(up);
-    let p2 = center.subtractWith(up);
+    let p0 = center.addWith(up);
+    let p1 = center.subtractWith(up).addWith(right);
+    let p2 = center.subtractWith(up).subtractWith(right);
     yield* p0.rawElements as number[];
     yield* p1.rawElements as number[];
     yield* p2.rawElements as number[];
@@ -101,6 +101,20 @@ export default class GeometryUtility {
       const currentCenter = new Vector3(d * cos, center.Y, d * sin);
       const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
       yield* GeometryUtility.quadPosition(currentCenter, up, Vector3.multiply(d2, currentRight));
+    }
+  }
+  public static *conePosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, divide: number): IterableIterator<number> {
+    yield* GeometryUtility.ellipsePosition(center.subtractWith(up), forward, Vector3.negate(right), divide);
+    const step = 2 * Math.PI / divide;
+    const d = Math.cos(step / 2) / 2;
+    const d2 = Math.sin(step / 2);
+    for (let i = 0; i < divide; i++) {
+      const theta = step * i;
+      const sin = Math.sin((Math.PI - step) / 2 - theta);
+      const cos = Math.cos((Math.PI - step) / 2 - theta);
+      const currentCenter = new Vector3(d * cos, center.Y, d * sin);
+      const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
+      yield* GeometryUtility.trianglePosition(currentCenter, up.subtractWith(currentCenter), Vector3.multiply(d2, currentRight));
     }
   }
   public static *quadNormal(normal: Vector3): IterableIterator<number> {
@@ -199,6 +213,14 @@ export default class GeometryUtility {
       yield* GeometryUtility.quadIndex(offset + s * 2 + t * i);
     }
   }
+  public static *coneIndex(offset: number, divide: number): IterableIterator<number> {
+    const s = GeometryUtility.ellipseSize(divide);
+    const t = GeometryUtility.triangleSize();
+    yield* GeometryUtility.ellipseIndex(offset, divide);
+    for (let i = 0; i < divide; i++) {
+      yield* GeometryUtility.triangleIndex(offset + s + t * i);
+    }
+  }
 
   public static quadSize(): number {
     return 4;
@@ -217,5 +239,8 @@ export default class GeometryUtility {
   }
   public static cylinderSize(divide: number): number {
     return (GeometryUtility.ellipseSize(divide) * 2) + divide * GeometryUtility.quadSize();
+  }
+  public static coneSize(divide: number): number {
+    return GeometryUtility.ellipseSize(divide) + divide * GeometryUtility.triangleSize();
   }
 }

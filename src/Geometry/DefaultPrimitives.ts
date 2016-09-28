@@ -12,6 +12,7 @@ export default class DefaultPrimitives {
     DefaultPrimitives._registerSphere();
     DefaultPrimitives._registerCircle();
     DefaultPrimitives._registerCylinder();
+    DefaultPrimitives._registerCone();
   }
 
   private static _registerTriangle(): void {
@@ -215,7 +216,7 @@ export default class DefaultPrimitives {
             getGenerators: () => {
               return {
                 position: function* () {
-                  yield* GeometryUtility.ellipsePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit,div);
+                  yield* GeometryUtility.ellipsePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, div);
                 }
               };
             }
@@ -257,7 +258,48 @@ export default class DefaultPrimitives {
             getGenerators: () => {
               return {
                 position: function* () {
-                  yield* GeometryUtility.cylinderPosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(),div);
+                  yield* GeometryUtility.cylinderPosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
+                }
+              };
+            }
+          }
+        }
+      });
+    });
+  }
+  private static _registerCone(): void {
+    GeometryFactory.addType("cone", {
+      divide: {
+        converter: "Number",
+        defaultValue: 10
+      }
+    }, (gl, attrs) => {
+      const div = attrs["divide"];
+      return GeometryBuilder.build(gl, {
+        indicies: {
+          default: {
+            generator: function* () {
+              yield* GeometryUtility.coneIndex(0, div);
+            },
+            topology: WebGLRenderingContext.TRIANGLES
+          },
+          wireframe: {
+            generator: function* () {
+              yield* GeometryUtility.linesFromTriangles(GeometryUtility.coneIndex(0, div));
+            },
+            topology: WebGLRenderingContext.LINES
+          }
+        },
+        verticies: {
+          main: {
+            size: {
+              position: 3
+            },
+            count: GeometryUtility.coneSize(div),
+            getGenerators: () => {
+              return {
+                position: function* () {
+                  yield* GeometryUtility.conePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
                 }
               };
             }
