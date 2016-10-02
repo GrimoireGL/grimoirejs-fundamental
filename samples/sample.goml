@@ -8,35 +8,33 @@
   <import-material type="dof" src="./dof.sort"/>
   <import-material type="fxaa" src="./fxaa.sort"/>
   <material id="sprite" type="sprite" texture="./tri.png"/>
-  <renderers bgColor="#F003">
-    <renderer camera=".camera" viewport="0,0,100%,100%">
-      <texture-buffer name="depthbuffer"/>
-      <texture-buffer name="nonblur"/>
-      <texture-buffer name="blurHorizontal"/>
-      <texture-buffer name="blured1"/>
-      <texture-buffer name="blured2"/>
-      <render-scene id="depth" out="depthbuffer" material="new(depth)" depthOffset="10"/>
-      <render-scene out="nonblur"/>
-      <render-quad out="blurHorizontal" texture="backbuffer(nonblur)" horizontal="true" material="new(gaussian)" weight="0.09068343122470346, 0.0871276830267911, 0.0804289884248243, 0.07133411353846439, 0.060786921793212934, 0.04976812225704962, 0.039148991560361675, 0.029588171315708768, 0.02148542210967332, 0.014989870361562185"/>
-      <render-quad out="blured1" material="new(gaussian)" texture="backbuffer(blurHorizontal)" weight="0.09068343122470346, 0.0871276830267911, 0.0804289884248243, 0.07133411353846439, 0.060786921793212934, 0.04976812225704962, 0.039148991560361675, 0.029588171315708768, 0.02148542210967332, 0.014989870361562185"/>
-      <render-quad out="blurHorizontal" texture="backbuffer(nonblur)" horizontal="true" material="new(gaussian)" weight="0.05272301421719853, 0.0527177421793831, 0.05270719968523177, 0.05269138989691302, 0.052670317555703464, 0.052643988979618146, 0.052612412060253494, 0.052575596258845114, 0.05253355260154329, 0.05248629367390932"/>
-      <render-quad out="blured2" material="new(gaussian)" texture="backbuffer(blurHorizontal)" weight="0.05272301421719853, 0.0527177421793831, 0.05270719968523177, 0.05269138989691302, 0.052670317555703464, 0.052643988979618146, 0.052612412060253494, 0.052575596258845114, 0.05253355260154329, 0.05248629367390932"/>
-      <render-quad out="blurHorizontal" material="new(dof)" blurTexture1="backbuffer(blured1)" blurTexture2="backbuffer(blured2)" sceneTexture="backbuffer(nonblur)" depthTexture="backbuffer(depthbuffer)"/>
-      <render-quad material="new(fxaa)" source="backbuffer(blurHorizontal)"/>
-    </renderer>
-  </renderers>
-    <scene>
-      <camera class="camera" near="0.01" far="40.0" aspect="1.0" fovy="45d" position="0,0,10" rotation="y(0d)">
-        <camera.components>
-          <MouseCameraControl rotateX="10" moveSpeed="0.1"/>
-        </camera.components>
-      </camera>
-      <mesh position="0,0,0" rotation="y(30d)" geometry="quad" material="#sprite"></mesh>
-      <mesh position="2,0,0" geometry="quad" material="#sprite"></mesh>
-      <mesh position="-2,0,0" geometry="quad" material="#sprite"></mesh>
-      <mesh position="4,0,0" geometry="quad" material="#sprite"></mesh>
-      <mesh position="-4,0,0" geometry="quad" material="#sprite"></mesh>
-      <mesh position="6,0,0" geometry="quad" material="#sprite"></mesh>
-      <mesh position="-6,0,0" geometry="quad" material="#sprite"></mesh>
-    </scene>
+  <renderer camera=".camera" viewport="0,0,100%,100%">
+    <texture-buffer name="depthbuffer"/>
+    <texture-buffer name="nonblur"/>
+    <texture-buffer name="blurHorizontal"/>
+    <texture-buffer name="blured1"/>
+    <texture-buffer name="blured2"/>
+    <render-scene id="depth" out="depthbuffer" material="new(depth)" depthOffset="10"/>
+    <render-scene out="nonblur"/>
+    <render-quad out="blurHorizontal" texture="backbuffer(nonblur)" horizontal="true" material="new(gaussian)" weight="0.09068343122470346, 0.0871276830267911, 0.0804289884248243, 0.07133411353846439, 0.060786921793212934, 0.04976812225704962, 0.039148991560361675, 0.029588171315708768, 0.02148542210967332, 0.014989870361562185"/>
+    <render-quad out="blured1" material="new(gaussian)" texture="backbuffer(blurHorizontal)" weight="0.09068343122470346, 0.0871276830267911, 0.0804289884248243, 0.07133411353846439, 0.060786921793212934, 0.04976812225704962, 0.039148991560361675, 0.029588171315708768, 0.02148542210967332, 0.014989870361562185"/>
+    <render-quad out="blurHorizontal" texture="backbuffer(nonblur)" horizontal="true" material="new(gaussian)" weight="0.05272301421719853, 0.0527177421793831, 0.05270719968523177, 0.05269138989691302, 0.052670317555703464, 0.052643988979618146, 0.052612412060253494, 0.052575596258845114, 0.05253355260154329, 0.05248629367390932"/>
+    <render-quad out="blured2" material="new(gaussian)" texture="backbuffer(blurHorizontal)" weight="0.05272301421719853, 0.0527177421793831, 0.05270719968523177, 0.05269138989691302, 0.052670317555703464, 0.052643988979618146, 0.052612412060253494, 0.052575596258845114, 0.05253355260154329, 0.05248629367390932"/>
+    <render-quad out="blurHorizontal" material="new(dof)" blurTexture1="backbuffer(blured1)" blurTexture2="backbuffer(blured2)" sceneTexture="backbuffer(nonblur)" depthTexture="backbuffer(depthbuffer)"/>
+    <render-quad material="new(fxaa)" source="backbuffer(blurHorizontal)"/>
+  </renderer>
+  <scene>
+    <camera class="camera" near="0.01" far="40.0" aspect="1.0" fovy="45d" position="0,0,10" rotation="y(0d)">
+      <camera.components>
+        <MouseCameraControl rotateX="10" moveSpeed="0.1"/>
+      </camera.components>
+    </camera>
+    <mesh position="0,0,0" rotation="y(30d)" geometry="quad" material="#sprite"></mesh>
+    <mesh position="2,0,0" geometry="quad" material="#sprite"></mesh>
+    <mesh position="-2,0,0" geometry="quad" material="#sprite"></mesh>
+    <mesh position="4,0,0" geometry="quad" material="#sprite"></mesh>
+    <mesh position="-4,0,0" geometry="quad" material="#sprite"></mesh>
+    <mesh position="6,0,0" geometry="quad" material="#sprite"></mesh>
+    <mesh position="-6,0,0" geometry="quad" material="#sprite"></mesh>
+  </scene>
 </goml>

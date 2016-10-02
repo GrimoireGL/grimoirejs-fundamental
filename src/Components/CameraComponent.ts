@@ -39,10 +39,10 @@ export default class CameraComponent extends Component {
   private static _findContainedScene(node: GomlNode): SceneComponent {
     if (node.parent) {
       const scene = node.parent.getComponent("Scene");
-      if (!scene) {
-        return CameraComponent._findContainedScene(node.parent);
+      if (scene && scene instanceof SceneComponent) {
+        return scene as SceneComponent;
       } else {
-        return scene;
+        return CameraComponent._findContainedScene(node.parent);
       }
     } else {
       return null;
@@ -60,9 +60,9 @@ export default class CameraComponent extends Component {
     c.setAspect(this.attributes.get("aspect").Value);
   }
 
-  public $renderScene(args: IRenderSceneMessage): void {
+  public renderScene(args: IRenderSceneMessage): void {
     if (this.containedScene) {
-      this.containedScene.node.broadcastMessage("update");
+      this.containedScene.updateScene(args.loopIndex); // TODO should be executed from scene.
       this.containedScene.node.broadcastMessage("render", args);
     }
   }

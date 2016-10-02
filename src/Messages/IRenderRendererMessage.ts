@@ -8,6 +8,7 @@ interface IRendnerRendererMessage {
   buffers: { [key: string]: Texture2D };
   material?: Material;
   materialArgs?: { [key: string]: Material; };
+  loopIndex: number;
 }
 
 export default IRendnerRendererMessage;

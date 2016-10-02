@@ -9,6 +9,7 @@ interface IRenderSceneMessage {
   viewport: Rectangle;
   material?: Material;
   materialArgs?: { [key: string]: any };
+  loopIndex: number;
 }
 
 export default IRenderSceneMessage;

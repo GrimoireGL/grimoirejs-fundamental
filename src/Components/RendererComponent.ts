@@ -53,11 +53,12 @@ export default class RendererComponent extends Component {
     });
   }
 
-  public $renderScene(): void {
+  public $renderViewport(args: { loopIndex: number }): void {
     this.node.broadcastMessage(1, "render", <IRenderRendererMessage>{
       camera: this._camera,
       viewport: this._viewport,
-      buffers: this._buffers
+      buffers: this._buffers,
+      loopIndex: args.loopIndex
     });
   }
 }

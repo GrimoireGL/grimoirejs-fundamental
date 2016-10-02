@@ -32,20 +32,20 @@ export default class RendererManagerComponent extends Component {
   }
 
   public $treeInitialized(): void {
-    this.tree("goml")("LOOPMANAGER").get<LoopManagerComponent>().register(this.onloop.bind(this), 1000);
-    if (this.node.children.length === 0) {
+    (this.node.getComponent("LoopManager") as LoopManagerComponent).register(this.onloop.bind(this), 1000);
+    if (this.node.getChildrenByNodeName("renderer").length === 0) {
       this.node.addNode("renderer", {});
     }
   }
 
 
-  public onloop(): void {
+  public onloop(loopIndex: number): void {
     if (this.enabled) {
       const c: Color4 = this._bgColor;
       this.gl.clearColor(c.R, c.G, c.B, c.A);
       this.gl.clearDepth(this._clearDepth);
       this.gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);
-      this.node.broadcastMessage(1, "renderScene");
+      this.node.broadcastMessage(1, "renderViewport", { loopIndex: loopIndex });
     }
   }
 }
