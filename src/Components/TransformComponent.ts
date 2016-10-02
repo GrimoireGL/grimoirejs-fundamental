@@ -66,6 +66,8 @@ export default class TransformComponent extends Component {
    * @return {[type]} [description]
    */
   private _cachePVM: Matrix = new Matrix();
+
+  private _cacheVM: Matrix = new Matrix();
   /**
    * Cache for position
    * @type {Vector3}
@@ -138,9 +140,14 @@ export default class TransformComponent extends Component {
     return this._right;
   }
 
-  public calcPVW(camera: ICamera): Matrix {
+  public calcPVM(camera: ICamera): Matrix {
     mat4.mul(this._cachePVM.rawElements, camera.getProjectionViewMatrix().rawElements, this.globalTransform.rawElements);
     return this._cachePVM;
+  }
+
+  public calcVM(camera: ICamera): Matrix {
+    mat4.mul(this._cacheVM.rawElements, camera.getViewMatrix().rawElements, this.globalTransform.rawElements);
+    return this._cacheVM;
   }
 
   public $awake(): void {

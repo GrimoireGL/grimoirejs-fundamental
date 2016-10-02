@@ -9,11 +9,9 @@ export default class PerspectiveCamera implements ICamera {
   private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
   private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
   private _viewMatrix: Matrix = new Matrix();
-  private _invViewMatrix: Matrix = new Matrix();
   private _projectionMatrix: Matrix = new Matrix();
   private _invProjectionMatrix: Matrix = new Matrix();
   private _projectionViewMatrix: Matrix = new Matrix();
-  private _invProjectionViewMatrix: Matrix = new Matrix();
   private _far: number;
   private _near: number;
   private _fovy: number;
@@ -25,20 +23,14 @@ export default class PerspectiveCamera implements ICamera {
   public getViewMatrix(): Matrix {
     return this._viewMatrix;
   }
-  public getInvViewMatrix(): Matrix {
-    return null; // TODO
-  }
   public getProjectionMatrix(): Matrix {
     return this._projectionMatrix;
   }
   public getInvProjectionMatrix(): Matrix {
-    return null; // TODO
+    return this._invProjectionMatrix;
   }
   public getProjectionViewMatrix(): Matrix {
     return this._projectionViewMatrix;
-  }
-  public getInvProjectionViewMatrix(): Matrix {
-    return null; // TODO
   }
   public getFar(): number {
     return this._far;
@@ -81,6 +73,7 @@ export default class PerspectiveCamera implements ICamera {
   private _recalculateProjection(): void {
     mat4.perspective(this._projectionMatrix.rawElements, this._fovy, this._aspect, this._near, this._far);
     mat4.mul(this._projectionViewMatrix.rawElements, this._projectionMatrix.rawElements, this._viewMatrix.rawElements);
+    mat4.invert(this._invProjectionMatrix.rawElements, this._projectionMatrix.rawElements);
   }
 
 }

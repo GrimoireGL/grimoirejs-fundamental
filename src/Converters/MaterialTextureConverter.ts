@@ -4,7 +4,7 @@ import ImageResolver from "../Asset/ImageResolver";
 
 function MaterialTextureConverter(this: Attribute, val: any): any {
   if (val instanceof Texture2D) {
-    return val;
+    return () => val;
   }
   if (typeof val === "string") {
     const queryRegex = /^query\((.*)\)$/m;

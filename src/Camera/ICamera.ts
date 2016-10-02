@@ -9,11 +9,7 @@ interface ICamera {
    * @return {Matrix} [The view-matrix]
    */
   getViewMatrix(): Matrix;
-  /**
-   * Provides calculation result of inverted view-matrix
-   * @return {Matrix} [The inverted view-matrix]
-   */
-  getInvViewMatrix(): Matrix;
+
   /**
    * Provides calculation result of projection-matrix.
    * @return {Matrix} [The projection-matrix]
@@ -29,11 +25,7 @@ interface ICamera {
    * @return {Matrix} [projection-matrix * view-matrix]
    */
   getProjectionViewMatrix(): Matrix;
-  /**
-   * Provides calculation result of inverted multipling of projection matrix and view-matrix.
-   * @return {Matrix} [(projection-matrix * view-matrix)^ (-1)]
-   */
-  getInvProjectionViewMatrix(): Matrix;
+
   /**
    * Getter for depth of far clip.
    * @return {number} [far clip]
