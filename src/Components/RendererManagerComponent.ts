@@ -13,6 +13,10 @@ export default class RendererManagerComponent extends Component {
     clearDepth: {
       defaultValue: 1.0,
       converter: "Number"
+    },
+    complementRenderer: {
+      defaultValue: true,
+      converter: "Boolean"
     }
   };
 
@@ -33,7 +37,7 @@ export default class RendererManagerComponent extends Component {
 
   public $treeInitialized(): void {
     (this.node.getComponent("LoopManager") as LoopManagerComponent).register(this.onloop.bind(this), 1000);
-    if (this.node.getChildrenByNodeName("renderer").length === 0) {
+    if (this.getValue("complementRenderer") && this.node.getChildrenByNodeName("renderer").length === 0) {
       this.node.addNode("renderer", {});
     }
   }
