@@ -2,9 +2,7 @@
   <import-material type="raymarching" src="./raymarching.sort"/>
   <geometry name="quad" type="quad"/>
   <material id="solid" type="solid" color="green"/>
-  <renderers bgColor="#0000">
-    <renderer viewport="0,0,100%,100%">
-      <render-quad material="new(raymarching)"/>
-    </renderer>
-  </renderers>
+  <renderer viewport="0,0,100%,100%">
+    <render-quad material="new(raymarching)"/>
+  </renderer>
 </goml>

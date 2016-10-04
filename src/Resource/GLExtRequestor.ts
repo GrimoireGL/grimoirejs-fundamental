@@ -75,6 +75,7 @@ export default class GLExtRequestor {
     } else {
       ext = this.extensions[name] = GLExtRequestor._customExtensionResolvers[name](this.gl);
     }
+    this._readyExtensions[name] = this.extensions[name] !== void 0;
     return !!this._readyExtensions[name];
   }
 }

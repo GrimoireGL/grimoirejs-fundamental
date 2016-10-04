@@ -393,6 +393,7 @@
 |:------:|:------:|:------:|:------:|
 | bgColor | Color4 | new Color4(0, 0, 0, 0) | なし |
 | clearDepth | Number | 1.0 | なし |
+| complementRenderer | Boolean | true | なし |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
@@ -409,6 +410,13 @@
  * `defaultValue`: 1.0
 
 <!-- EDIT HERE(clearDepth)-->
+<!-- /EDIT HERE-->
+### complementRenderer 属性
+
+ * `converter`: Boolean
+ * `defaultValue`: true
+
+<!-- EDIT HERE(complementRenderer)-->
 <!-- /EDIT HERE-->
 
 ## RenderQuad コンポーネント

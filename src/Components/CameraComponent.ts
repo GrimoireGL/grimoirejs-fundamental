@@ -1,3 +1,4 @@
+import RenderSceneArgument from "../Objects/RenderSceneArgument";
 import IRenderSceneMessage from "../Messages/IRenderSceneMessage";
 import TransformComponent from "./TransformComponent";
 import PerspectiveCamera from "../Camera/PerspectiveCamera";
@@ -60,10 +61,16 @@ export default class CameraComponent extends Component {
     c.setAspect(this.attributes.get("aspect").Value);
   }
 
-  public renderScene(args: IRenderSceneMessage): void {
+  public updateContainedScene(loopIndex: number): void {
     if (this.containedScene) {
-      this.containedScene.updateScene(args.loopIndex); // TODO should be executed from scene.
-      this.containedScene.node.broadcastMessage("render", args);
+      this.containedScene.updateScene(loopIndex);
+    }
+  }
+
+  public renderScene(args: RenderSceneArgument): void {
+    if (this.containedScene) {
+      (args as IRenderSceneMessage).sceneDescription = this.containedScene.sceneDescription;
+      this.containedScene.node.broadcastMessage("render", args as IRenderSceneMessage);
     }
   }
 

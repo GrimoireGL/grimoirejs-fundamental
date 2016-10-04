@@ -2,7 +2,27 @@
 @NoBlend()
 @NoCull()
 @NoDepth()
+precision highp float;
+precision highp int;
+#define LIGHT_COUNT 10
+
 attribute vec3 position;
+
+struct Light{
+  vec4 position;
+  vec4 ambient;
+  vec4 diffuse;
+  vec4 specular;
+  vec3 spotDirection;
+  float spotCutOff;
+  float constantAttenuation;
+  float linearAttenuation;
+  float quadraticAttenuation;
+  float spotExponent;
+  float spotLightCosCutOff;
+};
+
+uniform Light light[LIGHT_COUNT];
 
 @vert{
   void main(){
@@ -11,8 +31,6 @@ attribute vec3 position;
 }
 
 @frag{
-  precision highp float;
-  precision highp int;
   @{default:"-3.0"}
   uniform float fovyDepth;
 

@@ -18,13 +18,21 @@ function _parseVariables(source: string, variableType: string): { [key: string]:
     let type = regexResult[3];
     let precision = regexResult[2];
     let rawAnnotations = regexResult[1];
+    let isArray = regexResult[5] !== void 0;
+    let arrayCount = undefined;
+    if (isArray) {
+      arrayCount = parseInt(regexResult[5], 10);
+      if (isNaN(arrayCount)) {
+
+      }
+    }
     result[name] = <IVariableInfo>{
       variableName: name,
       variableType: type,
       variablePrecision: precision,
       variableAnnotation: rawAnnotations ? _parseVariableAttributes(rawAnnotations) : {},
-      isArray: (typeof regexResult[5] !== "undefined"),
-      arrayLength: (typeof regexResult[5] !== "undefined") ? parseInt(regexResult[5], 10) : undefined
+      isArray: isArray,
+      arrayLength: arrayCount
     };
   }
   return result;

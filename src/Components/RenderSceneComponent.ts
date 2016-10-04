@@ -1,10 +1,10 @@
+import RenderSceneArgument from "../Objects/RenderSceneArgument";
 import ResourceBase from "../Resource/ResourceBase";
 import SORTPass from "../Material/SORTPass";
 import AssetLoader from "../Asset/AssetLoader";
 import MaterialComponent from "./MaterialComponent";
 import Material from "../Material/Material";
 import {Color4} from "grimoirejs-math";
-import IRenderSceneMessage from "../Messages/IRenderSceneMessage";
 import Component from "grimoirejs/lib/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
@@ -135,7 +135,8 @@ export default class RenderSceneComponent extends Component {
       this._gl.clearDepth(this._clearDepth);
       this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
     }
-    args.camera.renderScene(<IRenderSceneMessage>{
+    args.camera.updateContainedScene(args.loopIndex);
+    args.camera.renderScene(<RenderSceneArgument>{
       camera: camera,
       buffers: args.buffers,
       layer: this._layer,

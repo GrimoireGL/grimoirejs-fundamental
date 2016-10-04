@@ -6,6 +6,8 @@ export default class SceneComponent extends Component {
     // Specify the attributes user can intaract
   };
 
+  public sceneDescription: { [key: string]: any } = {};
+
   /**
    * The index of loop executed last time.
    * @type {number}
@@ -18,7 +20,7 @@ export default class SceneComponent extends Component {
    */
   public updateScene(loopIndex: number): void {
     if (this._lastUpdateIndex !== loopIndex) {
-      this.node.broadcastMessage("update");
+      this.node.broadcastMessage("update", this.sceneDescription);
       this._lastUpdateIndex = loopIndex;
     }
   }

@@ -1,3 +1,4 @@
+import GLSLUtil from "./GLSLUtil";
 import Texture2D from "../../Resource/Texture2D";
 import IVariableInfo from "../IVariableInfo";
 import IMaterialAttributeDeclaration from "../IMaterialAttributeDeclaration";
@@ -35,81 +36,85 @@ async function _registerUserUniforms(input: ITransformingArgument): Promise<void
     const uniforms = input.info.uniforms;
     const variableInfo = uniforms[variableName];
     const annotations = variableInfo.variableAnnotation;
-    if (variableInfo.isArray) {
-      switch (variableInfo.variableType) {
-        case "float":
-          let defaultArray = new Array(variableInfo.arrayLength) as number[];
-          defaultArray = defaultArray.map((p) => 0);
-          attributes[variableName] = _getDecl("NumberArray", _resolveDefault(variableInfo, defaultArray), (proxy, val) => {
-            proxy.uniformFloatArray(variableName, val);
-          });
-          break;
-        default:
-          throw new Error(`Unsupported array type ${variableInfo.variableType}`);
+    if (GLSLUtil.isPrimitive(variableInfo.variableType)) {
+      if (variableInfo.isArray) {
+        switch (variableInfo.variableType) {
+          case "float":
+            let defaultArray = new Array(variableInfo.arrayLength) as number[];
+            defaultArray = defaultArray.map((p) => 0);
+            attributes[variableName] = _getDecl("NumberArray", _resolveDefault(variableInfo, defaultArray), (proxy, val) => {
+              proxy.uniformFloatArray(variableName, val);
+            });
+            break;
+          default:
+            throw new Error(`Unsupported array type ${variableInfo.variableType}`);
+        }
+      } else {
+        switch (variableInfo.variableType) {
+          case "bool":
+            attributes[variableName] = _getDecl("Boolean", _resolveDefault(variableInfo, false), (proxy, val) => {
+              proxy.uniformBool(variableName, val);
+            });
+            break;
+          case "float":
+            attributes[variableName] = _getDecl("Number", _resolveDefault(variableInfo, 0), (proxy, val) => {
+              proxy.uniformFloat(variableName, val as number);
+            });
+            break;
+          case "vec2":
+            attributes[variableName] = _getDecl("Vector2", _resolveDefault(variableInfo, "0,0"), (proxy, val) => {
+              proxy.uniformVector2(variableName, val as Vector2);
+            });
+            break;
+          case "vec3":
+            if (annotations["type"] === "color") {
+              attributes[variableName] = _getDecl("Color3", _resolveDefault(variableInfo, "#000"), (proxy, val) => {
+                proxy.uniformColor3(variableName, val as Color3);
+              });
+            } else {
+              attributes[variableName] = _getDecl("Vector3", _resolveDefault(variableInfo, "0,0,0"), (proxy, val) => {
+                proxy.uniformVector3(variableName, val as Vector3);
+              });
+            }
+            break;
+          case "vec4":
+            if (annotations["type"] === "color") {
+              attributes[variableName] = _getDecl("Color4", _resolveDefault(variableInfo, "#0000"), (proxy, val) => {
+                proxy.uniformColor4(variableName, val as Color4);
+              });
+            } else {
+              attributes[variableName] = _getDecl("Vector4", _resolveDefault(variableInfo, "0,0,0,0"), (proxy, val) => {
+                proxy.uniformVector4(variableName, val as Vector4);
+              });
+            }
+            break;
+          case "sampler2D":
+            let flagAssignTo: string = undefined;
+            // check used flag is existing
+            if (annotations["usedFlag"]) {
+              if (annotations["usedFlag"] !== void 0) {
+                flagAssignTo = annotations["usedFlag"];
+              }
+            }
+            attributes[variableName] = _getDecl("MaterialTexture", _resolveDefault(variableInfo, undefined), (proxy, val, matArgs) => {
+              if (val) {
+                proxy.uniformTexture2D(variableName, val(matArgs.buffers) as Texture2D);
+                if (flagAssignTo) {
+                  proxy.uniformBool(flagAssignTo, true);
+                }
+              } else {
+                if (flagAssignTo) {
+                  proxy.uniformBool(flagAssignTo, false);
+                }
+              }
+            });
+            break;
+          default:
+            throw new Error("Unsupported type was found");
+        }
       }
     } else {
-      switch (variableInfo.variableType) {
-        case "bool":
-          attributes[variableName] = _getDecl("Boolean", _resolveDefault(variableInfo, false), (proxy, val) => {
-            proxy.uniformBool(variableName, val);
-          });
-          break;
-        case "float":
-          attributes[variableName] = _getDecl("Number", _resolveDefault(variableInfo, 0), (proxy, val) => {
-            proxy.uniformFloat(variableName, val as number);
-          });
-          break;
-        case "vec2":
-          attributes[variableName] = _getDecl("Vector2", _resolveDefault(variableInfo, "0,0"), (proxy, val) => {
-            proxy.uniformVector2(variableName, val as Vector2);
-          });
-          break;
-        case "vec3":
-          if (annotations["type"] === "color") {
-            attributes[variableName] = _getDecl("Color3", _resolveDefault(variableInfo, "#000"), (proxy, val) => {
-              proxy.uniformColor3(variableName, val as Color3);
-            });
-          } else {
-            attributes[variableName] = _getDecl("Vector3", _resolveDefault(variableInfo, "0,0,0"), (proxy, val) => {
-              proxy.uniformVector3(variableName, val as Vector3);
-            });
-          }
-          break;
-        case "vec4":
-          if (annotations["type"] === "color") {
-            attributes[variableName] = _getDecl("Color4", _resolveDefault(variableInfo, "#0000"), (proxy, val) => {
-              proxy.uniformColor4(variableName, val as Color4);
-            });
-          } else {
-            attributes[variableName] = _getDecl("Vector4", _resolveDefault(variableInfo, "0,0,0,0"), (proxy, val) => {
-              proxy.uniformVector4(variableName, val as Vector4);
-            });
-          }
-          break;
-        case "sampler2D":
-          let flagAssignTo: string = undefined;
-          // check used flag is existing
-          if (annotations["usedFlag"]) {
-            if (annotations["usedFlag"] !== void 0) {
-              flagAssignTo = annotations["usedFlag"];
-            }
-          }
-          attributes[variableName] = _getDecl("MaterialTexture", _resolveDefault(variableInfo, undefined), (proxy, val, matArgs) => {
-            if (val) {
-              proxy.uniformTexture2D(variableName, val(matArgs.buffers) as Texture2D);
-              if (flagAssignTo) {
-                proxy.uniformBool(flagAssignTo, true);
-              }
-            } else {
-              if (flagAssignTo) {
-                proxy.uniformBool(flagAssignTo, false);
-              }
-            }
-          });
-          break;
-        default:
-          throw new Error("Unsupported type was found");
-      }
+      debugger;
     }
   }
   await Promise.all(promises);
