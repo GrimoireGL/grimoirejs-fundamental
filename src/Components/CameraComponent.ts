@@ -1,5 +1,5 @@
 import RenderSceneArgument from "../Objects/RenderSceneArgument";
-import IRenderSceneMessage from "../Messages/IRenderSceneMessage";
+import IRenderSceneMessage from "../Messages/IRenderMessage";
 import TransformComponent from "./TransformComponent";
 import PerspectiveCamera from "../Camera/PerspectiveCamera";
 import ICamera from "../Camera/ICamera";
