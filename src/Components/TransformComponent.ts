@@ -229,8 +229,13 @@ export default class TransformComponent extends Component {
   }
 
   private _updateGlobalProperty(): void {
-    vec3.transformMat4(this._globalPosition.rawElements, this._localPosition.rawElements, this.globalTransform.rawElements);
-    vec3.transformMat4(this._globalScale.rawElements, this._localScale.rawElements, this.globalTransform.rawElements); // TODO buggy
+    if (!this._parentTransform) {
+      vec3.copy(this._globalPosition.rawElements, this._localPosition.rawElements);
+      vec3.copy(this._globalScale.rawElements, this._localScale.rawElements);
+    } else {
+      vec3.transformMat4(this._globalPosition.rawElements, this._localPosition.rawElements, this._parentTransform.globalTransform.rawElements);
+      vec3.transformMat4(this._globalScale.rawElements, this._localScale.rawElements, this._parentTransform.globalTransform.rawElements); // TODO buggy
+    }
   }
 
 }
