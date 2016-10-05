@@ -103,7 +103,6 @@
     "./src/Messages/IBufferUpdatedMessage.ts",
     "./src/Messages/IRenderMessage.ts",
     "./src/Messages/IRenderRendererMessage.ts",
-    "./src/Messages/IRenderSceneMessage.ts",
     "./src/Messages/IResizeBufferMessage.ts",
     "./src/Objects/RenderSceneArgument.ts",
     "./src/Resource/Buffer.ts",
