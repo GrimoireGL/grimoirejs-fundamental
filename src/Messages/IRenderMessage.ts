@@ -16,6 +16,8 @@ interface IRenderMessage {
   viewport: Rectangle;
   material?: Material;
   materialArgs?: { [key: string]: any };
+  sceneDescription: { [key: string]: any };
+  loopIndex: number;
 }
 
 export default IRenderMessage;

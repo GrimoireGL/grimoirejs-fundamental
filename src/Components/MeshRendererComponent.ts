@@ -64,12 +64,13 @@ export default class MeshRenderer extends Component {
       targetBuffer: this._targetBuffer,
       geometry: this._geometry,
       attributeValues: null,
-      camera: args.camera.camera,
+      camera: args.camera,
       transform: this._transformComponent,
       buffers: args.buffers,
       viewport: args.viewport,
       drawCount: this._drawCount,
-      drawOffset: this._drawOffset
+      drawOffset: this._drawOffset,
+      sceneDescription: args.sceneDescription
     };
     if (args.material) {
       renderArgs.attributeValues = args.materialArgs;

@@ -32,6 +32,8 @@ export default class CameraComponent extends Component {
 
   public containedScene: SceneComponent;
 
+  public transform: TransformComponent;
+
   /**
  * Find scene tag recursively.
  * @param  {GomlNode}       node [the node to searching currently]
@@ -53,8 +55,8 @@ export default class CameraComponent extends Component {
   public $awake(): void {
     this.containedScene = CameraComponent._findContainedScene(this.node);
     const c = this.camera = new PerspectiveCamera();
-    const t = this.node.getComponent("Transform") as TransformComponent;
-    this.$transformUpdated(t);
+    this.transform = this.node.getComponent("Transform") as TransformComponent;
+    this.$transformUpdated(this.transform);
     c.setFar(this.attributes.get("far").Value);
     c.setNear(this.attributes.get("near").Value);
     c.setFovy(this.attributes.get("fovy").Value);

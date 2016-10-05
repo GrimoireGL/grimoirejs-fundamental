@@ -11,73 +11,73 @@ export default class UniformProxy {
   }
 
   public uniformBool(variableName: string, val: boolean): void {
-    const location = this.program.findUniformLocation(variableName);
-    if (location) {
-      this._gl.uniform1i(location, val ? 1 : 0);
-    }
+    this._pass(variableName, (l) => this._gl.uniform1i(l, val ? 1 : 0));
   }
 
   public uniformMatrix(variableName: string, mat: Matrix): void {
-    const location = this.program.findUniformLocation(variableName);
-    if (location) {
-      this._gl.uniformMatrix4fv(location, false, mat.rawElements as number[]);
-    }
+    this._pass(variableName, (l) =>
+      this._gl.uniformMatrix4fv(l, false, mat.rawElements as number[])
+    );
   }
 
   public uniformFloat(variableName: string, val: number): void {
-    const location = this.program.findUniformLocation(variableName);
-    if (location) {
-      this._gl.uniform1f(location, val);
-    }
+    this._pass(variableName, (l) =>
+      this._gl.uniform1f(l, val)
+    );
   }
 
   public uniformFloatArray(variableName: string, val: number[]): void {
-    const location = this.program.findUniformLocation(variableName);
-    if (location) {
-      this._gl.uniform1fv(location, val);
-    }
+    this._pass(variableName, (l) =>
+      this._gl.uniform1fv(l, val)
+    );
   }
 
   public uniformInt(variableName: string, val: number): void {
-    const location = this.program.findUniformLocation(variableName);
-    if (location) {
-      this._gl.uniform1i(location, val);
-    }
+    this._pass(variableName, (l) =>
+      this._gl.uniform1i(l, val)
+    );
   }
 
   public uniformVector2(variableName: string, val: Vector2): void {
-    const location = this.program.findUniformLocation(variableName);
-    if (location) {
-      this._gl.uniform2f(location, val.X, val.Y);
-    }
+    this._pass(variableName, (l) =>
+      this._gl.uniform2f(l, val.X, val.Y)
+    );
+  }
+
+  public uniformVector2Array(variableName: string, val: number[]): void {
+    this._pass(variableName, (l) => this._gl.uniform2fv(l, val));
   }
 
   public uniformVector3(variableName: string, val: Vector3): void {
-    const location = this.program.findUniformLocation(variableName);
-    if (location) {
-      this._gl.uniform3f(location, val.X, val.Y, val.Z);
-    }
+    this._pass(variableName, (l) =>
+      this._gl.uniform3f(l, val.X, val.Y, val.Z)
+    );
+  }
+
+  public uniformVector3Array(variableName: string, val: number[]): void {
+    this._pass(variableName, (l) => this._gl.uniform3fv(l, val));
   }
 
   public uniformColor3(variableName: string, val: Color3): void {
-    const location = this.program.findUniformLocation(variableName);
-    if (location) {
-      this._gl.uniform3f(location, val.R, val.G, val.B);
-    }
+    this._pass(variableName, (l) =>
+      this._gl.uniform3f(l, val.R, val.G, val.B)
+    );
   }
 
   public uniformVector4(variableName: string, val: Vector4): void {
-    const location = this.program.findUniformLocation(variableName);
-    if (location) {
-      this._gl.uniform4f(location, val.X, val.Y, val.Z, val.W);
-    }
+    this._pass(variableName, (l) =>
+      this._gl.uniform4f(l, val.X, val.Y, val.Z, val.W)
+    );
+  }
+
+  public uniformVector4Array(variableName: string, val: number[]): void {
+    this._pass(variableName, (l) => this._gl.uniform4fv(l, val));
   }
 
   public uniformColor4(variableName: string, val: Color4): void {
-    const location = this.program.findUniformLocation(variableName);
-    if (location) {
-      this._gl.uniform4f(location, val.R, val.G, val.B, val.A);
-    }
+    this._pass(variableName, (l) =>
+      this._gl.uniform4f(l, val.R, val.G, val.B, val.A)
+    );
   }
 
   public uniformTexture2D(variableName: string, val: Texture2D): void {
@@ -92,6 +92,13 @@ export default class UniformProxy {
 
   public onUse(): void {
     this._currentTextureRegister = 0;
+  }
+
+  private _pass(variableName: string, act: (location: WebGLUniformLocation) => void) {
+    const location = this.program.findUniformLocation(variableName);
+    if (location) {
+      act(location);
+    }
   }
 
 }

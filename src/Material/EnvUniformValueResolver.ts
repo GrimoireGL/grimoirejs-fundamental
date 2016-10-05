@@ -54,12 +54,12 @@ export default class EnvUniformValueResolver {
 }
 
 // Matricies
-EnvUniformValueResolver.addResolver("_matPVM", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.transform.calcPVM(args.camera)));
-EnvUniformValueResolver.addResolver("_matP", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.getProjectionMatrix()));
-EnvUniformValueResolver.addResolver("_matV", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.getViewMatrix()));
+EnvUniformValueResolver.addResolver("_matPVM", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.transform.calcPVM(args.camera.camera)));
+EnvUniformValueResolver.addResolver("_matP", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.camera.getProjectionMatrix()));
+EnvUniformValueResolver.addResolver("_matV", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.camera.getViewMatrix()));
 EnvUniformValueResolver.addResolver("_matM", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.transform.globalTransform));
-EnvUniformValueResolver.addResolver("_matVM", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.transform.calcVM(args.camera)));
-EnvUniformValueResolver.addResolver("_matPV", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.getProjectionViewMatrix()));
+EnvUniformValueResolver.addResolver("_matVM", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.transform.calcVM(args.camera.camera)));
+EnvUniformValueResolver.addResolver("_matPV", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.camera.getProjectionViewMatrix()));
 
 
 
@@ -73,6 +73,8 @@ EnvUniformValueResolver.addResolver("_viewportSize", (valInfo, name) => {
     proxy.uniformVector2(name, cacheVec);
   };
 });
+EnvUniformValueResolver.addResolver("_cameraPosition", (valInfo, name) => (proxy, args) => proxy.uniformVector3(name, args.camera.transform.globalPosition));
+EnvUniformValueResolver.addResolver("_cameraDirection", (valInfo, name) => (proxy, args) => proxy.uniformVector3(name, args.camera.transform.forward));
 EnvUniformValueResolver.addDynamicResolver((valInfo, name) => {
   if (valInfo.variableType === "sampler2D" && valInfo.variableAnnotation["type"] === "backbuffer") {
     return (proxy, mat) => {
