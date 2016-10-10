@@ -1,7 +1,8 @@
 import "../TestInit";
 import test from 'ava';
 import Vector4Converter from '../../lib-es5/Converters/Vector4Converter';
-
-test('StringConverter should convert collectly', (t) => {
-    t.truthy( /*Write test here*/ );
+import { Vector4 } from "grimoirejs-math"
+test('Vector4Converter should convert collectly', (t) => {
+  const vec = new Vector4(1, 1, 2, 1);
+  t.truthy(Vector4.equals(Vector4Converter("1, 1, 2, 1"), vec));
 });
