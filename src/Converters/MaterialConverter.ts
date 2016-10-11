@@ -10,7 +10,7 @@ function MaterialConverter(this: Attribute, val: any): any {
       this.component[this.declaration["componentBoundTo"]] = null;
       return (this.companion.get("MaterialFactory") as MaterialFactory).instanciate(regexResult[1]);
     } else {
-      const mc = this.tree(val)("MATERIAL").get() as MaterialComponent;
+      const mc = this.tree(val)("Material").get() as MaterialComponent;
       this.component[this.declaration["componentBoundTo"]] = mc;
       return mc.materialPromise;
     }

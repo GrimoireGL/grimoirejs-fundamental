@@ -12,7 +12,7 @@ export default class RendererComponent extends Component {
     camera: {
       converter: "Component",
       defaultValue: "camera",
-      target: "CAMERA"
+      target: "Camera"
     },
     viewport: {
       converter: "Viewport",
@@ -43,18 +43,18 @@ export default class RendererComponent extends Component {
     if (this.node.children.length === 0) {
       this.node.addNode("render-scene", {});
     }
-    this.node.broadcastMessage(1, "resizeBuffer", <IResizeBufferMessage>{ // TODO apply when viewport was changed
+    this.node.broadcastMessage("resizeBuffer", <IResizeBufferMessage>{ // TODO apply when viewport was changed
       width: this._viewport.Width,
       height: this._viewport.Height,
       buffers: this._buffers
     });
-    this.node.broadcastMessage(1, "bufferUpdated", <IBufferUpdatedMessage>{
+    this.node.broadcastMessage("bufferUpdated", <IBufferUpdatedMessage>{
       buffers: this._buffers
     });
   }
 
   public $renderViewport(args: { loopIndex: number }): void {
-    this.node.broadcastMessage(1, "render", <IRenderRendererMessage>{
+    this.node.broadcastMessage("render", <IRenderRendererMessage>{
       camera: this._camera,
       viewport: this._viewport,
       buffers: this._buffers,

@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "ava": "^0.16.0",
-    "grimoirejs-cauldron": "^1.5.6",
+    "grimoirejs-cauldron": "^1.5.7",
     "grimoirejs-inquisitor": "^1.0.3",
     "xmldom": "^0.1.22"
   },
