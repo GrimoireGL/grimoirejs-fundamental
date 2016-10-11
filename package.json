@@ -1,6 +1,6 @@
 {
   "name": "grimoirejs-fundamental",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "description": "Base components,converters and nodes for Web3D with Grimoire.js",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -63,7 +63,7 @@
     "start": "cauldron build --watch --server",
     "build": "cauldron build",
     "test": "inquisitor",
-    "prepublish": "cauldron build && npm run doc",
+    "prepublish": "cauldron build --babelSeparated && npm run doc",
     "doc": "cauldron doc"
   },
   "license": "MIT"
