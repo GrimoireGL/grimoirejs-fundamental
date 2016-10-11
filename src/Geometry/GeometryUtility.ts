@@ -135,6 +135,58 @@ export default class GeometryUtility {
     yield* normal.rawElements as number[];
     yield* normal.rawElements as number[];
   }
+  public static *ellipseNormal(normal: Vector3, divide: number): IterableIterator<number> {
+    for (let i = 0; i < divide + 1; i++) {
+      yield* normal.rawElements as number[];
+    }
+  }
+  public static *triangleNormal(normal: Vector3): IterableIterator<number> {
+    yield* normal.rawElements as number[];
+    yield* normal.rawElements as number[];
+    yield* normal.rawElements as number[];
+  }
+  public static *cubeNormal(center: Vector3, up: Vector3, right: Vector3, forward: Vector3): IterableIterator<number> {
+    yield* GeometryUtility.quadNormal(forward.negateThis());
+    yield* GeometryUtility.quadNormal(forward);
+    yield* GeometryUtility.quadNormal(up);
+    yield* GeometryUtility.quadNormal(right);
+    yield* GeometryUtility.quadNormal(up.negateThis());
+    yield* GeometryUtility.quadNormal(right.negateThis());
+  }
+  public static *cylinderNormal(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, divide: number): IterableIterator<number> {
+    yield* GeometryUtility.ellipseNormal(up, divide);
+    yield* GeometryUtility.ellipseNormal(up.negateThis(), divide);
+    const step = 2 * Math.PI / divide;
+    for (let i = 0; i < divide; i++) {
+      const theta = step / 2 + step * i;
+      const sin = Math.sin((Math.PI - step) / 2 - theta);
+      const cos = Math.cos((Math.PI - step) / 2 - theta);
+      const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
+      yield* GeometryUtility.quadNormal(Vector3.cross(up, currentRight));
+    }
+  }
+  public static *coneNormal(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, divide: number): IterableIterator<number> {
+    yield* GeometryUtility.ellipseNormal(up.negateThis(), divide);
+    const step = 2 * Math.PI / divide;
+    const d = Math.cos(step / 2) / 2;
+    for (let i = 0; i < divide; i++) {
+      const theta = step * i;
+      const sin = Math.sin((Math.PI - step) / 2 - theta);
+      const cos = Math.cos((Math.PI - step) / 2 - theta);
+      const currentCenter = new Vector3(d * cos, center.Y, d * sin);
+      const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
+      yield* GeometryUtility.triangleNormal(Vector3.cross(up.subtractWith(currentCenter), currentRight));
+    }
+  }
+  public static *planeNormal(normal: Vector3, divide: number): IterableIterator<number> {
+    for (let i = 0; i < divide; i++) {
+      for (let j = 0; j < divide; j++) {
+        yield* GeometryUtility.quadNormal(normal);
+        yield* GeometryUtility.quadNormal(normal.negateThis());
+      }
+    }
+  }
+
 
   public static *spherePosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, rowDiv: number, circleDiv: number): IterableIterator<number> {
     yield* center.addWith(up).rawElements as number[];

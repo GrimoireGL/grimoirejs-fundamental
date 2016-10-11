@@ -37,13 +37,17 @@ export default class DefaultPrimitives {
         verticies: {
           main: {
             size: {
-              position: 3
+              position: 3,
+              normal: 3
             },
             count: GeometryUtility.triangleSize(),
             getGenerators: () => {
               return {
                 position: function* () {
                   yield* GeometryUtility.trianglePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit);
+                },
+                normal: function* () {
+                  yield* GeometryUtility.triangleNormal(Vector3.ZUnit);
                 }
               };
             }
@@ -115,13 +119,17 @@ export default class DefaultPrimitives {
         verticies: {
           main: {
             size: {
-              position: 3
+              position: 3,
+              normal: 3
             },
             count: GeometryUtility.cubeSize(),
             getGenerators: () => {
               return {
                 position: function* () {
                   yield* GeometryUtility.cubePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis());
+                },
+                normal: function* () {
+                  yield* GeometryUtility.cubeNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis());
                 }
               };
             }
@@ -211,13 +219,17 @@ export default class DefaultPrimitives {
         verticies: {
           main: {
             size: {
-              position: 3
+              position: 3,
+              normal: 3
             },
             count: GeometryUtility.ellipseSize(div),
             getGenerators: () => {
               return {
                 position: function* () {
                   yield* GeometryUtility.ellipsePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, div);
+                },
+                normal: function* () {
+                  yield* GeometryUtility.ellipseNormal(Vector3.ZUnit, div);
                 }
               };
             }
@@ -253,13 +265,17 @@ export default class DefaultPrimitives {
         verticies: {
           main: {
             size: {
-              position: 3
+              position: 3,
+              normal: 3
             },
             count: GeometryUtility.cylinderSize(div),
             getGenerators: () => {
               return {
                 position: function* () {
                   yield* GeometryUtility.cylinderPosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
+                },
+                normal: function* () {
+                  yield* GeometryUtility.cylinderNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
                 }
               };
             }
@@ -294,13 +310,17 @@ export default class DefaultPrimitives {
         verticies: {
           main: {
             size: {
-              position: 3
+              position: 3,
+              normal: 3
             },
             count: GeometryUtility.coneSize(div),
             getGenerators: () => {
               return {
                 position: function* () {
                   yield* GeometryUtility.conePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
+                },
+                normal: function* () {
+                  yield* GeometryUtility.coneNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
                 }
               };
             }
@@ -335,13 +355,17 @@ export default class DefaultPrimitives {
         verticies: {
           main: {
             size: {
-              position: 3
+              position: 3,
+              normal: 3
             },
             count: GeometryUtility.planeSize(div),
             getGenerators: () => {
               return {
                 position: function* () {
                   yield* GeometryUtility.planePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, div);
+                },
+                normal: function* () {
+                  yield* GeometryUtility.planeNormal(Vector3.ZUnit, div);
                 }
               };
             }
