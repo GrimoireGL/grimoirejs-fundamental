@@ -1,7 +1,7 @@
 <goml width="1024" height="1024">
   <import-material type="solid" src="./solid.sort" />
-  <geometry name="cube" type="cube" />
-  <material id="solid" type="solid" />
+  <geometry name="cylinder" type="cylinder" divide="7" />
+  <material id="solid" type="solid"/>
   <renderer camera=".camera" viewport="0,0,100%,100%">
     <render-scene/>
   </renderer>
@@ -11,20 +11,20 @@
         <MouseCameraControl rotateX="10" moveSpeed="1" />
       </camera.components>
     </camera>
-    <mesh position="0,0,0" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="5,0,0" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="-5,0,0" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="0,5,0" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="0,-5,0" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="0,0,5" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="0,0,-5" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="5,5,5" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="-5,-5,-5" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="-5,5,5" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="5,-5,5" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="5,5,-5" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="-5,-5,5" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="5,-5,-5" geometry="cube" material="#solid" targetBuffer="wireframe" />
-    <mesh position="-5,5,-5" geometry="cube" material="#solid" targetBuffer="wireframe" />
+    <mesh position="0,0,0" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="5,0,0" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="-5,0,0" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="0,5,0" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="0,-5,0" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="0,0,5" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="0,0,-5" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="5,5,5" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="-5,-5,-5" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="-5,5,5" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="5,-5,5" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="5,5,-5" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="-5,-5,5" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="5,-5,-5" geometry="cylinder" material="#solid" targetBuffer="default" />
+    <mesh position="-5,5,-5" geometry="cylinder" material="#solid" targetBuffer="default" />
   </scene>
 </goml>

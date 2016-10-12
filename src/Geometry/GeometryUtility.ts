@@ -48,16 +48,7 @@ export default class GeometryUtility {
     }
   }
 
-  public static *ellipseIndex(offset: number, divide: number): IterableIterator<number> {
-    for (let i = 0; i < divide - 1; i++) {
-      yield* [offset, offset + 1 + i, offset + 2 + i];
-    }
-    yield* [offset, offset + divide, offset + 1];
-  }
 
-  public static ellipseSize(divide: number): number {
-    return divide + 1;
-  }
 
   public static *trianglePosition(center: Vector3, up: Vector3, right: Vector3): IterableIterator<number> {
     let p0 = center.addWith(up);
@@ -96,8 +87,6 @@ export default class GeometryUtility {
         yield* GeometryUtility.quadPosition(vec, Vector3.multiply(1 / divide, up), Vector3.multiply(1 / divide, right.negateThis()));
       }
     }
-
-
   }
 
   public static *cylinderPosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, divide: number): IterableIterator<number> {
@@ -106,6 +95,7 @@ export default class GeometryUtility {
     const step = 2 * Math.PI / divide;
     const d = Math.cos(step / 2);
     const d2 = Math.sin(step / 2);
+    const temp = divide % 2 == 0 ? step / 2 : 0;
     for (let i = 0; i < divide; i++) {
       const theta = step / 2 + step * i;
       const sin = Math.sin((Math.PI - step) / 2 - theta);
@@ -129,6 +119,22 @@ export default class GeometryUtility {
       yield* GeometryUtility.trianglePosition(currentCenter, up.subtractWith(currentCenter), Vector3.multiply(d2, currentRight));
     }
   }
+  public static *spherePosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, rowDiv: number, circleDiv: number): IterableIterator<number> {
+    yield* center.addWith(up).rawElements as number[];
+    yield* center.subtractWith(up).rawElements as number[];
+    const ia = 2 * Math.PI / circleDiv;
+    const ja = Math.PI / (rowDiv + 1);
+    for (let j = 1; j <= rowDiv; j++) {
+      const phi = ja * j;
+      const sinPhi = Math.sin(phi);
+      const upVector = up.multiplyWith(Math.cos(phi));
+      for (let i = 0; i <= circleDiv; i++) {
+        const theta = ia * i;
+        yield* (right.multiplyWith(Math.cos(theta)).addWith(forward.multiplyWith(Math.sin(theta)))).multiplyWith(sinPhi).addWith(upVector).rawElements as number[];
+      }
+    }
+  }
+
   public static *quadNormal(normal: Vector3): IterableIterator<number> {
     yield* normal.rawElements as number[];
     yield* normal.rawElements as number[];
@@ -157,12 +163,17 @@ export default class GeometryUtility {
     yield* GeometryUtility.ellipseNormal(up, divide);
     yield* GeometryUtility.ellipseNormal(up.negateThis(), divide);
     const step = 2 * Math.PI / divide;
+    let lastRight = new Vector3(Math.cos(- step / 2), center.Y, Math.sin(- step / 2));
     for (let i = 0; i < divide; i++) {
-      const theta = step / 2 + step * i;
-      const sin = Math.sin((Math.PI - step) / 2 - theta);
-      const cos = Math.cos((Math.PI - step) / 2 - theta);
+      const theta = step * (i + 1);
+      const sin = Math.sin(Math.PI / 2 - theta);
+      const cos = Math.cos(Math.PI / 2 - theta);
       const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
-      yield* GeometryUtility.quadNormal(Vector3.cross(up, currentRight));
+      yield* Vector3.cross(lastRight, up).rawElements as number[];
+      yield* Vector3.cross(currentRight, up).rawElements as number[];
+      yield* Vector3.cross(currentRight, up).rawElements as number[];
+      yield* Vector3.cross(lastRight, up).rawElements as number[];
+      lastRight = currentRight;
     }
   }
   public static *coneNormal(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, divide: number): IterableIterator<number> {
@@ -175,7 +186,7 @@ export default class GeometryUtility {
       const cos = Math.cos((Math.PI - step) / 2 - theta);
       const currentCenter = new Vector3(d * cos, center.Y, d * sin);
       const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
-      yield* GeometryUtility.triangleNormal(Vector3.cross(up.subtractWith(currentCenter), currentRight));
+      yield* GeometryUtility.triangleNormal(Vector3.cross(currentRight, up.subtractWith(currentCenter)));
     }
   }
   public static *planeNormal(normal: Vector3, divide: number): IterableIterator<number> {
@@ -187,21 +198,8 @@ export default class GeometryUtility {
     }
   }
 
-
-  public static *spherePosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, rowDiv: number, circleDiv: number): IterableIterator<number> {
-    yield* center.addWith(up).rawElements as number[];
-    yield* center.subtractWith(up).rawElements as number[];
-    const ia = 2 * Math.PI / circleDiv;
-    const ja = Math.PI / (rowDiv + 1);
-    for (let j = 1; j <= rowDiv; j++) {
-      const phi = ja * j;
-      const sinPhi = Math.sin(phi);
-      const upVector = up.multiplyWith(Math.cos(phi));
-      for (let i = 0; i <= circleDiv; i++) {
-        const theta = ia * i;
-        yield* (right.multiplyWith(Math.cos(theta)).addWith(forward.multiplyWith(Math.sin(theta)))).multiplyWith(sinPhi).addWith(upVector).rawElements as number[];
-      }
-    }
+  public static *sphereNormal(up: Vector3, right: Vector3, forward: Vector3, rowDiv: number, circleDiv: number): IterableIterator<number> {
+    yield* GeometryUtility.spherePosition(Vector3.Zero, up, right, forward, rowDiv, circleDiv);
   }
 
   public static *sphereUV(rowDiv: number, circleDiv: number): IterableIterator<number> {
@@ -217,10 +215,67 @@ export default class GeometryUtility {
       }
     }
   }
-
-  public static *sphereNormal(up: Vector3, right: Vector3, forward: Vector3, rowDiv: number, circleDiv: number): IterableIterator<number> {
-    yield* GeometryUtility.spherePosition(Vector3.Zero, up, right, forward, rowDiv, circleDiv);
+  public static *quadUV(): IterableIterator<number> {
+    yield* [0, 0];
+    yield* [1, 0];
+    yield* [1, 1];
+    yield* [0, 1];
   }
+  public static *cubeUV(): IterableIterator<number> {
+    for (let i = 0; i < 6; i++) {
+      yield* GeometryUtility.quadUV();
+    }
+  }
+  public static *triangleUV(): IterableIterator<number> {
+    yield* [0, 0];
+    yield* [1, 0];
+    yield* [0, 1];
+  }
+  public static *ellipseUV(divide: number): IterableIterator<number> {
+    yield* [0.5, 0.5];
+    const step = 2 * Math.PI / divide;
+    for (let i = 0; i < divide; i++) {
+      const theta = step * i;
+      yield* [0.5 + Math.cos(theta + Math.PI) / 2, 0.5 + Math.sin(theta + Math.PI) / 2];
+    }
+  }
+  public static *planeUV(divide: number): IterableIterator<number> {
+    const p = 1 / divide;
+    for (let i = 0; i < divide; i++) {
+      for (let j = 0; j < divide; j++) {
+        yield* GeometryUtility.quadUV();
+        yield* GeometryUtility.quadUV();
+      }
+    }
+  }
+  public static *cylinderUV(divide: number): IterableIterator<number> {
+    yield* GeometryUtility.ellipseUV(divide);
+    yield* GeometryUtility.ellipseUV(divide);
+    const p = 1 / divide;
+    for (let i = 0; i < divide; i++) {
+      yield* GeometryUtility.quadUV();
+      for (let j = 0; j < divide; j++) {
+        yield* [p * j, 0];
+        yield* [p * (j + 1), 0];
+        yield* [p * (j + 1), 1];
+        yield* [p * j, 1];
+      }
+    }
+  }
+  public static *coneUV(divide: number): IterableIterator<number> {
+    yield* GeometryUtility.ellipseUV(divide);
+
+    const step = Math.PI / 2 / divide;
+    for (let i = 0; i < divide; i++) {
+      const theta = step * i;
+      yield* [0, 0];
+      yield* [Math.cos(theta), Math.sin(theta)]
+      yield* [Math.cos(theta + step), Math.sin(theta + step)];
+    }
+  }
+
+
+
 
   public static *triangleIndex(offset: number): IterableIterator<number> {
     const o = offset;
@@ -276,14 +331,37 @@ export default class GeometryUtility {
     for (let i = 0; i < divide; i++) {
       yield* GeometryUtility.quadIndex(offset + s * 2 + t * i);
     }
+    // for (let i = 0; i < divide - 1; i++) {//上の面
+    //   yield* [offset, offset + 1 + i, offset + 2 + i];
+    // }
+    // yield* [offset, offset + divide, offset + 1];
+    //
+    // for (let i = 0; i < divide - 1; i++) {//下の面
+    //   yield* [s + offset, s + offset + 1 + i, s + offset + 2 + i];
+    // }
+    // yield* [s + offset, s + offset + divide, s + offset + 1];
+    //
+    // for (let i = 0; i < divide - 1; i++) {
+    //   yield* [offset, offset, offset, offset, offset, offset];
+    // }
+    // yield* [offset + divide, s + offset + 1, offset + 1, offset + divide, s + offset + 2, s + offset + 1];
   }
   public static *coneIndex(offset: number, divide: number): IterableIterator<number> {
     const s = GeometryUtility.ellipseSize(divide);
     const t = GeometryUtility.triangleSize();
     yield* GeometryUtility.ellipseIndex(offset, divide);
     for (let i = 0; i < divide; i++) {
-      yield* GeometryUtility.triangleIndex(offset + s + t * i);
+      yield* GeometryUtility.triangleIndex(offset + s + i * t);
     }
+    // for (let i = 0; i < divide - 1; i++) {
+    //   yield* [offset, offset + 1 + i, offset + 2 + i];
+    // }
+    // yield* [offset, offset + divide, offset + 1];
+    // const top = offset + divide + 1;
+    // for (let i = 0; i < divide - 1; i++) {
+    //   yield* [top, offset + 2 + i, offset + 1 + i];
+    // }
+    // yield* [top, offset + 1, offset + divide];
   }
   public static *planeIndex(offset: number, divide: number): IterableIterator<number> {
     const s = GeometryUtility.quadSize();
@@ -291,6 +369,14 @@ export default class GeometryUtility {
       yield* GeometryUtility.quadIndex(offset + s * i);
     }
   }
+  public static *ellipseIndex(offset: number, divide: number): IterableIterator<number> {
+    for (let i = 0; i < divide - 1; i++) {
+      yield* [offset, offset + 1 + i, offset + 2 + i];
+    }
+    yield* [offset, offset + divide, offset + 1];
+  }
+
+
 
   public static quadSize(): number {
     return 4;
@@ -315,5 +401,8 @@ export default class GeometryUtility {
   }
   public static planeSize(divide: number): number {
     return 2 * divide * divide * GeometryUtility.quadSize();
+  }
+  public static ellipseSize(divide: number): number {
+    return divide + 1;
   }
 }
