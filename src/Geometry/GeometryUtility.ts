@@ -331,20 +331,6 @@ export default class GeometryUtility {
     for (let i = 0; i < divide; i++) {
       yield* GeometryUtility.quadIndex(offset + s * 2 + t * i);
     }
-    // for (let i = 0; i < divide - 1; i++) {//上の面
-    //   yield* [offset, offset + 1 + i, offset + 2 + i];
-    // }
-    // yield* [offset, offset + divide, offset + 1];
-    //
-    // for (let i = 0; i < divide - 1; i++) {//下の面
-    //   yield* [s + offset, s + offset + 1 + i, s + offset + 2 + i];
-    // }
-    // yield* [s + offset, s + offset + divide, s + offset + 1];
-    //
-    // for (let i = 0; i < divide - 1; i++) {
-    //   yield* [offset, offset, offset, offset, offset, offset];
-    // }
-    // yield* [offset + divide, s + offset + 1, offset + 1, offset + divide, s + offset + 2, s + offset + 1];
   }
   public static *coneIndex(offset: number, divide: number): IterableIterator<number> {
     const s = GeometryUtility.ellipseSize(divide);
@@ -353,15 +339,6 @@ export default class GeometryUtility {
     for (let i = 0; i < divide; i++) {
       yield* GeometryUtility.triangleIndex(offset + s + i * t);
     }
-    // for (let i = 0; i < divide - 1; i++) {
-    //   yield* [offset, offset + 1 + i, offset + 2 + i];
-    // }
-    // yield* [offset, offset + divide, offset + 1];
-    // const top = offset + divide + 1;
-    // for (let i = 0; i < divide - 1; i++) {
-    //   yield* [top, offset + 2 + i, offset + 1 + i];
-    // }
-    // yield* [top, offset + 1, offset + divide];
   }
   public static *planeIndex(offset: number, divide: number): IterableIterator<number> {
     const s = GeometryUtility.quadSize();
