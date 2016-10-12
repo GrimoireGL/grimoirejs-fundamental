@@ -6,7 +6,7 @@
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| camera | Component | "camera" | `target`</br> "CAMERA"</br>    </br> |
+| camera | Component | "camera" | `target`</br> "Camera"</br>    </br> |
 | viewport | Viewport | "auto" | なし |
 
 <!-- /ATTRS -->
