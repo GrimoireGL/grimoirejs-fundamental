@@ -38,7 +38,8 @@ export default class DefaultPrimitives {
           main: {
             size: {
               position: 3,
-              normal: 3
+              normal: 3,
+              uv: 2
             },
             count: GeometryUtility.triangleSize(),
             getGenerators: () => {
@@ -48,6 +49,9 @@ export default class DefaultPrimitives {
                 },
                 normal: function* () {
                   yield* GeometryUtility.triangleNormal(Vector3.ZUnit);
+                },
+                uv: function* () {
+                  yield* GeometryUtility.triangleUV();
                 }
               };
             }
@@ -79,7 +83,8 @@ export default class DefaultPrimitives {
           main: {
             size: {
               position: 3,
-              normal: 3
+              normal: 3,
+              uv: 2
             },
             count: GeometryUtility.quadSize(),
             getGenerators: () => {
@@ -89,6 +94,9 @@ export default class DefaultPrimitives {
                 },
                 normal: function* () {
                   yield* GeometryUtility.quadNormal(Vector3.ZUnit);
+                },
+                uv: function* () {
+                  yield* GeometryUtility.quadUV();
                 }
               };
             }
@@ -120,7 +128,8 @@ export default class DefaultPrimitives {
           main: {
             size: {
               position: 3,
-              normal: 3
+              normal: 3,
+              uv: 2
             },
             count: GeometryUtility.cubeSize(),
             getGenerators: () => {
@@ -130,6 +139,9 @@ export default class DefaultPrimitives {
                 },
                 normal: function* () {
                   yield* GeometryUtility.cubeNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis());
+                },
+                uv: function* () {
+                  yield* GeometryUtility.cubeUV();
                 }
               };
             }
@@ -197,7 +209,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("circle", {
       divide: {
         converter: "Number",
-        defaultValue: 10
+        defaultValue: 50
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
@@ -220,7 +232,8 @@ export default class DefaultPrimitives {
           main: {
             size: {
               position: 3,
-              normal: 3
+              normal: 3,
+              uv: 2
             },
             count: GeometryUtility.ellipseSize(div),
             getGenerators: () => {
@@ -230,6 +243,9 @@ export default class DefaultPrimitives {
                 },
                 normal: function* () {
                   yield* GeometryUtility.ellipseNormal(Vector3.ZUnit, div);
+                },
+                uv: function* () {
+                  yield* GeometryUtility.ellipseUV(div);
                 }
               };
             }
@@ -243,7 +259,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cylinder", {
       divide: {
         converter: "Number",
-        defaultValue: 10
+        defaultValue: 50
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
@@ -266,7 +282,8 @@ export default class DefaultPrimitives {
           main: {
             size: {
               position: 3,
-              normal: 3
+              normal: 3,
+              uv: 2
             },
             count: GeometryUtility.cylinderSize(div),
             getGenerators: () => {
@@ -276,6 +293,9 @@ export default class DefaultPrimitives {
                 },
                 normal: function* () {
                   yield* GeometryUtility.cylinderNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
+                },
+                uv: function* () {
+                  yield* GeometryUtility.cylinderUV(div);
                 }
               };
             }
@@ -288,7 +308,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cone", {
       divide: {
         converter: "Number",
-        defaultValue: 10
+        defaultValue: 50
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
@@ -311,7 +331,8 @@ export default class DefaultPrimitives {
           main: {
             size: {
               position: 3,
-              normal: 3
+              normal: 3,
+              uv: 2
             },
             count: GeometryUtility.coneSize(div),
             getGenerators: () => {
@@ -321,6 +342,9 @@ export default class DefaultPrimitives {
                 },
                 normal: function* () {
                   yield* GeometryUtility.coneNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
+                },
+                uv: function* () {
+                  yield* GeometryUtility.coneUV(div);
                 }
               };
             }
@@ -356,7 +380,8 @@ export default class DefaultPrimitives {
           main: {
             size: {
               position: 3,
-              normal: 3
+              normal: 3,
+              uv: 2
             },
             count: GeometryUtility.planeSize(div),
             getGenerators: () => {
@@ -366,6 +391,9 @@ export default class DefaultPrimitives {
                 },
                 normal: function* () {
                   yield* GeometryUtility.planeNormal(Vector3.ZUnit, div);
+                },
+                uv: function* () {
+                  yield* GeometryUtility.planeUV(div);
                 }
               };
             }
