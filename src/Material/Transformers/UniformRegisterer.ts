@@ -29,7 +29,6 @@ async function _registerUserUniforms(input: ITransformingArgument): Promise<void
   const promises: Promise<void>[] = [];
   const attributes = input.info.gomlAttributes;
   for (let variableName in input.info.uniforms) {
-    debugger;
     if (variableName.charAt(0) === "_") {
       // this should not assigned by material argument
       continue;

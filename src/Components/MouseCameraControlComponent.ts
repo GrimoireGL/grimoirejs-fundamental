@@ -77,7 +77,6 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   private _mouseMove(m: MouseEvent): void {
-    console.log(Math.sqrt(Vector3.dot(this._transform.localPosition, this._transform.localPosition)));
     if (isNaN(this._lastScreenPos.x)) {
       this._initialDirection = this._transform.localPosition.subtractWith(this._origin);
       this._initialRotation = this._transform.localRotation;
