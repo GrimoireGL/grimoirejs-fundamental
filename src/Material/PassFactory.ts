@@ -21,13 +21,10 @@ export default class PassFactory {
     const program = new Program(gl);
     const tasks = [] as ((p: SORTPass, a: IMaterialArgument) => void)[];
     program.update([vs, fs]);
-    tasks.push((p, m) => {
-      for (let key in passInfo.gomlAttributes) {
-        const registerer = passInfo.gomlAttributes[key].register;
-        registerer(p.program.uniforms, m.attributeValues[key], m);
-      }
-    });
-
+    for (let key in passInfo.gomlAttributes) {
+      const registerer = passInfo.gomlAttributes[key].register;
+      tasks.push((p, m) => registerer(p.program.uniforms, m));
+    }
     const attributes: string[] = [];
     for (let key in passInfo.attributes) {
       attributes.push(key);

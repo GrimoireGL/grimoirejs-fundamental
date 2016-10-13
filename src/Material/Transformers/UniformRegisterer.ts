@@ -8,7 +8,7 @@ import UniformProxy from "../../Resource/UniformProxy";
 import EnvUniformValueResolver from "../EnvUniformValueResolver";
 import ITransformingArgument from "./ITransformingArgument";
 
-function _getDecl(converter: string, defaultValue: any, register: (proxy: UniformProxy, val: any, matInfo: IMaterialArgument) => void): IMaterialAttributeDeclaration {
+function _getDecl(converter: string, defaultValue: any, register: (proxy: UniformProxy, matInfo: IMaterialArgument) => void): IMaterialAttributeDeclaration {
   return {
     converter: converter,
     defaultValue: defaultValue,
@@ -33,6 +33,7 @@ async function _registerUserUniforms(input: ITransformingArgument): Promise<void
       // this should not assigned by material argument
       continue;
     }
+    const valName = variableName;
     const uniforms = input.info.uniforms;
     const variableInfo = uniforms[variableName];
     const annotations = variableInfo.variableAnnotation;
@@ -42,8 +43,8 @@ async function _registerUserUniforms(input: ITransformingArgument): Promise<void
           case "float":
             let defaultArray = new Array(variableInfo.arrayLength) as number[];
             defaultArray = defaultArray.map((p) => 0);
-            attributes[variableName] = _getDecl("NumberArray", _resolveDefault(variableInfo, defaultArray), (proxy, val) => {
-              proxy.uniformFloatArray(variableName, val);
+            attributes[valName] = _getDecl("NumberArray", _resolveDefault(variableInfo, defaultArray), (proxy, matArg) => {
+              proxy.uniformFloatArray(valName, matArg.attributeValues[valName]);
             });
             break;
           default:
@@ -52,39 +53,39 @@ async function _registerUserUniforms(input: ITransformingArgument): Promise<void
       } else {
         switch (variableInfo.variableType) {
           case "bool":
-            attributes[variableName] = _getDecl("Boolean", _resolveDefault(variableInfo, false), (proxy, val) => {
-              proxy.uniformBool(variableName, val);
+            attributes[valName] = _getDecl("Boolean", _resolveDefault(variableInfo, false), (proxy, matArg) => {
+              proxy.uniformBool(valName, matArg.attributeValues[valName]);
             });
             break;
           case "float":
-            attributes[variableName] = _getDecl("Number", _resolveDefault(variableInfo, 0), (proxy, val) => {
-              proxy.uniformFloat(variableName, val as number);
+            attributes[valName] = _getDecl("Number", _resolveDefault(variableInfo, 0), (proxy, matArg) => {
+              proxy.uniformFloat(valName, matArg.attributeValues[valName] as number);
             });
             break;
           case "vec2":
-            attributes[variableName] = _getDecl("Vector2", _resolveDefault(variableInfo, "0,0"), (proxy, val) => {
-              proxy.uniformVector2(variableName, val as Vector2);
+            attributes[valName] = _getDecl("Vector2", _resolveDefault(variableInfo, "0,0"), (proxy, matArg) => {
+              proxy.uniformVector2(valName, matArg.attributeValues[valName] as Vector2);
             });
             break;
           case "vec3":
             if (annotations["type"] === "color") {
-              attributes[variableName] = _getDecl("Color3", _resolveDefault(variableInfo, "#000"), (proxy, val) => {
-                proxy.uniformColor3(variableName, val as Color3);
+              attributes[valName] = _getDecl("Color3", _resolveDefault(variableInfo, "#000"), (proxy, matArg) => {
+                proxy.uniformColor3(valName, matArg.attributeValues[valName] as Color3);
               });
             } else {
-              attributes[variableName] = _getDecl("Vector3", _resolveDefault(variableInfo, "0,0,0"), (proxy, val) => {
-                proxy.uniformVector3(variableName, val as Vector3);
+              attributes[valName] = _getDecl("Vector3", _resolveDefault(variableInfo, "0,0,0"), (proxy, matArg) => {
+                proxy.uniformVector3(valName, matArg.attributeValues[valName] as Vector3);
               });
             }
             break;
           case "vec4":
             if (annotations["type"] === "color") {
-              attributes[variableName] = _getDecl("Color4", _resolveDefault(variableInfo, "#0000"), (proxy, val) => {
-                proxy.uniformColor4(variableName, val as Color4);
+              attributes[valName] = _getDecl("Color4", _resolveDefault(variableInfo, "#0000"), (proxy, matArg) => {
+                proxy.uniformColor4(valName, matArg.attributeValues[valName] as Color4);
               });
             } else {
-              attributes[variableName] = _getDecl("Vector4", _resolveDefault(variableInfo, "0,0,0,0"), (proxy, val) => {
-                proxy.uniformVector4(variableName, val as Vector4);
+              attributes[valName] = _getDecl("Vector4", _resolveDefault(variableInfo, "0,0,0,0"), (proxy, matArg) => {
+                proxy.uniformVector4(valName, matArg.attributeValues[valName] as Vector4);
               });
             }
             break;
@@ -96,9 +97,9 @@ async function _registerUserUniforms(input: ITransformingArgument): Promise<void
                 flagAssignTo = annotations["usedFlag"];
               }
             }
-            attributes[variableName] = _getDecl("MaterialTexture", _resolveDefault(variableInfo, undefined), (proxy, val, matArgs) => {
-              if (val) {
-                proxy.uniformTexture2D(variableName, val(matArgs.buffers) as Texture2D);
+            attributes[valName] = _getDecl("MaterialTexture", _resolveDefault(variableInfo, undefined), (proxy, matArgs) => {
+              if (matArgs.attributeValues[valName]) {
+                proxy.uniformTexture2D(valName, matArgs.attributeValues[valName](matArgs.buffers) as Texture2D);
                 if (flagAssignTo) {
                   proxy.uniformBool(flagAssignTo, true);
                 }

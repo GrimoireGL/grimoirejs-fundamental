@@ -9,7 +9,7 @@ attribute vec3 position;
    @{default:"1.1"}
    uniform float edgeScale;
    void main(){
-      gl_Position = _matPVM * vec4(position * 1.1,1);
+      gl_Position = _matPVM * vec4(position * edgeScale,1);
    }
 }
 

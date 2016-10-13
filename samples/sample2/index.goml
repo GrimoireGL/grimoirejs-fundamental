@@ -1,6 +1,6 @@
 <goml width="1024" height="1024">
   <import-material type="solid" src="./sample.sort" />
-  <geometry name="circle" type="circle" divide="5" />
+  <geometry name="circle" type="circle" divide="100" />
   <material id="solid" type="solid" texture="./uv.png" />
   <renderer camera=".camera" viewport="0,0,100%,100%">
     <render-scene/>
