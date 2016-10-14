@@ -98,10 +98,10 @@ export default class GeometryUtility {
     const temp = divide % 2 == 0 ? step / 2 : 0;
     for (let i = 0; i < divide; i++) {
       const theta = step / 2 + step * i;
-      const sin = Math.sin((Math.PI - step) / 2 - theta);
-      const cos = Math.cos((Math.PI - step) / 2 - theta);
+      const sin = Math.sin((Math.PI - step) / 2 - theta - temp);
+      const cos = Math.cos((Math.PI - step) / 2 - theta - temp);
       const currentCenter = new Vector3(d * cos, center.Y, d * sin);
-      const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
+      const currentRight = new Vector3(Math.cos(- step / 2 - theta - temp), center.Y, Math.sin(- step / 2 - theta - temp));
       yield* GeometryUtility.quadPosition(currentCenter, up, Vector3.multiply(d2, currentRight));
     }
   }
