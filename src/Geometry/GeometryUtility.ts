@@ -178,16 +178,22 @@ export default class GeometryUtility {
   }
   public static *coneNormal(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, divide: number): IterableIterator<number> {
     yield* GeometryUtility.ellipseNormal(up.negateThis(), divide);
-    const step = 2 * Math.PI / divide;
+    const step = Math.PI / divide;
     const d = Math.cos(step / 2) / 2;
-    for (let i = 0; i < divide; i++) {
+    let lastNormal = Vector3.cross(new Vector3(Math.cos(step / 2), center.Y, Math.sin(step / 2)), up.subtractWith(new Vector3(d * Math.cos((Math.PI + step) / 2), center.Y, d * Math.sin((Math.PI + step) / 2))));
+    for (let i = 0; i < divide * 2; i++) {
       const theta = step * i;
       const sin = Math.sin((Math.PI - step) / 2 - theta);
       const cos = Math.cos((Math.PI - step) / 2 - theta);
       const currentCenter = new Vector3(d * cos, center.Y, d * sin);
       const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
-      yield* GeometryUtility.triangleNormal(Vector3.cross(currentRight, up.subtractWith(currentCenter)));
+      yield* Vector3.cross(currentRight, up.subtractWith(currentCenter)).rawElements as number[];
+      if (i % 2 == 1) {
+        yield* lastNormal.rawElements as number[];
+        lastNormal = Vector3.cross(currentRight, up.subtractWith(currentCenter));
+      }
     }
+    yield* Vector3.cross(new Vector3(Math.cos(step / 2), center.Y, Math.sin(step / 2)), up.subtractWith(new Vector3(d * Math.cos((Math.PI + step) / 2), center.Y, d * Math.sin((Math.PI + step) / 2)))).rawElements as number[];
   }
   public static *planeNormal(normal: Vector3, divide: number): IterableIterator<number> {
     for (let i = 0; i < divide; i++) {

@@ -155,11 +155,11 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("sphere", {
       divVertical: {
         converter: "Number",
-        defaultValue: 10
+        defaultValue: 100
       },
       divHorizontal: {
         converter: "Number",
-        defaultValue: 10
+        defaultValue: 100
       }
     }, (gl, attrs) => {
       const dH = attrs["divHorizontal"];

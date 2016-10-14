@@ -1,7 +1,15 @@
 <goml width="1024" height="1024">
   <import-material type="solid" src="./sample.sort" />
-  <geometry name="circle" type="circle" divide="5" />
-  <material id="solid" type="solid" texture="./uv.png" />
+  <geometry name="triangle" type="triangle" />
+  <geometry name="quad" type="quad" />
+  <geometry name="cube" type="cube" />
+  <geometry name="sphere" type="sphere" />
+  <geometry name="cylinder" type="cylinder" />
+  <geometry name="cone" type="cone" />
+  <geometry name="plane" type="plane" />
+  <geometry name="circle" type="circle" />
+
+  <material id="solid" type="solid" />
   <renderer camera=".camera" viewport="0,0,100%,100%">
     <render-scene/>
   </renderer>
@@ -11,6 +19,13 @@
         <MouseCameraControl rotateX="10" moveSpeed="1" />
       </camera.components>
     </camera>
-    <mesh id="geo" position="0,0,0" geometry="circle" material="#solid" />
+    <mesh id="geo" position="0,0,0" geometry="triangle" material="#solid" />
+    <mesh id="geo" position="5,0,0" geometry="quad" material="#solid" />
+    <mesh id="geo" position="-5,0,0" geometry="cube" material="#solid" />
+    <mesh id="geo" position="0,5,0" geometry="sphere" material="#solid" />
+    <mesh id="geo" position="0,-5,0" geometry="cylinder" material="#solid" />
+    <mesh id="geo" position="-5,5,0" geometry="cone" material="#solid" />
+    <mesh id="geo" position="5,5,0" geometry="plane" material="#solid" />
+    <mesh id="geo" position="-5,-5,0" geometry="circle" material="#solid" />
   </scene>
 </goml>

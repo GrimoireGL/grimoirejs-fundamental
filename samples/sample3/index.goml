@@ -1,5 +1,5 @@
 <goml width="1024" height="1024">
-  <import-material type="solid" src="./normal.sort" />
+  <import-material type="solid" src="./sample.sort" />
   <geometry name="triangle" type="triangle" />
   <geometry name="quad" type="quad" />
   <geometry name="cube" type="cube" />

@@ -1,6 +1,16 @@
-// let i = 0;
-// setInterval(function() {
-//   const s = 10;
-//   gr("#main")("#geo").attr("scale", `${ i/s },${ i/s },${ i/s }`);
-//   i++;
-// }, 30);
+let i = 0;
+const g = [
+  "triangle",
+  "quad",
+  "cube",
+  "sphere",
+  "cylinder",
+  "cone",
+  "circle",
+  "plane"
+];
+setInterval(function() {
+  i = i % g.length;
+  gr("#main")("#geo").attr("geometry", g[i]);
+  i++;
+}, 3000);
