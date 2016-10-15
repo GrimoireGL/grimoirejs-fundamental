@@ -79,8 +79,8 @@ export default class GeometryUtility {
     yield* p3.rawElements as number[];
   }
   public static *planePosition(center: Vector3, up: Vector3, right: Vector3, divide): IterableIterator<number> {
-    let x = center.addWith(right);
-    let y = center.subtractWith(up);
+    let x = center.addWith(right).multiplyWith(2);
+    let y = center.subtractWith(up).multiplyWith(2);
     for (let i = -divide / 2; i < divide / 2 + 1; i++) {//表
       for (let j = -divide / 2; j < divide / 2 + 1; j++) {
         yield* x.multiplyWith(j / divide).addWith(y.multiplyWith(i / divide)).rawElements as number[];
@@ -252,14 +252,14 @@ export default class GeometryUtility {
     }
   }
   public static *planeUV(divide: number): IterableIterator<number> {
-    for (let i = -divide / 2; i < divide / 2 + 1; i++) {//表
-      for (let j = -divide / 2; j < divide / 2 + 1; j++) {
-        yield* [-i / divide, j / divide];
+    for (let i = 0; i < divide + 1; i++) {//表
+      for (let j = 0; j < divide + 1; j++) {
+        yield* [j / divide, i / divide];
       }
     }
-    for (let i = -divide / 2; i < divide / 2 + 1; i++) {//裏
-      for (let j = -divide / 2; j < divide / 2 + 1; j++) {
-        yield* [-i / divide, j / divide];
+    for (let i = 0; i < divide + 1; i++) {//裏
+      for (let j = 0; j < divide + 1; j++) {
+        yield* [j / divide, i / divide];
       }
     }
   }
@@ -267,14 +267,11 @@ export default class GeometryUtility {
     yield* GeometryUtility.ellipseUV(divide);
     yield* GeometryUtility.ellipseUV(divide);
     const p = 1 / divide;
-    for (let i = 0; i < divide; i++) {
-      yield* GeometryUtility.quadUV();
-      for (let j = 0; j < divide; j++) {
-        yield* [p * j, 0];
-        yield* [p * (j + 1), 0];
-        yield* [p * (j + 1), 1];
-        yield* [p * j, 1];
-      }
+    for (let j = 0; j < divide; j++) {
+      yield* [p * j, 0];
+      yield* [p * (j + 1), 0];
+      yield* [p * (j + 1), 1];
+      yield* [p * j, 1];
     }
   }
   public static *coneUV(divide: number): IterableIterator<number> {
@@ -282,10 +279,10 @@ export default class GeometryUtility {
 
     const step = Math.PI / 2 / divide;
     for (let i = 0; i < divide; i++) {
-      const theta = step * i;
+      const theta = -step * i;
       yield* [0, 0];
+      yield* [Math.cos(theta - step), Math.sin(theta - step)];
       yield* [Math.cos(theta), Math.sin(theta)]
-      yield* [Math.cos(theta + step), Math.sin(theta + step)];
     }
   }
 

@@ -11,6 +11,6 @@ const g = [
 ];
 setInterval(function() {
   i = i % g.length;
-  gr("#main")("#geo").attr("geometry", g[i]);
+  gr("#main")(".geo").attr("geometry", g[i]);
   i++;
-}, 3000);
+}, 300);
