@@ -79,12 +79,16 @@ export default class GeometryUtility {
     yield* p3.rawElements as number[];
   }
   public static *planePosition(center: Vector3, up: Vector3, right: Vector3, divide): IterableIterator<number> {
-
-    for (let i = 0; i < divide; i++) {
-      for (let j = 0; j < divide; j++) {
-        const vec = center.addWith(Vector3.multiply(divide / 4 - j * 2 / divide, up)).addWith(Vector3.multiply(divide / 4 - i * 2 / divide, right));
-        yield* GeometryUtility.quadPosition(vec, Vector3.multiply(1 / divide, up), Vector3.multiply(1 / divide, right));
-        yield* GeometryUtility.quadPosition(vec, Vector3.multiply(1 / divide, up), Vector3.multiply(1 / divide, right.negateThis()));
+    let x = center.addWith(right).multiplyWith(2);
+    let y = center.subtractWith(up).multiplyWith(2);
+    for (let i = -divide / 2; i < divide / 2 + 1; i++) {//表
+      for (let j = -divide / 2; j < divide / 2 + 1; j++) {
+        yield* x.multiplyWith(j / divide).addWith(y.multiplyWith(i / divide)).rawElements as number[];
+      }
+    }
+    for (let i = -divide / 2; i < divide / 2 + 1; i++) {//裏
+      for (let j = -divide / 2; j < divide / 2 + 1; j++) {
+        yield* x.multiplyWith(j / divide).addWith(y.multiplyWith(i / divide)).rawElements as number[];
       }
     }
   }
@@ -98,10 +102,10 @@ export default class GeometryUtility {
     const temp = divide % 2 == 0 ? step / 2 : 0;
     for (let i = 0; i < divide; i++) {
       const theta = step / 2 + step * i;
-      const sin = Math.sin((Math.PI - step) / 2 - theta);
-      const cos = Math.cos((Math.PI - step) / 2 - theta);
+      const sin = Math.sin((Math.PI - step) / 2 - theta - temp);
+      const cos = Math.cos((Math.PI - step) / 2 - theta - temp);
       const currentCenter = new Vector3(d * cos, center.Y, d * sin);
-      const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
+      const currentRight = new Vector3(Math.cos(- step / 2 - theta - temp), center.Y, Math.sin(- step / 2 - theta - temp));
       yield* GeometryUtility.quadPosition(currentCenter, up, Vector3.multiply(d2, currentRight));
     }
   }
@@ -110,12 +114,13 @@ export default class GeometryUtility {
     const step = 2 * Math.PI / divide;
     const d = Math.cos(step / 2) / 2;
     const d2 = Math.sin(step / 2);
+    const temp = divide % 2 == 1 ? step / 2 : 0;
     for (let i = 0; i < divide; i++) {
       const theta = step * i;
-      const sin = Math.sin((Math.PI - step) / 2 - theta);
-      const cos = Math.cos((Math.PI - step) / 2 - theta);
+      const sin = Math.sin((Math.PI - step) / 2 - theta - temp);
+      const cos = Math.cos((Math.PI - step) / 2 - theta - temp);
       const currentCenter = new Vector3(d * cos, center.Y, d * sin);
-      const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
+      const currentRight = new Vector3(Math.cos(- step / 2 - theta - temp), center.Y, Math.sin(- step / 2 - theta - temp));
       yield* GeometryUtility.trianglePosition(currentCenter, up.subtractWith(currentCenter), Vector3.multiply(d2, currentRight));
     }
   }
@@ -178,23 +183,30 @@ export default class GeometryUtility {
   }
   public static *coneNormal(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, divide: number): IterableIterator<number> {
     yield* GeometryUtility.ellipseNormal(up.negateThis(), divide);
-    const step = 2 * Math.PI / divide;
+    const step = Math.PI / divide;
     const d = Math.cos(step / 2) / 2;
-    for (let i = 0; i < divide; i++) {
+    let lastNormal = Vector3.cross(new Vector3(Math.cos(step / 2), center.Y, Math.sin(step / 2)), up.subtractWith(new Vector3(d * Math.cos((Math.PI + step) / 2), center.Y, d * Math.sin((Math.PI + step) / 2))));
+    for (let i = 0; i < divide * 2; i++) {
       const theta = step * i;
       const sin = Math.sin((Math.PI - step) / 2 - theta);
       const cos = Math.cos((Math.PI - step) / 2 - theta);
       const currentCenter = new Vector3(d * cos, center.Y, d * sin);
       const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
-      yield* GeometryUtility.triangleNormal(Vector3.cross(currentRight, up.subtractWith(currentCenter)));
+      yield* Vector3.cross(currentRight, up.subtractWith(currentCenter)).rawElements as number[];
+      if (i % 2 == 1) {
+        yield* lastNormal.rawElements as number[];
+        lastNormal = Vector3.cross(currentRight, up.subtractWith(currentCenter));
+      }
     }
+    yield* Vector3.cross(new Vector3(Math.cos(step / 2), center.Y, Math.sin(step / 2)), up.subtractWith(new Vector3(d * Math.cos((Math.PI + step) / 2), center.Y, d * Math.sin((Math.PI + step) / 2)))).rawElements as number[];
   }
   public static *planeNormal(normal: Vector3, divide: number): IterableIterator<number> {
-    for (let i = 0; i < divide; i++) {
-      for (let j = 0; j < divide; j++) {
-        yield* GeometryUtility.quadNormal(normal);
-        yield* GeometryUtility.quadNormal(normal.negateThis());
-      }
+    const s = GeometryUtility.planeSize(divide) / 2;
+    for (let i = 0; i < s; i++) {//表
+      yield* normal.rawElements as number[];
+    }
+    for (let i = 0; i < s; i++) {//裏
+      yield* normal.negateThis().rawElements as number[];
     }
   }
 
@@ -240,11 +252,14 @@ export default class GeometryUtility {
     }
   }
   public static *planeUV(divide: number): IterableIterator<number> {
-    const p = 1 / divide;
-    for (let i = 0; i < divide; i++) {
-      for (let j = 0; j < divide; j++) {
-        yield* GeometryUtility.quadUV();
-        yield* GeometryUtility.quadUV();
+    for (let i = 0; i < divide + 1; i++) {//表
+      for (let j = 0; j < divide + 1; j++) {
+        yield* [j / divide, i / divide];
+      }
+    }
+    for (let i = 0; i < divide + 1; i++) {//裏
+      for (let j = 0; j < divide + 1; j++) {
+        yield* [j / divide, i / divide];
       }
     }
   }
@@ -252,14 +267,11 @@ export default class GeometryUtility {
     yield* GeometryUtility.ellipseUV(divide);
     yield* GeometryUtility.ellipseUV(divide);
     const p = 1 / divide;
-    for (let i = 0; i < divide; i++) {
-      yield* GeometryUtility.quadUV();
-      for (let j = 0; j < divide; j++) {
-        yield* [p * j, 0];
-        yield* [p * (j + 1), 0];
-        yield* [p * (j + 1), 1];
-        yield* [p * j, 1];
-      }
+    for (let j = 0; j < divide; j++) {
+      yield* [p * j, 0];
+      yield* [p * (j + 1), 0];
+      yield* [p * (j + 1), 1];
+      yield* [p * j, 1];
     }
   }
   public static *coneUV(divide: number): IterableIterator<number> {
@@ -267,10 +279,10 @@ export default class GeometryUtility {
 
     const step = Math.PI / 2 / divide;
     for (let i = 0; i < divide; i++) {
-      const theta = step * i;
+      const theta = -step * i;
       yield* [0, 0];
+      yield* [Math.cos(theta - step), Math.sin(theta - step)];
       yield* [Math.cos(theta), Math.sin(theta)]
-      yield* [Math.cos(theta + step), Math.sin(theta + step)];
     }
   }
 
@@ -341,9 +353,21 @@ export default class GeometryUtility {
     }
   }
   public static *planeIndex(offset: number, divide: number): IterableIterator<number> {
-    const s = GeometryUtility.quadSize();
-    for (let i = 0; i < 2 * divide * divide; i++) {
-      yield* GeometryUtility.quadIndex(offset + s * i);
+    let o = offset;
+    const s = (GeometryUtility.planeSize(divide) / 2);
+    for (let j = 0; j < divide; j++) {
+      for (let i = 0; i < divide; i++) {
+        o = offset + i + j * (divide + 1);
+        yield* [o, o + divide + 2, o + 1];
+        yield* [o, o + divide + 1, o + divide + 2];
+      }
+    }
+    for (let j = 0; j < divide; j++) {
+      for (let i = 0; i < divide; i++) {
+        o = offset + i + j * (divide + 1) + s;
+        yield* [o, o + 1, o + divide + 2];
+        yield* [o, o + divide + 2, o + divide + 1];
+      }
     }
   }
   public static *ellipseIndex(offset: number, divide: number): IterableIterator<number> {
@@ -377,7 +401,7 @@ export default class GeometryUtility {
     return GeometryUtility.ellipseSize(divide) + divide * GeometryUtility.triangleSize();
   }
   public static planeSize(divide: number): number {
-    return 2 * divide * divide * GeometryUtility.quadSize();
+    return (divide + 1) * (divide + 1) * 2;
   }
   public static ellipseSize(divide: number): number {
     return divide + 1;

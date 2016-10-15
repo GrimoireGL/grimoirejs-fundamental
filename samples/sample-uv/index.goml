@@ -1,0 +1,26 @@
+<goml width="1024" height="1024">
+  <import-material type="uv" src="./uv.sort" />
+  <geometry name="cylinder" type="cylinder" />
+  <geometry name="quad" type="quad" />
+  <geometry name="cube" type="cube" />
+  <geometry name="sphere" type="sphere" />
+  <geometry name="cylinder" type="cylinder" />
+  <geometry name="cylinder" type="cylinder" />
+  <geometry name="cylinder" type="cylinder" />
+  <geometry name="circle" type="circle" />
+
+  <material id="uv" type="uv" texture="./uv.png" />
+  <renderer camera=".camera" viewport="0,0,100%,100%">
+    <render-scene/>
+  </renderer>
+  <scene>
+    <camera class="camera" near="0.01" far="40.0" aspect="1.0" fovy="45d" position="0,0,20" rotation="y(0d)">
+      <camera.components>
+        <MouseCameraControl rotateX="10" moveSpeed="1" />
+      </camera.components>
+    </camera>
+    <mesh class="geo" position="0,0,0" scale="2,2,2" geometry="cylinder" material="#uv" />
+    <mesh class="geo" position="5,0,0" scale="2,2,2" geometry="cylinder" material="#uv" />
+    <mesh class="geo" position="-5,0,0" scale="2,2,2" geometry="cylinder" material="#uv" />
+  </scene>
+</goml>

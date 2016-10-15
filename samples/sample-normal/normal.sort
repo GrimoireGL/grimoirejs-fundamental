@@ -11,9 +11,6 @@ varying vec3 vNormal;
   }
 }
 @frag{
-  @{type:"color",default:"green"}
-  uniform vec4 color;
-
   void main(){
     gl_FragColor = vec4(vNormal,1);
   }
