@@ -19,20 +19,27 @@ export default class PassFactory {
     const vs = new Shader(gl, WebGLRenderingContext.VERTEX_SHADER, passInfo.vertex);
     const fs = new Shader(gl, WebGLRenderingContext.FRAGMENT_SHADER, passInfo.fragment);
     const program = new Program(gl);
+    const tasks = [] as ((p: SORTPass, a: IMaterialArgument) => void)[];
     program.update([vs, fs]);
-    const registerers: ((proxy: UniformProxy, matInfo: IMaterialArgument) => void)[] = [];
-    for (let key in passInfo.gomlAttributes) {
-      registerers.push((p, m) => passInfo.gomlAttributes[key].register(p, m.attributeValues[key], m));
-    }
+    tasks.push((p, m) => {
+      for (let key in passInfo.gomlAttributes) {
+        const registerer = passInfo.gomlAttributes[key].register;
+        registerer(p.program.uniforms, m.attributeValues[key], m);
+      }
+    });
+
     const attributes: string[] = [];
     for (let key in passInfo.attributes) {
       attributes.push(key);
     }
-    return new SORTPass(program, attributes, (p, args) => {
-      passInfo.configurator.forEach((configurator) => configurator(p.gl)); // gl configuration
-      registerers.forEach((r) => r(p.uniforms, args)); // user variables
-      passInfo.systemRegisterers.forEach((r) => r(p.uniforms, args)); // system variables
-    }, passInfo);
+    const configurators = passInfo.configurator;
+    for (let i = 0; i < configurators.length; i++) {
+      tasks.push((p) => configurators[i](p.program.gl));
+    }
+    for (let i = 0; i < passInfo.systemRegisterers.length; i++) {
+      tasks.push((p, args) => passInfo.systemRegisterers[i](p.program.uniforms, args));
+    }
+    return new SORTPass(program, attributes, tasks, passInfo);
   }
 
   public static async fromSinglePassSORT(gl: WebGLRenderingContext, src: string): Promise<SORTPass> {

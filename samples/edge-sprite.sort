@@ -1,5 +1,30 @@
 @Pass
 @DepthFunc(LEQUAL)
+@CullFace(FRONT)
+attribute vec3 position;
+
+@vert{
+   uniform mat4 _matPVM;
+
+   @{default:"1.1"}
+   uniform float edgeScale;
+   void main(){
+      gl_Position = _matPVM * vec4(position * 1.1,1);
+   }
+}
+
+@frag{
+  uniform float test;
+
+  @{type:"color", default:"black"}
+  uniform vec4 edgeColor;
+
+  void main(){
+     gl_FragColor = edgeColor;//vec4(1,1,0,1);
+  }
+}
+@Pass
+@DepthFunc(LEQUAL)
 @CullFace(BACK)
 attribute vec3 position;
 
@@ -15,30 +40,6 @@ attribute vec3 position;
   uniform vec4 color;
 
   void main(){
-     gl_FragColor = color;
-  }
-}
-
-@Pass
-@DepthFunc(LEQUAL)
-@CullFace(FRONT)
-attribute vec3 position;
-
-@vert{
-   uniform mat4 _matPVM;
-
-   @{default:"1.1"}
-   uniform float edgeScale;
-   void main(){
-      gl_Position = _matPVM * vec4(position * edgeScale,1);
-   }
-}
-
-@frag{
-  @{type:"color", default:"black"}
-  uniform vec4 edgeColor;
-
-  void main(){
-     gl_FragColor = edgeColor;
+     gl_FragColor = color;//vec4(1,1,1,1);
   }
 }
