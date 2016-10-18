@@ -13,6 +13,10 @@ export default class AssetLoadingManagerComponent extends Component {
     autoStart: {
       defaultValue: true,
       converter: "Boolean"
+    },
+    anableLoader:{
+      defaultValue:false,
+      converter:"Boolean"
     }
   };
 
@@ -33,6 +37,9 @@ export default class AssetLoadingManagerComponent extends Component {
     this.companion.set(gr.ns(this.name.ns)("loader"), this.loader);
     this.loader.register(new Promise((resolve) => { this._documentResolver = resolve; }));
     const canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
+    if(!this.getValue("enableLoader")){
+      return;
+    }
     const loaderContainer = document.createElement("div");
     loaderContainer.innerHTML = DefaultLoaderChunk;
     loaderContainer.style.width = loaderContainer.style.height = "100%";
@@ -42,7 +49,9 @@ export default class AssetLoadingManagerComponent extends Component {
 
   private async _autoStart(): Promise<void> {
     await this.loader.promise;
+    if(this._loaderElement){
     this._loaderElement.remove();
+  }
     this.tree("goml").attr("loopEnabled", true);
   }
 }

@@ -163,6 +163,7 @@ class CanvasInitializerComponent extends Component {
   private _configureCanvas(canvas: HTMLCanvasElement, scriptTag: HTMLScriptElement): void {
     canvas.style.position = "absolute";
     canvas.style.top = "0px";
+    canvas.style.left = "0px";
     this._canvasContainer = document.createElement("div");
     this._canvasContainer.style.position = "relative";
     this._canvasContainer.appendChild(canvas);
