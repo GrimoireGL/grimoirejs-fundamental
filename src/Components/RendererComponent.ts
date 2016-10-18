@@ -51,12 +51,13 @@ export default class RendererComponent extends Component {
 
   public $resizeCanvas(): void {
     this._viewportCache = this._viewportSizeGenerator(this._canvas);
+    const newSizes = this._getSizePowerOf2(this._viewportCache.Width, this._viewportCache.Height);
     if (this.node.children.length === 0) {
       this.node.addNode("render-scene", {});
     }
     this.node.broadcastMessage("resizeBuffer", <IResizeBufferMessage>{ // TODO apply when viewport was changed
-      width: this._viewportCache.Width,
-      height: this._viewportCache.Height,
+      width: newSizes.width,
+      height: newSizes.height,
       buffers: this._buffers
     });
     this.node.broadcastMessage("bufferUpdated", <IBufferUpdatedMessage>{
@@ -72,4 +73,15 @@ export default class RendererComponent extends Component {
       loopIndex: args.loopIndex
     });
   }
+
+  // There should be more effective way to resize texture
+  private _getSizePowerOf2(width: number, height: number): { width: number, height: number } {
+    const nw = Math.pow(2, Math.log(width) / Math.LN2 | 0); // largest 2^n integer that does not exceed s
+    const nh = Math.pow(2, Math.log(height) / Math.LN2 | 0); // largest 2^n integer that does not exceed s
+    return {
+      width: nw,
+      height: nh
+    };
+  }
+
 }
