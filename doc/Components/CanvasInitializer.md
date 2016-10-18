@@ -8,6 +8,8 @@
 |:------:|:------:|:------:|:------:|
 | width | Number | 640 | なし |
 | height | Number | 480 | なし |
+| containerId | String | undefined | なし |
+| containerClass | String | "gr-container" | なし |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
@@ -24,4 +26,18 @@
  * `defaultValue`: 480
 
 <!-- EDIT HERE(height)-->
+<!-- /EDIT HERE-->
+### containerId 属性
+
+ * `converter`: String
+ * `defaultValue`: undefined
+
+<!-- EDIT HERE(containerId)-->
+<!-- /EDIT HERE-->
+### containerClass 属性
+
+ * `converter`: String
+ * `defaultValue`: "gr-container"
+
+<!-- EDIT HERE(containerClass)-->
 <!-- /EDIT HERE-->
