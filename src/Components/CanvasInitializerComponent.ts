@@ -12,6 +12,14 @@ class CanvasInitializerComponent extends Component {
     height: {
       defaultValue: 480,
       converter: "Number"
+    },
+    containerId: {
+      defaultValue: undefined,
+      converter: "String"
+    },
+    containerClass: {
+      defaultValue: "gr-container",
+      converter: "String"
     }
   };
 
@@ -47,15 +55,33 @@ class CanvasInitializerComponent extends Component {
    */
   private _generateCanvas(scriptTag: Element): HTMLCanvasElement {
     const generatedCanvas = document.createElement("canvas");
-    generatedCanvas.width = this.attributes.get("width").Value;
-    generatedCanvas.height = this.attributes.get("height").Value;
+    this._configureCanvas(generatedCanvas, scriptTag as HTMLScriptElement);
     const gl = this._getContext(generatedCanvas);
     this.companion.set(ns("gl"), gl);
     this.companion.set(ns("canvasElement"), generatedCanvas);
     this.companion.set(ns("GLExtRequestor"), new GLExtRequestor(gl));
-    scriptTag.parentElement.insertBefore(generatedCanvas, scriptTag.nextSibling);
     this.canvas = generatedCanvas;
     return generatedCanvas;
+  }
+
+  private _configureCanvas(canvas: HTMLCanvasElement, scriptTag: HTMLScriptElement): void {
+    canvas.width = this.getAttribute("width").Value;
+    canvas.height = this.getAttribute("height").Value;
+    canvas.style.position = "absolute";
+    canvas.style.top = "0px";
+    const canvasContainer = document.createElement("div");
+    canvasContainer.style.width = canvas.width + "px";
+    canvasContainer.style.height = canvas.height + "px";
+    canvasContainer.style.position = "relative";
+    canvasContainer.appendChild(canvas);
+    if (this.getValue("containerId")) {
+      canvasContainer.id = this.getValue("containerId");
+    }
+    if (this.getValue("containerClass")) {
+      canvasContainer.className = this.getValue("containerClass");
+    }
+    this.companion.set(ns("canvasContainer"), canvasContainer);
+    scriptTag.parentElement.insertBefore(canvasContainer, scriptTag.nextSibling);
   }
 
   private _getContext(canvas: HTMLCanvasElement): WebGLRenderingContext {

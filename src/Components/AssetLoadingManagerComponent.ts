@@ -32,19 +32,11 @@ export default class AssetLoadingManagerComponent extends Component {
   public $awake(): void {
     this.companion.set(gr.ns(this.name.ns)("loader"), this.loader);
     this.loader.register(new Promise((resolve) => { this._documentResolver = resolve; }));
-    const canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
-    canvas.style.position = "absolute";
-    canvas.style.top = "0px";
-    const canvasContainer = document.createElement("div");
-    canvasContainer.style.width = canvas.width + "px";
-    canvasContainer.style.height = canvas.height + "px";
-    canvasContainer.style.position = "relative";
+    const canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
     const loaderContainer = document.createElement("div");
     loaderContainer.innerHTML = DefaultLoaderChunk;
     loaderContainer.style.width = loaderContainer.style.height = "100%";
     canvasContainer.appendChild(loaderContainer);
-    canvas.parentElement.replaceChild(canvasContainer, canvas);
-    canvasContainer.appendChild(canvas);
     this._loaderElement = loaderContainer;
   }
 
