@@ -69,6 +69,7 @@ class CanvasInitializerComponent extends Component {
     canvas.height = this.getAttribute("height").Value;
     canvas.style.position = "absolute";
     canvas.style.top = "0px";
+    canvas.style.left = "0px";
     const canvasContainer = document.createElement("div");
     canvasContainer.style.width = canvas.width + "px";
     canvasContainer.style.height = canvas.height + "px";
