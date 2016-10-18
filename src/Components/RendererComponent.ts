@@ -56,8 +56,10 @@ export default class RendererComponent extends Component {
       this.node.addNode("render-scene", {});
     }
     this.node.broadcastMessage("resizeBuffer", <IResizeBufferMessage>{ // TODO apply when viewport was changed
-      width: newSizes.width,
-      height: newSizes.height,
+      widthPowerOf2: newSizes.width,
+      heightPowerOf2: newSizes.height,
+      width: this._viewportCache.Width,
+      height: this._viewportCache.Height,
       buffers: this._buffers
     });
     this.node.broadcastMessage("bufferUpdated", <IBufferUpdatedMessage>{
@@ -74,7 +76,6 @@ export default class RendererComponent extends Component {
     });
   }
 
-  // There should be more effective way to resize texture
   private _getSizePowerOf2(width: number, height: number): { width: number, height: number } {
     const nw = Math.pow(2, Math.log(width) / Math.LN2 | 0); // largest 2^n integer that does not exceed s
     const nh = Math.pow(2, Math.log(height) / Math.LN2 | 0); // largest 2^n integer that does not exceed s
