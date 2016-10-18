@@ -74,7 +74,7 @@ class CanvasInitializerComponent extends Component {
    */
   private _generateCanvas(scriptTag: Element): HTMLCanvasElement {
     this.canvas = document.createElement("canvas");
-    window.addEventListener("resize", this._onWindowResize.bind(this));
+    window.addEventListener("resize", () => this._onWindowResize());
     this._configureCanvas(this.canvas, scriptTag as HTMLScriptElement);
     const gl = this._getContext(this.canvas);
     this.companion.set(ns("gl"), gl);
@@ -83,7 +83,7 @@ class CanvasInitializerComponent extends Component {
     return this.canvas;
   }
 
-  private _resize(): void {
+  private _resize(supressBroadcast?: boolean): void {
     const canvas = this.companion.get("canvasElement");
     const widthRaw = this.getValue("width") as CanvasSizeObject;
     const heightRaw = this.getValue("height") as CanvasSizeObject;
@@ -99,43 +99,49 @@ class CanvasInitializerComponent extends Component {
       this._ratio = heightRaw.aspect;
     }
     if (this._widthMode === ResizeMode.Manual) {
-      this._applyManualWidth(widthRaw.size);
+      this._applyManualWidth(widthRaw.size, supressBroadcast);
     }
     if (this._heightMode === ResizeMode.Manual) {
-      this._applyManualHeight(heightRaw.size);
+      this._applyManualHeight(heightRaw.size, supressBroadcast);
     }
-    this._onWindowResize();
+    this._onWindowResize(supressBroadcast);
   }
 
-  private _onWindowResize(): void {
+  private _onWindowResize(supressBroadcast?: boolean): void {
     const size = this._getParentSize();
     if (this._widthMode === ResizeMode.Fit) {
-      this._applyManualWidth(size.width);
+      this._applyManualWidth(size.width, supressBroadcast);
     }
     if (this._heightMode === ResizeMode.Fit) {
-      this._applyManualHeight(size.height);
+      this._applyManualHeight(size.height, supressBroadcast);
     }
   }
 
-  private _applyManualWidth(width: number): void {
+  private _applyManualWidth(width: number, supressBroadcast?: boolean): void {
     if (width === this.canvas.width) {
       return;
     }
     this.canvas.width = width;
     this._canvasContainer.style.width = width + "px";
+    if (!supressBroadcast) {
+      this.node.broadcastMessage(1, "resizeCanvas");
+    }
     if (this._heightMode === ResizeMode.Aspect) {
-      this._applyManualHeight(width / this._ratio);
+      this._applyManualHeight(width / this._ratio, supressBroadcast);
     }
   }
 
-  private _applyManualHeight(height: number): void {
+  private _applyManualHeight(height: number, supressBroadcast?: boolean): void {
     if (height === this.canvas.height) {
       return;
     }
     this.canvas.height = height;
     this._canvasContainer.style.height = height + "px";
+    if (!supressBroadcast) {
+      this.node.broadcastMessage(1, "resizeCanvas");
+    }
     if (this._widthMode === ResizeMode.Aspect) {
-      this._applyManualWidth(height * this._ratio);
+      this._applyManualWidth(height * this._ratio, supressBroadcast);
     }
   }
 
@@ -175,7 +181,7 @@ class CanvasInitializerComponent extends Component {
     }
     this.companion.set(ns("canvasContainer"), this._canvasContainer);
     scriptTag.parentElement.insertBefore(this._canvasContainer, scriptTag.nextSibling);
-    this._resize();
+    this._resize(true);
   }
 
   private _getContext(canvas: HTMLCanvasElement): WebGLRenderingContext {

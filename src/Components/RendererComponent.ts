@@ -26,7 +26,9 @@ export default class RendererComponent extends Component {
 
   private _canvas: HTMLCanvasElement;
 
-  private _viewport: Rectangle;
+  private _viewportSizeGenerator: (canvas: HTMLCanvasElement) => Rectangle;
+
+  private _viewportCache: Rectangle;
 
   private _buffers: { [key: string]: Texture2D } = {};
 
@@ -34,18 +36,27 @@ export default class RendererComponent extends Component {
     this._gl = this.companion.get("gl") as WebGLRenderingContext;
     this._canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
     this._camera = this.getValue("camera");
-    this.attributes.get("camera").addObserver((v) => this._camera = v.Value);
-    this._viewport = this.getValue("viewport");
-    this.attributes.get("viewport").addObserver((v) => this._viewport = v.Value);
+    this.getAttribute("camera").addObserver((v) => this._camera = v.Value);
+    this.getAttribute("viewport").addObserver((v) => {
+      this._viewportSizeGenerator = v.Value;
+      this.$resizeCanvas();
+    });
+    this._viewportSizeGenerator = this.getValue("viewport");
   }
 
   public $treeInitialized(): void {
+    // This should be called after mounting all of tree nodes in children
+    this.$resizeCanvas();
+  }
+
+  public $resizeCanvas(): void {
+    this._viewportCache = this._viewportSizeGenerator(this._canvas);
     if (this.node.children.length === 0) {
       this.node.addNode("render-scene", {});
     }
     this.node.broadcastMessage("resizeBuffer", <IResizeBufferMessage>{ // TODO apply when viewport was changed
-      width: this._viewport.Width,
-      height: this._viewport.Height,
+      width: this._viewportCache.Width,
+      height: this._viewportCache.Height,
       buffers: this._buffers
     });
     this.node.broadcastMessage("bufferUpdated", <IBufferUpdatedMessage>{
@@ -56,7 +67,7 @@ export default class RendererComponent extends Component {
   public $renderViewport(args: { loopIndex: number }): void {
     this.node.broadcastMessage("render", <IRenderRendererMessage>{
       camera: this._camera,
-      viewport: this._viewport,
+      viewport: this._viewportCache,
       buffers: this._buffers,
       loopIndex: args.loopIndex
     });
