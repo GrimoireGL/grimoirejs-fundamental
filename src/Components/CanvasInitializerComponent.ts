@@ -1,17 +1,25 @@
+import CanvasSizeObject from "../Objects/CanvasSizeObject";
 import GLExtRequestor from "../Resource/GLExtRequestor";
 import Component from "grimoirejs/lib/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 import gr from "grimoirejs";
 const ns = gr.ns("HTTP://GRIMOIRE.GL/NS/DEFAULT");
+
+enum ResizeMode {
+  Aspect,
+  Fit,
+  Manual
+}
+
 class CanvasInitializerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     width: {
-      defaultValue: 640,
-      converter: "Number"
+      defaultValue: "fit",
+      converter: "CanvasSize"
     },
     height: {
       defaultValue: 480,
-      converter: "Number"
+      converter: "CanvasSize"
     },
     containerId: {
       defaultValue: undefined,
@@ -31,6 +39,17 @@ class CanvasInitializerComponent extends Component {
 
   private _scriptTag: HTMLScriptElement;
 
+  private _canvasContainer: HTMLDivElement;
+
+  // Resize mode of width
+  private _widthMode: ResizeMode;
+
+  // Resize mode of height
+  private _heightMode: ResizeMode;
+
+  // Ratio of aspect
+  private _ratio: number;
+
   public $awake(): void {
     this._scriptTag = this.companion.get("scriptElement");
     if (this._isContainedInBody(this._scriptTag)) {
@@ -41,10 +60,10 @@ class CanvasInitializerComponent extends Component {
     }
     // apply sizes on changed
     this.attributes.get("width").addObserver((v) => {
-      this.canvas.width = v.Value;
+      this._resize();
     });
     this.attributes.get("height").addObserver((v) => {
-      this.canvas.height = v.Value;
+      this._resize();
     });
   }
 
@@ -54,34 +73,108 @@ class CanvasInitializerComponent extends Component {
    * @return {HTMLCanvasElement}        [description]
    */
   private _generateCanvas(scriptTag: Element): HTMLCanvasElement {
-    const generatedCanvas = document.createElement("canvas");
-    this._configureCanvas(generatedCanvas, scriptTag as HTMLScriptElement);
-    const gl = this._getContext(generatedCanvas);
+    this.canvas = document.createElement("canvas");
+    window.addEventListener("resize", this._onWindowResize.bind(this));
+    this._configureCanvas(this.canvas, scriptTag as HTMLScriptElement);
+    const gl = this._getContext(this.canvas);
     this.companion.set(ns("gl"), gl);
-    this.companion.set(ns("canvasElement"), generatedCanvas);
+    this.companion.set(ns("canvasElement"), this.canvas);
     this.companion.set(ns("GLExtRequestor"), new GLExtRequestor(gl));
-    this.canvas = generatedCanvas;
-    return generatedCanvas;
+    return this.canvas;
+  }
+
+  private _resize(): void {
+    const canvas = this.companion.get("canvasElement");
+    const widthRaw = this.getValue("width") as CanvasSizeObject;
+    const heightRaw = this.getValue("height") as CanvasSizeObject;
+    this._widthMode = this._asResizeMode(widthRaw);
+    this._heightMode = this._asResizeMode(heightRaw);
+    if (this._widthMode === this._heightMode && this._widthMode === ResizeMode.Aspect) {
+      throw new Error("Width and height could not have aspect mode in same time!");
+    }
+    if (this._widthMode === ResizeMode.Aspect) {
+      this._ratio = widthRaw.aspect;
+    }
+    if (this._heightMode === ResizeMode.Aspect) {
+      this._ratio = heightRaw.aspect;
+    }
+    if (this._widthMode === ResizeMode.Manual) {
+      this._applyManualWidth(widthRaw.size);
+    }
+    if (this._heightMode === ResizeMode.Manual) {
+      this._applyManualHeight(heightRaw.size);
+    }
+    this._onWindowResize();
+  }
+
+  private _onWindowResize(): void {
+    const size = this._getParentSize();
+    if (this._widthMode === ResizeMode.Fit) {
+      this._applyManualWidth(size.width);
+    }
+    if (this._heightMode === ResizeMode.Fit) {
+      this._applyManualHeight(size.height);
+    }
+  }
+
+  private _applyManualWidth(width: number): void {
+    if (width === this.canvas.width) {
+      return;
+    }
+    this.canvas.width = width;
+    this._canvasContainer.style.width = width + "px";
+    if (this._heightMode === ResizeMode.Aspect) {
+      this._applyManualHeight(width / this._ratio);
+    }
+  }
+
+  private _applyManualHeight(height: number): void {
+    if (height === this.canvas.height) {
+      return;
+    }
+    this.canvas.height = height;
+    this._canvasContainer.style.height = height + "px";
+    if (this._widthMode === ResizeMode.Aspect) {
+      this._applyManualWidth(height * this._ratio);
+    }
+  }
+
+  private _getParentSize(): ClientRect {
+    const parent = this._canvasContainer.parentElement as HTMLElement;
+    const boundingBox = parent.getBoundingClientRect();
+    return boundingBox;
+  }
+
+  /**
+   * Get resize mode from raw attribute of height or width
+   * @param  {string  | number}      mode [description]
+   * @return {ResizeMode}   [description]
+   */
+  private _asResizeMode(cso: CanvasSizeObject): ResizeMode {
+    if (cso.mode === "fit") {
+      return ResizeMode.Fit;
+    } else if (cso.mode === "aspect") {
+      return ResizeMode.Aspect;
+    } else {
+      return ResizeMode.Manual;
+    }
   }
 
   private _configureCanvas(canvas: HTMLCanvasElement, scriptTag: HTMLScriptElement): void {
-    canvas.width = this.getAttribute("width").Value;
-    canvas.height = this.getAttribute("height").Value;
     canvas.style.position = "absolute";
     canvas.style.top = "0px";
-    const canvasContainer = document.createElement("div");
-    canvasContainer.style.width = canvas.width + "px";
-    canvasContainer.style.height = canvas.height + "px";
-    canvasContainer.style.position = "relative";
-    canvasContainer.appendChild(canvas);
+    this._canvasContainer = document.createElement("div");
+    this._canvasContainer.style.position = "relative";
+    this._canvasContainer.appendChild(canvas);
     if (this.getValue("containerId")) {
-      canvasContainer.id = this.getValue("containerId");
+      this._canvasContainer.id = this.getValue("containerId");
     }
     if (this.getValue("containerClass")) {
-      canvasContainer.className = this.getValue("containerClass");
+      this._canvasContainer.className = this.getValue("containerClass");
     }
-    this.companion.set(ns("canvasContainer"), canvasContainer);
-    scriptTag.parentElement.insertBefore(canvasContainer, scriptTag.nextSibling);
+    this.companion.set(ns("canvasContainer"), this._canvasContainer);
+    scriptTag.parentElement.insertBefore(this._canvasContainer, scriptTag.nextSibling);
+    this._resize();
   }
 
   private _getContext(canvas: HTMLCanvasElement): WebGLRenderingContext {

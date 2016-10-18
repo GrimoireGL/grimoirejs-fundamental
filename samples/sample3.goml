@@ -1,4 +1,4 @@
-<goml width="512" height="512">
+<goml width="fit" height="aspect(1.6)">
   <import-material type="edge" src="./edge-sprite.sort"/>
   <import-material type="copy" src="./copy.sort"/>
   <import-material type="fxaa" src="./fxaa.sort"/>

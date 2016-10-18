@@ -1,4 +1,4 @@
-<goml width="1024" height="1024">
+<goml width="1000" height="aspect(1.6)">
   <import-material type="raymarching" src="./raymarching.sort"/>
     <import-material type="red" src="./gray.sort"/>
   <geometry name="quad" type="quad"/>
