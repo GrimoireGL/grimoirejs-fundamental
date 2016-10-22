@@ -26,6 +26,14 @@ export default class MouseCameraControlComponent extends Component {
     moveSpeed: {
       defaultValue: 1,
       converter: "Number"
+    },
+    maxY: {
+      defaultValue: 89,
+      converter: "Number"
+    },
+    minY: {
+      defaultValue: -89,
+      converter: "Number"
     }
 
   };
@@ -68,7 +76,6 @@ export default class MouseCameraControlComponent extends Component {
   public $mount(): void {
     this._scriptTag.addEventListener("mousemove", this._mouseMove.bind(this));
     this._scriptTag.addEventListener("contextmenu", this._contextMenu.bind(this));
-    this._scriptTag.addEventListener("mousewheel", this._mouseWheel.bind(this));
     this._distance = Math.sqrt(Vector3.dot(this._transform.localPosition.subtractWith(this._origin), this._transform.localPosition.subtractWith(this._origin)));
   }
 
@@ -84,12 +91,14 @@ export default class MouseCameraControlComponent extends Component {
         x: m.screenX,
         y: m.screenY
       };
+      return;
     }
     let updated = false;
     const diffX = m.screenX - this._lastScreenPos.x, diffY = m.screenY - this._lastScreenPos.y;
     if ((m.buttons & 1) > 0) { // When left button was pressed
-      this._xsum += diffX;
-      this._ysum += diffY;
+      this._xsum += diffX * this._rotateX;
+      this._ysum += diffY * this._rotateY * 0.2;
+      this._ysum = Math.min(this.getValue("maxY"), Math.max(this.getValue("minY"), this._ysum));
       updated = true;
     }
     if ((m.buttons & 2) > 0) { // When right button was pressed
@@ -97,23 +106,15 @@ export default class MouseCameraControlComponent extends Component {
       updated = true;
       this._distance = Math.sqrt(Vector3.dot(this._transform.localPosition.subtractWith(this._origin), this._transform.localPosition.subtractWith(this._origin)));
     }
-
+    const degToPi = Math.PI / 180;
     if (updated) {
-      const rotation = Quaternion.euler(this._ysum * 0.01, this._xsum * 0.01, 0);
+      const rotation = Quaternion.eulerXYZ(this._ysum * degToPi, this._xsum * degToPi, 0);
       const rotationMat = Matrix.rotationQuaternion(rotation);
-      const direction = Matrix.transformNormal(rotationMat, this._initialDirection);
-      this._transform.localPosition = this._origin.addWith(Vector3.normalize(direction).multiplyWith(this._distance));
       this._transform.localRotation = Quaternion.multiply(this._initialRotation, rotation);
     }
     this._lastScreenPos = {
       x: m.screenX,
       y: m.screenY
     };
-  }
-
-  private _mouseWheel(m: MouseWheelEvent): void {
-    this._distance -= m.deltaY * this._moveZ * MouseCameraControlComponent.moveCoefficient;
-    this._transform.localPosition = this._transform.localPosition.addWith(this._transform.forward.multiplyWith(m.deltaY * this._moveZ * MouseCameraControlComponent.moveCoefficient));
-    m.preventDefault();
   }
 }

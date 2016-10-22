@@ -6,8 +6,8 @@
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| width | Number | 640 | なし |
-| height | Number | 480 | なし |
+| width | CanvasSize | "fit" | なし |
+| height | CanvasSize | 480 | なし |
 | containerId | String | undefined | なし |
 | containerClass | String | "gr-container" | なし |
 
@@ -15,14 +15,14 @@
 <!-- /DO NOT EDIT -->
 ### width 属性
 
- * `converter`: Number
- * `defaultValue`: 640
+ * `converter`: CanvasSize
+ * `defaultValue`: "fit"
 
 <!-- EDIT HERE(width)-->
 <!-- /EDIT HERE-->
 ### height 属性
 
- * `converter`: Number
+ * `converter`: CanvasSize
  * `defaultValue`: 480
 
 <!-- EDIT HERE(height)-->

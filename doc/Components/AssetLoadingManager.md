@@ -8,6 +8,7 @@
 |:------:|:------:|:------:|:------:|
 | loadingProgress | Number | 0 | なし |
 | autoStart | Boolean | true | なし |
+| anableLoader | Boolean | false | なし |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
@@ -24,4 +25,11 @@
  * `defaultValue`: true
 
 <!-- EDIT HERE(autoStart)-->
+<!-- /EDIT HERE-->
+### anableLoader 属性
+
+ * `converter`: Boolean
+ * `defaultValue`: false
+
+<!-- EDIT HERE(anableLoader)-->
 <!-- /EDIT HERE-->
