@@ -1,0 +1,43 @@
+<goml width="1024" height="768" containerId="previewScreen">
+  <import-material type="image1" src="./image.sort" />
+  <import-material type="image2" src="./image.sort" />
+  <import-material type="image3" src="./image.sort" />
+  <import-material type="image4" src="./image.sort" />
+  <import-material type="image5" src="./image.sort" />
+  <import-material type="image6" src="./image.sort" />
+  <import-material type="frame" src="./image.sort" />
+  <import-material type="skybox" src="./skybox.sort" />
+
+  <geometry name="quad" type="quad" />
+  <geometry name="sphere" type="sphere" />
+
+  <material id="image1" type="image1" texture="./../image/dummy.png" />
+  <material id="image2" type="image2" texture="./../image/dummy.png" />
+  <material id="image3" type="image3" texture="./../image/dummy.png" />
+  <material id="image4" type="image4" texture="./../image/dummy.png" />
+  <material id="image5" type="image5" texture="./../image/dummy.png" />
+  <material id="image6" type="image6" texture="./../image/dummy.png" />
+  <material id="frame" type="frame" texture="./../image/frame.png" />
+  <material id="skybox" type="skybox" texture="./../image/theta.jpg" />
+  <scene>
+    <camera class="camera" near="0.01" far="100.0" aspect="1.333" fovy="45d" position="0,0,0" rotation="y(0d)">
+      <camera.components>
+        <MouseCameraControl rotateX="10" moveSpeed="1" />
+      </camera.components>
+    </camera>
+
+    <mesh id="image1-mesh" position="-30,2.5,-25" scale="3,3,3" geometry="quad" material="#image1" />
+    <mesh id="image2-mesh" position="0,2.5,-25" scale="3,3,3" geometry="quad" material="#image2" />
+    <mesh id="image3-mesh" position="30,2.5,-25" scale="3,3,3" geometry="quad" material="#image3" />
+    <mesh id="image4-mesh" position="-30,2.5,25" scale="3,3,3" rotation="0,180,0" geometry="quad" material="#image4" />
+    <mesh id="image5-mesh" position="0,2.5,25" scale="3,3,3" rotation="0,180,0" geometry="quad" material="#image5" />
+    <mesh id="image6-mesh" position="30,2.5,25" scale="3,3,3" rotation="0,180,0" geometry="quad" material="#image6" />
+    <mesh id="image1-frame" position="-30,2.5,-25.1" scale="1,1,1" geometry="quad" material="#frame" />
+    <mesh id="image2-frame" position="0,2.5,-25.1" scale="1,1,1" geometry="quad" material="#frame" />
+    <mesh id="image3-frame" position="30,2.5,-25.1" scale="1,1,1" geometry="quad" material="#frame" />
+    <mesh id="image4-frame" position="-30,2.5,25.1" scale="1,1,1" rotation="0,180,0" geometry="quad" material="#frame" />
+    <mesh id="image5-frame" position="0,2.5,25.1" scale="1,1,1" rotation="0,180,0" geometry="quad" material="#frame" />
+    <mesh id="image6-frame" position="30,2.5,25.1" scale="1,1,1" rotation="0,180,0" geometry="quad" material="#frame" />
+    <mesh class="skybox" position="0,0,0" scale="55,55,55" rotation="0,0,0" geometry="sphere" material="#skybox" />
+  </scene>
+</goml>
