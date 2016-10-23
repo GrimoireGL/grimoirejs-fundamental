@@ -57,10 +57,19 @@ export default class CameraComponent extends Component {
     const c = this.camera = new PerspectiveCamera();
     this.transform = this.node.getComponent("Transform") as TransformComponent;
     this.$transformUpdated(this.transform);
-    c.setFar(this.attributes.get("far").Value);
-    c.setNear(this.attributes.get("near").Value);
-    c.setFovy(this.attributes.get("fovy").Value);
-    c.setAspect(this.attributes.get("aspect").Value);
+    this.getAttribute("far").addObserver((v) => {
+      console.log("far", v.Value);
+      c.setFar(v.Value);
+    }, true);
+    this.getAttribute("near").addObserver((v) => {
+      c.setNear(v.Value);
+    },true);
+    this.getAttribute("fovy").addObserver((v) => {
+      c.setFovy(v.Value);
+    },true);
+    this.getAttribute("aspect").addObserver((v) => {
+      c.setAspect(v.Value);
+    },true);
   }
 
   public updateContainedScene(loopIndex: number): void {

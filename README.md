@@ -347,6 +347,8 @@
 | rotateY | Number | 1 | なし |
 | moveZ | Number | 1 | なし |
 | moveSpeed | Number | 1 | なし |
+| maxY | Number | 89 | なし |
+| minY | Number | -89 | なし |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
@@ -377,6 +379,20 @@
  * `defaultValue`: 1
 
 <!-- EDIT HERE(moveSpeed)-->
+<!-- /EDIT HERE-->
+### maxY 属性
+
+ * `converter`: Number
+ * `defaultValue`: 89
+
+<!-- EDIT HERE(maxY)-->
+<!-- /EDIT HERE-->
+### minY 属性
+
+ * `converter`: Number
+ * `defaultValue`: -89
+
+<!-- EDIT HERE(minY)-->
 <!-- /EDIT HERE-->
 
 ## RenderBuffer コンポーネント
