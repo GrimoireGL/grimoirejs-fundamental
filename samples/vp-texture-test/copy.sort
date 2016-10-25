@@ -1,0 +1,20 @@
+@Pass
+@NoBlend()
+@NoDepth()
+@NoCull()
+attribute vec3 position;
+varying vec2 uv;
+@vert{
+void main(){
+  gl_Position = vec4(position,1);
+  uv = (position.xy + vec2(1,1))/2.0;
+}
+}
+
+@frag{
+uniform sampler2D source;
+
+void main(){
+  gl_FragColor = texture2D(source,uv);
+}
+}

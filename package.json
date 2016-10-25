@@ -1,6 +1,6 @@
 {
   "name": "grimoirejs-fundamental",
-  "version": "0.3.15",
+  "version": "0.3.17",
   "description": "Base components,converters and nodes for Web3D with Grimoire.js",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -15,7 +15,7 @@
   "dependencies": {
     "@types/json5": "0.0.29",
     "events": "^1.1.1",
-    "grimoirejs": "^0.8.0",
+    "grimoirejs": "^0.9.1",
     "grimoirejs-cauldron": "^1.5.5",
     "grimoirejs-math": "^1.2.3",
     "json5": "^0.5.0"

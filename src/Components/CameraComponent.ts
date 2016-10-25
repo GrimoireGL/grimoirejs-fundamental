@@ -25,6 +25,10 @@ export default class CameraComponent extends Component {
     aspect: {
       defaultValue: 1.6,
       converter: "Number"
+    },
+    autoAspect: {
+      defaultValue: true,
+      converter: "Boolean"
     }
   };
 
