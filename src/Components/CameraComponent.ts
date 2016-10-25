@@ -38,6 +38,10 @@ export default class CameraComponent extends Component {
 
   public transform: TransformComponent;
 
+  private _autoAspect: boolean;
+
+  private _aspectCache: number;
+
   /**
  * Find scene tag recursively.
  * @param  {GomlNode}       node [the node to searching currently]
@@ -67,13 +71,14 @@ export default class CameraComponent extends Component {
     }, true);
     this.getAttribute("near").addObserver((v) => {
       c.setNear(v.Value);
-    },true);
+    }, true);
     this.getAttribute("fovy").addObserver((v) => {
       c.setFovy(v.Value);
-    },true);
+    }, true);
     this.getAttribute("aspect").addObserver((v) => {
       c.setAspect(v.Value);
-    },true);
+    }, true);
+    this.getAttribute("autoAspect").boundTo("_autoAspect");
   }
 
   public updateContainedScene(loopIndex: number): void {
@@ -84,6 +89,7 @@ export default class CameraComponent extends Component {
 
   public renderScene(args: RenderSceneArgument): void {
     if (this.containedScene) {
+      this._justifyAspect(args);
       (args as IRenderSceneMessage).sceneDescription = this.containedScene.sceneDescription;
       this.containedScene.node.broadcastMessage("render", args as IRenderSceneMessage);
     }
@@ -92,6 +98,16 @@ export default class CameraComponent extends Component {
   public $transformUpdated(t: TransformComponent): void {
     if (this.camera) {
       this.camera.updateTransform(t);
+    }
+  }
+
+  private _justifyAspect(args: RenderSceneArgument): void {
+    if (this._autoAspect) {
+      const asp = args.viewport.Width / args.viewport.Height;
+      if (this._aspectCache !== asp) {
+        this.setValue("aspect", asp);
+        this._aspectCache = asp;
+      }
     }
   }
 }

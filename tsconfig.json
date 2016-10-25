@@ -117,9 +117,6 @@
     "./src/Resource/Shader.ts",
     "./src/Resource/Texture2D.ts",
     "./src/Resource/UniformProxy.ts",
-    "./src/TestShader/Sample_frag.glsl.d.ts",
-    "./src/TestShader/Sample_vert.glsl.d.ts",
-    "./src/TestShader/Test.glsl.d.ts",
     "./src/Util/RotationParser.ts"
   ],
   "exclude": [],
