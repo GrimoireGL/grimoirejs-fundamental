@@ -47,6 +47,7 @@
 | near | Number | 0.01 | なし |
 | far | Number | 10 | なし |
 | aspect | Number | 1.6 | なし |
+| autoAspect | Boolean | true | なし |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
@@ -77,6 +78,13 @@
  * `defaultValue`: 1.6
 
 <!-- EDIT HERE(aspect)-->
+<!-- /EDIT HERE-->
+### autoAspect 属性
+
+ * `converter`: Boolean
+ * `defaultValue`: true
+
+<!-- EDIT HERE(autoAspect)-->
 <!-- /EDIT HERE-->
 
 ## CanvasInitializer コンポーネント
