@@ -7,6 +7,7 @@ import Program from "../Resource/Program";
 import Shader from "../Resource/Shader";
 import SORTPassParser from "./SORTPassParser";
 import MacroRegistory from "./MacroRegistory";
+import DefaultHeader from "./Static/header.glsl";
 
 export default class PassFactory {
   /**
@@ -38,9 +39,13 @@ export default class PassFactory {
   }
 
   private static _updateShaderCode(factory: MaterialFactory, passInfo: ISORTPassInfo, vs: Shader, fs: Shader, p: Program): void {
-    vs.update(factory.macro.macroString + passInfo.vertex);
-    fs.update(factory.macro.macroString + passInfo.fragment);
+    vs.update(PassFactory._getShaderSource("VS", factory, passInfo.shaderSource));
+    fs.update(PassFactory._getShaderSource("FS", factory, passInfo.shaderSource));
     p.update([vs, fs]);
+  }
+
+  private static _getShaderSource(shaderType: string, factory: MaterialFactory, source: string): string {
+    return `#define ${shaderType}\n${DefaultHeader}\n${factory.macro.macroString}\n${source}`;
   }
 
   private static _getAttributeNames(passInfo: ISORTPassInfo): string[] {

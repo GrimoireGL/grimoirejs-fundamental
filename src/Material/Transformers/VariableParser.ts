@@ -38,19 +38,19 @@ function _parseVariables(source: string, variableType: string): { [key: string]:
   return result;
 }
 
-export default function(type: string): (info: ITransformingArgument) => Promise<ITransformingArgument> {
-  return async function(info: ITransformingArgument): Promise<ITransformingArgument> {
-    const variables = _parseVariables(info.transforming, type);
+export default function(type: string): (arg: ITransformingArgument) => Promise<ITransformingArgument> {
+  return async function(arg: ITransformingArgument): Promise<ITransformingArgument> {
+    const variables = _parseVariables(arg.info.shaderSource, type);
     switch (type) {
       case "uniform":
-        info.info.uniforms = variables;
+        arg.info.uniforms = variables;
         break;
       case "attribute":
-        info.info.attributes = variables;
+        arg.info.attributes = variables;
         break;
       default:
         throw new Error("Unknown variable type!!");
     }
-    return info;
+    return arg;
   };
 }
