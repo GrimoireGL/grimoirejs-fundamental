@@ -1,13 +1,12 @@
 import MaterialFactory from "./MaterialFactory";
 import IMaterialArgument from "./IMaterialArgument";
-import ISORTPassInfo from "./ISORTPassInfo";
+import ISORTPassInfo from "./Transformers/Interfaces/ISORTPassInfo";
 import SORTPass from "./SORTPass";
 import UniformProxy from "../Resource/UniformProxy";
 import Program from "../Resource/Program";
 import Shader from "../Resource/Shader";
-import SORTPassParser from "./SORTPassParser";
+import SORTPassParser from "./Transformers/SORTPassParser";
 import MacroRegistory from "./MacroRegistory";
-import DefaultHeader from "./Static/header.glsl";
 
 export default class PassFactory {
   /**
@@ -44,10 +43,22 @@ export default class PassFactory {
     p.update([vs, fs]);
   }
 
+  /**
+   * Generate shader source
+   * @param  {string}          shaderType [description]
+   * @param  {MaterialFactory} factory    [description]
+   * @param  {string}          source     [description]
+   * @return {string}                     [description]
+   */
   private static _getShaderSource(shaderType: string, factory: MaterialFactory, source: string): string {
-    return `#define ${shaderType}\n${DefaultHeader}\n${factory.macro.macroString}\n${source}`;
+    return `#define ${shaderType}\n${factory.shaderHeader}\n${factory.macro.macroString}\n/*BEGINNING OF USER CODE*/\n${source}`;
   }
 
+  /**
+   * Obtain attribute variable names from passInfo
+   * @param  {ISORTPassInfo} passInfo [description]
+   * @return {string[]}               [description]
+   */
   private static _getAttributeNames(passInfo: ISORTPassInfo): string[] {
     const attributes: string[] = [];
     for (let key in passInfo.attributes) {
@@ -68,6 +79,11 @@ export default class PassFactory {
     }
   }
 
+  /**
+   * Append registration task of uniform variables exposed to attributes.
+   * @param  {IMaterialArgument} tasks [description]
+   * @return {[type]}                  [description]
+   */
   private static _appendUserVariableRegistration(tasks: ((p: SORTPass, a: IMaterialArgument) => void)[], passInfo: ISORTPassInfo): void {
     for (let key in passInfo.gomlAttributes) {
       const registerer = passInfo.gomlAttributes[key].register;
@@ -75,6 +91,11 @@ export default class PassFactory {
     }
   }
 
+  /**
+   * Append registration task of uniform variables registered by environment.
+   * @param  {IMaterialArgument} tasks [description]
+   * @return {[type]}                  [description]
+   */
   private static _appendSystemVariableRegistration(tasks: ((p: SORTPass, a: IMaterialArgument) => void)[], passInfo: ISORTPassInfo): void {
     for (let i = 0; i < passInfo.systemRegisterers.length; i++) {
       tasks.push((p, args) => passInfo.systemRegisterers[i](p.program.uniforms, args));

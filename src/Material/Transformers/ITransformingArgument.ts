@@ -1,4 +1,4 @@
-import ISORTPassInfo from "../ISORTPassInfo";
+import ISORTPassInfo from "./Interfaces/ISORTPassInfo";
 interface ITransformingArgument {
   origin: string;
   info: ISORTPassInfo;

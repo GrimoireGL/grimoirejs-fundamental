@@ -2,11 +2,14 @@ import MacroRegistory from "./MacroRegistory";
 import PassFactory from "./PassFactory";
 import TextFileResolver from "../Asset/TextFileResolver";
 import Material from "./Material";
+import ShaderHeader from "./Static/header.glsl";
 /**
  * Manage factories for materials.
  * Materials can be instanciated with this instance.
  */
 export default class MaterialFactory {
+
+  public static defaultShaderHeader: string = ShaderHeader;
   /**
    * Actual material generator.
    */
@@ -53,6 +56,8 @@ export default class MaterialFactory {
       MaterialFactory.registerdHandlers[factoryName] = [handler];
     }
   }
+
+  public shaderHeader: string = MaterialFactory.defaultShaderHeader;
 
   public macro: MacroRegistory;
 

@@ -1,5 +1,5 @@
-import IMaterialArgument from "./IMaterialArgument";
-import UniformProxy from "../Resource/UniformProxy";
+import IMaterialArgument from "../../IMaterialArgument";
+import UniformProxy from "../../../Resource/UniformProxy";
 import IMaterialAttributeDeclaration from "./IMaterialAttributeDeclaration";
 import IVariableInfo from "./IVariableInfo";
 

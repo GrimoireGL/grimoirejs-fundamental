@@ -8,6 +8,6 @@ interface IVariableInfo {
   variablePrecision: string;
   variableAnnotation: IVariableAnnotation;
   isArray: boolean;
-  arrayLength: number;
+  arrayLength: (macros: { [key: string]: string }) => number;
 }
 export default IVariableInfo;

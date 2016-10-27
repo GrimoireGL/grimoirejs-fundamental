@@ -1,4 +1,4 @@
-import IVariableInfo from "../IVariableInfo";
+import IVariableInfo from "./Interfaces/IVariableInfo";
 import ITransformingArgument from "./ITransformingArgument";
 import JSON5 from "json5";
 function _parseVariableAttributes(attributes: string): { [key: string]: string } {
@@ -21,9 +21,10 @@ function _parseVariables(source: string, variableType: string): { [key: string]:
     let isArray = regexResult[5] !== void 0;
     let arrayCount = undefined;
     if (isArray) {
-      arrayCount = parseInt(regexResult[5], 10);
-      if (isNaN(arrayCount)) {
-
+      const c = parseInt(regexResult[5], 10);
+      arrayCount = () => c;
+      if (isNaN(c)) {
+        arrayCount = (m) => m[arrayCount];
       }
     }
     result[name] = <IVariableInfo>{

@@ -1,13 +1,13 @@
-import UniformRegisterer from "./Transformers/UniformRegisterer";
-import ITransformingArgument from "./Transformers/ITransformingArgument";
-import ITransformer from "./Transformers/ITransformer";
-import ISORTPassInfo from "./ISORTPassInfo";
-import CommentRemover from "./Transformers/CommentRemover";
-import ImportTransformer from "./Transformers/ImportTransformer";
-import VariableParser from "./Transformers/VariableParser";
-import VariableAnnotationRemover from "./Transformers/VariableAnnotationRemover";
-import BasicGLConfigParser from "./Transformers/BasicGLConfigParser";
-import AnnotationRemover from "./Transformers/AnnotationRemover";
+import UniformRegisterer from "./UniformRegisterer";
+import ITransformingArgument from "./ITransformingArgument";
+import ITransformer from "./ITransformer";
+import ISORTPassInfo from "./Interfaces/ISORTPassInfo";
+import CommentRemover from "./CommentRemover";
+import ImportTransformer from "./ImportTransformer";
+import VariableParser from "./VariableParser";
+import VariableAnnotationRemover from "./VariableAnnotationRemover";
+import BasicGLConfigParser from "./BasicGLConfigParser";
+import AnnotationRemover from "./AnnotationRemover";
 
 export default class SORTPassParser {
   public static transformers: ITransformer[] = [
