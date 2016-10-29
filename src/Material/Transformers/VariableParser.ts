@@ -6,7 +6,7 @@ function _parseVariableAttributes(attributes: string): { [key: string]: string }
 }
 
 function _generateVariableFetchRegex(variableType: string): RegExp {
-  return new RegExp(`(?:@(\\{.+\\}))?\\s*${variableType}\\s+(?:(lowp|mediump|highp)\\s+)?([a-z0-9A-Z]+)\\s+([a-zA-Z0-9_]+)(?:\\s*\\[\\s*(\\d+)\\s*\\]\\s*)?\\s*;`, "g");
+  return new RegExp(`(?:@(\\{.+\\}))?\\s*${variableType}\\s+(?:(lowp|mediump|highp)\\s+)?([a-z0-9A-Z]+)\\s+([a-zA-Z0-9_]+)(?:\\s*\\[\\s*([a-zA-Z0-9_]+)\\s*\\]\\s*)?\\s*;`, "g");
 }
 
 function _parseVariables(source: string, variableType: string): { [key: string]: IVariableInfo } {
