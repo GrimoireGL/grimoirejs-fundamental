@@ -113,6 +113,6 @@ function _parseGLConfigs(source: string): ((gl: WebGLRenderingContext) => void)[
 }
 
 export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
-  input.info.configurator = _parseGLConfigs(input.transforming);
+  input.info.configurator = _parseGLConfigs(input.info.shaderSource);
   return input;
 }

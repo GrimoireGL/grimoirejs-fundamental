@@ -26,7 +26,7 @@ export default class RenderBufferComponent extends Component {
     if (!this.getValue("name")) {
       throw new Error(`Attribute 'name' must be specified.`);
     }
-    this.buffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, arg.width, arg.height);
+    this.buffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, arg.widthPowerOf2, arg.heightPowerOf2);
     arg.buffers[this.getValue("name")] = this.buffer;
   }
 }

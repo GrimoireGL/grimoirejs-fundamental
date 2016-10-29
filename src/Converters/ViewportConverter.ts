@@ -13,18 +13,17 @@ function _toPixel(parentSize: number, rep: string): number {
 
 function ViewportConverter(this: Attribute, val: any): any {
   if (val instanceof Rectangle) {
-    return val;
+    return () => val;
   }
   if (typeof val === "string") {
-    const canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
     if (val === "auto") {
-      return new Rectangle(0, 0, canvas.width, canvas.height);
+      return (canvas: HTMLCanvasElement) => new Rectangle(0, 0, canvas.width, canvas.height);
     } else {
       const sizes = val.split(",");
       if (sizes.length !== 4) {
         throw new Error("Invalid viewport size was specified.");
       } else {
-        return new Rectangle(_toPixel(canvas.width, sizes[0]), _toPixel(canvas.height, sizes[1]), _toPixel(canvas.width, sizes[2]), _toPixel(canvas.height, sizes[3]));
+        return (canvas: HTMLCanvasElement) => new Rectangle(_toPixel(canvas.width, sizes[0]), _toPixel(canvas.height, sizes[1]), _toPixel(canvas.width, sizes[2]), _toPixel(canvas.height, sizes[3]));
       }
     }
   }

@@ -8,7 +8,6 @@ function _removeVariableAnnotations(source: string): string {
 }
 
 export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
-  input.info.fragment = _removeVariableAnnotations(input.info.fragment);
-  input.info.vertex = _removeVariableAnnotations(input.info.vertex);
+  input.info.shaderSource = _removeVariableAnnotations(input.info.shaderSource);
   return input;
 }

@@ -1,5 +1,5 @@
 import RenderSceneArgument from "../Objects/RenderSceneArgument";
-import IRenderSceneMessage from "../Messages/IRenderMessage";
+import IRenderMesssage from "../Messages/IRenderMessage";
 import TransformComponent from "./TransformComponent";
 import PerspectiveCamera from "../Camera/PerspectiveCamera";
 import ICamera from "../Camera/ICamera";
@@ -25,6 +25,10 @@ export default class CameraComponent extends Component {
     aspect: {
       defaultValue: 1.6,
       converter: "Number"
+    },
+    autoAspect: {
+      defaultValue: true,
+      converter: "Boolean"
     }
   };
 
@@ -33,6 +37,10 @@ export default class CameraComponent extends Component {
   public containedScene: SceneComponent;
 
   public transform: TransformComponent;
+
+  private _autoAspect: boolean;
+
+  private _aspectCache: number;
 
   /**
  * Find scene tag recursively.
@@ -57,10 +65,20 @@ export default class CameraComponent extends Component {
     const c = this.camera = new PerspectiveCamera();
     this.transform = this.node.getComponent("Transform") as TransformComponent;
     this.$transformUpdated(this.transform);
-    c.setFar(this.attributes.get("far").Value);
-    c.setNear(this.attributes.get("near").Value);
-    c.setFovy(this.attributes.get("fovy").Value);
-    c.setAspect(this.attributes.get("aspect").Value);
+    this.getAttribute("far").addObserver((v) => {
+      console.log("far", v.Value);
+      c.setFar(v.Value);
+    }, true);
+    this.getAttribute("near").addObserver((v) => {
+      c.setNear(v.Value);
+    }, true);
+    this.getAttribute("fovy").addObserver((v) => {
+      c.setFovy(v.Value);
+    }, true);
+    this.getAttribute("aspect").addObserver((v) => {
+      c.setAspect(v.Value);
+    }, true);
+    this.getAttribute("autoAspect").boundTo("_autoAspect");
   }
 
   public updateContainedScene(loopIndex: number): void {
@@ -71,14 +89,25 @@ export default class CameraComponent extends Component {
 
   public renderScene(args: RenderSceneArgument): void {
     if (this.containedScene) {
-      (args as IRenderSceneMessage).sceneDescription = this.containedScene.sceneDescription;
-      this.containedScene.node.broadcastMessage("render", args as IRenderSceneMessage);
+      this._justifyAspect(args);
+      (args as IRenderMesssage).sceneDescription = this.containedScene.sceneDescription;
+      this.containedScene.node.broadcastMessage("render", args as IRenderMesssage);
     }
   }
 
   public $transformUpdated(t: TransformComponent): void {
     if (this.camera) {
       this.camera.updateTransform(t);
+    }
+  }
+
+  private _justifyAspect(args: RenderSceneArgument): void {
+    if (this._autoAspect) {
+      const asp = args.viewport.Width / args.viewport.Height;
+      if (this._aspectCache !== asp) {
+        this.setValue("aspect", asp);
+        this._aspectCache = asp;
+      }
     }
   }
 }

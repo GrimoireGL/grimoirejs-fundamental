@@ -1,0 +1,10 @@
+a {
+  color: white;
+  transform: translate(-50%,50%);
+  white-space: nowrap;
+}
+
+a:hover {
+  color: green;
+  cursor: pointer;
+}

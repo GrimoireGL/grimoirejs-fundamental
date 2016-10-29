@@ -1,3 +1,4 @@
+import Component from "grimoirejs/lib/Node/Component";
 import {Rectangle} from "grimoirejs-math";
 import Material from "../Material/Material";
 import Texture2D from "../Resource/Texture2D";
@@ -10,6 +11,7 @@ interface IRenderMessage {
    * Reference to CameraComponent used for rendering in this time.
    * @type {CameraComponent}
    */
+  caller: Component;
   camera: CameraComponent;
   buffers: { [key: string]: Texture2D };
   layer: string;

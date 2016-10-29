@@ -34,7 +34,7 @@ export default class TextureBufferComponent extends Component {
     if (!this.getValue("name")) {
       throw new Error(`Attribute 'name' must be specified.`);
     }
-    this.buffer.update(0, arg.width, arg.height, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, null);
+    this.buffer.update(0, arg.widthPowerOf2, arg.heightPowerOf2, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, null);
     arg.buffers[this.getValue("name")] = this.buffer;
   }
 }

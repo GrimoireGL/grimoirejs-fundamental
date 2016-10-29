@@ -68,6 +68,7 @@ export default class MouseCameraControlComponent extends Component {
         x: m.screenX,
         y: m.screenY
       };
+      return;
     }
 
     let updated = false;

@@ -1,7 +1,7 @@
 import {Vector2} from "grimoirejs-math";
 import IMaterialArgument from "./IMaterialArgument";
 import UniformProxy from "../Resource/UniformProxy";
-import IVariableInfo from "./IVariableInfo";
+import IVariableInfo from "./Transformers/Interfaces/IVariableInfo";
 /**
  * Environment uniform value resolver
  */
