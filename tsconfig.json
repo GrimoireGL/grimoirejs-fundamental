@@ -22,6 +22,7 @@
     "./src/Components/FullscreenComponent.ts",
     "./src/Components/GeometryComponent.ts",
     "./src/Components/GeometryRegistoryComponent.ts",
+    "./src/Components/HTMLBinderComponent.ts",
     "./src/Components/LoopManagerComponent.ts",
     "./src/Components/MaterialComponent.ts",
     "./src/Components/MaterialContainerComponent.ts",

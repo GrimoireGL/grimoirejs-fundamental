@@ -1,5 +1,5 @@
 import RenderSceneArgument from "../Objects/RenderSceneArgument";
-import IRenderSceneMessage from "../Messages/IRenderMessage";
+import IRenderMesssage from "../Messages/IRenderMessage";
 import TransformComponent from "./TransformComponent";
 import PerspectiveCamera from "../Camera/PerspectiveCamera";
 import ICamera from "../Camera/ICamera";
@@ -90,8 +90,8 @@ export default class CameraComponent extends Component {
   public renderScene(args: RenderSceneArgument): void {
     if (this.containedScene) {
       this._justifyAspect(args);
-      (args as IRenderSceneMessage).sceneDescription = this.containedScene.sceneDescription;
-      this.containedScene.node.broadcastMessage("render", args as IRenderSceneMessage);
+      (args as IRenderMesssage).sceneDescription = this.containedScene.sceneDescription;
+      this.containedScene.node.broadcastMessage("render", args as IRenderMesssage);
     }
   }
 

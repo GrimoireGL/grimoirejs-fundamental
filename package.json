@@ -65,7 +65,8 @@
     "build": "cauldron build",
     "test": "inquisitor",
     "prepublish": "cauldron build --babelSeparated && npm run doc",
-    "doc": "cauldron doc"
+    "doc": "cauldron doc",
+    "scaffold":"cauldron scaffold"
   },
   "license": "MIT"
 }
