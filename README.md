@@ -379,35 +379,25 @@
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| rotateX | Number | 1 | なし |
-| rotateY | Number | 1 | なし |
-| moveZ | Number | 1 | なし |
+| rotateSpeed | Number | 0.01 | なし |
+| zoomSpeed | Number | 0.05 | なし |
 | moveSpeed | Number | 1 | なし |
-| maxY | Number | 89 | なし |
-| minY | Number | -89 | なし |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
-### rotateX 属性
+### rotateSpeed 属性
 
  * `converter`: Number
- * `defaultValue`: 1
+ * `defaultValue`: 0.01
 
-<!-- EDIT HERE(rotateX)-->
+<!-- EDIT HERE(rotateSpeed)-->
 <!-- /EDIT HERE-->
-### rotateY 属性
+### zoomSpeed 属性
 
  * `converter`: Number
- * `defaultValue`: 1
+ * `defaultValue`: 0.05
 
-<!-- EDIT HERE(rotateY)-->
-<!-- /EDIT HERE-->
-### moveZ 属性
-
- * `converter`: Number
- * `defaultValue`: 1
-
-<!-- EDIT HERE(moveZ)-->
+<!-- EDIT HERE(zoomSpeed)-->
 <!-- /EDIT HERE-->
 ### moveSpeed 属性
 
@@ -415,20 +405,6 @@
  * `defaultValue`: 1
 
 <!-- EDIT HERE(moveSpeed)-->
-<!-- /EDIT HERE-->
-### maxY 属性
-
- * `converter`: Number
- * `defaultValue`: 89
-
-<!-- EDIT HERE(maxY)-->
-<!-- /EDIT HERE-->
-### minY 属性
-
- * `converter`: Number
- * `defaultValue`: -89
-
-<!-- EDIT HERE(minY)-->
 <!-- /EDIT HERE-->
 
 ## RenderBuffer コンポーネント

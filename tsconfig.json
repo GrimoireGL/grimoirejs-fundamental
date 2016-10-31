@@ -74,7 +74,6 @@
     "./src/Geometry/IGeometryFactoryDelegate.ts",
     "./src/Geometry/IndexBufferInfo.ts",
     "./src/Geometry/VertexBufferAttribInfo.ts",
-    "./src/index.ts",
     "./src/json5.d.ts",
     "./src/Material/DefaultMacro.ts",
     "./src/Material/DefaultMaterial.ts",
