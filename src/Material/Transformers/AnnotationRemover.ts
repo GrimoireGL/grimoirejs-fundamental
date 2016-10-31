@@ -12,6 +12,6 @@ function _removeAnnotations(source: string): string {
 }
 
 export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
-  input.transforming = _removeAnnotations(input.transforming);
+  input.info.shaderSource = _removeAnnotations(input.info.shaderSource);
   return input;
 }

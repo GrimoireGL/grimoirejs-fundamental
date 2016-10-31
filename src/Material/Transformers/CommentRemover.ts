@@ -36,6 +36,6 @@ function _removeComment(source: string): string {
 }
 
 export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
-  input.transforming = _removeComment(input.transforming);
+  input.info.shaderSource = _removeComment(input.info.shaderSource);
   return input;
 }

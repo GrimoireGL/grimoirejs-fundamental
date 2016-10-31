@@ -1,3 +1,4 @@
+import Component from "grimoirejs/lib/Node/Component";
 import Material from "../Material/Material";
 import Texture2D from "../Resource/Texture2D";
 import CameraComponent from "../Components/CameraComponent";

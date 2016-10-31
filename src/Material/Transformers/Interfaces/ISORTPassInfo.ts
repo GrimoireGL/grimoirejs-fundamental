@@ -1,15 +1,12 @@
-import IMaterialArgument from "./IMaterialArgument";
-import UniformProxy from "../Resource/UniformProxy";
+import IMaterialArgument from "../../IMaterialArgument";
+import UniformProxy from "../../../Resource/UniformProxy";
 import IMaterialAttributeDeclaration from "./IMaterialAttributeDeclaration";
 import IVariableInfo from "./IVariableInfo";
 
 interface ISORTPassInfo {
-  fragment: string;
-  vertex: string;
+  shaderSource: string;
   uniforms: { [variableName: string]: IVariableInfo };
   attributes: { [variableName: string]: IVariableInfo };
-  fragmentPrecision: { [key: string]: string };
-  vertexPrecision: { [key: string]: string };
   configurator: ((gl: WebGLRenderingContext) => void)[];
   systemRegisterers: ((proxy: UniformProxy, args: IMaterialArgument) => void)[];
   gomlAttributes: { [key: string]: IMaterialAttributeDeclaration; };

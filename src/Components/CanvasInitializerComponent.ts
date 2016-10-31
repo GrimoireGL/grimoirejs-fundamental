@@ -172,6 +172,7 @@ class CanvasInitializerComponent extends Component {
     canvas.style.left = "0px";
     this._canvasContainer = document.createElement("div");
     this._canvasContainer.style.position = "relative";
+    this._canvasContainer.style.overflow = "hidden";
     this._canvasContainer.appendChild(canvas);
     if (this.getValue("containerId")) {
       this._canvasContainer.id = this.getValue("containerId");

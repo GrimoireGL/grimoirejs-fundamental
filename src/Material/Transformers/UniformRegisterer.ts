@@ -1,7 +1,7 @@
 import GLSLUtil from "./GLSLUtil";
 import Texture2D from "../../Resource/Texture2D";
-import IVariableInfo from "../IVariableInfo";
-import IMaterialAttributeDeclaration from "../IMaterialAttributeDeclaration";
+import IVariableInfo from "./Interfaces/IVariableInfo";
+import IMaterialAttributeDeclaration from "./Interfaces/IMaterialAttributeDeclaration";
 import {Vector2, Vector3, Vector4, Color3, Color4} from "grimoirejs-math";
 import IMaterialArgument from "../IMaterialArgument";
 import UniformProxy from "../../Resource/UniformProxy";
@@ -41,7 +41,7 @@ async function _registerUserUniforms(input: ITransformingArgument): Promise<void
       if (variableInfo.isArray) {
         switch (variableInfo.variableType) {
           case "float":
-            let defaultArray = new Array(variableInfo.arrayLength) as number[];
+            let defaultArray = new Array() as number[];
             defaultArray = defaultArray.map((p) => 0);
             attributes[valName] = _getDecl("NumberArray", _resolveDefault(variableInfo, defaultArray), (proxy, matArg) => {
               proxy.uniformFloatArray(valName, matArg.attributeValues[valName]);
