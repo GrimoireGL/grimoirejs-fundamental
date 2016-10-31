@@ -86,6 +86,7 @@
     "./src/Material/Pass.ts",
     "./src/Material/PassFactory.ts",
     "./src/Material/SORTPass.ts",
+    "./src/Material/Static/header.glsl.d.ts",
     "./src/Material/Transformers/AnnotationRemover.ts",
     "./src/Material/Transformers/BasicGLConfigParser.ts",
     "./src/Material/Transformers/CommentRemover.ts",
