@@ -14,7 +14,7 @@
 | clearDepthEnabled | Boolean | true | なし |
 | clearDepth | Number | 1.0 | なし |
 | material | Material | undefined | `componentBoundTo`</br> "_materialComponent"</br>    </br> |
-| camera | Component | undefined | `target`</br> "CAMERA"</br>    </br>  </br> |
+| camera | Component | undefined | `target`</br> "Camera"</br>    </br>  </br> |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->

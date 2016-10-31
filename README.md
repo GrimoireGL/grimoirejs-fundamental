@@ -199,6 +199,34 @@
 <!-- EDIT HERE(defaultGeometry)-->
 <!-- /EDIT HERE-->
 
+## HTMLBinder コンポーネント
+<!-- EDIT HERE(@Component)-->
+<!-- /EDIT HERE-->
+### 属性
+<!-- DO NOT EDIT -->
+<!-- ATTRS -->
+| 属性名 | コンバーター | デフォルト値 | その他 |
+|:------:|:------:|:------:|:------:|
+| htmlQuery | String | undefined | なし |
+| targetRenderer | String | "render-scene" | なし |
+
+<!-- /ATTRS -->
+<!-- /DO NOT EDIT -->
+### htmlQuery 属性
+
+ * `converter`: String
+ * `defaultValue`: undefined
+
+<!-- EDIT HERE(htmlQuery)-->
+<!-- /EDIT HERE-->
+### targetRenderer 属性
+
+ * `converter`: String
+ * `defaultValue`: "render-scene"
+
+<!-- EDIT HERE(targetRenderer)-->
+<!-- /EDIT HERE-->
+
 ## LoopManager コンポーネント
 <!-- EDIT HERE(@Component)-->
 <!-- /EDIT HERE-->
@@ -351,35 +379,25 @@
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| rotateX | Number | 1 | なし |
-| rotateY | Number | 1 | なし |
-| moveZ | Number | 1 | なし |
+| rotateSpeed | Number | 0.01 | なし |
+| zoomSpeed | Number | 0.05 | なし |
 | moveSpeed | Number | 1 | なし |
-| maxY | Number | 89 | なし |
-| minY | Number | -89 | なし |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
-### rotateX 属性
+### rotateSpeed 属性
 
  * `converter`: Number
- * `defaultValue`: 1
+ * `defaultValue`: 0.01
 
-<!-- EDIT HERE(rotateX)-->
+<!-- EDIT HERE(rotateSpeed)-->
 <!-- /EDIT HERE-->
-### rotateY 属性
+### zoomSpeed 属性
 
  * `converter`: Number
- * `defaultValue`: 1
+ * `defaultValue`: 0.05
 
-<!-- EDIT HERE(rotateY)-->
-<!-- /EDIT HERE-->
-### moveZ 属性
-
- * `converter`: Number
- * `defaultValue`: 1
-
-<!-- EDIT HERE(moveZ)-->
+<!-- EDIT HERE(zoomSpeed)-->
 <!-- /EDIT HERE-->
 ### moveSpeed 属性
 
@@ -387,20 +405,6 @@
  * `defaultValue`: 1
 
 <!-- EDIT HERE(moveSpeed)-->
-<!-- /EDIT HERE-->
-### maxY 属性
-
- * `converter`: Number
- * `defaultValue`: 89
-
-<!-- EDIT HERE(maxY)-->
-<!-- /EDIT HERE-->
-### minY 属性
-
- * `converter`: Number
- * `defaultValue`: -89
-
-<!-- EDIT HERE(minY)-->
 <!-- /EDIT HERE-->
 
 ## RenderBuffer コンポーネント
@@ -571,7 +575,7 @@
 | clearDepthEnabled | Boolean | true | なし |
 | clearDepth | Number | 1.0 | なし |
 | material | Material | undefined | `componentBoundTo`</br> "_materialComponent"</br>    </br> |
-| camera | Component | undefined | `target`</br> "CAMERA"</br>    </br>  </br> |
+| camera | Component | undefined | `target`</br> "Camera"</br>    </br>  </br> |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
