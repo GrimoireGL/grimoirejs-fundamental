@@ -91,6 +91,7 @@ export default class CameraComponent extends Component {
     if (this.containedScene) {
       this._justifyAspect(args);
       (args as IRenderMesssage).sceneDescription = this.containedScene.sceneDescription;
+      (args as IRenderMesssage).defaultTexture = this.companion.get("defaultTexture");
       this.containedScene.node.broadcastMessage("render", args as IRenderMesssage);
     }
   }

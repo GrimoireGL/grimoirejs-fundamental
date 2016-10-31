@@ -214,7 +214,7 @@ export default class GeometryUtility {
     yield* GeometryUtility.spherePosition(Vector3.Zero, up, right, forward, rowDiv, circleDiv);
   }
 
-  public static *sphereUV(rowDiv: number, circleDiv: number): IterableIterator<number> {
+  public static *sphereTexCoord(rowDiv: number, circleDiv: number): IterableIterator<number> {
     yield* [0, 0, 0, 1];
     const ia = 2 * Math.PI / circleDiv;
     const ja = Math.PI / (rowDiv + 1);
@@ -227,23 +227,23 @@ export default class GeometryUtility {
       }
     }
   }
-  public static *quadUV(): IterableIterator<number> {
+  public static *quadTexCoord(): IterableIterator<number> {
     yield* [0, 0];
     yield* [1, 0];
     yield* [1, 1];
     yield* [0, 1];
   }
-  public static *cubeUV(): IterableIterator<number> {
+  public static *cubeTexCoord(): IterableIterator<number> {
     for (let i = 0; i < 6; i++) {
-      yield* GeometryUtility.quadUV();
+      yield* GeometryUtility.quadTexCoord();
     }
   }
-  public static *triangleUV(): IterableIterator<number> {
+  public static *triangleTexCoord(): IterableIterator<number> {
     yield* [0, 0];
     yield* [1, 0];
     yield* [0, 1];
   }
-  public static *ellipseUV(divide: number): IterableIterator<number> {
+  public static *ellipseTexCoord(divide: number): IterableIterator<number> {
     yield* [0.5, 0.5];
     const step = 2 * Math.PI / divide;
     for (let i = 0; i < divide; i++) {
@@ -251,7 +251,7 @@ export default class GeometryUtility {
       yield* [0.5 + Math.cos(theta + Math.PI) / 2, 0.5 + Math.sin(theta + Math.PI) / 2];
     }
   }
-  public static *planeUV(divide: number): IterableIterator<number> {
+  public static *planeTexCoord(divide: number): IterableIterator<number> {
     for (let i = 0; i < divide + 1; i++) {//表
       for (let j = 0; j < divide + 1; j++) {
         yield* [j / divide, i / divide];
@@ -263,9 +263,9 @@ export default class GeometryUtility {
       }
     }
   }
-  public static *cylinderUV(divide: number): IterableIterator<number> {
-    yield* GeometryUtility.ellipseUV(divide);
-    yield* GeometryUtility.ellipseUV(divide);
+  public static *cylinderTexCoord(divide: number): IterableIterator<number> {
+    yield* GeometryUtility.ellipseTexCoord(divide);
+    yield* GeometryUtility.ellipseTexCoord(divide);
     const p = 1 / divide;
     for (let j = 0; j < divide; j++) {
       yield* [p * j, 0];
@@ -274,8 +274,8 @@ export default class GeometryUtility {
       yield* [p * j, 1];
     }
   }
-  public static *coneUV(divide: number): IterableIterator<number> {
-    yield* GeometryUtility.ellipseUV(divide);
+  public static *coneTexCoord(divide: number): IterableIterator<number> {
+    yield* GeometryUtility.ellipseTexCoord(divide);
 
     const step = Math.PI / 2 / divide;
     for (let i = 0; i < divide; i++) {

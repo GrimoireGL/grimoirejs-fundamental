@@ -2,7 +2,7 @@ import {Vector3} from "grimoirejs-math";
 import GeometryUtility from "./GeometryUtility";
 import GeometryFactory from "./GeometryFactory";
 import GeometryBuilder from "./GeometryBuilder";
-// TODO add normal and uvs
+// TODO add normal and texCoords
 // TODO apply attributes
 export default class DefaultPrimitives {
   public static register(): void {
@@ -39,7 +39,7 @@ export default class DefaultPrimitives {
             size: {
               position: 3,
               normal: 3,
-              uv: 2
+              texCoord: 2
             },
             count: GeometryUtility.triangleSize(),
             getGenerators: () => {
@@ -50,8 +50,8 @@ export default class DefaultPrimitives {
                 normal: function* () {
                   yield* GeometryUtility.triangleNormal(Vector3.ZUnit);
                 },
-                uv: function* () {
-                  yield* GeometryUtility.triangleUV();
+                texCoord: function* () {
+                  yield* GeometryUtility.triangleTexCoord();
                 }
               };
             }
@@ -84,7 +84,7 @@ export default class DefaultPrimitives {
             size: {
               position: 3,
               normal: 3,
-              uv: 2
+              texCoord: 2
             },
             count: GeometryUtility.quadSize(),
             getGenerators: () => {
@@ -95,8 +95,8 @@ export default class DefaultPrimitives {
                 normal: function* () {
                   yield* GeometryUtility.quadNormal(Vector3.ZUnit);
                 },
-                uv: function* () {
-                  yield* GeometryUtility.quadUV();
+                texCoord: function* () {
+                  yield* GeometryUtility.quadTexCoord();
                 }
               };
             }
@@ -129,7 +129,7 @@ export default class DefaultPrimitives {
             size: {
               position: 3,
               normal: 3,
-              uv: 2
+              texCoord: 2
             },
             count: GeometryUtility.cubeSize(),
             getGenerators: () => {
@@ -140,8 +140,8 @@ export default class DefaultPrimitives {
                 normal: function* () {
                   yield* GeometryUtility.cubeNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis());
                 },
-                uv: function* () {
-                  yield* GeometryUtility.cubeUV();
+                texCoord: function* () {
+                  yield* GeometryUtility.cubeTexCoord();
                 }
               };
             }
@@ -184,7 +184,7 @@ export default class DefaultPrimitives {
             size: {
               position: 3,
               normal: 3,
-              uv: 2
+              texCoord: 2
             },
             count: GeometryUtility.sphereSize(dH, dV),
             getGenerators: () => {
@@ -195,8 +195,8 @@ export default class DefaultPrimitives {
                 normal: function* () {
                   yield* GeometryUtility.sphereNormal(Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), dH, dV);
                 },
-                uv: function* () {
-                  yield* GeometryUtility.sphereUV(dH, dV);
+                texCoord: function* () {
+                  yield* GeometryUtility.sphereTexCoord(dH, dV);
                 }
               };
             }
@@ -233,7 +233,7 @@ export default class DefaultPrimitives {
             size: {
               position: 3,
               normal: 3,
-              uv: 2
+              texCoord: 2
             },
             count: GeometryUtility.ellipseSize(div),
             getGenerators: () => {
@@ -244,8 +244,8 @@ export default class DefaultPrimitives {
                 normal: function* () {
                   yield* GeometryUtility.ellipseNormal(Vector3.ZUnit, div);
                 },
-                uv: function* () {
-                  yield* GeometryUtility.ellipseUV(div);
+                texCoord: function* () {
+                  yield* GeometryUtility.ellipseTexCoord(div);
                 }
               };
             }
@@ -283,7 +283,7 @@ export default class DefaultPrimitives {
             size: {
               position: 3,
               normal: 3,
-              uv: 2
+              texCoord: 2
             },
             count: GeometryUtility.cylinderSize(div),
             getGenerators: () => {
@@ -294,8 +294,8 @@ export default class DefaultPrimitives {
                 normal: function* () {
                   yield* GeometryUtility.cylinderNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
                 },
-                uv: function* () {
-                  yield* GeometryUtility.cylinderUV(div);
+                texCoord: function* () {
+                  yield* GeometryUtility.cylinderTexCoord(div);
                 }
               };
             }
@@ -332,7 +332,7 @@ export default class DefaultPrimitives {
             size: {
               position: 3,
               normal: 3,
-              uv: 2
+              texCoord: 2
             },
             count: GeometryUtility.coneSize(div),
             getGenerators: () => {
@@ -343,8 +343,8 @@ export default class DefaultPrimitives {
                 normal: function* () {
                   yield* GeometryUtility.coneNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
                 },
-                uv: function* () {
-                  yield* GeometryUtility.coneUV(div);
+                texCoord: function* () {
+                  yield* GeometryUtility.coneTexCoord(div);
                 }
               };
             }
@@ -381,7 +381,7 @@ export default class DefaultPrimitives {
             size: {
               position: 3,
               normal: 3,
-              uv: 2
+              texCoord: 2
             },
             count: GeometryUtility.planeSize(div),
             getGenerators: () => {
@@ -392,8 +392,8 @@ export default class DefaultPrimitives {
                 normal: function* () {
                   yield* GeometryUtility.planeNormal(Vector3.ZUnit, div);
                 },
-                uv: function* () {
-                  yield* GeometryUtility.planeUV(div);
+                texCoord: function* () {
+                  yield* GeometryUtility.planeTexCoord(div);
                 }
               };
             }

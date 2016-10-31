@@ -118,7 +118,8 @@ export default class RenderQuadComponent extends Component {
       camera: null,
       transform: null,
       buffers: args.buffers,
-      viewport: args.viewport
+      viewport: args.viewport,
+      defaultTexture: this.companion.get("defaultTexture")
     };
     renderArgs.attributeValues = this._materialContainer.materialArgs;
     // do render

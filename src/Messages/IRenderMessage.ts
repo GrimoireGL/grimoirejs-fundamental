@@ -20,6 +20,7 @@ interface IRenderMessage {
   materialArgs?: { [key: string]: any };
   sceneDescription: { [key: string]: any };
   loopIndex: number;
+  defaultTexture: Texture2D;
 }
 
 export default IRenderMessage;

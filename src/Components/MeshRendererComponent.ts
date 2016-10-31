@@ -70,7 +70,8 @@ export default class MeshRenderer extends Component {
       viewport: args.viewport,
       drawCount: this._drawCount,
       drawOffset: this._drawOffset,
-      sceneDescription: args.sceneDescription
+      sceneDescription: args.sceneDescription,
+      defaultTexture: args.defaultTexture
     };
     if (args.material) {
       renderArgs.attributeValues = args.materialArgs;

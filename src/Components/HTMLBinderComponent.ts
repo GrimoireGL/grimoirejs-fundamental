@@ -118,16 +118,16 @@ export default class HTMLBinderComponent extends Component {
 
   private _onQueryChanged(query: string): void {
     let queried: NodeListOf<Element>;
-    if (query && query !== "") {
+    if (query && query !== "") { // when query is not empty
       queried = document.querySelectorAll(query);
     }
-    if (this._queriedElement) {
+    if (this._queriedElement) { // If there was selected element last time.
       this._restoreDefault();
     }
-    if (!queried || queried.length === 0) {
+    if (!queried || queried.length === 0) { // If new queried object is empty
       this._queriedElement = undefined;
       this._parentCache = undefined;
-    } else {
+    } else { // If there was object to track
       this._queriedElement = queried.item(0) as HTMLElement;
       const s = this._queriedElement.style;
       this._styleCache = {
