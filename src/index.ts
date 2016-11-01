@@ -23,8 +23,12 @@ GrimoireInterface.register(async () => {
   GrimoireInterface.registerNode("import-material", ["MaterialImporter"]);
   GrimoireInterface.registerNode("texture-buffer", ["TextureBuffer"]);
   GrimoireInterface.registerNode("render-buffer", ["RenderBuffer"]);
-  GrimoireInterface.registerNode("render-scene", ["MaterialContainer", "RenderScene"]);
-  GrimoireInterface.registerNode("render-quad", ["MaterialContainer", "RenderQuad"]);
+  GrimoireInterface.registerNode("render-scene", ["MaterialContainer", "RenderScene"], {
+    material: null
+  });
+  GrimoireInterface.registerNode("render-quad", ["MaterialContainer", "RenderQuad"], {
+    material: null
+  });
   DefaultPrimitives.register();
   DefaultMaterial.register();
 });

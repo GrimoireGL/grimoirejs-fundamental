@@ -32,9 +32,10 @@ export default class PassFactory {
     return new SORTPass(program, attributes, tasks, passInfo);
   }
 
-  public static passInfoFromSORT(source: string): Promise<ISORTPassInfo[]> {
-    const passes = source.split("@Pass").filter(p => p.indexOf("@") >= 0); // Separate with @Pass and if there was some pass without containing @, that would be skipped since that is assumed as empty.
-    return Promise.all(passes.map(p => SORTPassParser.parse(p)));
+  public static passInfoFromSORT(source: string): Promise<ISORTPassInfo[]> { // TODO should notify warning if there was some of code above of @Pass
+    let splitted = source.split("@Pass");
+    splitted.splice(0, 1);// Separate with @Pass and if there was some pass without containing @, that would be skipped since that is assumed as empty.
+    return Promise.all(splitted.map(p => SORTPassParser.parse(p)));
   }
 
   private static _updateShaderCode(factory: MaterialFactory, passInfo: ISORTPassInfo, vs: Shader, fs: Shader, p: Program): void {

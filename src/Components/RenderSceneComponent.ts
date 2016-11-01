@@ -2,7 +2,6 @@ import RenderSceneArgument from "../Objects/RenderSceneArgument";
 import ResourceBase from "../Resource/ResourceBase";
 import SORTPass from "../Material/SORTPass";
 import AssetLoader from "../Asset/AssetLoader";
-import MaterialComponent from "./MaterialComponent";
 import Material from "../Material/Material";
 import {Color4} from "grimoirejs-math";
 import Component from "grimoirejs/lib/Node/Component";
@@ -11,6 +10,7 @@ import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import Framebuffer from "../Resource/FrameBuffer";
 import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
 import CameraComponent from "./CameraComponent";
+import MaterialContainerComponent from "./MaterialContainerComponent";
 export default class RenderSceneComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     layer: {
@@ -41,11 +41,6 @@ export default class RenderSceneComponent extends Component {
       defaultValue: 1.0,
       converter: "Number",
     },
-    material: {
-      defaultValue: undefined,
-      converter: "Material",
-      componentBoundTo: "_materialComponent"
-    },
     camera: {
       defaultValue: undefined,
       converter: "Component",
@@ -57,13 +52,7 @@ export default class RenderSceneComponent extends Component {
 
   private _canvas: HTMLCanvasElement;
 
-  private _materialComponent: MaterialComponent;
-
-  private _useMaterial: boolean = false;
-
-  private _material: Material;
-
-  private _materialArgs: { [key: string]: any } = {};
+  private _materialContainer: MaterialContainerComponent;
 
   private _fbo: Framebuffer;
 
@@ -96,10 +85,7 @@ export default class RenderSceneComponent extends Component {
   public $mount(): void {
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
-    if (typeof this.getValue("material") !== "undefined") {
-      this._onMaterialChanged();
-      this._useMaterial = true;
-    }
+    this._materialContainer = this.node.getComponent("MaterialContainer") as MaterialContainerComponent;
   }
 
   public $bufferUpdated(args: IBufferUpdatedMessage): void {
@@ -136,62 +122,16 @@ export default class RenderSceneComponent extends Component {
       this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
     }
     args.camera.updateContainedScene(args.loopIndex);
+    const useMaterial = this._materialContainer.useMaterial;
     args.camera.renderScene(<RenderSceneArgument>{
       caller: this,
       camera: camera,
       buffers: args.buffers,
       layer: this._layer,
       viewport: args.viewport,
-      material: this._useMaterial ? this._material : undefined,
-      materialArgs: this._useMaterial ? this._materialArgs : undefined,
+      material: useMaterial ? this._materialContainer.material : undefined,
+      materialArgs: useMaterial ? this._materialContainer.material : undefined,
       loopIndex: args.loopIndex
     });
   }
-
-
-  private _onMaterialChanged(): void {
-    if (!this._materialComponent) { // the material must be instanciated by attribute.
-      this._prepareInternalMaterial();
-    } else {
-      this._prepareExternalMaterial();
-    }
-  }
-
-  private async _prepareExternalMaterial(): Promise<void> {
-    const materialPromise = this.getValue("material") as Promise<Material>;
-    const loader = this.companion.get("loader") as AssetLoader;
-    loader.register(materialPromise);
-    const material = await materialPromise;
-    this._material = material;
-  }
-
-  private async _prepareInternalMaterial(): Promise<void> {
-    // obtain promise of instanciating material
-    const materialPromise = this.getValue("material") as Promise<Material>;
-    const loader = this.companion.get("loader") as AssetLoader;
-    loader.register(materialPromise);
-    if (!materialPromise) {
-      return;
-    }
-    const material = await materialPromise;
-    const promises: Promise<any>[] = [];
-    material.pass.forEach((p) => {
-      if (p instanceof SORTPass) {
-        for (let key in p.programInfo.gomlAttributes) {
-          const val = p.programInfo.gomlAttributes[key];
-          this.__addAtribute(key, val);
-          this.attributes.get(key).addObserver((v) => {
-            this._materialArgs[key] = v.Value;
-          });
-          const value = this._materialArgs[key] = this.getValue(key);
-          if (value instanceof ResourceBase) {
-            promises.push((value as ResourceBase).validPromise);
-          }
-        }
-      }
-    });
-    await Promise.all(promises);
-    this._material = material;
-  }
-
 }

@@ -1,3 +1,4 @@
+import ResourceBase from "../Resource/ResourceBase";
 import MaterialComponent from "./MaterialComponent";
 import SORTPass from "../Material/SORTPass";
 import Material from "../Material/Material";
@@ -20,6 +21,8 @@ export default class MaterialContainerComponent extends Component {
 
   public ready: boolean = false;
 
+  public useMaterial: boolean = false;
+
   private _materialComponent: MaterialComponent;
 
   public $mount(): void {
@@ -32,6 +35,11 @@ export default class MaterialContainerComponent extends Component {
    */
   private async _onMaterialChanged(): Promise<void> {
     const materialPromise = this.getValue("material") as Promise<Material>;
+    if (materialPromise === void 0) {
+      this.useMaterial = false;
+      return; // When specified material is null
+    }
+    this.useMaterial = true;
     if (!this._materialComponent) { // the material must be instanciated by attribute.
       this._prepareInternalMaterial(materialPromise);
     } else {
@@ -69,11 +77,14 @@ export default class MaterialContainerComponent extends Component {
           this.attributes.get(key).addObserver((v) => {
             this.materialArgs[key] = v.Value;
           });
-          this.materialArgs[key] = this.getValue(key);
+          const value = this.materialArgs[key] = this.getValue(key);
+          if (value instanceof ResourceBase) {
+            promises.push((value as ResourceBase).validPromise);
+          }
         }
       }
     });
-    await Promise.all(promises);
+    Promise.all(promises);
     this.material = material;
     this.ready = true;
   }
