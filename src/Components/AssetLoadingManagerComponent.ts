@@ -53,6 +53,6 @@ export default class AssetLoadingManagerComponent extends Component {
       this._loaderElement.remove();
     }
     this.node.emit("asset-load-completed");
-    this.tree("goml").attr("loopEnabled", true);
+    this.tree("goml").setAttribute("loopEnabled", true);
   }
 }

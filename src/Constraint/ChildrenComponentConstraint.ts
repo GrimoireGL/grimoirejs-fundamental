@@ -3,7 +3,7 @@ import NSIdentity from "grimoirejs/lib/Base/NSIdentity";
 
 function ChildrenComponentConstraint(componentIds: NSIdentity[]): ((self: GomlNode) => string) {
   return (self: GomlNode) => {
-    return checkRecursive(self, componentIds) ? null : "ChildrenComponentConstraint Error:" + self.nodeName;
+    return checkRecursive(self, componentIds) ? null : "ChildrenComponentConstraint Error:" + self.name;
   };
 }
 

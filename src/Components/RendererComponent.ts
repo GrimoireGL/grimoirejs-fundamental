@@ -53,7 +53,7 @@ export default class RendererComponent extends Component {
     this._viewportCache = this._viewportSizeGenerator(this._canvas);
     const newSizes = this._getSizePowerOf2(this._viewportCache.Width, this._viewportCache.Height);
     if (this.node.children.length === 0) {
-      this.node.addNode("render-scene", {});
+      this.node.addChildByName("render-scene", {});
     }
     this.node.broadcastMessage("resizeBuffer", <IResizeBufferMessage>{ // TODO apply when viewport was changed
       widthPowerOf2: newSizes.width,
