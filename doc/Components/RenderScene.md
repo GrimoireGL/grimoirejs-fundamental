@@ -13,7 +13,6 @@
 | clearColorEnabled | Boolean | true | なし |
 | clearDepthEnabled | Boolean | true | なし |
 | clearDepth | Number | 1.0 | なし |
-| material | Material | undefined | `componentBoundTo`</br> "_materialComponent"</br>    </br> |
 | camera | Component | undefined | `target`</br> "Camera"</br>    </br>  </br> |
 
 <!-- /ATTRS -->
@@ -66,13 +65,6 @@
  * `defaultValue`: 1.0
 
 <!-- EDIT HERE(clearDepth)-->
-<!-- /EDIT HERE-->
-### material 属性
-
- * `converter`: Material
- * `defaultValue`: undefined
-
-<!-- EDIT HERE(material)-->
 <!-- /EDIT HERE-->
 ### camera 属性
 
