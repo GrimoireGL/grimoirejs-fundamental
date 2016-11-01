@@ -1929,6 +1929,13 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.4, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
+grimoirejs:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/grimoirejs/-/grimoirejs-0.8.1.tgz#e009d7731d2cd32ee56f0b26274bc50f1a52e077"
+  dependencies:
+    "@types/node" "^6.0.41"
+    events "^1.1.1"
+
 grimoirejs-cauldron@^1.2.0, grimoirejs-cauldron@^1.5.8:
   version "1.5.8"
   resolved "https://registry.yarnpkg.com/grimoirejs-cauldron/-/grimoirejs-cauldron-1.5.8.tgz#95f446d3610e065b2ed56690412b6df10b181cd0"
@@ -1975,13 +1982,6 @@ grimoirejs-math@^1.2.3:
     events "^1.1.1"
     gl-matrix "git+https://github.com/GrimoireGL/gl-matrix.git#master"
     utils "^0.3.1"
-
-grimoirejs@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/grimoirejs/-/grimoirejs-0.9.1.tgz#8ece81ac68c20cfd7b544a19075f91a3740ea798"
-  dependencies:
-    "@types/node" "^6.0.41"
-    events "^1.1.1"
 
 handlebars@^4.0.5:
   version "4.0.5"
