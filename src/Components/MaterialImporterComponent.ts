@@ -4,7 +4,7 @@ import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
 
 export default class MaterialImporterComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
-    type: {
+    typeName: {
       defaultValue: undefined,
       converter: "String"
     },
@@ -14,11 +14,11 @@ export default class MaterialImporterComponent extends Component {
     }
   };
 
-  public $mount(): void {
-    if (!this.getValue("type") || !this.getValue("src")) {
+  public $awake(): void {
+    if (!this.getValue("typeName") || !this.getValue("src")) {
       throw new Error("type or src cannot be null in material importer");
     } else {
-      MaterialFactory.addSORTMaterialFromURL(this.getValue("type"), this.getValue("src"));
+      MaterialFactory.addSORTMaterialFromURL(this.getValue("typeName"), this.getValue("src"));
     }
   }
 }

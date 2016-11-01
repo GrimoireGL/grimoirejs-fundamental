@@ -66,6 +66,7 @@ export default class CameraComponent extends Component {
     this.transform = this.node.getComponent("Transform") as TransformComponent;
     this.$transformUpdated(this.transform);
     this.getAttribute("far").addObserver((v) => {
+      console.log("far", v.Value);
       c.setFar(v.Value);
     }, true);
     this.getAttribute("near").addObserver((v) => {

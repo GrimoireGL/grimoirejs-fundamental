@@ -12,17 +12,9 @@ void main()
 }
 #endif
 #ifdef FS
-@{type:"color",default:"white"}
-uniform vec4 color;
-@{usedFlag:"textureUsed"}
 uniform sampler2D texture;
-uniform bool textureUsed;
 void main(void)
 {
-  if(textureUsed){
-    gl_FragColor = color * texture2D(texture,vTexCoord);
-  }else{
-    gl_FragColor = color;
- }
+  gl_FragColor = texture2D(texture,vTexCoord);
 }
 #endif

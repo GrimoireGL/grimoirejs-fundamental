@@ -9,7 +9,7 @@ export default class MaterialContainerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     material: {
       converter: "Material",
-      defaultValue: undefined,
+      defaultValue: "new(unlit)",
       componentBoundTo: "_materialComponent" // When the material was specified with the other material tag, this field would be assigned.
     }
   };

@@ -275,14 +275,14 @@
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| material | Material | undefined | `componentBoundTo`</br> "_materialComponent" </br>    </br>  </br> |
+| material | Material | "new(unlit)" | `componentBoundTo`</br> "_materialComponent" </br>    </br>  </br> |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
 ### material 属性
 
  * `converter`: Material
- * `defaultValue`: undefined
+ * `defaultValue`: "new(unlit)"
 
 <!-- EDIT HERE(material)-->
 <!-- /EDIT HERE-->
@@ -295,17 +295,17 @@
 <!-- ATTRS -->
 | 属性名 | コンバーター | デフォルト値 | その他 |
 |:------:|:------:|:------:|:------:|
-| type | String | undefined | なし |
+| typeName | String | undefined | なし |
 | src | String | undefined | なし |
 
 <!-- /ATTRS -->
 <!-- /DO NOT EDIT -->
-### type 属性
+### typeName 属性
 
  * `converter`: String
  * `defaultValue`: undefined
 
-<!-- EDIT HERE(type)-->
+<!-- EDIT HERE(typeName)-->
 <!-- /EDIT HERE-->
 ### src 属性
 
