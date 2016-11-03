@@ -3,7 +3,7 @@
 @NoDepth()
 @NoBlend()
 
-FS_PREC_FLOAT(mediump)
+FS_PREC(mediump,float)
 
 varying vec3 vNormal;
 

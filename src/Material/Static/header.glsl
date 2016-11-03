@@ -1,16 +1,12 @@
 /*Header start*/
 // helper macros
 #ifdef FS
-  #define FS_PREC_FLOAT(fprec) precision fprec float;
-  #define FS_PREC_INT(iprec) precision iprec int;
-  #define VS_PREC_FLOAT(fprec)
-  #define VS_PREC_INT(iprec)
+  #define FS_PREC(prec,type) precision prec type;
+  #define VS_PREC(prec,type)
 #endif
 #ifdef VS
-  #define FS_PREC_FLOAT(fprec)
-  #define FS_PREC_INT(iprec)
-  #define VS_PREC_FLOAT(fprec) precision fprec float;
-  #define VS_PREC_INT(iprec) precision iprec int;
+#define VS_PREC(prec,type) precision prec type;
+#define FS_PREC(prec,type)
 #endif
 // constants
 #define PI 3.141592653589793

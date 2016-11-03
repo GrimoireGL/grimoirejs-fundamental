@@ -1,5 +1,5 @@
 @Pass
-FS_PREC_FLOAT(mediump)
+FS_PREC(mediump,float)
 varying vec2 vTexCoord;
 #ifdef VS
 attribute vec3 position;

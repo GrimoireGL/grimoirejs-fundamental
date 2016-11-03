@@ -26,7 +26,7 @@ export default class MaterialContainerComponent extends Component {
   private _materialComponent: MaterialComponent;
 
   public $mount(): void {
-    this.attributes.get("material").addObserver(this._onMaterialChanged);
+    this.getAttribute("material").addObserver(this._onMaterialChanged);
     (this.companion.get("loader") as AssetLoader).register(this._onMaterialChanged());
   }
 
@@ -71,16 +71,42 @@ export default class MaterialContainerComponent extends Component {
     const promises: Promise<any>[] = [];
     material.pass.forEach((p) => {
       if (p instanceof SORTPass) {
-        for (let key in p.programInfo.gomlAttributes) {
-          const val = p.programInfo.gomlAttributes[key];
+        const cp: SORTPass = p as SORTPass;
+        for (let key in cp.sort.gomlAttributes) {
+          const val = cp.sort.gomlAttributes[key];
           this.__addAtribute(key, val);
-          this.attributes.get(key).addObserver((v) => {
+          this.getAttribute(key).addObserver((v) => {
             this.materialArgs[key] = v.Value;
           });
           const value = this.materialArgs[key] = this.getValue(key);
           if (value instanceof ResourceBase) {
             promises.push((value as ResourceBase).validPromise);
           }
+        }
+        for (let macro of cp.sort.macros) {
+          switch (macro.type) {
+            case "int": // should use integer converter
+              this.__addAtribute(macro.attributeName, {
+                converter: "Number",
+                defaultValue: macro.default
+              });
+              this.getAttribute(macro.attributeName).addObserver(
+                (v) => {
+                  cp.setMacro(macro.macroName, "" + Math.floor(v.Value));
+                }, true);
+              return;
+            case "bool": // should use integer converter
+              this.__addAtribute(macro.attributeName, {
+                converter: "Boolean",
+                defaultValue: macro.default
+              });
+              this.getAttribute(macro.attributeName).addObserver(
+                (v) => {
+                  cp.setMacro(macro.macroName, v.Value);
+                }, true);
+              return;
+          }
+
         }
       }
     });

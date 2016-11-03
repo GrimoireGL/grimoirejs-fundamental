@@ -1,3 +1,4 @@
+import SORTPass from "./SORTPass";
 import MacroRegistory from "./MacroRegistory";
 import PassFactory from "./PassFactory";
 import TextFileResolver from "../Asset/TextFileResolver";
@@ -33,7 +34,7 @@ export default class MaterialFactory {
   public static async addSORTMaterial(typeName: string, source: string): Promise<void> {
     const sortInfos = await PassFactory.passInfoFromSORT(source);
     MaterialFactory.addMaterialType(typeName, (factory) => {
-      const sorts = sortInfos.map(p => PassFactory.fromSORTPassInfo(factory, p));
+      const sorts = sortInfos.map(p => new SORTPass(factory, p));
       return new Material(sorts);
     });
   }

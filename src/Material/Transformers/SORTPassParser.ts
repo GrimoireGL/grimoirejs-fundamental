@@ -6,7 +6,7 @@ import CommentRemover from "./CommentRemover";
 import ImportTransformer from "./ImportTransformer";
 import VariableParser from "./VariableParser";
 import VariableAnnotationRemover from "./VariableAnnotationRemover";
-import BasicGLConfigParser from "./BasicGLConfigParser";
+import PreferenceParser from "./PreferenceParser";
 import AnnotationRemover from "./AnnotationRemover";
 
 export default class SORTPassParser {
@@ -15,7 +15,7 @@ export default class SORTPassParser {
     ImportTransformer,
     VariableParser("uniform"),
     VariableParser("attribute"),
-    BasicGLConfigParser,
+    PreferenceParser,
     AnnotationRemover,
     VariableAnnotationRemover,
     UniformRegisterer
@@ -28,6 +28,7 @@ export default class SORTPassParser {
         shaderSource: source,
         uniforms: {},
         attributes: {},
+        macros: [],
         configurator: [],
         systemRegisterers: [],
         gomlAttributes: {}

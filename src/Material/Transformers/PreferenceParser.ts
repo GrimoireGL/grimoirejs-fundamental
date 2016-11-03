@@ -1,3 +1,4 @@
+import ISORTPassInfo from "./Interfaces/ISORTPassInfo";
 import ITransformingArgument from "./ITransformingArgument";
 
 interface GLConfigAnnotation {
@@ -5,7 +6,7 @@ interface GLConfigAnnotation {
   args: string[];
 }
 
-function* _regexGLConfigs(source: string): IterableIterator<GLConfigAnnotation> {
+function* _regexPreferences(source: string): IterableIterator<GLConfigAnnotation> {
   const regex = /@([a-zA-Z]+)\(([^)]*)\)/g;
   let regexResult: RegExpExecArray;
   while ((regexResult = regex.exec(source))) {
@@ -34,7 +35,7 @@ function _asGLConstants(args: string[], length: number): number[] {
   }
   return args.map(arg => {
     const value = WebGLRenderingContext[arg.toUpperCase().trim()];
-    if (value) {
+    if (value !== void 0) {
       return value;
     } else {
       throw new Error(`Specified WebGL constant ${arg} was not found`);
@@ -42,8 +43,20 @@ function _asGLConstants(args: string[], length: number): number[] {
   });
 }
 
-function _parseGLConfigs(source: string): ((gl: WebGLRenderingContext) => void)[] {
-  const configs = _regexGLConfigs(source);
+function _exposeMacro(info: ISORTPassInfo, args: string[]): void {
+  if (args.length !== 4) {
+    throw new Error("ExposeMacro must have 4 of arguments");
+  }
+  info.macros.push({
+    type: args[0],
+    attributeName: args[1],
+    macroName: args[2],
+    default: args[3]
+  });
+}
+
+function _parsePreference(info: ISORTPassInfo): void {
+  const configs = _regexPreferences(info.shaderSource);
   let configResult: IteratorResult<GLConfigAnnotation>;
   const result: ((gl: WebGLRenderingContext) => void)[] = [];
   let depthEnabled = true, blendEnabled = true, cullEnabled = true;
@@ -104,15 +117,19 @@ function _parseGLConfigs(source: string): ((gl: WebGLRenderingContext) => void)[
           gl.blendEquationSeparate(blendEquationSeparate[0], blendEquationSeparate[1]);
         });
         break;
+      case "ExposeMacro":
+        _exposeMacro(info, config.args);
+        break;
     }
   }
   result.unshift(_enablingFunc(WebGLRenderingContext.DEPTH_TEST, depthEnabled));
   result.unshift(_enablingFunc(WebGLRenderingContext.BLEND, blendEnabled));
   result.unshift(_enablingFunc(WebGLRenderingContext.CULL_FACE, cullEnabled));
-  return result;
+  console.log(info.macros);
+  info.configurator = result;
 }
 
 export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
-  input.info.configurator = _parseGLConfigs(input.info.shaderSource);
+  _parsePreference(input.info);
   return input;
 }

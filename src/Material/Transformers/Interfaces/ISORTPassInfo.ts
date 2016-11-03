@@ -1,3 +1,4 @@
+import IMacroInfo from "./IMacroInfo";
 import IMaterialArgument from "../../IMaterialArgument";
 import UniformProxy from "../../../Resource/UniformProxy";
 import IMaterialAttributeDeclaration from "./IMaterialAttributeDeclaration";
@@ -7,6 +8,7 @@ interface ISORTPassInfo {
   shaderSource: string;
   uniforms: { [variableName: string]: IVariableInfo };
   attributes: { [variableName: string]: IVariableInfo };
+  macros: IMacroInfo[];
   configurator: ((gl: WebGLRenderingContext) => void)[];
   systemRegisterers: ((proxy: UniformProxy, args: IMaterialArgument) => void)[];
   gomlAttributes: { [key: string]: IMaterialAttributeDeclaration; };
