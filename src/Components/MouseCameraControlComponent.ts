@@ -114,11 +114,6 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   private _mouseWheel(m: MouseWheelEvent): void {
-    // let move = m.deltaY * this._moveZ * MouseCameraControlComponent.moveCoefficient;
-    // let toOrigin = Vector3.normalize(Vector3.subtract(this._origin, this._transform.localPosition));
-    // this._origin = this._origin.addWith(toOrigin.multiplyWith(move));
-    // this._transform.localPosition = this._transform.localPosition.addWith(this._transform.forward.multiplyWith(move));
-    // m.preventDefault();
 
     let dir = Vector3.normalize(Vector3.subtract(this._transform.localPosition, this._origin));
     let moveDist = -m.deltaY * this._zoomSpeed;
