@@ -125,7 +125,6 @@ function _parsePreference(info: ISORTPassInfo): void {
   result.unshift(_enablingFunc(WebGLRenderingContext.DEPTH_TEST, depthEnabled));
   result.unshift(_enablingFunc(WebGLRenderingContext.BLEND, blendEnabled));
   result.unshift(_enablingFunc(WebGLRenderingContext.CULL_FACE, cullEnabled));
-  console.log(info.macros);
   info.configurator = result;
 }
 
