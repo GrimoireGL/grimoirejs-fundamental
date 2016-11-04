@@ -17,6 +17,10 @@ export default class MouseCameraControlComponent extends Component {
     moveSpeed: {
       defaultValue: 1,//TODO:小数にしたときの挙動
       converter: "Number"
+    },
+    center: {
+      defaultValue: 20,
+      converter: "Number"
     }
   };
 
@@ -39,7 +43,9 @@ export default class MouseCameraControlComponent extends Component {
   private _xsum: number = 0;
   private _ysum: number = 0;
 
+  private _center: number = 0;
   public $awake(): void {
+    this.getAttribute("center").boundTo("_center");
     this.getAttribute("rotateSpeed").boundTo("_rotateSpeed");
     this.getAttribute("zoomSpeed").boundTo("_zoomSpeed");
     this.getAttribute("moveSpeed").boundTo("_moveSpeed");
@@ -51,7 +57,7 @@ export default class MouseCameraControlComponent extends Component {
     this._initialUp = Vector3.copy(this._transform.up);
     this._initialDirection = this._transform.localPosition.subtractWith(this._origin);
     this._initialRotation = this._transform.localRotation;
-
+    this._origin =this._transform.localPosition.addWith(this._transform.forward.multiplyWith(this._center));
     let scriptTag = this.companion.get("canvasElement");
     scriptTag.addEventListener("mousemove", this._mouseMove.bind(this));
     scriptTag.addEventListener("contextmenu", this._contextMenu.bind(this));
@@ -108,11 +114,6 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   private _mouseWheel(m: MouseWheelEvent): void {
-    // let move = m.deltaY * this._moveZ * MouseCameraControlComponent.moveCoefficient;
-    // let toOrigin = Vector3.normalize(Vector3.subtract(this._origin, this._transform.localPosition));
-    // this._origin = this._origin.addWith(toOrigin.multiplyWith(move));
-    // this._transform.localPosition = this._transform.localPosition.addWith(this._transform.forward.multiplyWith(move));
-    // m.preventDefault();
 
     let dir = Vector3.normalize(Vector3.subtract(this._transform.localPosition, this._origin));
     let moveDist = -m.deltaY * this._zoomSpeed;
