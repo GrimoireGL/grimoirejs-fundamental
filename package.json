@@ -17,7 +17,7 @@
     "babel-cli": "^6.18.0",
     "browserify": "^13.1.1",
     "events": "^1.1.1",
-    "grimoirejs": "^0.9.2",
+    "grimoirejs": "^0.9.3",
     "grimoirejs-cauldron": "^1.5.8",
     "grimoirejs-math": "^1.2.3",
     "json5": "^0.5.0",
