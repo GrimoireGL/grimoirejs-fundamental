@@ -138,7 +138,6 @@ function _registerEnvUniforms(input: ITransformingArgument): void {
         registerers.push(resolver);
         continue;
       }
-      throw new Error(`Unknown environment uniform variable ${variableName}`);
     }
   }
 }
