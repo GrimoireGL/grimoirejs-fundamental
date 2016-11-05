@@ -2,6 +2,12 @@ import Attribute from "grimoirejs/lib/Node/Attribute";
 import Texture2D from "../Resource/Texture2D";
 import ImageResolver from "../Asset/ImageResolver";
 
+
+function updateVideo(tex: Texture2D, video: HTMLVideoElement): void {
+  tex.update(video);
+  requestAnimationFrame(() => updateVideo(tex, video));
+}
+
 function MaterialTextureConverter(this: Attribute, val: any): any {
   if (val instanceof Texture2D) {
     return () => val;
@@ -25,6 +31,30 @@ function MaterialTextureConverter(this: Attribute, val: any): any {
     });
     this.companion.get("loader").register(tex.validPromise);
     return () => tex;
+  }
+  if (typeof val === "object") {
+    if (val instanceof HTMLImageElement) {
+      const tex = new Texture2D(this.companion.get("gl"));
+      if (val.complete && val.naturalWidth) {
+        tex.update(val);
+        return () => tex;
+      } else {
+        val.onload = function() {
+          tex.update(val);
+        };
+        return () => tex;
+      }
+    } else if (val instanceof HTMLCanvasElement) {
+      const tex = new Texture2D(this.companion.get("gl"));
+      tex.update(val);
+      return () => tex;
+    } else if (val instanceof HTMLVideoElement) {
+      const tex = new Texture2D(this.companion.get("gl"));
+      val.play();
+      tex.update(val);
+      updateVideo(tex, val);
+      return () => tex;
+    }
   }
 }
 

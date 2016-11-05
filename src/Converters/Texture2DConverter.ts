@@ -2,6 +2,11 @@ import Attribute from "grimoirejs/lib/Node/Attribute";
 import Texture2D from "../Resource/Texture2D";
 import ImageResolver from "../Asset/ImageResolver";
 
+function updateVideo(tex: Texture2D, video: HTMLVideoElement): void {
+  tex.update(video);
+  requestAnimationFrame(() => updateVideo(tex, video));
+}
+
 function Texture2DConverter(this: Attribute, val: any): any {
   if (typeof val === "string") {
     const regex = /^query\((.*)\)$/m;
