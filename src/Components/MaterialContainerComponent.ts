@@ -5,7 +5,7 @@ import Material from "../Material/Material";
 import AssetLoader from "../Asset/AssetLoader";
 import Component from "grimoirejs/lib/Node/Component";
 import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
-
+import GrimoireInterface from "grimoirejs";
 export default class MaterialContainerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     material: {
@@ -14,6 +14,19 @@ export default class MaterialContainerComponent extends Component {
       componentBoundTo: "_materialComponent" // When the material was specified with the other material tag, this field would be assigned.
     }
   };
+
+  public static rewriteDefaultMaterial(materialName: string): void {
+    if (materialName !== MaterialContainerComponent._defaultMaterial) {
+      MaterialContainerComponent._defaultMaterial = materialName;
+      GrimoireInterface.componentDeclarations.get("MaterialContainer").attributes["material"].defaultValue = `new(${materialName})`;
+    }
+  }
+
+  public static get defaultMaterial(): string {
+    return this._defaultMaterial;
+  }
+
+  private static _defaultMaterial = "unlit";
 
   public material: Material;
 

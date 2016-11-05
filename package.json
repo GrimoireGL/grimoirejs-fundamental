@@ -17,7 +17,7 @@
     "babel-cli": "^6.18.0",
     "browserify": "^13.1.1",
     "events": "^1.1.1",
-    "grimoirejs": "^0.9.4",
+    "grimoirejs": "^0.9.6",
     "grimoirejs-cauldron": "^1.5.8",
     "grimoirejs-math": "^1.2.3",
     "json5": "^0.5.0",
@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "ava": "^0.16.0",
-    "grimoirejs-cauldron": "^1.5.10",
+    "grimoirejs-cauldron": "^1.5.13",
     "grimoirejs-inquisitor": "^1.0.3",
     "xmldom": "^0.1.22"
   },
