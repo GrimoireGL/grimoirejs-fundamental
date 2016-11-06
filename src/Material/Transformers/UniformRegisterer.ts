@@ -97,9 +97,9 @@ async function _registerUserUniforms(input: ITransformingArgument): Promise<void
                 flagAssignTo = annotations["usedFlag"];
               }
             }
-            attributes[valName] = _getDecl("MaterialTexture", _resolveDefault(variableInfo, undefined), (proxy, matArgs) => {
+            attributes[valName] = _getDecl("Texture", _resolveDefault(variableInfo, undefined), (proxy, matArgs) => {
               let texture;
-              if (matArgs.attributeValues[valName] && (texture = matArgs.attributeValues[valName](matArgs.buffers))) {
+              if (matArgs.attributeValues[valName] && (texture = matArgs.attributeValues[valName].get(matArgs.buffers))) {
                 proxy.uniformTexture2D(valName, texture as Texture2D);
                 if (flagAssignTo) {
                   proxy.uniformBool(flagAssignTo, true);

@@ -75,10 +75,3 @@ EnvUniformValueResolver.addResolver("_viewportSize", (valInfo, name) => {
 });
 EnvUniformValueResolver.addResolver("_cameraPosition", (valInfo, name) => (proxy, args) => proxy.uniformVector3(name, args.camera.transform.globalPosition));
 EnvUniformValueResolver.addResolver("_cameraDirection", (valInfo, name) => (proxy, args) => proxy.uniformVector3(name, args.camera.transform.forward));
-EnvUniformValueResolver.addDynamicResolver((valInfo, name) => {
-  if (valInfo.variableType === "sampler2D" && valInfo.variableAnnotation["type"] === "backbuffer") {
-    return (proxy, mat) => {
-      proxy.uniformTexture2D(name, mat.buffers[valInfo.variableAnnotation["name"]]);
-    };
-  }
-});
