@@ -1,6 +1,6 @@
 {
   "name": "grimoirejs-fundamental",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "description": "Base components,converters and nodes for Web3D with Grimoire.js",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -17,7 +17,7 @@
     "babel-cli": "^6.18.0",
     "browserify": "^13.1.1",
     "events": "^1.1.1",
-    "grimoirejs": "^0.9.7",
+    "grimoirejs": "^0.9.14",
     "grimoirejs-cauldron": "^1.5.8",
     "grimoirejs-math": "^1.2.3",
     "json5": "^0.5.0",
