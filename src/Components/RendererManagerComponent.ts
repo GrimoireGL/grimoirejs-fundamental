@@ -1,7 +1,8 @@
+import gr from "grimoirejs";
 import {Color4} from "grimoirejs-math";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
 import LoopManagerComponent from "./LoopManagerComponent";
-import Component from "grimoirejs/lib/Node/Component";
+const Component = gr.Node.Component;
 import gr from "grimoirejs";
 import {ns} from "../Constants";
 export default class RendererManagerComponent extends Component {

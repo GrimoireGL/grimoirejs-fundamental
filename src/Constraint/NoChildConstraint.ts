@@ -1,4 +1,5 @@
-import GomlNode from "grimoirejs/lib/Node/GomlNode";
+import gr from "grimoirejs";
+const GomlNode = gr.Node.GomlNode;
 
 function NoChildConstraint(): ((self: GomlNode) => string) {
   return (self: GomlNode) => {

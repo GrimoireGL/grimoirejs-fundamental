@@ -1,6 +1,7 @@
+import gr from "grimoirejs";
 import Geometry from "./Geometry";
 import IGeometryFactoryDelegate from "./IGeometryFactoryDelegate";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
 /**
  * Provides the feature to instanciate primitive geometry.
  */

@@ -1,5 +1,6 @@
+import gr from "grimoirejs";
 import TextureReference from "../Material/TextureReference";
-import Attribute from "grimoirejs/lib/Node/Attribute";
+const Attribute = gr.Node.Attribute;
 import Texture2D from "../Resource/Texture2D";
 import ImageResolver from "../Asset/ImageResolver";
 

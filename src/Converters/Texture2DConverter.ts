@@ -1,4 +1,5 @@
-import Attribute from "grimoirejs/lib/Node/Attribute";
+import gr from "grimoirejs";
+const Attribute = gr.Node.Attribute;
 import Texture2D from "../Resource/Texture2D";
 import ImageResolver from "../Asset/ImageResolver";
 

@@ -1,5 +1,6 @@
+import gr from "grimoirejs";
 import {Rectangle} from "grimoirejs-math";
-import Attribute from "grimoirejs/lib/Node/Attribute";
+const Attribute = gr.Node.Attribute;
 function _toPixel(parentSize: number, rep: string): number {
   let regex = /(\d+)\s*%/;
   let regexResult: RegExpExecArray;

@@ -1,4 +1,5 @@
-import Attribute from "grimoirejs/lib/Node/Attribute";
+import gr from "grimoirejs";
+const Attribute = gr.Node.Attribute;
 import {Vector4} from "grimoirejs-math";
 function Vector4Converter(this: Attribute, val: any): any {
   if (val instanceof Vector4) {

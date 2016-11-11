@@ -1,9 +1,10 @@
+import gr from "grimoirejs";
 import TransformComponent from "./TransformComponent";
-import GomlNode from "grimoirejs/lib/Node/GomlNode";
+const GomlNode = gr.Node.GomlNode;
 import IRenderMessage from "../Messages/IRenderMessage";
 import CameraComponent from "./CameraComponent";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+const Component = gr.Node.Component;
+const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
 import {Vector4, Matrix} from "grimoirejs-math";
 
 export default class HTMLBinderComponent extends Component {

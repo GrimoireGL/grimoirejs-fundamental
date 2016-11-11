@@ -1,4 +1,5 @@
-import Component from "grimoirejs/lib/Node/Component";
+import gr from "grimoirejs";
+const Component = gr.Node.Component;
 import {Rectangle} from "grimoirejs-math";
 import Material from "../Material/Material";
 import Texture2D from "../Resource/Texture2D";

@@ -1,8 +1,9 @@
-import Attribute from "grimoirejs/lib/Node/Attribute";
+import gr from "grimoirejs";
+const Attribute = gr.Node.Attribute;
 import {Quaternion, Vector3, Matrix} from "grimoirejs-math";
 import TransformComponent from "./TransformComponent";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+const Component = gr.Node.Component;
+const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
 
 export default class MouseCameraControlComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {

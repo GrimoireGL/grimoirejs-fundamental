@@ -1,8 +1,9 @@
+import gr from "grimoirejs";
 import {Matrix, Vector3, Vector4, Quaternion} from "grimoirejs-math";
 import ICamera from "../Camera/ICamera";
 import {mat4, vec3, vec4} from "gl-matrix";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+const Component = gr.Node.Component;
+const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
 /**
  * Provides object transformation like translation,rotation,scaling.
  */

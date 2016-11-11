@@ -1,12 +1,13 @@
+import gr from "grimoirejs";
 import RenderSceneArgument from "../Objects/RenderSceneArgument";
 import IRenderMesssage from "../Messages/IRenderMessage";
 import TransformComponent from "./TransformComponent";
 import PerspectiveCamera from "../Camera/PerspectiveCamera";
 import ICamera from "../Camera/ICamera";
-import GomlNode from "grimoirejs/lib/Node/GomlNode";
+const GomlNode = gr.Node.GomlNode;
 import SceneComponent from "./SceneComponent";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+const Component = gr.Node.Component;
+const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
 
 export default class CameraComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {

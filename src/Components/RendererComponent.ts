@@ -1,10 +1,11 @@
+import gr from "grimoirejs";
 import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
 import IResizeBufferMessage from "../Messages/IResizeBufferMessage";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import Texture2D from "../Resource/Texture2D";
 import CameraComponent from "./CameraComponent";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+const Component = gr.Node.Component;
+const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
 import {Rectangle} from "grimoirejs-math";
 
 export default class RendererComponent extends Component {

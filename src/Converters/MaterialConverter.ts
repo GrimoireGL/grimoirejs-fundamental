@@ -1,4 +1,5 @@
-import Attribute from "grimoirejs/lib/Node/Attribute";
+import gr from "grimoirejs";
+const Attribute = gr.Node.Attribute;
 import MaterialFactory from "../Material/MaterialFactory";
 import MaterialComponent from "../Components/MaterialComponent";
 

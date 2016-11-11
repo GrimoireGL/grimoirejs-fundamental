@@ -1,6 +1,7 @@
+import gr from "grimoirejs";
 import AssetLoader from "../Asset/AssetLoader";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+const Component = gr.Node.Component;
+const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
 import gr from "grimoirejs";
 import DefaultLoaderChunk from "../Asset/defaultLoader.html";
 
