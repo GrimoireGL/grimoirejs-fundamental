@@ -1,8 +1,8 @@
 import gr from "grimoirejs";
-const Attribute = gr.Node.Attribute;
+import Attribute from "grimoirejs/ref/Node/Attribute";
 import CanvasSizeObject from "../Objects/CanvasSizeObject";
 
-function CanvasSizeConverter(this: Attribute, val: any): any {
+function CanvasSizeConverter(this:Attribute, val: any): any {
   if (val === "fit") {
     return {
       mode: "fit",

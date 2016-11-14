@@ -6,8 +6,8 @@ import IMaterialArgument from "../Material/IMaterialArgument";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
 import Framebuffer from "../Resource/FrameBuffer";
-const Component = gr.Node.Component;
-const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import {Color4} from "grimoirejs-math";
 
 export default class RenderQuadComponent extends Component {

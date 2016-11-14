@@ -1,6 +1,6 @@
 import gr from "grimoirejs";
-const GomlNode = gr.Node.GomlNode;
-const NSIdentity = gr.Base.NSIdentity;
+import GomlNode from "grimoirejs/ref/Node/GomlNode";
+import NSIdentity from "grimoirejs/ref/Base/NSIdentity";
 
 function ParentConstraint(components: NSIdentity[]): ((self: GomlNode) => string) {
   return (self: GomlNode) => {

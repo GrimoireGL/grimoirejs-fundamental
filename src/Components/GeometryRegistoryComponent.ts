@@ -1,9 +1,9 @@
 import gr from "grimoirejs";
 import GeometryFactory from "../Geometry/GeometryFactory";
 import Geometry from "../Geometry/Geometry";
-const Component = gr.Node.Component;
+import Component from "grimoirejs/ref/Node/Component";
 import GrimoireInterface from "grimoirejs";
-const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
 export default class GeometryRegistoryComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {

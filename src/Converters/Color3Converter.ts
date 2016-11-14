@@ -1,5 +1,5 @@
 import gr from "grimoirejs";
-const Attribute = gr.Node.Attribute;
+import Attribute from "grimoirejs/ref/Node/Attribute";
 import {Color3, Color4} from "grimoirejs-math";
 function Color3Converter(this: Attribute, val: any): any {
   if (val instanceof Color3) {

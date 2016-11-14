@@ -1,5 +1,5 @@
 import gr from "grimoirejs";
-const Attribute = gr.Node.Attribute;
+import Attribute from "grimoirejs/ref/Node/Attribute";
 
 function ObjectConverter(this: Attribute, val: any): any {
   return val;

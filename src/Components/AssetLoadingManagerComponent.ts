@@ -1,9 +1,8 @@
 import gr from "grimoirejs";
 import AssetLoader from "../Asset/AssetLoader";
-const Component = gr.Node.Component;
-const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
-import gr from "grimoirejs";
-import DefaultLoaderChunk from "../Asset/defaultLoader.html";
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import DefaultLoaderChunk from "raw!../Asset/defaultLoader.html";
 
 export default class AssetLoadingManagerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {

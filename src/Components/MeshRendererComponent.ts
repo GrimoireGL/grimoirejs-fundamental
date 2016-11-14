@@ -5,8 +5,8 @@ import GeometryRegistory from "./GeometryRegistoryComponent";
 import IRenderMessage from "../Messages/IRenderMessage";
 import TransformComponent from "./TransformComponent";
 import Geometry from "../Geometry/Geometry";
-const Component = gr.Node.Component;
-const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
 
 export default class MeshRenderer extends Component {

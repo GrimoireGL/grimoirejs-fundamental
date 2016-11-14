@@ -1,8 +1,8 @@
 import gr from "grimoirejs";
 import IResizeBufferMessage from "../Messages/IResizeBufferMessage";
 import Texture2D from "../Resource/Texture2D";
-const Component = gr.Node.Component;
-const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
 export default class TextureBufferComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {

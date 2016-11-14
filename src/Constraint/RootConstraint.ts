@@ -1,5 +1,5 @@
 import gr from "grimoirejs";
-const GomlNode = gr.Node.GomlNode;
+import GomlNode from "grimoirejs/ref/Node/GomlNode";
 
 function RootConstraint(): ((self: GomlNode) => string) {
   return (self: GomlNode) => {

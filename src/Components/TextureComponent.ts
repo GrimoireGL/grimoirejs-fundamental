@@ -1,7 +1,7 @@
 import gr from "grimoirejs";
 import Texture2D from "../Resource/Texture2D";
-const Component = gr.Node.Component;
-const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import ImageResolver from "../Asset/ImageResolver";
 export default class TextureComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {

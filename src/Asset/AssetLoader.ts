@@ -1,5 +1,5 @@
 import gr from "grimoirejs";
-const EEObject = gr.Base.EEObject;
+import EEObject from "grimoirejs/ref/Base/EEObject";
 /**
  * Provides managing all promise on initializing resources.
  */

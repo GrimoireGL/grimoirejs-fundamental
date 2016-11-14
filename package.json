@@ -1,6 +1,6 @@
 {
   "name": "grimoirejs-fundamental",
-  "version": "0.4.9",
+  "version": "0.5.0",
   "description": "Base components,converters and nodes for Web3D with Grimoire.js",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
@@ -15,61 +15,32 @@
   "dependencies": {
     "@types/json5": "0.0.29",
     "babel-cli": "^6.18.0",
+    "babel-loader": "^6.2.7",
     "browserify": "^13.1.1",
     "events": "^1.1.1",
-    "grimoirejs": "^0.9.7",
-    "grimoirejs-cauldron": "^1.5.8",
+    "grimoirejs": "^0.11.3",
     "grimoirejs-math": "^1.2.3",
     "json5": "^0.5.0",
-    "typescript": "beta"
+    "raw-loader": "^0.5.1",
+    "ts-loader": "^1.2.0",
+    "typescript": "beta",
+    "watch": "^1.0.1",
+    "webpack": "^1.13.3"
   },
   "devDependencies": {
     "ava": "^0.16.0",
-    "grimoirejs-cauldron": "^1.5.13",
     "grimoirejs-inquisitor": "^1.0.3",
     "xmldom": "^0.1.22"
   },
   "repository": "",
-  "grimoire": {
-    "isPlugin": true,
-    "ts": {
-      "lib": "./lib",
-      "temp": "./lib-ts",
-      "src": "./src",
-      "es5": "./lib-es5"
-    },
-    "main": "index.ts",
-    "test": {
-      "defaultGlob": "**/*Test.js",
-      "src": "./test",
-      "temp": "./lib-test"
-    },
-    "out": {
-      "es6": "./product/grimoire.es2016.js",
-      "es5": "./product/grimoire.js"
-    },
-    "txt-exts": [
-      ".txt",
-      ".html",
-      ".goml",
-      ".sort",
-      ".glsl"
-    ],
-    "doc": {
-      "src": "./doc",
-      "header": "./doc/header.md",
-      "footer": "./doc/footer.md",
-      "dest": "./README.md"
-    },
-    "namespace": "HTTP://GRIMOIRE.GL/NS/DEFAULT"
-  },
   "scripts": {
-    "start": "cauldron build --watch --server",
-    "build": "cauldron build",
+    "start": "watch 'npm run build' ./src & hs",
     "test": "inquisitor",
-    "prepublish": "cauldron build --babelSeparated && npm run doc",
-    "doc": "cauldron doc",
-    "scaffold": "cauldron scaffold"
+    "bundle": "webpack --progress --watch",
+    "prepublish": "npm run generate-expose && npm run build",
+    "build": "npm run generate-expose && webpack --progress && npm run generate-reference",
+    "generate-expose": "cauldron generate-exposure --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref",
+    "generate-reference": "cauldron generate-reference --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref"
   },
   "license": "MIT"
 }

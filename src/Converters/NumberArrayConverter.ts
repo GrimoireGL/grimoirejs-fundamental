@@ -1,5 +1,5 @@
 import gr from "grimoirejs";
-const Attribute = gr.Node.Attribute;
+import Attribute from "grimoirejs/ref/Node/Attribute";
 function NumberArrayConverter(this: Attribute, val: any): any {
   if (val instanceof Array) {
     return val;

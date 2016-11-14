@@ -1,8 +1,8 @@
 import gr from "grimoirejs";
 import IResizeBufferMessage from "../Messages/IResizeBufferMessage";
 import RenderBuffer from "../Resource/RenderBuffer";
-const Component = gr.Node.Component;
-const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
 export default class RenderBufferComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {

@@ -2,9 +2,8 @@ import gr from "grimoirejs";
 import Texture2D from "../Resource/Texture2D";
 import CanvasSizeObject from "../Objects/CanvasSizeObject";
 import GLExtRequestor from "../Resource/GLExtRequestor";
-const Component = gr.Node.Component;
-const IAttributeDeclaration = gr.Node.IAttributeDeclaration;
-import gr from "grimoirejs";
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 const ns = gr.ns("HTTP://GRIMOIRE.GL/NS/DEFAULT");
 
 enum ResizeMode {

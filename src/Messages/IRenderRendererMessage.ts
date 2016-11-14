@@ -1,5 +1,5 @@
 import gr from "grimoirejs";
-const Component = gr.Node.Component;
+import Component from "grimoirejs/ref/Node/Component";
 import Material from "../Material/Material";
 import Texture2D from "../Resource/Texture2D";
 import CameraComponent from "../Components/CameraComponent";

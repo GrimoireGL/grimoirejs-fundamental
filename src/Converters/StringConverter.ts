@@ -1,5 +1,5 @@
 import gr from "grimoirejs";
-const Attribute = gr.Node.Attribute;
+import Attribute from "grimoirejs/ref/Node/Attribute";
 
 function StringConverter(this: Attribute, val: any): any {
   if (typeof val === "string") {

@@ -1,7 +1,7 @@
 import gr from "grimoirejs";
-const Attribute = gr.Node.Attribute;
-const Component = gr.Node.Component;
-const GomlNode = gr.Node.GomlNode;
+import Attribute from "grimoirejs/ref/Node/Attribute";
+import Component from "grimoirejs/ref/Node/Component";
+import GomlNode from "grimoirejs/ref/Node/GomlNode";
 
 
 function ComponentConverter(this: Attribute, val: any): any {

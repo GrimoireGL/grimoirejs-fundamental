@@ -3,7 +3,7 @@ import MacroRegistory from "./MacroRegistory";
 import PassFactory from "./PassFactory";
 import TextFileResolver from "../Asset/TextFileResolver";
 import Material from "./Material";
-import ShaderHeader from "./Static/header.glsl";
+import ShaderHeader from "raw!./Static/header.glsl";
 /**
  * Manage factories for materials.
  * Materials can be instanciated with this instance.
