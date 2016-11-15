@@ -1,5 +1,8 @@
 import gr from "grimoirejs";
-import {Matrix, Vector3, Vector4, Quaternion} from "grimoirejs-math";
+import Matrix from "grimoirejs-math/ref/Matrix";
+import Vector3 from "grimoirejs-math/ref/Vector3";
+import Vector4 from "grimoirejs-math/ref/Vector4";
+import Quaternion from "grimoirejs-math/ref/Quaternion";
 import ICamera from "../Camera/ICamera";
 import {mat4, vec3, vec4} from "gl-matrix";
 import Component from "grimoirejs/ref/Node/Component";

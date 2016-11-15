@@ -4,7 +4,7 @@ import ResourceBase from "../Resource/ResourceBase";
 import SORTPass from "../Material/SORTPass";
 import AssetLoader from "../Asset/AssetLoader";
 import Material from "../Material/Material";
-import {Color4} from "grimoirejs-math";
+import Color4 from "grimoirejs-math/ref/Color4";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";

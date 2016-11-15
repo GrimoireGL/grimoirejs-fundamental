@@ -1,4 +1,4 @@
-import {Color4} from "grimoirejs-math";
+import Color4 from "grimoirejs-math/ref/Color4";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import LoopManagerComponent from "./LoopManagerComponent";
 import Component from "grimoirejs/ref/Node/Component";

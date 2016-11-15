@@ -8,7 +8,7 @@ import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
 import Framebuffer from "../Resource/FrameBuffer";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import {Color4} from "grimoirejs-math";
+import Color4 from "grimoirejs-math/ref/Color4";
 
 export default class RenderQuadComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {

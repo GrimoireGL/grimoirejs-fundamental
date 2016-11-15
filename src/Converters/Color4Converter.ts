@@ -1,6 +1,8 @@
 import gr from "grimoirejs";
 import Attribute from "grimoirejs/ref/Node/Attribute";
-import {Color3, Color4} from "grimoirejs-math";
+import Color3 from "grimoirejs-math/ref/Color3";
+import Color4 from "grimoirejs-math/ref/Color4";
+
 function Color4Converter(this: Attribute, val: any): any {
   if (val instanceof Color4) {
     return val;

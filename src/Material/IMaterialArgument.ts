@@ -1,5 +1,5 @@
 import CameraComponent from "../Components/CameraComponent";
-import Rectangle from "grimoirejs-math/lib/Rectangle";
+import Rectangle from "grimoirejs-math/ref/Rectangle";
 import Texture2D from "../Resource/Texture2D";
 import TransformComponent from "../Components/TransformComponent";
 import ICamera from "../Camera/ICamera";

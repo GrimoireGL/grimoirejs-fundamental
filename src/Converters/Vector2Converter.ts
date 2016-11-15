@@ -1,6 +1,6 @@
 import gr from "grimoirejs";
 import Attribute from "grimoirejs/ref/Node/Attribute";
-import {Vector2} from "grimoirejs-math";
+import Vector2 from "grimoirejs-math/ref/Vector2";
 function Vector2Converter(this: Attribute, val: any): any {
   if (val instanceof Vector2) {
     return val;

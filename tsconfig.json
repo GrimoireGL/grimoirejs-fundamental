@@ -2,10 +2,10 @@
   "compilerOptions": {
     "target": "es6",
     "module": "es6",
-    "outDir": "../lib",
+    "outDir": "./lib",
     "declaration": true,
     "moduleResolution": "node",
-    "declarationDir": "../ref"
+    "declarationDir": "./ref"
   },
   "filesGlob": [
     "./src/**/*.ts"

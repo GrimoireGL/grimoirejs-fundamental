@@ -1,4 +1,4 @@
-import {Vector3} from "grimoirejs-math";
+import Vector3 from "grimoirejs-math/ref/Vector3";
 export default class GeometryUtility {
   /**
    * Generateor wrap for array

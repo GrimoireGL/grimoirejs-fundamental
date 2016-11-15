@@ -1,5 +1,7 @@
 import TransformComponent from "../Components/TransformComponent";
-import {Vector3, Vector4, Matrix} from "grimoirejs-math";
+import Vector3 from "grimoirejs-math/ref/Vector3";
+import Vector4 from "grimoirejs-math/ref/Vector4";
+import Matrix from "grimoirejs-math/ref/Matrix";
 import ICamera from "./ICamera";
 import {mat4, vec3, vec4} from "gl-matrix";
 /**
