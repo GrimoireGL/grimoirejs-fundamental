@@ -2,15 +2,17 @@
   "name": "grimoirejs-fundamental",
   "version": "0.5.2",
   "description": "Base components,converters and nodes for Web3D with Grimoire.js",
-  "main": "./lib/index.js",
-  "typings": "./lib/index.d.ts",
+  "main": "./ref/index.js",
+  "typings": "./ref/index.d.ts",
   "files": [
     "src",
-    "lib",
-    "lib-es5"
+    "ref",
+    "register"
   ],
   "keywords": [
-    "grimoire"
+    "grimoire",
+    "grimoirejs",
+    "shading"
   ],
   "dependencies": {
     "@types/json5": "0.0.29",
