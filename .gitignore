@@ -107,3 +107,5 @@ $RECYCLE.BIN/
 lib
 ref
 register
+lib-es5
+test-es5
