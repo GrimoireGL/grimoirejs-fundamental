@@ -1,8 +1,11 @@
-import Attribute from "grimoirejs/lib/Node/Attribute";
-import {Quaternion, Vector3, Matrix} from "grimoirejs-math";
+import gr from "grimoirejs";
+import Attribute from "grimoirejs/ref/Node/Attribute";
+import Vector3 from "grimoirejs-math/ref/Vector3";
+import Quaternion from "grimoirejs-math/ref/Quaternion";
+import Matrix from "grimoirejs-math/ref/Matrix";
 import TransformComponent from "./TransformComponent";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
 export default class MouseCameraControlComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
@@ -57,7 +60,7 @@ export default class MouseCameraControlComponent extends Component {
     this._initialUp = Vector3.copy(this._transform.up);
     this._initialDirection = this._transform.localPosition.subtractWith(this._origin);
     this._initialRotation = this._transform.localRotation;
-    this._origin =this._transform.localPosition.addWith(this._transform.forward.multiplyWith(this._center));
+    this._origin = this._transform.localPosition.addWith(this._transform.forward.multiplyWith(this._center));
     let scriptTag = this.companion.get("canvasElement");
     scriptTag.addEventListener("mousemove", this._mouseMove.bind(this));
     scriptTag.addEventListener("contextmenu", this._contextMenu.bind(this));

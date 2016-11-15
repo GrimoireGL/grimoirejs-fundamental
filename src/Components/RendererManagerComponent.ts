@@ -1,9 +1,8 @@
-import {Color4} from "grimoirejs-math";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+import Color4 from "grimoirejs-math/ref/Color4";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import LoopManagerComponent from "./LoopManagerComponent";
-import Component from "grimoirejs/lib/Node/Component";
+import Component from "grimoirejs/ref/Node/Component";
 import gr from "grimoirejs";
-import {ns} from "../Constants";
 export default class RendererManagerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     bgColor: {

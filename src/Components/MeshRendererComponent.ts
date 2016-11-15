@@ -1,11 +1,12 @@
+import gr from "grimoirejs";
 import MaterialContainerComponent from "./MaterialContainerComponent";
 import IMaterialArgument from "../Material/IMaterialArgument";
 import GeometryRegistory from "./GeometryRegistoryComponent";
 import IRenderMessage from "../Messages/IRenderMessage";
 import TransformComponent from "./TransformComponent";
 import Geometry from "../Geometry/Geometry";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
 
 export default class MeshRenderer extends Component {

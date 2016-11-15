@@ -1,4 +1,5 @@
-import IDObject from "grimoirejs/lib/Base/IDObject";
+import gr from "grimoirejs";
+import IDObject from "grimoirejs/ref/Base/IDObject";
 
 
 abstract class ResourceBase extends IDObject {

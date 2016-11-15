@@ -1,3 +1,4 @@
+import gr from "grimoirejs";
 import MaterialContainerComponent from "./MaterialContainerComponent";
 import GeometryRegistoryComponent from "./GeometryRegistoryComponent";
 import Geometry from "../Geometry/Geometry";
@@ -5,9 +6,9 @@ import IMaterialArgument from "../Material/IMaterialArgument";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
 import Framebuffer from "../Resource/FrameBuffer";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
-import {Color4} from "grimoirejs-math";
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Color4 from "grimoirejs-math/ref/Color4";
 
 export default class RenderQuadComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {

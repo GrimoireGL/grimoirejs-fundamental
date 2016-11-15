@@ -1,5 +1,6 @@
-import Attribute from "grimoirejs/lib/Node/Attribute";
-function BooleanConverter(this: Attribute, val: any): any {
+import gr from "grimoirejs";
+import Attribute from "grimoirejs/ref/Node/Attribute";
+function BooleanConverter(this:Attribute, val: any): any {
   if (typeof val === "boolean") {
     return val;
   } else if (typeof val === "string") {

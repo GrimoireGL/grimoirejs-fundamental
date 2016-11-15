@@ -1,4 +1,5 @@
-import Attribute from "grimoirejs/lib/Node/Attribute";
+import gr from "grimoirejs";
+import Attribute from "grimoirejs/ref/Node/Attribute";
 function NumberArrayConverter(this: Attribute, val: any): any {
   if (val instanceof Array) {
     return val;

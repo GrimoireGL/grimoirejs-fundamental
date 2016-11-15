@@ -8,5 +8,4 @@ machine:
       version: 6.5.0
 test:
   override:
-    - sh ./scripts/test.sh:
-        parallel: true
+    - npm run build && npm test

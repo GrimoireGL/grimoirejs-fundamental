@@ -1,6 +1,10 @@
 import Texture2D from "./Texture2D";
-import {Vector2, Vector3, Vector4, Color3, Color4} from "grimoirejs-math";
-import {Matrix} from "grimoirejs-math";
+import Vector2 from "grimoirejs-math/ref/Vector2";
+import Vector3 from "grimoirejs-math/ref/Vector3";
+import Vector4 from "grimoirejs-math/ref/Vector4";
+import Color3 from "grimoirejs-math/ref/Color3";
+import Color4 from "grimoirejs-math/ref/Color4";
+import Matrix from "grimoirejs-math/ref/Matrix";
 import Program from "./Program";
 export default class UniformProxy {
   private _gl: WebGLRenderingContext;

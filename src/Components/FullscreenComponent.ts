@@ -1,5 +1,6 @@
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+import gr from "grimoirejs";
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
 export default class FullscreenComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {

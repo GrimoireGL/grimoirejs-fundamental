@@ -1,7 +1,8 @@
 import "../TestInit";
 import test from 'ava';
 import Color3Converter from '../../lib-es5/Converters/Color3Converter';
-import { Color3, Color4 } from "grimoirejs-math";
+import Color3 from "grimoirejs-math/ref/Color3";
+import Color4 from "grimoirejs-math/ref/Color4";
 const c1 = new Color4(1, 1, 0, 1);
 const c2 = new Color3(1, 1, 0);
 const w = new Color3(1, 1, 1, 1);

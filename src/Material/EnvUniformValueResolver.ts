@@ -1,4 +1,4 @@
-import {Vector2} from "grimoirejs-math";
+import Vector2 from "grimoirejs-math/ref/Vector2";
 import IMaterialArgument from "./IMaterialArgument";
 import UniformProxy from "../Resource/UniformProxy";
 import IVariableInfo from "./Transformers/Interfaces/IVariableInfo";

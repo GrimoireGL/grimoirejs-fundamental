@@ -1,4 +1,5 @@
-import Attribute from "grimoirejs/lib/Node/Attribute";
+import gr from "grimoirejs";
+import Attribute from "grimoirejs/ref/Node/Attribute";
 import MaterialFactory from "../Material/MaterialFactory";
 import MaterialComponent from "../Components/MaterialComponent";
 

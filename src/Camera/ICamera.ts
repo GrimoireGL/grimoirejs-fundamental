@@ -1,5 +1,6 @@
 import TransformComponent from "../Components/TransformComponent";
-import {Vector3, Matrix} from "grimoirejs-math";
+import Matrix from "grimoirejs-math/ref/Matrix";
+
 /**
  * Provides basic abstraction for camera.
  */

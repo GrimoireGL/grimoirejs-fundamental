@@ -2,7 +2,10 @@
   "compilerOptions": {
     "target": "es6",
     "module": "es6",
-    "outDir": "./lib"
+    "outDir": "./lib",
+    "declaration": true,
+    "moduleResolution": "node",
+    "declarationDir": "./ref"
   },
   "filesGlob": [
     "./src/**/*.ts"
@@ -39,7 +42,6 @@
     "./src/Components/TextureBufferComponent.ts",
     "./src/Components/TextureComponent.ts",
     "./src/Components/TransformComponent.ts",
-    "./src/Constants.ts",
     "./src/Constraint/ChildrenComponentConstraint.ts",
     "./src/Constraint/NoChildConstraint.ts",
     "./src/Constraint/ParentConstraint.ts",
@@ -59,7 +61,6 @@
     "./src/Converters/Rotation3Converter.ts",
     "./src/Converters/StringArrayConverter.ts",
     "./src/Converters/StringConverter.ts",
-    "./src/Converters/Texture2DConverter.ts",
     "./src/Converters/TextureConverter.ts",
     "./src/Converters/Vector2Converter.ts",
     "./src/Converters/Vector3Converter.ts",
@@ -76,6 +77,7 @@
     "./src/Geometry/VertexBufferAttribInfo.ts",
     "./src/index.ts",
     "./src/json5.d.ts",
+    "./src/main.ts",
     "./src/Material/DefaultMacro.ts",
     "./src/Material/DefaultMaterial.ts",
     "./src/Material/EnvUniformValueResolver.ts",
@@ -113,6 +115,7 @@
     "./src/Messages/IResizeBufferMessage.ts",
     "./src/Objects/CanvasSizeObject.ts",
     "./src/Objects/RenderSceneArgument.ts",
+    "./src/raw.d.ts",
     "./src/Resource/Buffer.ts",
     "./src/Resource/FrameBuffer.ts",
     "./src/Resource/GLExtRequestor.ts",

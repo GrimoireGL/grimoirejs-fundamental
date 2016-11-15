@@ -1,4 +1,4 @@
-import {Vector3} from "grimoirejs-math";
+import Vector3 from "grimoirejs-math/ref/Vector3";
 import GeometryUtility from "./GeometryUtility";
 import GeometryFactory from "./GeometryFactory";
 import GeometryBuilder from "./GeometryBuilder";
