@@ -1,0 +1,37 @@
+<goml width="fit" height="512">
+  <!-- <import-material typeName="external" src="./sort/edge-sprite.sort"/> -->
+  <material id="sprite" type="unlit" color="white" texture="video(./img/video.mp4)"/>
+  <scene>
+    <camera class="camera" near="0.01" far="40.0" aspect="1.0" fovy="45d" position="0,0,10" rotation="y(0d)">
+      <camera.components>
+        <MouseCameraControl />
+      </camera.components>
+    </camera>
+    <mesh position="0,0,0" rotation="y(30d)" geometry="sphere" color="red" texture="video(./img/video.mp4)"></mesh>
+    <mesh position="2,0,0" geometry="sphere" material="#sprite">
+      <mesh.components>
+        <HTMLBinder htmlQuery="#a6"/>
+      </mesh.components></mesh>
+    <mesh position="-2,0,0" geometry="sphere" material="#sprite">
+      <mesh.components>
+        <HTMLBinder htmlQuery="#a5"/>
+      </mesh.components></mesh>
+    <mesh position="4,0,0" geometry="sphere" material="#sprite">
+      <mesh.components>
+        <HTMLBinder htmlQuery="#a4"/>
+      </mesh.components></mesh>
+    <mesh position="-4,0,0" geometry="sphere" material="#sprite">
+      <mesh.components>
+        <HTMLBinder htmlQuery="#a3"/>
+      </mesh.components></mesh>
+    <mesh position="6,0,0" geometry="sphere" material="#sprite">
+      <mesh.components>
+        <HTMLBinder htmlQuery="#a2"/>
+      </mesh.components></mesh>
+    <mesh position="-6,0,0" geometry="sphere" material="#sprite">
+      <mesh.components>
+        <HTMLBinder htmlQuery="#a1"/>
+      </mesh.components>
+    </mesh>
+  </scene>
+</goml>

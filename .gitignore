@@ -105,7 +105,7 @@ $RECYCLE.BIN/
 .Trash-*
 
 lib
-lib-ts
-product
+ref
+register
 lib-es5
-src/**/*.*.d.ts
+test-es5

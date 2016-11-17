@@ -1,3 +1,4 @@
+import gr from "grimoirejs";
 import MaterialContainerComponent from "./MaterialContainerComponent";
 import GeometryRegistoryComponent from "./GeometryRegistoryComponent";
 import Geometry from "../Geometry/Geometry";
@@ -5,39 +6,39 @@ import IMaterialArgument from "../Material/IMaterialArgument";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
 import Framebuffer from "../Resource/FrameBuffer";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
-import {Color4} from "grimoirejs-math";
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Color4 from "grimoirejs-math/ref/Color4";
 
 export default class RenderQuadComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     out: {
       defaultValue: "default",
-      converter: "string"
+      converter: "String"
     },
     depthBuffer: {
       defaultValue: undefined,
-      converter: "string"
+      converter: "String"
     },
     targetBuffer: {
       defaultValue: "default",
-      converter: "string",
+      converter: "String",
     },
     clearColor: {
       defaultValue: "#0000",
-      converter: "color4",
+      converter: "Color4",
     },
     clearColorEnabled: {
       defaultValue: true,
-      converter: "boolean",
+      converter: "Boolean",
     },
     clearDepthEnabled: {
       defaultValue: true,
-      converter: "boolean",
+      converter: "Boolean",
     },
     clearDepth: {
       defaultValue: 1.0,
-      converter: "number",
+      converter: "Number",
     }
   };
 
@@ -115,10 +116,11 @@ export default class RenderQuadComponent extends Component {
       targetBuffer: this._targetBuffer,
       geometry: this._geom,
       attributeValues: {},
-      camera: args.camera.camera,
+      camera: null,
       transform: null,
       buffers: args.buffers,
-      viewport: args.viewport
+      viewport: args.viewport,
+      defaultTexture: this.companion.get("defaultTexture")
     };
     renderArgs.attributeValues = this._materialContainer.materialArgs;
     // do render

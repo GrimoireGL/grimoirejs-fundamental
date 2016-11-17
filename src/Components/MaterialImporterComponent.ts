@@ -1,24 +1,25 @@
+import gr from "grimoirejs";
 import MaterialFactory from "../Material/MaterialFactory";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
 export default class MaterialImporterComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
-    type: {
+    typeName: {
       defaultValue: undefined,
-      converter: "string"
+      converter: "String"
     },
     src: {
       defaultValue: undefined,
-      converter: "string"
+      converter: "String"
     }
   };
 
-  public $mount(): void {
-    if (!this.getValue("type") || !this.getValue("src")) {
+  public $awake(): void {
+    if (!this.getValue("typeName") || !this.getValue("src")) {
       throw new Error("type or src cannot be null in material importer");
     } else {
-      MaterialFactory.addSORTMaterialFromURL(this.getValue("type"), this.getValue("src"));
+      MaterialFactory.addSORTMaterialFromURL(this.getValue("typeName"), this.getValue("src"));
     }
   }
 }

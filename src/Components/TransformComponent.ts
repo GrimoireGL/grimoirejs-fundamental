@@ -1,23 +1,27 @@
-import {Matrix, Vector3, Vector4, Quaternion} from "grimoirejs-math";
+import gr from "grimoirejs";
+import Matrix from "grimoirejs-math/ref/Matrix";
+import Vector3 from "grimoirejs-math/ref/Vector3";
+import Vector4 from "grimoirejs-math/ref/Vector4";
+import Quaternion from "grimoirejs-math/ref/Quaternion";
 import ICamera from "../Camera/ICamera";
 import {mat4, vec3, vec4} from "gl-matrix";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 /**
  * Provides object transformation like translation,rotation,scaling.
  */
 export default class TransformComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     "position": {
-      converter: "vector3",
+      converter: "Vector3",
       defaultValue: Vector3.Zero
     },
     "rotation": {
-      converter: "rotation3",
+      converter: "Rotation3",
       defaultValue: Quaternion.Identity
     },
     "scale": {
-      converter: "vector3",
+      converter: "Vector3",
       defaultValue: Vector3.One
     }
   };
@@ -66,23 +70,25 @@ export default class TransformComponent extends Component {
    * @return {[type]} [description]
    */
   private _cachePVM: Matrix = new Matrix();
+
+  private _cacheVM: Matrix = new Matrix();
   /**
    * Cache for position
    * @type {Vector3}
    */
-  private _position: Vector3;
+  private _localPosition: Vector3;
 
   /**
    * Cache for rotation
    * @type {Quaternion}
    */
-  private _rotation: Quaternion;
+  private _localRotation: Quaternion;
 
   /**
    * Cache for scaling
    * @type {Vector3}
    */
-  private _scale: Vector3;
+  private _localScale: Vector3;
 
   /**
    * Cache of forward direction of this object
@@ -99,30 +105,42 @@ export default class TransformComponent extends Component {
    */
   private _right: Vector3 = new Vector3([1, 0, 0, 0]);
 
-  public get position(): Vector3 {
-    return this._position;
+  private _globalPosition: Vector3 = new Vector3([0, 0, 0]);
+
+  private _globalScale: Vector3 = new Vector3([1, 1, 1]);
+
+  public get globalPosition(): Vector3 {
+    return this._globalPosition;
   }
 
-  public set position(val: Vector3) {
-    this._position = val;
+  public get localPosition(): Vector3 {
+    return this._localPosition;
+  }
+
+  public set localPosition(val: Vector3) {
+    this._localPosition = val;
     this.attributes.get("position").Value = val;
   }
 
-  public get rotation(): Quaternion {
-    return this._rotation;
+  public get localRotation(): Quaternion {
+    return this._localRotation;
   }
 
-  public set rotation(val: Quaternion) {
-    this._rotation = val;
+  public set localRotation(val: Quaternion) {
+    this._localRotation = val;
     this.attributes.get("rotation").Value = val;
   }
 
-  public get scale(): Vector3 {
-    return this._scale;
+  public get globalScale(): Vector3 {
+    return this._globalScale;
   }
 
-  public set scale(val: Vector3) {
-    this._scale = val;
+  public get localScale(): Vector3 {
+    return this._localScale;
+  }
+
+  public set localScale(val: Vector3) {
+    this._localScale = val;
     this.attributes.get("scale").Value = val;
   }
 
@@ -138,20 +156,34 @@ export default class TransformComponent extends Component {
     return this._right;
   }
 
-  public calcPVW(camera: ICamera): Matrix {
+  public calcPVM(camera: ICamera): Matrix {
     mat4.mul(this._cachePVM.rawElements, camera.getProjectionViewMatrix().rawElements, this.globalTransform.rawElements);
     return this._cachePVM;
   }
 
+  public calcVM(camera: ICamera): Matrix {
+    mat4.mul(this._cacheVM.rawElements, camera.getViewMatrix().rawElements, this.globalTransform.rawElements);
+    return this._cacheVM;
+  }
+
   public $awake(): void {
     // register observers
-    this.attributes.get("position").addObserver(() => this.updateTransform());
-    this.attributes.get("rotation").addObserver(() => this.updateTransform());
-    this.attributes.get("scale").addObserver(() => this.updateTransform());
+    this.attributes.get("position").addObserver(() => {
+      this._localPosition = this.attributes.get("position").Value;
+      this.updateTransform();
+    });
+    this.attributes.get("rotation").addObserver(() => {
+      this._localRotation = this.attributes.get("rotation").Value;
+      this.updateTransform();
+    });
+    this.attributes.get("scale").addObserver(() => {
+      this._localScale = this.attributes.get("scale").Value;
+      this.updateTransform();
+    });
     // assign attribute values to field
-    this._position = this.attributes.get("position").Value;
-    this._rotation = this.attributes.get("rotation").Value;
-    this._scale = this.attributes.get("scale").Value;
+    this._localPosition = this.attributes.get("position").Value;
+    this._localRotation = this.attributes.get("rotation").Value;
+    this._localScale = this.attributes.get("scale").Value;
     this.updateTransform();
   }
 
@@ -176,7 +208,7 @@ export default class TransformComponent extends Component {
    * This need to be called if you manually edit raw elements of scale,position or rotation to recalculate transform matricies.
    */
   public updateTransform(): void {
-    mat4.fromRotationTranslationScale(this.localTransform.rawElements, this._rotation.rawElements, this._position.rawElements, this._scale.rawElements);
+    mat4.fromRotationTranslationScale(this.localTransform.rawElements, this._localRotation.rawElements, this._localPosition.rawElements, this._localScale.rawElements);
     this.updateGlobalTransform();
   }
   /**
@@ -189,6 +221,7 @@ export default class TransformComponent extends Component {
       mat4.mul(this.globalTransform.rawElements, this._parentTransform.globalTransform.rawElements, this.localTransform.rawElements);
     }
     this._updateDirections();
+    this._updateGlobalProperty();
     this.node.sendMessage("transformUpdated", this);
     this._children.forEach((v) => v.updateGlobalTransform());
   }
@@ -197,6 +230,16 @@ export default class TransformComponent extends Component {
     vec4.transformMat4(this._forward.rawElements, TransformComponent._forwardBase.rawElements, this.globalTransform.rawElements);
     vec4.transformMat4(this._up.rawElements, TransformComponent._upBase.rawElements, this.globalTransform.rawElements);
     vec4.transformMat4(this._right.rawElements, TransformComponent._rightBase.rawElements, this.globalTransform.rawElements);
+  }
+
+  private _updateGlobalProperty(): void {
+    if (!this._parentTransform) {
+      vec3.copy(this._globalPosition.rawElements, this._localPosition.rawElements);
+      vec3.copy(this._globalScale.rawElements, this._localScale.rawElements);
+    } else {
+      vec3.transformMat4(this._globalPosition.rawElements, this._localPosition.rawElements, this._parentTransform.globalTransform.rawElements);
+      vec3.transformMat4(this._globalScale.rawElements, this._localScale.rawElements, this._parentTransform.globalTransform.rawElements); // TODO buggy
+    }
   }
 
 }

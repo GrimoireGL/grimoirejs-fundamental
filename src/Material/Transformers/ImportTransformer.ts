@@ -15,7 +15,7 @@ async function _parseImport(source: string): Promise<string> {
 }
 
 export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
-  const transformed = await _parseImport(input.transforming);
-  input.transforming = transformed;
+  const transformed = await _parseImport(input.info.shaderSource);
+  input.info.shaderSource = transformed;
   return input;
 }

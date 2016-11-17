@@ -1,9 +1,10 @@
-import GomlNode from "grimoirejs/lib/Node/GomlNode";
-import NSIdentity from "grimoirejs/lib/Base/NSIdentity";
+import gr from "grimoirejs";
+import GomlNode from "grimoirejs/ref/Node/GomlNode";
+import NSIdentity from "grimoirejs/ref/Base/NSIdentity";
 
 function ChildrenComponentConstraint(componentIds: NSIdentity[]): ((self: GomlNode) => string) {
   return (self: GomlNode) => {
-    return checkRecursive(self, componentIds) ? null : "ChildrenComponentConstraint Error:" + self.nodeName;
+    return checkRecursive(self, componentIds) ? null : "ChildrenComponentConstraint Error:" + self.name;
   };
 }
 

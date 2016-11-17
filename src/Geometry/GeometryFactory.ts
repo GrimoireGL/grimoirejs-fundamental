@@ -1,6 +1,7 @@
+import gr from "grimoirejs";
 import Geometry from "./Geometry";
 import IGeometryFactoryDelegate from "./IGeometryFactoryDelegate";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 /**
  * Provides the feature to instanciate primitive geometry.
  */
@@ -36,5 +37,15 @@ export default class GeometryFactory {
       throw new Error(`Can not instanciate unknown geometry type ${type}`);
     }
     return factoryDelegate(this.gl, args);
+  }
+
+  public instanciateAsDefault(type: string): Geometry {
+    const decl = GeometryFactory.factoryArgumentDeclarations[type];
+    const args = {};
+    for (let attr in decl) {
+      const attrDecl = decl[attr];
+      args[attr] = attrDecl.defaultValue;
+    }
+    return this.instanciate(type, args);
   }
 }

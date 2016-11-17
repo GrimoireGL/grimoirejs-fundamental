@@ -5,7 +5,7 @@ interface IndexBufferInfo {
   count: number;
   type: number;
   topology: number;
-  offset: number;
+  byteSize: number;
 }
 
 export default IndexBufferInfo;

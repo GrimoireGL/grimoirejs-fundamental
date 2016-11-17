@@ -1,7 +1,7 @@
-import {Vector2} from "grimoirejs-math";
+import Vector2 from "grimoirejs-math/ref/Vector2";
 import IMaterialArgument from "./IMaterialArgument";
 import UniformProxy from "../Resource/UniformProxy";
-import IVariableInfo from "./IVariableInfo";
+import IVariableInfo from "./Transformers/Interfaces/IVariableInfo";
 /**
  * Environment uniform value resolver
  */
@@ -53,7 +53,17 @@ export default class EnvUniformValueResolver {
   }
 }
 
-EnvUniformValueResolver.addResolver("_matPVM", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.transform.calcPVW(args.camera)));
+// Matricies
+EnvUniformValueResolver.addResolver("_matPVM", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.transform.calcPVM(args.camera.camera)));
+EnvUniformValueResolver.addResolver("_matP", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.camera.getProjectionMatrix()));
+EnvUniformValueResolver.addResolver("_matV", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.camera.getViewMatrix()));
+EnvUniformValueResolver.addResolver("_matM", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.transform.globalTransform));
+EnvUniformValueResolver.addResolver("_matVM", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.transform.calcVM(args.camera.camera)));
+EnvUniformValueResolver.addResolver("_matPV", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.camera.getProjectionViewMatrix()));
+
+
+
+// Misc
 EnvUniformValueResolver.addResolver("_time", (valInfo, name) => (proxy, args) => proxy.uniformFloat(name, Date.now() % 1000000));
 EnvUniformValueResolver.addResolver("_viewportSize", (valInfo, name) => {
   const cacheVec = new Vector2(0, 0);
@@ -63,10 +73,5 @@ EnvUniformValueResolver.addResolver("_viewportSize", (valInfo, name) => {
     proxy.uniformVector2(name, cacheVec);
   };
 });
-EnvUniformValueResolver.addDynamicResolver((valInfo, name) => {
-  if (valInfo.variableType === "sampler2D" && valInfo.variableAnnotation["type"] === "backbuffer") {
-    return (proxy, mat) => {
-      proxy.uniformTexture2D(name, mat.buffers[valInfo.variableAnnotation["name"]]);
-    };
-  }
-});
+EnvUniformValueResolver.addResolver("_cameraPosition", (valInfo, name) => (proxy, args) => proxy.uniformVector3(name, args.camera.transform.globalPosition));
+EnvUniformValueResolver.addResolver("_cameraDirection", (valInfo, name) => (proxy, args) => proxy.uniformVector3(name, args.camera.transform.forward));

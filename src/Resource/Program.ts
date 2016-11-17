@@ -46,7 +46,7 @@ export default class Program extends ResourceBase {
   public findAttributeLocation(variableName: string): number {
     if (typeof this._attributeLocations[variableName] === "undefined") {
       this._attributeLocations[variableName] = this.gl.getAttribLocation(this.program, variableName);
-      this.gl.enableVertexAttribArray(this._attributeLocations[variableName]);
+      this._safeEnableVertexAttribArray(this._attributeLocations[variableName]);
       return this._attributeLocations[variableName];
     } else {
       return this._attributeLocations[variableName];
@@ -59,5 +59,12 @@ export default class Program extends ResourceBase {
     } else {
       return this._uniformLocations[variableName];
     }
+  }
+
+  private _safeEnableVertexAttribArray(location: number): void {
+    if (location < 0) {
+      return;
+    }
+    this.gl.enableVertexAttribArray(location);
   }
 }

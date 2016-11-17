@@ -1,18 +1,33 @@
+import gr from "grimoirejs";
+import ResourceBase from "../Resource/ResourceBase";
 import MaterialComponent from "./MaterialComponent";
 import SORTPass from "../Material/SORTPass";
 import Material from "../Material/Material";
 import AssetLoader from "../Asset/AssetLoader";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
-
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import GrimoireInterface from "grimoirejs";
 export default class MaterialContainerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     material: {
-      converter: "material",
-      defaultValue: undefined,
+      converter: "Material",
+      defaultValue: "new(unlit)",
       componentBoundTo: "_materialComponent" // When the material was specified with the other material tag, this field would be assigned.
     }
   };
+
+  public static rewriteDefaultMaterial(materialName: string): void {
+    if (materialName !== MaterialContainerComponent._defaultMaterial) {
+      MaterialContainerComponent._defaultMaterial = materialName;
+      GrimoireInterface.componentDeclarations.get("MaterialContainer").attributes["material"].defaultValue = `new(${materialName})`;
+    }
+  }
+
+  public static get defaultMaterial(): string {
+    return this._defaultMaterial;
+  }
+
+  private static _defaultMaterial = "unlit";
 
   public material: Material;
 
@@ -20,10 +35,12 @@ export default class MaterialContainerComponent extends Component {
 
   public ready: boolean = false;
 
+  public useMaterial: boolean = false;
+
   private _materialComponent: MaterialComponent;
 
   public $mount(): void {
-    this.attributes.get("material").addObserver(this._onMaterialChanged);
+    this.getAttribute("material").addObserver(this._onMaterialChanged);
     (this.companion.get("loader") as AssetLoader).register(this._onMaterialChanged());
   }
 
@@ -32,6 +49,11 @@ export default class MaterialContainerComponent extends Component {
    */
   private async _onMaterialChanged(): Promise<void> {
     const materialPromise = this.getValue("material") as Promise<Material>;
+    if (materialPromise === void 0) {
+      this.useMaterial = false;
+      return; // When specified material is null
+    }
+    this.useMaterial = true;
     if (!this._materialComponent) { // the material must be instanciated by attribute.
       this._prepareInternalMaterial(materialPromise);
     } else {
@@ -63,17 +85,46 @@ export default class MaterialContainerComponent extends Component {
     const promises: Promise<any>[] = [];
     material.pass.forEach((p) => {
       if (p instanceof SORTPass) {
-        for (let key in p.programInfo.gomlAttributes) {
-          const val = p.programInfo.gomlAttributes[key];
+        const cp: SORTPass = p as SORTPass;
+        for (let key in cp.sort.gomlAttributes) {
+          const val = cp.sort.gomlAttributes[key];
           this.__addAtribute(key, val);
-          this.attributes.get(key).addObserver((v) => {
+          this.getAttribute(key).addObserver((v) => {
             this.materialArgs[key] = v.Value;
           });
-          this.materialArgs[key] = this.getValue(key);
+          const value = this.materialArgs[key] = this.getValue(key);
+          if (value instanceof ResourceBase) {
+            promises.push((value as ResourceBase).validPromise);
+          }
+        }
+        for (let macro of cp.sort.macros) {
+          switch (macro.type) {
+            case "int": // should use integer converter
+              this.__addAtribute(macro.attributeName, {
+                converter: "Number",
+                defaultValue: macro.default
+              });
+              this.getAttribute(macro.attributeName).addObserver(
+                (v) => {
+                  cp.setMacro(macro.macroName, "" + Math.floor(v.Value));
+                }, true);
+              return;
+            case "bool": // should use integer converter
+              this.__addAtribute(macro.attributeName, {
+                converter: "Boolean",
+                defaultValue: macro.default
+              });
+              this.getAttribute(macro.attributeName).addObserver(
+                (v) => {
+                  cp.setMacro(macro.macroName, v.Value);
+                }, true);
+              return;
+          }
+
         }
       }
     });
-    await Promise.all(promises);
+    Promise.all(promises);
     this.material = material;
     this.ready = true;
   }

@@ -1,15 +1,16 @@
+import gr from "grimoirejs";
 import MaterialFactory from "../Material/MaterialFactory";
 import SORTPass from "../Material/SORTPass";
 import Material from "../Material/Material";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import ResourceBase from "../Resource/ResourceBase";
 
 
 export default class MaterialComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     type: {
-      converter: "string",
+      converter: "String",
       defaultValue: undefined
     }
   };
@@ -35,14 +36,41 @@ export default class MaterialComponent extends Component {
     const promises: Promise<any>[] = [];
     this.material.pass.forEach(p => {
       if (p instanceof SORTPass) {
-        for (let key in p.programInfo.gomlAttributes) {
-          this.__addAtribute(key, p.programInfo.gomlAttributes[key]);
+        const cp: SORTPass = p as SORTPass;
+        for (let key in cp.sort.gomlAttributes) {
+          this.__addAtribute(key, cp.sort.gomlAttributes[key]);
           this.attributes.get(key).addObserver((v) => {
             this.materialArgs[key] = v.Value;
           });
           const value = this.materialArgs[key] = this.getValue(key);
           if (value instanceof ResourceBase) {
             promises.push((value as ResourceBase).validPromise);
+          }
+        }
+        for (let macro of cp.sort.macros) {
+          switch (macro.type) {
+            case "int": // should use integer converter
+              this.__addAtribute(macro.attributeName, {
+                converter: "Number",
+                defaultValue: macro.default
+              });
+              this.getAttribute(macro.attributeName).addObserver(
+                (v) => {
+                  cp.setMacro(macro.macroName, "" + Math.floor(v.Value));
+                }, true);
+              return;
+            case "bool": // should use integer converter
+              this.__addAtribute(macro.attributeName, {
+                converter: "Boolean",
+                defaultValue: macro.default
+              });
+              this.getAttribute(macro.attributeName).addObserver(
+                (v) => {
+                  cp.setMacro(macro.macroName, v.Value);
+                }, true);
+              return;
+            default:
+              throw new Error(`Unexpected macro type ${macro.type}`);
           }
         }
       }

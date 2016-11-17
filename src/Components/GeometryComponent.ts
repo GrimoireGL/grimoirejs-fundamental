@@ -1,17 +1,18 @@
+import gr from "grimoirejs";
 import GeometryRegistory from "./GeometryRegistoryComponent";
 import GeometryFactory from "../Geometry/GeometryFactory";
 import Geometry from "../Geometry/Geometry";
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
 export default class GeometryComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     type: {
-      converter: "string",
+      converter: "String",
       defaultValue: undefined
     },
     name: {
-      converter: "string",
+      converter: "String",
       defaultValue: undefined
     }
   };

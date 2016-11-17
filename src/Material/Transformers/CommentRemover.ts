@@ -1,40 +1,41 @@
 import ITransformingArgument from "./ITransformingArgument";
 
-function _removeLineComment(source: string): string {
-  let text: string = source;
-  const regex = /(\/\/.*)/g;
-  while (true) {
-    const found = regex.exec(text);
-    if (!found) {
-      break;
+function _removeComment(source: string): string {
+  let text: string = "";
+  let isLineComment = false;
+  let isMultiLineComment = false;
+  for (let i = 0; i < source.length; i++) {
+    const c = source.charAt(i);
+    if (c === "/") {
+      if (i + 1 < source.length) {
+        if (source.charAt(i + 1) === "/" && !isMultiLineComment) {
+          isLineComment = true;
+          i++;
+          continue;
+        } else if (source.charAt(i + 1) === "*" && !isLineComment) {
+          isMultiLineComment = true;
+          i++;
+          continue;
+        }
+      }
     }
-    let beginPoint = found.index;
-    text = text.substr(0, beginPoint) + text.substring(beginPoint + found[0].length, text.length);
+    if (c === "*" && isMultiLineComment && (i + 1 < source.length) && source.charAt(i + 1) === "/") {
+      isMultiLineComment = false;
+      i++;
+      continue;
+    }
+    if (c === "\n" && isLineComment) {
+      isLineComment = false;
+      continue;
+    }
+    if (!isLineComment && !isMultiLineComment) {
+      text += c;
+    }
   }
   return text;
 }
 
-function _removeMultiLineComment(source: string): string {
-  while (true) {
-    const found = source.indexOf("/*", 0);
-    if (found < 0) {
-      break; // When there was no more found
-    }
-    let beginPoint = found;
-    const endPoint: number = source.indexOf("*/", beginPoint);
-    if (endPoint < 1) {
-      // error no bracket matching
-      console.error("Invalid bracket matching!");
-      return source;
-    }
-
-    source = source.substr(0, beginPoint) + source.substring(endPoint + 2, source.length);
-  }
-  return source;
-}
-
 export default async function(input: ITransformingArgument): Promise<ITransformingArgument> {
-  input.transforming = _removeMultiLineComment(input.transforming);
-  input.transforming = _removeLineComment(input.transforming);
+  input.info.shaderSource = _removeComment(input.info.shaderSource);
   return input;
 }

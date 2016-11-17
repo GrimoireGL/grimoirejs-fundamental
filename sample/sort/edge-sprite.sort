@@ -1,0 +1,48 @@
+@Pass
+@ExposeMacro(int,flag,FLAG,0)
+@DepthFunc(LEQUAL)
+@CullFace(FRONT)
+#ifdef VS
+   attribute vec3 position;
+   uniform mat4 _matPVM;
+
+   @{default:"1.1"}
+   uniform float edgeScale;
+   void main(){
+      gl_Position = _matPVM * vec4(position * edgeScale,1);
+   }
+#endif
+
+#ifdef FS
+  precision mediump float;
+  uniform float test;
+
+  @{type:"color", default:"black"}
+  uniform vec4 edgeColor;
+
+  void main(){
+     gl_FragColor = edgeColor;//vec4(1,1,0,1);
+  }
+#endif
+
+@Pass
+@DepthFunc(LEQUAL)
+@CullFace(BACK)
+#ifdef VS
+   attribute vec3 position;
+   uniform mat4 _matPVM;
+   void main(){
+      gl_Position = _matPVM * vec4(position,1);
+   }
+#endif
+
+#ifdef FS
+  precision mediump float;
+
+  @{type:"color", default:"pink"}
+  uniform vec4 color;
+
+  void main(){
+     gl_FragColor = color;//vec4(1,1,1,1);
+  }
+#endif

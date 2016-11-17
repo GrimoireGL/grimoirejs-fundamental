@@ -1,8 +1,9 @@
-import Component from "grimoirejs/lib/Node/Component";
-import IAttributeDeclaration from "grimoirejs/lib/Node/IAttributeDeclaration";
+import gr from "grimoirejs";
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
 interface LoopAction {
-  action: () => void;
+  action: (loopIndex: number) => void;
   priorty: number;
 }
 
@@ -10,13 +11,15 @@ class LoopManagerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     loopEnabled: {
       defaultValue: false,
-      converter: "boolean"
+      converter: "Boolean"
     }
   };
 
   private _loopActions: LoopAction[] = [];
 
   private _registerNextLoop: () => void;
+
+  private _loopIndex: number = 0;
 
   public $awake(): void {
     this.attributes.get("loopEnabled").addObserver((attr) => {
@@ -35,7 +38,7 @@ class LoopManagerComponent extends Component {
 
   }
 
-  public register(action: () => void, priorty: number): void {
+  public register(action: (loopIndex: number) => void, priorty: number): void {
     this._loopActions.push({
       action: action,
       priorty: priorty
@@ -48,7 +51,8 @@ class LoopManagerComponent extends Component {
   }
 
   private _loop(): void {
-    this._loopActions.forEach((a) => a.action());
+    this._loopActions.forEach((a) => a.action(this._loopIndex));
+    this._loopIndex++;
     this._registerNextLoop();
   }
 

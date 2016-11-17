@@ -14,8 +14,9 @@ export default class Shader extends ResourceBase {
     this.gl.shaderSource(this.shader, source);
     this.gl.compileShader(this.shader);
     if (!this.gl.getShaderParameter(this.shader, WebGLRenderingContext.COMPILE_STATUS)) {
-      throw new Error(`Compiling shader failed.\nSourceCode:\n${this.sourceCode}\n\nErrorCode:${this.gl.getShaderInfoLog(this.shader)}`);
+      throw new Error(`Compiling shader failed.\nSourceCode:\n${source}\n\nErrorCode:${this.gl.getShaderInfoLog(this.shader)}`);
     }
+    this.sourceCode = source;
     this.valid = true;
   }
 
