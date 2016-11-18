@@ -12,15 +12,15 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 export default class CameraComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     fovy: {
-      defaultValue: 0.3,
-      converter: "Number"
+      defaultValue: "45d",
+      converter: "Angle2D"
     },
     near: {
       defaultValue: 0.01,
       converter: "Number"
     },
     far: {
-      defaultValue: 10,
+      defaultValue: 200,
       converter: "Number"
     },
     aspect: {
