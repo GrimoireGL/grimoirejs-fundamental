@@ -97,7 +97,7 @@ export default class RenderQuadComponent extends Component {
     // bound render target
     if (this._fbo) {
       this._fbo.bind();
-      this._gl.viewport(0, 0, args.viewport.Width, args.viewport.Height);
+      this._gl.viewport(0, 0, args.bufferSize.width, args.bufferSize.height);
     } else {
       this._gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
       this._gl.viewport(args.viewport.Left, this._canvas.height - args.viewport.Bottom, args.viewport.Width, args.viewport.Height);
