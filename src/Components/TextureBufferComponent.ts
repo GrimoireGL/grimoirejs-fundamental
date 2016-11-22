@@ -3,7 +3,7 @@ import IResizeBufferMessage from "../Messages/IResizeBufferMessage";
 import Texture2D from "../Resource/Texture2D";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-
+import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 export default class TextureBufferComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
@@ -35,7 +35,9 @@ export default class TextureBufferComponent extends Component {
     if (!this.getValue("name")) {
       throw new Error(`Attribute 'name' must be specified.`);
     }
-    this.buffer.update(0, arg.widthPowerOf2, arg.heightPowerOf2, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, null);
+    const newSize = TextureSizeCalculator.getPow2Size(arg.width, arg.height);
+    this.buffer.update(0, newSize.width, newSize.height, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, null);
+    arg.bufferSizes[this.getValue("name")] = { width: newSize.width, height: newSize.height };
     arg.buffers[this.getValue("name")] = this.buffer;
   }
 }

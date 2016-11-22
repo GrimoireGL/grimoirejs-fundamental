@@ -125,7 +125,8 @@
     "./src/Resource/Shader.ts",
     "./src/Resource/Texture2D.ts",
     "./src/Resource/UniformProxy.ts",
-    "./src/Util/RotationParser.ts"
+    "./src/Util/RotationParser.ts",
+    "./src/Util/TextureSizeCalculator.ts"
   ],
   "exclude": [],
   "atom": {

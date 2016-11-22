@@ -85,6 +85,7 @@
   import ResourceTexture2D from "./Resource/Texture2D";
   import ResourceUniformProxy from "./Resource/UniformProxy";
   import UtilRotationParser from "./Util/RotationParser";
+  import UtilTextureSizeCalculator from "./Util/TextureSizeCalculator";
   import __INTERFACE__1 from "./Camera/ICamera";
   import __INTERFACE__2 from "./Geometry/GeometryBufferConstructionInfo";
   import __INTERFACE__3 from "./Geometry/IGeometryFactoryDelegate";
@@ -213,7 +214,8 @@ var __EXPOSE__ = {
     "UniformProxy": ResourceUniformProxy
   },
   "Util": {
-    "RotationParser": UtilRotationParser
+    "RotationParser": UtilRotationParser,
+    "TextureSizeCalculator": UtilTextureSizeCalculator
   }
 };
 

@@ -33,7 +33,9 @@ export default class RendererComponent extends Component {
 
   private _buffers: { [key: string]: Texture2D } = {};
 
-  private _sizePowerOf2: { width: number, height: number };
+  private _bufferSizes: {
+    [bufferName: string]: { width: number, height: number }
+  } = {};
 
   public $mount(): void {
     this._gl = this.companion.get("gl") as WebGLRenderingContext;
@@ -54,19 +56,18 @@ export default class RendererComponent extends Component {
 
   public $resizeCanvas(): void {
     this._viewportCache = this._viewportSizeGenerator(this._canvas);
-    this._sizePowerOf2 = this._getSizePowerOf2(this._viewportCache.Width, this._viewportCache.Height);
     if (this.node.children.length === 0) {
       this.node.addChildByName("render-scene", {});
     }
     this.node.broadcastMessage("resizeBuffer", <IResizeBufferMessage>{ // TODO apply when viewport was changed
-      widthPowerOf2: this._sizePowerOf2.width,
-      heightPowerOf2: this._sizePowerOf2.height,
       width: this._viewportCache.Width,
       height: this._viewportCache.Height,
-      buffers: this._buffers
+      buffers: this._buffers,
+      bufferSizes: this._bufferSizes
     });
     this.node.broadcastMessage("bufferUpdated", <IBufferUpdatedMessage>{
-      buffers: this._buffers
+      buffers: this._buffers,
+      bufferSizes: this._bufferSizes
     });
   }
 
@@ -74,19 +75,10 @@ export default class RendererComponent extends Component {
     this.node.broadcastMessage("render", <IRenderRendererMessage>{
       camera: this._camera,
       viewport: this._viewportCache,
-      bufferSize: this._sizePowerOf2,
+      bufferSizes: this._bufferSizes,
       buffers: this._buffers,
       loopIndex: args.loopIndex
     });
-  }
-
-  private _getSizePowerOf2(width: number, height: number): { width: number, height: number } {
-    const nw = Math.pow(2, Math.log(width) / Math.LN2 | 0); // largest 2^n integer that does not exceed s
-    const nh = Math.pow(2, Math.log(height) / Math.LN2 | 0); // largest 2^n integer that does not exceed s
-    return {
-      width: nw,
-      height: nh
-    };
   }
 
 }

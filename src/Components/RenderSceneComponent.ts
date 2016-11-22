@@ -57,6 +57,8 @@ export default class RenderSceneComponent extends Component {
 
   private _fbo: Framebuffer;
 
+  private _fboSize: { width: number, height: number };
+
   // backing fields
 
   private _layer: string;
@@ -94,6 +96,7 @@ export default class RenderSceneComponent extends Component {
     if (out !== "default") {
       this._fbo = new Framebuffer(this.companion.get("gl"));
       this._fbo.update(args.buffers[out]);
+      this._fboSize = args.bufferSizes[out];
     }
     const depthBuffer = this.getValue("depthBuffer");
     if (depthBuffer && this._fbo) {
@@ -108,7 +111,7 @@ export default class RenderSceneComponent extends Component {
     }
     if (this._fbo) {
       this._fbo.bind();
-      this._gl.viewport(0, 0, args.bufferSize.width, args.bufferSize.height);
+      this._gl.viewport(0, 0, this._fboSize.width, this._fboSize.height);
     } else {
       this._gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
       this._gl.viewport(args.viewport.Left, this._canvas.height - args.viewport.Bottom, args.viewport.Width, args.viewport.Height);
