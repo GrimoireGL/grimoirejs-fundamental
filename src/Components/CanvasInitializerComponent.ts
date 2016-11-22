@@ -1,4 +1,4 @@
-import gr from "grimoirejs";
+import gr from "grimoirejs/ref/GrimoireInterface";
 import Texture2D from "../Resource/Texture2D";
 import CanvasSizeObject from "../Objects/CanvasSizeObject";
 import GLExtRequestor from "../Resource/GLExtRequestor";
@@ -123,6 +123,9 @@ class CanvasInitializerComponent extends Component {
       this._applyManualWidth(size.width, supressBroadcast);
     }
     if (this._heightMode === ResizeMode.Fit) {
+      if (size.height === 0 && gr.debug) {
+        console.warn("Canvas height parameter specified as fit and height of parent element is 0.\n This is possibly the reason you haven't set css to html or body element.");
+      }
       this._applyManualHeight(size.height, supressBroadcast);
     }
   }
