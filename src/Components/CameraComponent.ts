@@ -2,7 +2,7 @@ import gr from "grimoirejs";
 import RenderSceneArgument from "../Objects/RenderSceneArgument";
 import IRenderMesssage from "../Messages/IRenderMessage";
 import TransformComponent from "./TransformComponent";
-import PerspectiveCamera from "../Camera/PerspectiveCamera";
+import BasicCamera from "../Camera/BasicCamera";
 import ICamera from "../Camera/ICamera";
 import SceneComponent from "./SceneComponent";
 import GomlNode from "grimoirejs/ref/Node/GomlNode";
@@ -29,6 +29,14 @@ export default class CameraComponent extends Component {
     },
     autoAspect: {
       defaultValue: true,
+      converter: "Boolean"
+    },
+    orthoSize: {
+      defaultValue: 100,
+      converter: "Number"
+    },
+    orthogonal: {
+      defaultValue: false,
       converter: "Boolean"
     }
   };
@@ -61,9 +69,10 @@ export default class CameraComponent extends Component {
     }
   }
 
+
   public $awake(): void {
     this.containedScene = CameraComponent._findContainedScene(this.node);
-    const c = this.camera = new PerspectiveCamera();
+    const c = this.camera = new BasicCamera();
     this.transform = this.node.getComponent("Transform") as TransformComponent;
     this.$transformUpdated(this.transform);
     this.getAttribute("far").addObserver((v) => {
@@ -77,6 +86,12 @@ export default class CameraComponent extends Component {
     }, true);
     this.getAttribute("aspect").addObserver((v) => {
       c.setAspect(v.Value);
+    }, true);
+    this.getAttribute("orthoSize").addObserver((v) => {
+      c.setOrthoSize(v.Value);
+    }, true);
+    this.getAttribute("orthogonal").addObserver((v) => {
+      c.setOrthographicMode(v.Value);
     }, true);
     this.getAttribute("autoAspect").boundTo("_autoAspect");
   }
