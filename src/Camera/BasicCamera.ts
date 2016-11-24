@@ -4,7 +4,8 @@ import Vector3 from "grimoirejs-math/ref/Vector3";
 import Vector4 from "grimoirejs-math/ref/Vector4";
 import Matrix from "grimoirejs-math/ref/Matrix";
 import ICamera from "./ICamera";
-import {mat4, vec3, vec4} from "gl-matrix";
+import GLM from "grimoirejs-math/ref/GLM";
+const {mat4, vec3, vec4} = GLM;
 /**
  * Provides perspective camera as implementation of ICamera.
  */

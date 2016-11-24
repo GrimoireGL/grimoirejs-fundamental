@@ -3,7 +3,8 @@ import Vector3 from "grimoirejs-math/ref/Vector3";
 import Matrix from "grimoirejs-math/ref/Matrix";
 import Vector4 from "grimoirejs-math/ref/Vector4";
 import ICamera from "./ICamera";
-import {mat4, vec3, vec4} from "gl-matrix";
+import GLM from "grimoirejs-math/ref/GLM";
+const {mat4, vec3, vec4} = GLM;
 abstract class ViewCameraBase implements ICamera {
   private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
   private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);

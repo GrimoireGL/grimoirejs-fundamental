@@ -4,9 +4,10 @@ import Vector3 from "grimoirejs-math/ref/Vector3";
 import Vector4 from "grimoirejs-math/ref/Vector4";
 import Quaternion from "grimoirejs-math/ref/Quaternion";
 import ICamera from "../Camera/ICamera";
-import {mat4, vec3, vec4} from "gl-matrix";
+import GLM from "grimoirejs-math/ref/GLM";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+const {mat4, vec3, vec4} = GLM;
 /**
  * Provides object transformation like translation,rotation,scaling.
  */
