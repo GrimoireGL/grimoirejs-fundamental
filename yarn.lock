@@ -1823,9 +1823,9 @@ grimoirejs-cauldron@^2.1.0:
     watch "^1.0.1"
     yargs "^6.3.0"
 
-grimoirejs-math@^1.5.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/grimoirejs-math/-/grimoirejs-math-1.5.1.tgz#178aa4ea5cc70bb36c63f37308bdf0deb2b91ea1"
+grimoirejs-math@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/grimoirejs-math/-/grimoirejs-math-1.5.2.tgz#b002c944b354ee40cef83bde9bddf1a9b4d6a5c5"
   dependencies:
     gl-matrix "git+https://github.com/GrimoireGL/gl-matrix.git#master"
 
