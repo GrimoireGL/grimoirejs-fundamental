@@ -1,8 +1,8 @@
+import AABB from "grimoirejs-math/ref/AABB";
+import VertexBufferAttribInfo from "./VertexBufferAttribInfo";
 import Program from "../Resource/Program";
 import IndexBufferInfo from "./IndexBufferInfo";
-import Buffer from "../Resource/Buffer";
-import VertexBufferAttribInfo from "./VertexBufferAttribInfo";
-
+import Buffer from "../Resource/Buffer"
 /**
  * The geometry class for managing buffer resource
  */
@@ -10,7 +10,7 @@ export default class Geometry {
 
   private _gl: WebGLRenderingContext;
 
-  constructor(public verticies: { [key: string]: Buffer }, public attribInfo: { [key: string]: VertexBufferAttribInfo }, public indicies: { [key: string]: IndexBufferInfo }) {
+  constructor(public verticies: { [key: string]: Buffer }, public attribInfo: { [key: string]: VertexBufferAttribInfo }, public indicies: { [key: string]: IndexBufferInfo }, public aabb: AABB) {
     this._validateGLContext();
     // check all buffers requested by attribute variables are all contained in verticies
     for (let attrKey in attribInfo) {

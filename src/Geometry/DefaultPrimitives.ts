@@ -1,9 +1,13 @@
+import AABB from "grimoirejs-math/ref/AABB";
 import Vector3 from "grimoirejs-math/ref/Vector3";
 import GeometryUtility from "./GeometryUtility";
 import GeometryFactory from "./GeometryFactory";
 import GeometryBuilder from "./GeometryBuilder";
-// TODO add normal and texCoords
-// TODO apply attributes
+
+const unitBox = new AABB();
+unitBox.expandAABB(new Vector3(-1, -1, -1));
+unitBox.expandAABB(new Vector3(1, 1, 1));
+
 export default class DefaultPrimitives {
   public static register(): void {
     DefaultPrimitives._registerTriangle();
@@ -146,7 +150,8 @@ export default class DefaultPrimitives {
               };
             }
           }
-        }
+        },
+        aabb: unitBox
       });
     });
   }
@@ -201,7 +206,8 @@ export default class DefaultPrimitives {
               };
             }
           }
-        }
+        },
+        aabb: unitBox
       });
     });
   }
@@ -300,7 +306,8 @@ export default class DefaultPrimitives {
               };
             }
           }
-        }
+        },
+        aabb: unitBox
       });
     });
   }
@@ -349,7 +356,8 @@ export default class DefaultPrimitives {
               };
             }
           }
-        }
+        },
+        aabb: unitBox
       });
     });
   }

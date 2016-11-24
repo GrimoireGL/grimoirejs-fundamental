@@ -1,3 +1,4 @@
+import AABB from "grimoirejs-math/ref/AABB";
 interface GeometryBufferConstructionInfo {
   verticies: {
     [bufferName: string]: {
@@ -17,6 +18,7 @@ interface GeometryBufferConstructionInfo {
       topology: number;
     };
   };
+  aabb?: AABB;
 }
 
 export default GeometryBufferConstructionInfo;
