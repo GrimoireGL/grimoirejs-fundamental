@@ -6,3 +6,8 @@ test('Vector2Converter should convert collectly', (t) => {
   const vec = new Vector2(1, 1);
   t.truthy(Vector2.equals(Vector2Converter("1,1"), vec));
 });
+
+test('Vector2Converter should convert collectly', (t) => {
+  const vec = new Vector2(1, 1);
+  t.truthy(Vector2.equals(Vector2Converter(1), vec));
+});

@@ -6,3 +6,7 @@ test('Vector4Converter should convert collectly', (t) => {
   const vec = new Vector4(1, 1, 2, 1);
   t.truthy(Vector4.equals(Vector4Converter("1, 1, 2, 1"), vec));
 });
+test('Vector4Converter should convert collectly', (t) => {
+  const vec = new Vector4(1, 1, 1, 1);
+  t.truthy(Vector4.equals(Vector4Converter(1), vec));
+});
