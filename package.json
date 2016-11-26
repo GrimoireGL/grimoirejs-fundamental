@@ -1,6 +1,6 @@
 {
   "name": "grimoirejs-fundamental",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Base components,converters and nodes for Web3D with Grimoire.js",
   "main": "./ref/index.js",
   "typings": "./ref/index.d.ts",
@@ -17,7 +17,7 @@
   "dependencies": {
     "@types/json5": "0.0.29",
     "grimoirejs": "^0.11.11",
-    "grimoirejs-math": "^1.5.2",
+    "grimoirejs-math": "^1.6.0",
     "json5": "^0.5.0"
   },
   "devDependencies": {
@@ -25,7 +25,7 @@
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
-    "grimoirejs-cauldron": "^2.1.0",
+    "grimoirejs-cauldron": "^2.1.2",
     "raw-loader": "^0.5.1",
     "regenerator-runtime": "^0.10.0",
     "ts-loader": "^1.2.2",
