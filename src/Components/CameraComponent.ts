@@ -1,6 +1,7 @@
+import RenderQueue from "../SceneRenderer/RenderQueue";
+import IRenderArgument from "../SceneRenderer/IRenderArgument";
 import gr from "grimoirejs";
 import RenderSceneArgument from "../Objects/RenderSceneArgument";
-import IRenderMesssage from "../Messages/IRenderMessage";
 import TransformComponent from "./TransformComponent";
 import BasicCamera from "../Camera/BasicCamera";
 import ICamera from "../Camera/ICamera";
@@ -51,6 +52,8 @@ export default class CameraComponent extends Component {
 
   private _aspectCache: number;
 
+  private _renderQueue: RenderQueue = new RenderQueue();
+
   /**
  * Find scene tag recursively.
  * @param  {GomlNode}       node [the node to searching currently]
@@ -71,7 +74,6 @@ export default class CameraComponent extends Component {
 
 
   public $awake(): void {
-    this.containedScene = CameraComponent._findContainedScene(this.node);
     const c = this.camera = new BasicCamera();
     this.transform = this.node.getComponent("Transform") as TransformComponent;
     this.$transformUpdated(this.transform);
@@ -96,6 +98,16 @@ export default class CameraComponent extends Component {
     this.getAttribute("autoAspect").boundTo("_autoAspect");
   }
 
+  public $mount(): void {
+    this.containedScene = CameraComponent._findContainedScene(this.node);
+    this.containedScene.queueRegistory.registerQueue(this._renderQueue);
+  }
+
+  public $unmount(): void {
+    this.containedScene.queueRegistory.unregisterQueue(this._renderQueue);
+    this.containedScene = null;
+  }
+
   public updateContainedScene(loopIndex: number): void {
     if (this.containedScene) {
       this.containedScene.updateScene(loopIndex);
@@ -105,9 +117,10 @@ export default class CameraComponent extends Component {
   public renderScene(args: RenderSceneArgument): void {
     if (this.containedScene) {
       this._justifyAspect(args);
-      (args as IRenderMesssage).sceneDescription = this.containedScene.sceneDescription;
-      (args as IRenderMesssage).defaultTexture = this.companion.get("defaultTexture");
-      this.containedScene.node.broadcastMessage("render", args as IRenderMesssage);
+      (args as IRenderArgument).sceneDescription = this.containedScene.sceneDescription;
+      (args as IRenderArgument).defaultTexture = this.companion.get("defaultTexture");
+      this._renderQueue.renderAll(args as IRenderArgument, true, args.loopIndex);
+      this.node.broadcastMessage("render", args as IRenderArgument);
     }
   }
 

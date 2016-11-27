@@ -73,7 +73,7 @@ export default class GeometryBuilder {
             i++;
           }
           if (needConstructAABB && genIndex === positionGeneratorIndex) {
-            aabb.expandAABB(new Vector3(bufferSource[i - 3], bufferSource[i - 2], bufferSource[i - 1]))
+            aabb.expand(new Vector3(bufferSource[i - 3], bufferSource[i - 2], bufferSource[i - 1]))
           }
         }
       }

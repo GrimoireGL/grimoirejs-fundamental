@@ -85,6 +85,8 @@
   import ResourceShader from "./Resource/Shader";
   import ResourceTexture2D from "./Resource/Texture2D";
   import ResourceUniformProxy from "./Resource/UniformProxy";
+  import SceneRendererRenderQueue from "./SceneRenderer/RenderQueue";
+  import SceneRendererRenderQueueRegistry from "./SceneRenderer/RenderQueueRegistry";
   import UtilRotationParser from "./Util/RotationParser";
   import UtilTextureSizeCalculator from "./Util/TextureSizeCalculator";
   import __INTERFACE__1 from "./Camera/ICamera";
@@ -101,11 +103,12 @@
   import __INTERFACE__12 from "./Material/Transformers/ITransformingArgument";
   import __INTERFACE__13 from "./Material/Transformers/PreferenceParser";
   import __INTERFACE__14 from "./Messages/IBufferUpdatedMessage";
-  import __INTERFACE__15 from "./Messages/IRenderMessage";
-  import __INTERFACE__16 from "./Messages/IRenderRendererMessage";
-  import __INTERFACE__17 from "./Messages/IResizeBufferMessage";
-  import __INTERFACE__18 from "./Objects/CanvasSizeObject";
-  import __INTERFACE__19 from "./Objects/RenderSceneArgument";
+  import __INTERFACE__15 from "./Messages/IRenderRendererMessage";
+  import __INTERFACE__16 from "./Messages/IResizeBufferMessage";
+  import __INTERFACE__17 from "./Objects/CanvasSizeObject";
+  import __INTERFACE__18 from "./Objects/RenderSceneArgument";
+  import __INTERFACE__19 from "./SceneRenderer/IRenderable";
+  import __INTERFACE__20 from "./SceneRenderer/IRenderArgument";
 
 import __MAIN__ from "./main"
 
@@ -214,6 +217,10 @@ var __EXPOSE__ = {
     "Shader": ResourceShader,
     "Texture2D": ResourceTexture2D,
     "UniformProxy": ResourceUniformProxy
+  },
+  "SceneRenderer": {
+    "RenderQueue": SceneRendererRenderQueue,
+    "RenderQueueRegistry": SceneRendererRenderQueueRegistry
   },
   "Util": {
     "RotationParser": UtilRotationParser,

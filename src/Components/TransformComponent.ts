@@ -120,7 +120,7 @@ export default class TransformComponent extends Component {
 
   public set localPosition(val: Vector3) {
     this._localPosition = val;
-    this.attributes.get("position").Value = val;
+    this.setValue("position", val);
   }
 
   public get localRotation(): Quaternion {
@@ -129,7 +129,7 @@ export default class TransformComponent extends Component {
 
   public set localRotation(val: Quaternion) {
     this._localRotation = val;
-    this.attributes.get("rotation").Value = val;
+    this.setValue("rotation", val);
   }
 
   public get globalScale(): Vector3 {
@@ -142,7 +142,7 @@ export default class TransformComponent extends Component {
 
   public set localScale(val: Vector3) {
     this._localScale = val;
-    this.attributes.get("scale").Value = val;
+    this.setValue("scale", val);
   }
 
   public get forward(): Vector3 {
@@ -169,25 +169,24 @@ export default class TransformComponent extends Component {
 
   public $awake(): void {
     // register observers
-    this.attributes.get("position").addObserver(() => {
-      this._localPosition = this.attributes.get("position").Value;
+    this.getAttribute("position").addObserver((v) => {
+      this._localPosition = v.Value;
       this.updateTransform();
     });
-    this.attributes.get("rotation").addObserver(() => {
-      this._localRotation = this.attributes.get("rotation").Value;
+    this.getAttribute("rotation").addObserver((v) => {
+      this._localRotation = v.Value;
       this.updateTransform();
     });
-    this.attributes.get("scale").addObserver(() => {
-      this._localScale = this.attributes.get("scale").Value;
+    this.getAttribute("scale").addObserver((v) => {
+      this._localScale = v.Value;
       this.updateTransform();
     });
     // assign attribute values to field
-    this._localPosition = this.attributes.get("position").Value;
-    this._localRotation = this.attributes.get("rotation").Value;
-    this._localScale = this.attributes.get("scale").Value;
+    this._localPosition = this.getValue("position");
+    this._localRotation = this.getValue("rotation");
+    this._localScale = this.getValue("scale");
     this.updateTransform();
   }
-
 
   public $mount(): void {
     this._parentTransform = this.node.parent.getComponent("Transform") as TransformComponent;

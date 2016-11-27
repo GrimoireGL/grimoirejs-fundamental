@@ -5,8 +5,8 @@ import GeometryFactory from "./GeometryFactory";
 import GeometryBuilder from "./GeometryBuilder";
 
 const unitBox = new AABB();
-unitBox.expandAABB(new Vector3(-1, -1, -1));
-unitBox.expandAABB(new Vector3(1, 1, 1));
+unitBox.expand(new Vector3(-1, -1, -1));
+unitBox.expand(new Vector3(1, 1, 1));
 
 export default class DefaultPrimitives {
   public static register(): void {

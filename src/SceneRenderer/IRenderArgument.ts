@@ -7,7 +7,7 @@ import CameraComponent from "../Components/CameraComponent";
 /**
  * The message args of $render called by RendererComponent.
  */
-interface IRenderMessage {
+interface IRenderArgument {
   /**
    * Reference to CameraComponent used for rendering in this time.
    * @type {CameraComponent}
@@ -24,4 +24,4 @@ interface IRenderMessage {
   defaultTexture: Texture2D;
 }
 
-export default IRenderMessage;
+export default IRenderArgument;

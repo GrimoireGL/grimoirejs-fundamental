@@ -1,15 +1,38 @@
+import SceneComponent from "./SceneComponent";
+import GomlNode from "grimoirejs/ref/Node/GomlNode";
+import CameraComponent from "./CameraComponent";
+import IRenderable from "../SceneRenderer/IRenderable";
+import IRenderArgument from "../SceneRenderer/IRenderArgument";
 import gr from "grimoirejs";
 import MaterialContainerComponent from "./MaterialContainerComponent";
 import IMaterialArgument from "../Material/IMaterialArgument";
 import GeometryRegistory from "./GeometryRegistoryComponent";
-import IRenderMessage from "../Messages/IRenderMessage";
 import TransformComponent from "./TransformComponent";
 import Geometry from "../Geometry/Geometry";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
 
-export default class MeshRenderer extends Component {
+export default class MeshRenderer extends Component implements IRenderable {
+
+  /**
+ * Find scene tag recursively.
+ * @param  {GomlNode}       node [the node to searching currently]
+ * @return {SceneComponent}      [the scene component found]
+ */
+  private static _findContainedScene(node: GomlNode): SceneComponent {
+    if (node.parent) {
+      const scene = node.parent.getComponent("Scene");
+      if (scene && scene instanceof SceneComponent) {
+        return scene as SceneComponent;
+      } else {
+        return MeshRenderer._findContainedScene(node.parent);
+      }
+    } else {
+      return null;
+    }
+  }
+
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     geometry: {
       converter: "Geometry",
@@ -37,9 +60,14 @@ export default class MeshRenderer extends Component {
   private _targetBuffer: string;
   private _materialContainer: MaterialContainerComponent;
   private _transformComponent: TransformComponent;
+  private _containedScene: SceneComponent;
   private _layer: string;
   private _drawOffset: number;
   private _drawCount: number;
+
+  public getRenderingPriorty(camera: CameraComponent, cameraMoved: boolean, lastPriorty: number): number {
+    return 10000 - camera.transform.globalPosition.subtractWith(this._transformComponent.globalPosition).magnitude;
+  }
 
   public $awake(): void {
     this.getAttribute("targetBuffer").boundTo("_targetBuffer");
@@ -52,9 +80,15 @@ export default class MeshRenderer extends Component {
   public $mount(): void {
     this._transformComponent = this.node.getComponent("Transform") as TransformComponent;
     this._materialContainer = this.node.getComponent("MaterialContainer") as MaterialContainerComponent;
+    this._containedScene = MeshRenderer._findContainedScene(this.node);
+    this._containedScene.queueRegistory.addRenderable(this);
   }
 
-  public $render(args: IRenderMessage): void {
+  public $unmount(): void {
+    this._containedScene.queueRegistory.removeRenderable(this);
+  }
+
+  public render(args: IRenderArgument): void {
     if (this._layer !== args.layer) {
       return;
     }

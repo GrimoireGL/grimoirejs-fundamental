@@ -1,7 +1,7 @@
+import IRenderArgument from "../SceneRenderer/IRenderArgument";
 import gr from "grimoirejs";
 import TransformComponent from "./TransformComponent";
 import GomlNode from "grimoirejs/ref/Node/GomlNode";
-import IRenderMessage from "../Messages/IRenderMessage";
 import CameraComponent from "./CameraComponent";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
@@ -60,7 +60,7 @@ export default class HTMLBinderComponent extends Component {
     }, true);
   }
 
-  public $render(args: IRenderMessage): void {
+  public $render(args: IRenderArgument): void {
     if (this._isFirstCall) {
       this._onRendererChanged();
       this._isFirstCall = false;

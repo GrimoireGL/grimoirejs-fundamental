@@ -111,7 +111,6 @@
     "./src/Material/Transformers/VariableAnnotationRemover.ts",
     "./src/Material/Transformers/VariableParser.ts",
     "./src/Messages/IBufferUpdatedMessage.ts",
-    "./src/Messages/IRenderMessage.ts",
     "./src/Messages/IRenderRendererMessage.ts",
     "./src/Messages/IResizeBufferMessage.ts",
     "./src/Objects/CanvasSizeObject.ts",
@@ -126,6 +125,10 @@
     "./src/Resource/Shader.ts",
     "./src/Resource/Texture2D.ts",
     "./src/Resource/UniformProxy.ts",
+    "./src/SceneRenderer/IRenderable.ts",
+    "./src/SceneRenderer/IRenderArgument.ts",
+    "./src/SceneRenderer/RenderQueue.ts",
+    "./src/SceneRenderer/RenderQueueRegistry.ts",
     "./src/Util/RotationParser.ts",
     "./src/Util/TextureSizeCalculator.ts"
   ],
