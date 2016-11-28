@@ -1,3 +1,5 @@
+import DrawPriorty from "../SceneRenderer/DrawPriorty";
+import Attribute from "grimoirejs/ref/Node/Attribute";
 import gr from "grimoirejs";
 import ResourceBase from "../Resource/ResourceBase";
 import MaterialComponent from "./MaterialComponent";
@@ -13,6 +15,10 @@ export default class MaterialContainerComponent extends Component {
       converter: "Material",
       defaultValue: "new(unlit)",
       componentBoundTo: "_materialComponent" // When the material was specified with the other material tag, this field would be assigned.
+    },
+    drawOrder: {
+      converter: "String",
+      defaultValue: null
     }
   };
 
@@ -29,6 +35,18 @@ export default class MaterialContainerComponent extends Component {
 
   private static _defaultMaterial = "unlit";
 
+  public getDrawPriorty(depth: number): number {
+    if (!this.ready) {
+      return Number.MAX_VALUE;
+    }
+    const orderCriteria = DrawPriorty[this.material.drawOrder];
+    if (orderCriteria.descending) {
+      return (1.0 - depth / 10000) * orderCriteria.priorty;
+    } else {
+      return depth / 10000 * orderCriteria.priorty;
+    }
+  }
+
   public material: Material;
 
   public materialArgs: { [key: string]: any; } = {};
@@ -39,9 +57,12 @@ export default class MaterialContainerComponent extends Component {
 
   private _materialComponent: MaterialComponent;
 
+  private _drawOrder: string;
+
   public $mount(): void {
     this.getAttribute("material").addObserver(this._onMaterialChanged);
     (this.companion.get("loader") as AssetLoader).register(this._onMaterialChanged());
+    this.getAttribute("drawOrder").boundTo("_drawOrder");
   }
 
   /**

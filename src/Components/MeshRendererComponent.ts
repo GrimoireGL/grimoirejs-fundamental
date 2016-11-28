@@ -66,7 +66,11 @@ export default class MeshRenderer extends Component implements IRenderable {
   private _drawCount: number;
 
   public getRenderingPriorty(camera: CameraComponent, cameraMoved: boolean, lastPriorty: number): number {
-    return 10000 - camera.transform.globalPosition.subtractWith(this._transformComponent.globalPosition).magnitude;
+    return this._materialContainer.getDrawPriorty(
+      camera.transform.globalPosition
+        .addWith(this._geometry.aabb.Center)
+        .subtractWith(this._transformComponent.globalPosition)
+        .magnitude); // Obtains distance between camera and center of aabb
   }
 
   public $awake(): void {

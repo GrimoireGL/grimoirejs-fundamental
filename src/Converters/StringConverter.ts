@@ -6,6 +6,8 @@ function StringConverter(this: Attribute, val: any): any {
     return val;
   } else if (typeof val === "undefined") {
     return val;
+  } else if (val === null) {
+    return val;
   } else if (typeof val.toString === "function") {
     return val.toString();
   }

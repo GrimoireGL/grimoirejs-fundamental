@@ -85,6 +85,7 @@
   import ResourceShader from "./Resource/Shader";
   import ResourceTexture2D from "./Resource/Texture2D";
   import ResourceUniformProxy from "./Resource/UniformProxy";
+  import SceneRendererDrawPriorty from "./SceneRenderer/DrawPriorty";
   import SceneRendererRenderQueue from "./SceneRenderer/RenderQueue";
   import SceneRendererRenderQueueRegistry from "./SceneRenderer/RenderQueueRegistry";
   import UtilRotationParser from "./Util/RotationParser";
@@ -219,6 +220,7 @@ var __EXPOSE__ = {
     "UniformProxy": ResourceUniformProxy
   },
   "SceneRenderer": {
+    "DrawPriorty": SceneRendererDrawPriorty,
     "RenderQueue": SceneRendererRenderQueue,
     "RenderQueueRegistry": SceneRendererRenderQueueRegistry
   },

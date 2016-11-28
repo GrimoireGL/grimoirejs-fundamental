@@ -1,3 +1,4 @@
+import DrawPriorty from "../SceneRenderer/DrawPriorty";
 import SORTPass from "./SORTPass";
 import MacroRegistory from "./MacroRegistory";
 import PassFactory from "./PassFactory";
@@ -35,7 +36,7 @@ export default class MaterialFactory {
     const sortInfos = await PassFactory.passInfoFromSORT(source);
     MaterialFactory.addMaterialType(typeName, (factory) => {
       const sorts = sortInfos.map(p => new SORTPass(factory, p));
-      return new Material(sorts);
+      return new Material(sorts, MaterialFactory._parseSortDrawOrder(source));
     });
   }
 
@@ -71,6 +72,21 @@ export default class MaterialFactory {
       return MaterialFactory.factories[typeName](this);
     } else { // when the type is not registered yet.
       return await this._waitForRegistered(typeName);
+    }
+  }
+
+  private static _parseSortDrawOrder(source: string): string {
+    const regex = /@DrawOrder\(\s*([a-zA-Z0-9]+)\s*\)/;
+    const result = regex.exec(source);
+    if (!result) {
+      return undefined;
+    } else {
+      const drawOrder = result[1];
+      if (DrawPriorty[drawOrder] === void 0) {
+        throw new Error(`Specified draw order ${drawOrder} was not found.`);
+      } else {
+        return drawOrder;
+      }
     }
   }
 

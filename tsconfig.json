@@ -125,6 +125,7 @@
     "./src/Resource/Shader.ts",
     "./src/Resource/Texture2D.ts",
     "./src/Resource/UniformProxy.ts",
+    "./src/SceneRenderer/DrawPriorty.ts",
     "./src/SceneRenderer/IRenderable.ts",
     "./src/SceneRenderer/IRenderArgument.ts",
     "./src/SceneRenderer/RenderQueue.ts",
