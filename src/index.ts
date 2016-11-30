@@ -45,8 +45,6 @@
   import ConvertersNumberConverter from "./Converters/NumberConverter";
   import ConvertersObjectConverter from "./Converters/ObjectConverter";
   import ConvertersRotation3Converter from "./Converters/Rotation3Converter";
-  import ConvertersStringArrayConverter from "./Converters/StringArrayConverter";
-  import ConvertersStringConverter from "./Converters/StringConverter";
   import ConvertersTextureConverter from "./Converters/TextureConverter";
   import ConvertersVector2Converter from "./Converters/Vector2Converter";
   import ConvertersVector3Converter from "./Converters/Vector3Converter";
@@ -170,8 +168,6 @@ var __EXPOSE__ = {
     "NumberConverter": ConvertersNumberConverter,
     "ObjectConverter": ConvertersObjectConverter,
     "Rotation3Converter": ConvertersRotation3Converter,
-    "StringArrayConverter": ConvertersStringArrayConverter,
-    "StringConverter": ConvertersStringConverter,
     "TextureConverter": ConvertersTextureConverter,
     "Vector2Converter": ConvertersVector2Converter,
     "Vector3Converter": ConvertersVector3Converter,

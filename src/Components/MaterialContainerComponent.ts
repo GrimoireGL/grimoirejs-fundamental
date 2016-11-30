@@ -39,7 +39,7 @@ export default class MaterialContainerComponent extends Component {
     if (!this.ready) {
       return Number.MAX_VALUE;
     }
-    const orderCriteria = DrawPriorty[this.material.drawOrder];
+    const orderCriteria = DrawPriorty[this._drawOrder ? this._drawOrder : this.material.drawOrder];
     if (orderCriteria.descending) {
       return (1.0 - depth / 10000) * orderCriteria.priorty;
     } else {

@@ -1857,9 +1857,9 @@ grimoirejs-cauldron@^2.1.0, grimoirejs-cauldron@^2.1.2:
     watch "^1.0.1"
     yargs "^6.3.0"
 
-grimoirejs-math@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/grimoirejs-math/-/grimoirejs-math-1.6.1.tgz#4bff63b4686ecdf4b1c1890780f9401df8dca11c"
+grimoirejs-math@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/grimoirejs-math/-/grimoirejs-math-1.7.0.tgz#a93885708d4daaf1b44384be837f95ebc3b4e614"
   dependencies:
     gl-matrix "git+https://github.com/GrimoireGL/gl-matrix.git#master"
 
@@ -2258,6 +2258,10 @@ json3@^3.3.2:
 json5@^0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/json5/-/json5-0.5.0.tgz#9b20715b026cbe3778fd769edccd822d8332a5b2"
+
+json5@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/json5/-/json5-0.5.1.tgz#1eade7acc012034ad84e2396767ead9fa5495821"
 
 jsonfile@^2.1.0:
   version "2.4.0"
@@ -3982,9 +3986,9 @@ xdg-basedir@^2.0.0:
   dependencies:
     os-homedir "^1.0.0"
 
-xmldom@^0.1.22:
-  version "0.1.22"
-  resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.22.tgz#10de4e5e964981f03c8cc72fadc08d14b6c3aa26"
+xmldom@^0.1.27:
+  version "0.1.27"
+  resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.27.tgz#d501f97b3bdb403af8ef9ecc20573187aadac0e9"
 
 xtend@^4.0.0, xtend@~4.0.0:
   version "4.0.1"

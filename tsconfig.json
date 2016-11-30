@@ -60,8 +60,6 @@
     "./src/Converters/NumberConverter.ts",
     "./src/Converters/ObjectConverter.ts",
     "./src/Converters/Rotation3Converter.ts",
-    "./src/Converters/StringArrayConverter.ts",
-    "./src/Converters/StringConverter.ts",
     "./src/Converters/TextureConverter.ts",
     "./src/Converters/Vector2Converter.ts",
     "./src/Converters/Vector3Converter.ts",

@@ -8,6 +8,8 @@ function Vector2Converter(this: Attribute, val: any): any {
     return Vector2.parse(val);
   } else if (typeof val === "number") {
     return new Vector2(val, val);
+  } else if (Array.isArray(val)) {
+    return new Vector2(val[0], val[1]);
   }
 }
 
