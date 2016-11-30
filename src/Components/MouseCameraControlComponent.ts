@@ -10,11 +10,11 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 export default class MouseCameraControlComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     rotateSpeed: {
-      defaultValue: 0.01,
+      defaultValue: 1,
       converter: "Number"
     },
     zoomSpeed: {
-      defaultValue: 0.05,
+      defaultValue: 1,
       converter: "Number"
     },
     moveSpeed: {
@@ -24,6 +24,10 @@ export default class MouseCameraControlComponent extends Component {
     center: {
       defaultValue: 20,
       converter: "Number"
+    },
+    origin: {
+      defaultValue: "0,0,0",
+      converter: "Vector3"
     }
   };
 
@@ -33,7 +37,7 @@ export default class MouseCameraControlComponent extends Component {
   private _zoomSpeed: number;
   private _moveSpeed: number;
 
-  private _origin: Vector3 = new Vector3(0, 0, 0);
+  private _origin: Vector3;
   private _lastScreenPos: { x: number, y: number } = null;
 
   private _initialDirection: Vector3;
@@ -52,6 +56,7 @@ export default class MouseCameraControlComponent extends Component {
     this.getAttribute("rotateSpeed").boundTo("_rotateSpeed");
     this.getAttribute("zoomSpeed").boundTo("_zoomSpeed");
     this.getAttribute("moveSpeed").boundTo("_moveSpeed");
+    this.getAttribute("origin").boundTo("_origin");
     this._transform = this.node.getComponent("Transform") as TransformComponent;
   }
 
@@ -101,8 +106,8 @@ export default class MouseCameraControlComponent extends Component {
 
     if (updated) {
       // rotate excution
-      let rotationVartical = Quaternion.angleAxis(-this._xsum * this._rotateSpeed, this._initialUp);
-      let rotationHorizontal = Quaternion.angleAxis(-this._ysum * this._rotateSpeed, this._initialRight);
+      let rotationVartical = Quaternion.angleAxis(-this._xsum * this._rotateSpeed * 0.01, this._initialUp);
+      let rotationHorizontal = Quaternion.angleAxis(-this._ysum * this._rotateSpeed * 0.01, this._initialRight);
       let rotation = Quaternion.multiply(rotationVartical, rotationHorizontal);
 
       const rotationMat = Matrix.rotationQuaternion(rotation);
@@ -119,7 +124,7 @@ export default class MouseCameraControlComponent extends Component {
   private _mouseWheel(m: MouseWheelEvent): void {
 
     let dir = Vector3.normalize(Vector3.subtract(this._transform.localPosition, this._origin));
-    let moveDist = -m.deltaY * this._zoomSpeed;
+    let moveDist = -m.deltaY * this._zoomSpeed * 0.05;
     let distance = Vector3.subtract(this._origin, this._transform.localPosition).magnitude;
     let nextDist = Math.max(1, distance - moveDist);
     this._transform.localPosition = this._origin.addWith(dir.multiplyWith(nextDist))
