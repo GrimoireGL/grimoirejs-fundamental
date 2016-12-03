@@ -20,7 +20,7 @@ export default class Geometry {
     }
   }
 
-  public draw(indexName: string, attribNames: string[], program: Program, count = Number.MAX_VALUE, offset = 0, ): void {
+  public draw(indexName: string, attribNames: string[], program: Program, count = Number.MAX_VALUE, offset = 0): void {
     const targetIndex = this.indicies[indexName];
     attribNames.forEach(name => {
       const attribInfo = this.attribInfo[name];
@@ -36,7 +36,7 @@ export default class Geometry {
       this._gl.vertexAttribPointer(index, attribInfo.size, attribInfo.type, false, attribInfo.stride, attribInfo.offset);
     });
     targetIndex.index.bind();
-    this._gl.drawElements(targetIndex.topology, Math.min(targetIndex.count, count), targetIndex.type, Math.min(offset * targetIndex.byteSize, (targetIndex.count - 1) * targetIndex.byteSize));
+    this._gl.drawElements(targetIndex.topology, Math.min(targetIndex.count, count), targetIndex.type, Math.min(offset * targetIndex.byteSize + targetIndex.byteOffset, (targetIndex.count - 1) * targetIndex.byteSize));
   }
 
   private _validateGLContext(): void {

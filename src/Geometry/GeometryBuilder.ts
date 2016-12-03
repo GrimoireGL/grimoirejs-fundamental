@@ -100,6 +100,7 @@ export default class GeometryBuilder {
         index: buffer,
         type: bufferType.format,
         byteSize: bufferType.byteSize,
+        byteOffset: 0,
         topology: generatorInfo.topology ? generatorInfo.topology : WebGLRenderingContext.TRIANGLES
       };
     }
