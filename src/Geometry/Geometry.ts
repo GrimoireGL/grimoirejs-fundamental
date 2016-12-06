@@ -23,13 +23,13 @@ export default class Geometry {
   public draw(indexName: string, attribNames: string[], program: Program, count = Number.MAX_VALUE, offset = 0): void {
     const targetIndex = this.indicies[indexName];
     attribNames.forEach(name => {
-      const attribInfo = this.attribInfo[name];
-      if (!attribInfo) {
-        throw new Error("There is no such vertex buffer");
-      }
       const index = program.findAttributeLocation(name);
       if (index < 0) {
         return;
+      }
+      const attribInfo = this.attribInfo[name];
+      if (!attribInfo) {
+        throw new Error("There is no such vertex buffer");
       }
       const buffer = this.verticies[attribInfo.bufferName];
       buffer.bind();

@@ -125,7 +125,7 @@ export default class Texture2D extends ResourceBase {
     const h = canvas.height;
     const size = Math.pow(2, Math.log(Math.min(w, h)) / Math.LN2 | 0); // largest 2^n integer that does not exceed s
     if (w !== h || w !== size) {
-      canvas.height = canvas.width = size;
+      canvas.height = canvas.width = size * 2;
     }
     return canvas;
   }

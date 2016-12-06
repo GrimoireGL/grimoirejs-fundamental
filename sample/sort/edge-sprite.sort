@@ -1,5 +1,4 @@
 @Pass
-@ExposeMacro(int,flag,FLAG,0)
 @DepthFunc(LEQUAL)
 @CullFace(FRONT)
 #ifdef VS

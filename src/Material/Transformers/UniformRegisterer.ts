@@ -51,6 +51,13 @@ async function _registerUserUniforms(input: ITransformingArgument): Promise<void
               proxy.uniformFloatArray(valName, matArg.attributeValues[valName]);
             });
             break;
+          case "mat4":
+            let defaultArray2 = new Array() as number[];
+            defaultArray = defaultArray2.map((p) => 0);
+            attributes[valName] = _getDecl("Object", _resolveDefault(variableInfo, defaultArray), (proxy, matArg) => {
+              proxy.uniformMatrixArray(valName, matArg.attributeValues[valName]);
+            });
+            break;
           default:
             throw new Error(`Unsupported array type ${variableInfo.variableType}`);
         }
