@@ -1,6 +1,6 @@
 {
   "name": "grimoirejs-fundamental",
-  "version": "0.7.10",
+  "version": "0.7.11",
   "description": "Base components,converters and nodes for Web3D with Grimoire.js",
   "main": "./ref/index.js",
   "typings": "./ref/index.d.ts",
@@ -28,6 +28,7 @@
     "grimoirejs-cauldron": "^2.1.2",
     "raw-loader": "^0.5.1",
     "regenerator-runtime": "^0.10.0",
+    "sinon": "^1.17.6",
     "ts-loader": "^1.2.2",
     "typescript": "^2.0.9",
     "webpack": "^1.13.3",
