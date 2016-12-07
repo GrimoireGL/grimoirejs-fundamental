@@ -1,5 +1,5 @@
 @Pass
-@BlendFunc(SRC_ALPHA,ONE)
+@BlendFunc(SRC_ALPHA,ONE_MINUS_SRC_ALPHA)
 FS_PREC(mediump,float)
 varying vec2 vTexCoord;
 #ifdef VS

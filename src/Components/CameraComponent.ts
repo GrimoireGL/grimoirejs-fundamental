@@ -21,7 +21,7 @@ export default class CameraComponent extends Component {
       converter: "Number"
     },
     far: {
-      defaultValue: 200,
+      defaultValue: 100,
       converter: "Number"
     },
     aspect: {
