@@ -57,7 +57,7 @@ export default class MouseCameraControlComponent extends Component {
     this.getAttribute("zoomSpeed").boundTo("_zoomSpeed");
     this.getAttribute("moveSpeed").boundTo("_moveSpeed");
     this.getAttribute("origin").boundTo("_origin");
-    this._transform = this.node.getComponent("Transform") as TransformComponent;
+    this._transform = this.node.getComponent(TransformComponent);
   }
 
   public $mount(): void {

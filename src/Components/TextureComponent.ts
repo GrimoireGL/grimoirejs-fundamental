@@ -49,19 +49,19 @@ export default class TextureComponent extends Component {
     }
   };
 
-  private _texture: Texture2D;
+  public texture: Texture2D;
 
   public $mount(): void {
     const src = this.getValue("src");
-    this._texture = new Texture2D(this.companion.get("gl"));
-    this._texture.magFilter = this.getValue("magFilter");
-    this._texture.minFilter = this.getValue("minFilter");
-    this._texture.wrapT = this.getValue("wrapT");
-    this._texture.wrapS = this.getValue("wrapS");
-    this.attributes.get("magFilter").addObserver(v => this._texture.magFilter = v.Value);
-    this.attributes.get("minFilter").addObserver(v => this._texture.minFilter = v.Value);
-    this.attributes.get("wrapS").addObserver(v => this._texture.wrapS = v.Value);
-    this.attributes.get("wrapT").addObserver(v => this._texture.wrapT = v.Value);
+    this.texture = new Texture2D(this.companion.get("gl"));
+    this.texture.magFilter = this.getValue("magFilter");
+    this.texture.minFilter = this.getValue("minFilter");
+    this.texture.wrapT = this.getValue("wrapT");
+    this.texture.wrapS = this.getValue("wrapS");
+    this.attributes.get("magFilter").addObserver(v => this.texture.magFilter = v.Value);
+    this.attributes.get("minFilter").addObserver(v => this.texture.minFilter = v.Value);
+    this.attributes.get("wrapS").addObserver(v => this.texture.wrapS = v.Value);
+    this.attributes.get("wrapT").addObserver(v => this.texture.wrapT = v.Value);
     if (src) {
       this._loadTask(src);
     }
@@ -69,6 +69,6 @@ export default class TextureComponent extends Component {
 
   private async _loadTask(src: string): Promise<void> {
     const img = await ImageResolver.resolve(src);
-    this._texture.update(img);
+    this.texture.update(img);
   }
 }

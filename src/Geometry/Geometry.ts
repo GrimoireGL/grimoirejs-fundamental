@@ -10,7 +10,7 @@ export default class Geometry {
 
   private _gl: WebGLRenderingContext;
 
-  constructor(public verticies: { [key: string]: Buffer }, public attribInfo: { [key: string]: VertexBufferAttribInfo }, public indicies: { [key: string]: IndexBufferInfo }, public aabb: AABB) {
+  constructor(public verticies: { [key: string]: Buffer }, public attribInfo: { [key: string]: VertexBufferAttribInfo }, public indices: { [key: string]: IndexBufferInfo }, public aabb: AABB) {
     this._validateGLContext();
     // check all buffers requested by attribute variables are all contained in verticies
     for (let attrKey in attribInfo) {
@@ -21,7 +21,7 @@ export default class Geometry {
   }
 
   public draw(indexName: string, attribNames: string[], program: Program, count = Number.MAX_VALUE, offset = 0): void {
-    const targetIndex = this.indicies[indexName];
+    const targetIndex = this.indices[indexName];
     attribNames.forEach(name => {
       const index = program.findAttributeLocation(name);
       if (index < 0) {
@@ -41,8 +41,8 @@ export default class Geometry {
 
   private _validateGLContext(): void {
     // Check for index buffers
-    for (let indexName in this.indicies) {
-      const index = this.indicies[indexName];
+    for (let indexName in this.indices) {
+      const index = this.indices[indexName];
       if (!this._gl) {
         this._gl = index.index.gl;
       }

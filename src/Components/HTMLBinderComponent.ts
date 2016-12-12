@@ -41,12 +41,12 @@ export default class HTMLBinderComponent extends Component {
 
   public $awake(): void {
     this._canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
-    this._currentTransform = this.node.getComponent("Transform") as TransformComponent;
+    this._currentTransform = this.node.getComponent(TransformComponent);
   }
 
   public $mount(): void {
     this._canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
-    this._currentTransform = this.node.getComponent("Transform") as TransformComponent;
+    this._currentTransform = this.node.getComponent(TransformComponent);
   }
 
   public $treeInitialized(): void {

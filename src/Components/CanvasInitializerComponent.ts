@@ -23,7 +23,7 @@ class CanvasInitializerComponent extends Component {
       converter: "CanvasSize"
     },
     containerId: {
-      defaultValue: undefined,
+      defaultValue: "",
       converter: "String"
     },
     containerClass: {

@@ -11,6 +11,9 @@ import VertexBufferAttribInfo from "./VertexBufferAttribInfo";
  */
 export default class GeometryBuilder {
   public static build(gl: WebGLRenderingContext, info: GeometryBufferConstructionInfo): Geometry {
+    if (info["verticies"] | info["indicies"]) {
+      throw new Error("Misspelled API was fixed already. use vertices and indices");
+    }
     const buffers: { [key: string]: Buffer } = {};
     const attribs: { [key: string]: VertexBufferAttribInfo } = {};
     let aabb: AABB = info.aabb;
@@ -18,9 +21,9 @@ export default class GeometryBuilder {
     if (needConstructAABB) {
       aabb = new AABB();
     }
-    for (let bufferKey in info.verticies) {
+    for (let bufferKey in info.vertices) {
       const byteWidth = 4;
-      const buffer = info.verticies[bufferKey];
+      const buffer = info.vertices[bufferKey];
       let sizeSum = 0;
       for (let attribKey in buffer.size) {
         if (attribs[attribKey]) {
@@ -81,22 +84,22 @@ export default class GeometryBuilder {
       buffers[bufferKey] = new Buffer(gl, WebGLRenderingContext.ARRAY_BUFFER, buffer.usage ? buffer.usage : WebGLRenderingContext.STATIC_DRAW);
       buffers[bufferKey].update(new Float32Array(bufferSource));
     }
-    return new Geometry(buffers, attribs, this._generateIndicies(gl, info.indicies), aabb);
+    return new Geometry(buffers, attribs, this._generateIndices(gl, info.indices), aabb);
   }
 
-  private static _generateIndicies(gl: WebGLRenderingContext, indexGenerator: { [indexName: string]: { generator: () => IterableIterator<number>, topology: number } }): { [indexName: string]: IndexBufferInfo } {
+  private static _generateIndices(gl: WebGLRenderingContext, indexGenerator: { [indexName: string]: { generator: () => IterableIterator<number>, topology: number } }): { [indexName: string]: IndexBufferInfo } {
     const indexMap: { [indexName: string]: IndexBufferInfo } = {};
     for (let indexName in indexGenerator) {
-      const indicies: number[] = [];
+      const indices: number[] = [];
       const generatorInfo = indexGenerator[indexName];
       for (let variable of generatorInfo.generator()) {
-        indicies.push(variable);
+        indices.push(variable);
       }
-      const bufferType = this._getIndexType(indicies.length);
+      const bufferType = this._getIndexType(indices.length);
       const buffer = new Buffer(gl, WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, WebGLRenderingContext.STATIC_DRAW);
-      buffer.update(new bufferType.ctor(indicies));
+      buffer.update(new bufferType.ctor(indices));
       indexMap[indexName] = {
-        count: indicies.length,
+        count: indices.length,
         index: buffer,
         type: bufferType.format,
         byteSize: bufferType.byteSize,

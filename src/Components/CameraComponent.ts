@@ -75,7 +75,7 @@ export default class CameraComponent extends Component {
 
   public $awake(): void {
     const c = this.camera = new BasicCamera();
-    this.transform = this.node.getComponent("Transform") as TransformComponent;
+    this.transform = this.node.getComponent(TransformComponent);
     this.$transformUpdated(this.transform);
     this.getAttribute("far").addObserver((v) => {
       c.setFar(v.Value);

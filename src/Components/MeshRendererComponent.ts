@@ -82,7 +82,7 @@ export default class MeshRenderer extends Component implements IRenderable {
   }
 
   public $mount(): void {
-    this._transformComponent = this.node.getComponent("Transform") as TransformComponent;
+    this._transformComponent = this.node.getComponent(TransformComponent);
     this._materialContainer = this.node.getComponent("MaterialContainer") as MaterialContainerComponent;
     this._containedScene = MeshRenderer._findContainedScene(this.node);
     this._containedScene.queueRegistory.addRenderable(this);

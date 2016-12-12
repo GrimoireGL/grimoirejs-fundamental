@@ -24,6 +24,10 @@ export default class TransformComponent extends Component {
     "scale": {
       converter: "Vector3",
       defaultValue: Vector3.One
+    },
+    "rawMatrix": {
+      converter: "Object", // TODO should implement Matrix converter
+      defaultValue: null
     }
   };
   /**
@@ -110,6 +114,8 @@ export default class TransformComponent extends Component {
 
   private _globalScale: Vector3 = new Vector3([1, 1, 1]);
 
+  private _matrixTransformMode: boolean = false;
+
   public get globalPosition(): Vector3 {
     return this._globalPosition;
   }
@@ -171,15 +177,28 @@ export default class TransformComponent extends Component {
     // register observers
     this.getAttribute("position").addObserver((v) => {
       this._localPosition = v.Value;
+      this._matrixTransformMode = false;
       this.updateTransform();
     });
     this.getAttribute("rotation").addObserver((v) => {
       this._localRotation = v.Value;
+      this._matrixTransformMode = false;
       this.updateTransform();
     });
     this.getAttribute("scale").addObserver((v) => {
       this._localScale = v.Value;
+      this._matrixTransformMode = false;
       this.updateTransform();
+    });
+    this.getAttribute("rawMatrix").addObserver((v) => {
+      const mat = v.Value as Matrix;
+      this._matrixTransformMode = true;
+      // TODO should be addded?
+      // mat4.getTranslation(this._localPosition.rawElements, mat.rawElements);
+      // mat4.getScaling(this._localScale.rawElements, mat.rawElements);
+      // mat4.getRotation(this._localRotation.rawElements, mat.rawElements);
+      this.localTransform = mat;
+      this.updateGlobalTransform();
     });
     // assign attribute values to field
     this._localPosition = this.getValue("position");
@@ -189,7 +208,7 @@ export default class TransformComponent extends Component {
   }
 
   public $mount(): void {
-    this._parentTransform = this.node.parent.getComponent("Transform") as TransformComponent;
+    this._parentTransform = this.node.parent.getComponent(TransformComponent);
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
     }
@@ -208,7 +227,9 @@ export default class TransformComponent extends Component {
    * This need to be called if you manually edit raw elements of scale,position or rotation to recalculate transform matricies.
    */
   public updateTransform(): void {
-    mat4.fromRotationTranslationScale(this.localTransform.rawElements, this._localRotation.rawElements, this._localPosition.rawElements, this._localScale.rawElements);
+    if (!this._matrixTransformMode) {
+      mat4.fromRotationTranslationScale(this.localTransform.rawElements, this._localRotation.rawElements, this._localPosition.rawElements, this._localScale.rawElements);
+    }
     this.updateGlobalTransform();
   }
   /**
