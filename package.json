@@ -1,6 +1,6 @@
 {
   "name": "grimoirejs-fundamental",
-  "version": "0.7.16",
+  "version": "0.8.0beta",
   "description": "Base components,converters and nodes for Web3D with Grimoire.js",
   "main": "./ref/index.js",
   "typings": "./ref/index.d.ts",
@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "@types/json5": "0.0.29",
-    "grimoirejs": "^0.11.20",
+    "grimoirejs": "beta",
     "grimoirejs-math": "^1.7.2",
     "json5": "^0.5.1"
   },
