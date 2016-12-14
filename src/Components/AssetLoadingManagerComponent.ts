@@ -7,15 +7,15 @@ import DefaultLoaderChunk from "raw!../Asset/defaultLoader.html";
 export default class AssetLoadingManagerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     loadingProgress: {
-      defaultValue: 0,
+      default: 0,
       converter: "Number"
     },
     autoStart: {
-      defaultValue: true,
+      default: true,
       converter: "Boolean"
     },
     anableLoader: {
-      defaultValue: false,
+      default: false,
       converter: "Boolean"
     }
   };
@@ -27,7 +27,7 @@ export default class AssetLoadingManagerComponent extends Component {
   private _loaderElement: Element;
 
   public $treeInitialized(): void {
-    if (this.attributes.get("autoStart").Value) {
+    if (this.getAttribute("autoStart")) {
       this._autoStart();
     }
     this._documentResolver();
@@ -37,7 +37,7 @@ export default class AssetLoadingManagerComponent extends Component {
     this.companion.set(gr.ns(this.name.ns)("loader"), this.loader);
     this.loader.register(new Promise((resolve) => { this._documentResolver = resolve; }));
     const canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
-    if (!this.getValue("enableLoader")) {
+    if (!this.getAttribute("enableLoader")) {
       return;
     }
     const loaderContainer = document.createElement("div");

@@ -15,19 +15,19 @@ enum ResizeMode {
 class CanvasInitializerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     width: {
-      defaultValue: "fit",
+      default: "fit",
       converter: "CanvasSize"
     },
     height: {
-      defaultValue: 480,
+      default: 480,
       converter: "CanvasSize"
     },
     containerId: {
-      defaultValue: "",
+      default: "",
       converter: "String"
     },
     containerClass: {
-      defaultValue: "gr-container",
+      default: "gr-container",
       converter: "String"
     }
   };
@@ -66,10 +66,10 @@ class CanvasInitializerComponent extends Component {
       // TODO for the script element not included in body tag
     }
     // apply sizes on changed
-    this.attributes.get("width").addObserver((v) => {
+    this.getAttributeRaw("width").watch((v) => {
       this._resize();
     });
-    this.attributes.get("height").addObserver((v) => {
+    this.getAttributeRaw("height").watch((v) => {
       this._resize();
     });
   }
@@ -95,8 +95,8 @@ class CanvasInitializerComponent extends Component {
 
   private _resize(supressBroadcast?: boolean): void {
     const canvas = this.companion.get("canvasElement");
-    const widthRaw = this.getValue("width") as CanvasSizeObject;
-    const heightRaw = this.getValue("height") as CanvasSizeObject;
+    const widthRaw = this.getAttribute("width") as CanvasSizeObject;
+    const heightRaw = this.getAttribute("height") as CanvasSizeObject;
     this._widthMode = this._asResizeMode(widthRaw);
     this._heightMode = this._asResizeMode(heightRaw);
     if (this._widthMode === this._heightMode && this._widthMode === ResizeMode.Aspect) {
@@ -187,11 +187,11 @@ class CanvasInitializerComponent extends Component {
     this._canvasContainer.style.position = "relative";
     this._canvasContainer.style.overflow = "hidden";
     this._canvasContainer.appendChild(canvas);
-    if (this.getValue("containerId")) {
-      this._canvasContainer.id = this.getValue("containerId");
+    if (this.getAttribute("containerId")) {
+      this._canvasContainer.id = this.getAttribute("containerId");
     }
-    if (this.getValue("containerClass")) {
-      this._canvasContainer.className = this.getValue("containerClass");
+    if (this.getAttribute("containerClass")) {
+      this._canvasContainer.className = this.getAttribute("containerClass");
     }
     this.companion.set(ns("canvasContainer"), this._canvasContainer);
     scriptTag.parentElement.insertBefore(this._canvasContainer, scriptTag.nextSibling);

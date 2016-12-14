@@ -10,23 +10,23 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 export default class MouseCameraControlComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     rotateSpeed: {
-      defaultValue: 1,
+      default: 1,
       converter: "Number"
     },
     zoomSpeed: {
-      defaultValue: 1,
+      default: 1,
       converter: "Number"
     },
     moveSpeed: {
-      defaultValue: 1,//TODO:小数にしたときの挙動
+      default: 1,//TODO:小数にしたときの挙動
       converter: "Number"
     },
     center: {
-      defaultValue: 20,
+      default: 20,
       converter: "Number"
     },
     origin: {
-      defaultValue: "0,0,0",
+      default: "0,0,0",
       converter: "Vector3"
     }
   };
@@ -52,11 +52,11 @@ export default class MouseCameraControlComponent extends Component {
 
   private _center: number = 0;
   public $awake(): void {
-    this.getAttribute("center").boundTo("_center");
-    this.getAttribute("rotateSpeed").boundTo("_rotateSpeed");
-    this.getAttribute("zoomSpeed").boundTo("_zoomSpeed");
-    this.getAttribute("moveSpeed").boundTo("_moveSpeed");
-    this.getAttribute("origin").boundTo("_origin");
+    this.getAttributeRaw("center").boundTo("_center");
+    this.getAttributeRaw("rotateSpeed").boundTo("_rotateSpeed");
+    this.getAttributeRaw("zoomSpeed").boundTo("_zoomSpeed");
+    this.getAttributeRaw("moveSpeed").boundTo("_moveSpeed");
+    this.getAttributeRaw("origin").boundTo("_origin");
     this._transform = this.node.getComponent(TransformComponent);
   }
 

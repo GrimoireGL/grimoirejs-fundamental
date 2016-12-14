@@ -6,15 +6,15 @@ import gr from "grimoirejs";
 export default class RendererManagerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     bgColor: {
-      defaultValue: new Color4(0, 0, 0, 0),
+      default: new Color4(0, 0, 0, 0),
       converter: "Color4"
     },
     clearDepth: {
-      defaultValue: 1.0,
+      default: 1.0,
       converter: "Number"
     },
     complementRenderer: {
-      defaultValue: true,
+      default: true,
       converter: "Boolean"
     }
   };
@@ -26,8 +26,8 @@ export default class RendererManagerComponent extends Component {
   private _clearDepth: number;
 
   public $awake(): void {
-    this.getAttribute("bgColor").boundTo("_bgColor");
-    this.getAttribute("clearDepth").boundTo("_clearDepth");
+    this.getAttributeRaw("bgColor").boundTo("_bgColor");
+    this.getAttributeRaw("clearDepth").boundTo("_clearDepth");
   }
 
   public $mount(): void {
@@ -36,7 +36,7 @@ export default class RendererManagerComponent extends Component {
 
   public $treeInitialized(): void {
     (this.node.getComponent("LoopManager") as LoopManagerComponent).register(this.onloop.bind(this), 1000);
-    if (this.getValue("complementRenderer") && this.node.getChildrenByNodeName("renderer").length === 0) {
+    if (this.getAttribute("complementRenderer") && this.node.getChildrenByNodeName("renderer").length === 0) {
       this.node.addChildByName("renderer", {});
     }
   }

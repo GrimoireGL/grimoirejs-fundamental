@@ -15,19 +15,19 @@ export default class TransformComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     "position": {
       converter: "Vector3",
-      defaultValue: Vector3.Zero
+      default: Vector3.Zero
     },
     "rotation": {
       converter: "Rotation3",
-      defaultValue: Quaternion.Identity
+      default: Quaternion.Identity
     },
     "scale": {
       converter: "Vector3",
-      defaultValue: Vector3.One
+      default: Vector3.One
     },
     "rawMatrix": {
       converter: "Object", // TODO should implement Matrix converter
-      defaultValue: null
+      default: null
     }
   };
   /**
@@ -126,7 +126,7 @@ export default class TransformComponent extends Component {
 
   public set localPosition(val: Vector3) {
     this._localPosition = val;
-    this.setValue("position", val);
+    this.setAttribute("position", val);
   }
 
   public get localRotation(): Quaternion {
@@ -135,7 +135,7 @@ export default class TransformComponent extends Component {
 
   public set localRotation(val: Quaternion) {
     this._localRotation = val;
-    this.setValue("rotation", val);
+    this.setAttribute("rotation", val);
   }
 
   public get globalScale(): Vector3 {
@@ -148,7 +148,7 @@ export default class TransformComponent extends Component {
 
   public set localScale(val: Vector3) {
     this._localScale = val;
-    this.setValue("scale", val);
+    this.setAttribute("scale", val);
   }
 
   public get forward(): Vector3 {
@@ -175,35 +175,37 @@ export default class TransformComponent extends Component {
 
   public $awake(): void {
     // register observers
-    this.getAttribute("position").addObserver((v) => {
-      this._localPosition = v.Value;
+    this.getAttributeRaw("position").watch((v) => {
+      this._localPosition = v;
       this._matrixTransformMode = false;
       this.updateTransform();
     });
-    this.getAttribute("rotation").addObserver((v) => {
-      this._localRotation = v.Value;
+    this.getAttributeRaw("rotation").watch((v) => {
+      this._localRotation = v;
       this._matrixTransformMode = false;
       this.updateTransform();
     });
-    this.getAttribute("scale").addObserver((v) => {
-      this._localScale = v.Value;
+    this.getAttributeRaw("scale").watch((v) => {
+      this._localScale = v;
       this._matrixTransformMode = false;
       this.updateTransform();
     });
-    this.getAttribute("rawMatrix").addObserver((v) => {
-      const mat = v.Value as Matrix;
-      this._matrixTransformMode = true;
-      // TODO should be addded?
-      // mat4.getTranslation(this._localPosition.rawElements, mat.rawElements);
-      // mat4.getScaling(this._localScale.rawElements, mat.rawElements);
-      // mat4.getRotation(this._localRotation.rawElements, mat.rawElements);
-      this.localTransform = mat;
-      this.updateGlobalTransform();
+    this.getAttributeRaw("rawMatrix").watch((v) => {
+      if (v !== null) {
+        const mat = v as Matrix;
+        this._matrixTransformMode = true;
+        // TODO should be addded?
+        // mat4.getTranslation(this._localPosition.rawElements, mat.rawElements);
+        // mat4.getScaling(this._localScale.rawElements, mat.rawElements);
+        // mat4.getRotation(this._localRotation.rawElements, mat.rawElements);
+        this.localTransform = mat;
+        this.updateGlobalTransform();
+      }
     });
     // assign attribute values to field
-    this._localPosition = this.getValue("position");
-    this._localRotation = this.getValue("rotation");
-    this._localScale = this.getValue("scale");
+    this._localPosition = this.getAttribute("position");
+    this._localRotation = this.getAttribute("rotation");
+    this._localScale = this.getAttribute("scale");
     this.updateTransform();
   }
 

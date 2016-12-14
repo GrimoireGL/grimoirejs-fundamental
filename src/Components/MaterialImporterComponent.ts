@@ -6,20 +6,20 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 export default class MaterialImporterComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     typeName: {
-      defaultValue: undefined,
+      default: null,
       converter: "String"
     },
     src: {
-      defaultValue: undefined,
+      default: null,
       converter: "String"
     }
   };
 
   public $awake(): void {
-    if (!this.getValue("typeName") || !this.getValue("src")) {
+    if (!this.getAttribute("typeName") || !this.getAttribute("src")) {
       throw new Error("type or src cannot be null in material importer");
     } else {
-      MaterialFactory.addSORTMaterialFromURL(this.getValue("typeName"), this.getValue("src"));
+      MaterialFactory.addSORTMaterialFromURL(this.getAttribute("typeName"), this.getAttribute("src"));
     }
   }
 }

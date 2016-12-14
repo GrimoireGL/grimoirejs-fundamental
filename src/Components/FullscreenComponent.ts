@@ -6,18 +6,18 @@ export default class FullscreenComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     fullscreen: {
       converter: "Boolean",
-      defaultValue: false
+      default: false
     }
   };
 
   private _fullscreen: boolean = false;
 
   public $awake(): void {
-    this.getAttribute("fullscreen").addObserver((attr) => {
-      if (this._fullscreen === attr.Value) {
+    this.getAttributeRaw("fullscreen").watch((attr) => {
+      if (this._fullscreen === attr) {
         return;
       }
-      this._fullscreen = attr.Value;
+      this._fullscreen = attr;
       this._switchFullscreen();
     });
   }

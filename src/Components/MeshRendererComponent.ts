@@ -36,23 +36,23 @@ export default class MeshRenderer extends Component implements IRenderable {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     geometry: {
       converter: "Geometry",
-      defaultValue: "quad"
+      default: "quad"
     },
     targetBuffer: {
       converter: "String",
-      defaultValue: "default"
+      default: "default"
     },
     layer: {
       converter: "String",
-      defaultValue: "default"
+      default: "default"
     },
     drawCount: {
       converter: "Number",
-      defaultValue: Number.MAX_VALUE
+      default: Number.MAX_VALUE
     },
     drawOffset: {
       converter: "Number",
-      defaultValue: 0
+      default: 0
     }
   };
 
@@ -74,11 +74,11 @@ export default class MeshRenderer extends Component implements IRenderable {
   }
 
   public $awake(): void {
-    this.getAttribute("targetBuffer").boundTo("_targetBuffer");
-    this.getAttribute("layer").boundTo("_layer");
-    this.getAttribute("drawOffset").boundTo("_drawOffset");
-    this.getAttribute("drawCount").boundTo("_drawCount");
-    this.getAttribute("geometry").boundTo("_geometry");
+    this.getAttributeRaw("targetBuffer").boundTo("_targetBuffer");
+    this.getAttributeRaw("layer").boundTo("_layer");
+    this.getAttributeRaw("drawOffset").boundTo("_drawOffset");
+    this.getAttributeRaw("drawCount").boundTo("_drawCount");
+    this.getAttributeRaw("geometry").boundTo("_geometry");
   }
 
   public $mount(): void {
@@ -93,7 +93,7 @@ export default class MeshRenderer extends Component implements IRenderable {
   }
 
   public render(args: IRenderArgument): void {
-    if (this._layer !== args.layer) {
+    if (!this.node.isActive || !this.enabled || this._layer !== args.layer) {
       return;
     }
     if (!this._geometry || (!args.material && !this._materialContainer.ready)) {
@@ -120,5 +120,6 @@ export default class MeshRenderer extends Component implements IRenderable {
       this._materialContainer.material.draw(renderArgs);
     }
     this.companion.get("gl").flush();
+    this.node.sendMessage("render", args);
   }
 }

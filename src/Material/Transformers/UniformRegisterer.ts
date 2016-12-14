@@ -15,7 +15,7 @@ import ITransformingArgument from "./ITransformingArgument";
 function _getDecl(converter: string, defaultValue: any, register: (proxy: UniformProxy, matInfo: IMaterialArgument) => void): IMaterialAttributeDeclaration {
   return {
     converter: converter,
-    defaultValue: defaultValue,
+    default: defaultValue,
     register: register
   };
 }
@@ -108,7 +108,7 @@ async function _registerUserUniforms(input: ITransformingArgument): Promise<void
                 flagAssignTo = annotations["usedFlag"];
               }
             }
-            attributes[valName] = _getDecl("Texture", _resolveDefault(variableInfo, undefined), (proxy, matArgs) => {
+            attributes[valName] = _getDecl("Texture", _resolveDefault(variableInfo, null), (proxy, matArgs) => {
               let texture;
               if (matArgs.attributeValues[valName] && (texture = matArgs.attributeValues[valName].get(matArgs.buffers))) {
                 proxy.uniformTexture2D(valName, texture as Texture2D);

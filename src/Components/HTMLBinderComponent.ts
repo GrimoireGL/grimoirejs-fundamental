@@ -12,11 +12,11 @@ import Matrix from "grimoirejs-math/ref/Matrix";
 export default class HTMLBinderComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     htmlQuery: {
-      defaultValue: undefined,
+      default: null,
       converter: "String"
     },
     targetRenderer: {
-      defaultValue: "render-scene",
+      default: "render-scene",
       converter: "String"
     }
   };
@@ -50,13 +50,13 @@ export default class HTMLBinderComponent extends Component {
   }
 
   public $treeInitialized(): void {
-    this.getAttribute("targetRenderer").addObserver((v) => {
-      if (this._rendererQuery !== v.Value) {
+    this.getAttributeRaw("targetRenderer").watch((v) => {
+      if (this._rendererQuery !== v) {
         this._onRendererChanged();
       }
     }, true);
-    this.getAttribute("htmlQuery").addObserver((v) => {
-      this._onQueryChanged(v.Value);
+    this.getAttributeRaw("htmlQuery").watch((v) => {
+      this._onQueryChanged(v);
     }, true);
   }
 
@@ -109,7 +109,7 @@ export default class HTMLBinderComponent extends Component {
 
   private _onRendererChanged(): void {
     let returned = false;
-    this.tree(this.getValue("targetRenderer")).forEach(n => { // should be obtained by get api
+    this.tree(this.getAttribute("targetRenderer")).forEach(n => { // should be obtained by get api
       if (returned) {
         return true;
       } else {

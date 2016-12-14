@@ -9,7 +9,7 @@ export default class RenderBufferComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
       converter: "String",
-      defaultValue: undefined
+      default: null
     }
   };
 
@@ -25,7 +25,7 @@ export default class RenderBufferComponent extends Component {
   }
 
   public $resizeBuffer(arg: IResizeBufferMessage): void {
-    const name = this.getValue("name");
+    const name = this.getAttribute("name");
     if (!name) {
       throw new Error(`Attribute 'name' must be specified.`);
     }
