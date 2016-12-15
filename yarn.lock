@@ -1900,9 +1900,9 @@ grimoirejs-math@^1.7.2:
   dependencies:
     gl-matrix "git+https://github.com/GrimoireGL/gl-matrix.git#master"
 
-grimoirejs@beta:
-  version "0.12.0-beta3"
-  resolved "https://registry.yarnpkg.com/grimoirejs/-/grimoirejs-0.12.0-beta3.tgz#7cb50a4b120e838cb2fc3049757ae92226df42dc"
+grimoirejs@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/grimoirejs/-/grimoirejs-0.12.0.tgz#e042e9c3d1d00a17b0d724999c4cb464d8510042"
   dependencies:
     "@types/node" "^6.0.47"
     events "^1.1.1"
