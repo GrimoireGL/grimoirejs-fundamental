@@ -77,7 +77,7 @@ export default class RenderQuadComponent extends Component {
     this._canvas = this.companion.get("canvasElement");
     const gr = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
     this._geom = gr.getGeometry("quad");
-    this._materialContainer = this.node.getComponent("MaterialContainer") as MaterialContainerComponent;
+    this._materialContainer = this.node.getComponent(MaterialContainerComponent);
   }
 
   public $bufferUpdated(args: IBufferUpdatedMessage): void {

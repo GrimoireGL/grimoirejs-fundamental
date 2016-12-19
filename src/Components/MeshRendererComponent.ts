@@ -22,9 +22,9 @@ export default class MeshRenderer extends Component implements IRenderable {
  */
   private static _findContainedScene(node: GomlNode): SceneComponent {
     if (node.parent) {
-      const scene = node.parent.getComponent("Scene");
-      if (scene && scene instanceof SceneComponent) {
-        return scene as SceneComponent;
+      const scene = node.parent.getComponent(SceneComponent);
+      if (scene) {
+        return scene;
       } else {
         return MeshRenderer._findContainedScene(node.parent);
       }
@@ -83,7 +83,7 @@ export default class MeshRenderer extends Component implements IRenderable {
 
   public $mount(): void {
     this._transformComponent = this.node.getComponent(TransformComponent);
-    this._materialContainer = this.node.getComponent("MaterialContainer") as MaterialContainerComponent;
+    this._materialContainer = this.node.getComponent(MaterialContainerComponent);
     this._containedScene = MeshRenderer._findContainedScene(this.node);
     this._containedScene.queueRegistory.addRenderable(this);
   }

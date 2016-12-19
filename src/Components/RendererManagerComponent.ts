@@ -35,7 +35,7 @@ export default class RendererManagerComponent extends Component {
   }
 
   public $treeInitialized(): void {
-    (this.node.getComponent("LoopManager") as LoopManagerComponent).register(this.onloop.bind(this), 1000);
+    this.node.getComponent(LoopManagerComponent).register(this.onloop.bind(this), 1000);
     if (this.getAttribute("complementRenderer") && this.node.getChildrenByNodeName("renderer").length === 0) {
       this.node.addChildByName("renderer", {});
     }

@@ -14,8 +14,8 @@ export default class AssetLoadingManagerComponent extends Component {
       default: true,
       converter: "Boolean"
     },
-    anableLoader: {
-      default: false,
+    enableLoader: {
+      default: true,
       converter: "Boolean"
     }
   };

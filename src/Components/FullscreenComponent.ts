@@ -7,6 +7,10 @@ export default class FullscreenComponent extends Component {
     fullscreen: {
       converter: "Boolean",
       default: false
+    },
+    fullscreenTarget: {
+      converter: "String",
+      default: null
     }
   };
 
@@ -24,7 +28,7 @@ export default class FullscreenComponent extends Component {
 
   private _switchFullscreen(): void {
     if (this._fullscreen) {
-      this.requestFullscreen(this.companion.get("canvasContainer"));
+      this.requestFullscreen(this.getAttribute("fullscreenTarget") || this.companion.get("canvasContainer"));
     } else {
       this.exitFullscreen();
     }

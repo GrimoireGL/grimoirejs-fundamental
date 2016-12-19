@@ -19,7 +19,7 @@ class CanvasInitializerComponent extends Component {
       converter: "CanvasSize"
     },
     height: {
-      default: 480,
+      default: "fit",
       converter: "CanvasSize"
     },
     containerId: {
@@ -80,6 +80,7 @@ class CanvasInitializerComponent extends Component {
    * @return {HTMLCanvasElement}        [description]
    */
   private _generateCanvas(scriptTag: Element): HTMLCanvasElement {
+    this._autoFixForBody(scriptTag);
     this.canvas = document.createElement("canvas");
     window.addEventListener("resize", () => this._onWindowResize());
     this._configureCanvas(this.canvas, scriptTag as HTMLScriptElement);
@@ -219,6 +220,16 @@ class CanvasInitializerComponent extends Component {
       return true;
     }
     return this._isContainedInBody(tag.parentElement);
+  }
+
+  private _autoFixForBody(scriptTag: Element): void {
+    if (scriptTag.parentElement.nodeName === "BODY") {
+      const boudningBox = document.body.getBoundingClientRect();
+      if (boudningBox.height === 0) {
+        document.body.style.height = "100%";
+        document.body.parentElement.style.height = "100%";
+      }
+    }
   }
 }
 

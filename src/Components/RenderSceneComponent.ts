@@ -88,7 +88,7 @@ export default class RenderSceneComponent extends Component {
   public $mount(): void {
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
-    this._materialContainer = this.node.getComponent("MaterialContainer") as MaterialContainerComponent;
+    this._materialContainer = this.node.getComponent(MaterialContainerComponent);
   }
 
   public $bufferUpdated(args: IBufferUpdatedMessage): void {

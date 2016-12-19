@@ -61,9 +61,9 @@ export default class CameraComponent extends Component {
  */
   private static _findContainedScene(node: GomlNode): SceneComponent {
     if (node.parent) {
-      const scene = node.parent.getComponent("Scene");
-      if (scene && scene instanceof SceneComponent) {
-        return scene as SceneComponent;
+      const scene = node.parent.getComponent(SceneComponent);
+      if (scene) {
+        return scene;
       } else {
         return CameraComponent._findContainedScene(node.parent);
       }
@@ -122,7 +122,6 @@ export default class CameraComponent extends Component {
       (args as IRenderArgument).sceneDescription = this.containedScene.sceneDescription;
       (args as IRenderArgument).defaultTexture = this.companion.get("defaultTexture");
       this._renderQueue.renderAll(args as IRenderArgument, true, args.loopIndex);
-      this.node.broadcastMessage("render", args as IRenderArgument);
     }
   }
 

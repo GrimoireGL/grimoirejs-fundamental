@@ -28,10 +28,6 @@
   import ComponentsTextureBufferComponent from "./Components/TextureBufferComponent";
   import ComponentsTextureComponent from "./Components/TextureComponent";
   import ComponentsTransformComponent from "./Components/TransformComponent";
-  import ConstraintChildrenComponentConstraint from "./Constraint/ChildrenComponentConstraint";
-  import ConstraintNoChildConstraint from "./Constraint/NoChildConstraint";
-  import ConstraintParentConstraint from "./Constraint/ParentConstraint";
-  import ConstraintRootConstraint from "./Constraint/RootConstraint";
   import ConvertersAngle2DConverter from "./Converters/Angle2DConverter";
   import ConvertersBooleanConverter from "./Converters/BooleanConverter";
   import ConvertersCanvasSizeConverter from "./Converters/CanvasSizeConverter";
@@ -80,6 +76,7 @@
   import ResourceProgram from "./Resource/Program";
   import ResourceRenderBuffer from "./Resource/RenderBuffer";
   import ResourceResourceBase from "./Resource/ResourceBase";
+  import ResourceResourceCache from "./Resource/ResourceCache";
   import ResourceShader from "./Resource/Shader";
   import ResourceTexture2D from "./Resource/Texture2D";
   import ResourceUniformProxy from "./Resource/UniformProxy";
@@ -148,12 +145,6 @@ var __EXPOSE__ = {
     "TextureComponent": ComponentsTextureComponent,
     "TransformComponent": ComponentsTransformComponent
   },
-  "Constraint": {
-    "ChildrenComponentConstraint": ConstraintChildrenComponentConstraint,
-    "NoChildConstraint": ConstraintNoChildConstraint,
-    "ParentConstraint": ConstraintParentConstraint,
-    "RootConstraint": ConstraintRootConstraint
-  },
   "Converters": {
     "Angle2DConverter": ConvertersAngle2DConverter,
     "BooleanConverter": ConvertersBooleanConverter,
@@ -211,6 +202,7 @@ var __EXPOSE__ = {
     "Program": ResourceProgram,
     "RenderBuffer": ResourceRenderBuffer,
     "ResourceBase": ResourceResourceBase,
+    "ResourceCache": ResourceResourceCache,
     "Shader": ResourceShader,
     "Texture2D": ResourceTexture2D,
     "UniformProxy": ResourceUniformProxy
