@@ -1,6 +1,6 @@
 {
   "name": "grimoirejs-fundamental",
-  "version": "0.8.3",
+  "version": "0.9.0",
   "description": "Base components,converters and nodes for Web3D with Grimoire.js",
   "main": "./ref/index.js",
   "typings": "./ref/index.d.ts",
