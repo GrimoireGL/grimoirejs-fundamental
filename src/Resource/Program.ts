@@ -1,7 +1,10 @@
+import ResourceCache from "./ResourceCache";
 import UniformProxy from "./UniformProxy";
 import ResourceBase from "./ResourceBase";
 import Shader from "./Shader";
 export default class Program extends ResourceBase {
+
+
   public readonly program: WebGLProgram;
 
   public uniforms: UniformProxy;
@@ -30,11 +33,14 @@ export default class Program extends ResourceBase {
       const errorLog = this.gl.getProgramInfoLog(this.program);
       throw new Error(`LINK FAILED\n${errorLog}`);
     }
+
     this.valid = true;
   }
 
   public use(): void {
-    this.gl.useProgram(this.program);
+    if (!ResourceCache.useProgramCheck(this.gl, this.program)) {
+      this.gl.useProgram(this.program);
+    }
     this.uniforms.onUse();
   }
 
@@ -44,7 +50,7 @@ export default class Program extends ResourceBase {
   }
 
   public findAttributeLocation(variableName: string): number {
-    if (typeof this._attributeLocations[variableName] === "undefined") {
+    if (this._attributeLocations[variableName] === void 0) {
       this._attributeLocations[variableName] = this.gl.getAttribLocation(this.program, variableName);
       this._safeEnableVertexAttribArray(this._attributeLocations[variableName]);
       return this._attributeLocations[variableName];
@@ -54,10 +60,11 @@ export default class Program extends ResourceBase {
   }
 
   public findUniformLocation(variableName: string): WebGLUniformLocation {
-    if (typeof this._uniformLocations[variableName] === "undefined") {
+    const location = this._uniformLocations[variableName];
+    if (!location) {
       return this._uniformLocations[variableName] = this.gl.getUniformLocation(this.program, variableName);
     } else {
-      return this._uniformLocations[variableName];
+      return location;
     }
   }
 

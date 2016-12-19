@@ -160,11 +160,11 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("sphere", {
       divVertical: {
         converter: "Number",
-        defaultValue: 100
+        default: 100
       },
       divHorizontal: {
         converter: "Number",
-        defaultValue: 100
+        default: 100
       }
     }, (gl, attrs) => {
       const dH = attrs["divHorizontal"];
@@ -215,7 +215,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("circle", {
       divide: {
         converter: "Number",
-        defaultValue: 50
+        default: 50
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
@@ -265,7 +265,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cylinder", {
       divide: {
         converter: "Number",
-        defaultValue: 50
+        default: 50
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
@@ -315,7 +315,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cone", {
       divide: {
         converter: "Number",
-        defaultValue: 50
+        default: 50
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
@@ -365,7 +365,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("plane", {
       divide: {
         converter: "Number",
-        defaultValue: 10
+        default: 10
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];

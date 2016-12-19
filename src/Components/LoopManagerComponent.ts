@@ -10,7 +10,7 @@ interface LoopAction {
 class LoopManagerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     loopEnabled: {
-      defaultValue: false,
+      default: false,
       converter: "Boolean"
     }
   };
@@ -22,8 +22,10 @@ class LoopManagerComponent extends Component {
   private _loopIndex: number = 0;
 
   public $awake(): void {
-    this.attributes.get("loopEnabled").addObserver((attr) => {
-      this._begin();
+    this.getAttributeRaw("loopEnabled").watch((attr) => {
+      if (attr) {
+        this._begin();
+      }
     });
     this._registerNextLoop =
       window.requestAnimationFrame  // if window.requestAnimationFrame is defined or undefined

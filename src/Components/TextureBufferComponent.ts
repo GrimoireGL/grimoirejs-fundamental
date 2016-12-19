@@ -8,11 +8,11 @@ export default class TextureBufferComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
       converter: "String",
-      defaultValue: undefined
+      default: null
     },
     format: {
       converter: "Enum",
-      defaultValue: WebGLRenderingContext.RGBA,
+      default: WebGLRenderingContext.RGBA,
       table: {
         RGBA: WebGLRenderingContext.RGBA,
         RGB: WebGLRenderingContext.RGB,
@@ -39,11 +39,11 @@ export default class TextureBufferComponent extends Component {
   }
 
   public $resizeBuffer(arg: IResizeBufferMessage): void {
-    const bufferName = this.getValue("name");
+    const bufferName = this.getAttribute("name");
     if (!bufferName) {
       throw new Error(`Attribute 'name' must be specified.`);
     }
-    const format = this.getValue("format");
+    const format = this.getAttribute("format");
     const newSize = TextureSizeCalculator.getPow2Size(arg.width, arg.height);
     this.buffer.update(0, newSize.width, newSize.height, 0, format, WebGLRenderingContext.UNSIGNED_BYTE, null);
     arg.bufferSizes[bufferName] = { width: newSize.width, height: newSize.height };

@@ -120,6 +120,7 @@
     "./src/Resource/Program.ts",
     "./src/Resource/RenderBuffer.ts",
     "./src/Resource/ResourceBase.ts",
+    "./src/Resource/ResourceCache.ts",
     "./src/Resource/Shader.ts",
     "./src/Resource/Texture2D.ts",
     "./src/Resource/UniformProxy.ts",

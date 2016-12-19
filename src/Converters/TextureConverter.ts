@@ -87,6 +87,7 @@ function TextureConverter(this: Attribute, val: any): any {
       return new TextureReference(fromVideoTexture(this.companion.get("gl"), val));
     }
   }
+  return null;
 }
 
 export default TextureConverter;

@@ -12,12 +12,12 @@ export default class RendererComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     camera: {
       converter: "Component",
-      defaultValue: "camera",
+      default: "camera",
       target: "Camera"
     },
     viewport: {
       converter: "Viewport",
-      defaultValue: "auto"
+      default: "auto"
     }
   };
 
@@ -40,13 +40,13 @@ export default class RendererComponent extends Component {
   public $mount(): void {
     this._gl = this.companion.get("gl") as WebGLRenderingContext;
     this._canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
-    this._camera = this.getValue("camera");
-    this.getAttribute("camera").addObserver((v) => this._camera = v.Value);
-    this.getAttribute("viewport").addObserver((v) => {
-      this._viewportSizeGenerator = v.Value;
+    this._camera = this.getAttribute("camera");
+    this.getAttributeRaw("camera").watch((v) => this._camera = v);
+    this.getAttributeRaw("viewport").watch((v) => {
+      this._viewportSizeGenerator = v;
       this.$resizeCanvas();
     });
-    this._viewportSizeGenerator = this.getValue("viewport");
+    this._viewportSizeGenerator = this.getAttribute("viewport");
   }
 
   public $treeInitialized(): void {

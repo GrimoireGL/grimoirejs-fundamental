@@ -13,31 +13,31 @@ import Color4 from "grimoirejs-math/ref/Color4";
 export default class RenderQuadComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     out: {
-      defaultValue: "default",
+      default: "default",
       converter: "String"
     },
     depthBuffer: {
-      defaultValue: undefined,
+      default: null,
       converter: "String"
     },
     targetBuffer: {
-      defaultValue: "default",
+      default: "default",
       converter: "String",
     },
     clearColor: {
-      defaultValue: "#0000",
+      default: "#0000",
       converter: "Color4",
     },
     clearColorEnabled: {
-      defaultValue: true,
+      default: true,
       converter: "Boolean",
     },
     clearDepthEnabled: {
-      defaultValue: true,
+      default: true,
       converter: "Boolean",
     },
     clearDepth: {
-      defaultValue: 1.0,
+      default: 1.0,
       converter: "Number",
     }
   };
@@ -65,11 +65,11 @@ export default class RenderQuadComponent extends Component {
   private _materialContainer: MaterialContainerComponent;
 
   public $awake(): void {
-    this.getAttribute("targetBuffer").boundTo("_targetBuffer");
-    this.getAttribute("clearColor").boundTo("_clearColor");
-    this.getAttribute("clearColorEnabled").boundTo("_clearColorEnabled");
-    this.getAttribute("clearDepthEnabled").boundTo("_clearDepthEnabled");
-    this.getAttribute("clearDepth").boundTo("_clearDepth");
+    this.getAttributeRaw("targetBuffer").boundTo("_targetBuffer");
+    this.getAttributeRaw("clearColor").boundTo("_clearColor");
+    this.getAttributeRaw("clearColorEnabled").boundTo("_clearColorEnabled");
+    this.getAttributeRaw("clearDepthEnabled").boundTo("_clearDepthEnabled");
+    this.getAttributeRaw("clearDepth").boundTo("_clearDepth");
   }
 
   public $mount(): void {
@@ -81,13 +81,13 @@ export default class RenderQuadComponent extends Component {
   }
 
   public $bufferUpdated(args: IBufferUpdatedMessage): void {
-    const out = this.getValue("out");
+    const out = this.getAttribute("out");
     if (out !== "default") {
       this._fbo = new Framebuffer(this.companion.get("gl"));
       this._fbo.update(args.buffers[out]);
       this._fboSize = args.bufferSizes[out];
     }
-    const depthBuffer = this.getValue("depthBuffer");
+    const depthBuffer = this.getAttribute("depthBuffer");
     if (depthBuffer && this._fbo) {
       this._fbo.update(args.buffers[depthBuffer]);
     }

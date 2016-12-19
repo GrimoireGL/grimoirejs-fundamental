@@ -44,7 +44,7 @@ export default class GeometryFactory {
     const args = {};
     for (let attr in decl) {
       const attrDecl = decl[attr];
-      args[attr] = attrDecl.defaultValue;
+      args[attr] = attrDecl.default;
     }
     return this.instanciate(type, args);
   }

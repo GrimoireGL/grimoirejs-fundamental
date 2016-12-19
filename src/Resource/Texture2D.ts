@@ -17,7 +17,12 @@ export default class Texture2D extends ResourceBase {
     WebGLRenderingContext.NEAREST_MIPMAP_LINEAR,
     WebGLRenderingContext.NEAREST_MIPMAP_NEAREST
   ];
+
+  public static _maxTextureSize: number;
+
   public readonly texture: WebGLTexture;
+
+
 
   public get magFilter(): number {
     return this._magFilter;
@@ -77,6 +82,9 @@ export default class Texture2D extends ResourceBase {
 
   constructor(gl: WebGLRenderingContext) {
     super(gl);
+    if (!Texture2D._maxTextureSize) {
+      Texture2D._maxTextureSize = gl.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE);
+    }
     this.texture = gl.createTexture();
   }
 
@@ -144,7 +152,7 @@ export default class Texture2D extends ResourceBase {
   // There should be more effective way to resize texture
   private _justifyImage(img: HTMLImageElement): HTMLCanvasElement | HTMLImageElement {
     const w = img.naturalWidth, h = img.naturalHeight;
-    const size = Math.pow(2, Math.log(Math.min(w, h)) / Math.LN2 | 0); // largest 2^n integer that does not exceed s
+    const size = Math.min(Math.pow(2, Math.log(Math.min(w, h)) / Math.LN2 | 0), Texture2D._maxTextureSize); // largest 2^n integer that does not exceed s
     if (w !== h || w !== size) {
       const canv = document.createElement("canvas");
       canv.height = canv.width = size;

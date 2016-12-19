@@ -13,31 +13,31 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 export default class CameraComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     fovy: {
-      defaultValue: "45d",
+      default: "45d",
       converter: "Angle2D"
     },
     near: {
-      defaultValue: 0.01,
+      default: 0.01,
       converter: "Number"
     },
     far: {
-      defaultValue: 100,
+      default: 100,
       converter: "Number"
     },
     aspect: {
-      defaultValue: 1.6,
+      default: 1.6,
       converter: "Number"
     },
     autoAspect: {
-      defaultValue: true,
+      default: true,
       converter: "Boolean"
     },
     orthoSize: {
-      defaultValue: 100,
+      default: 100,
       converter: "Number"
     },
     orthogonal: {
-      defaultValue: false,
+      default: false,
       converter: "Boolean"
     }
   };
@@ -76,31 +76,33 @@ export default class CameraComponent extends Component {
   public $awake(): void {
     const c = this.camera = new BasicCamera();
     this.transform = this.node.getComponent(TransformComponent);
-    this.$transformUpdated(this.transform);
-    this.getAttribute("far").addObserver((v) => {
-      c.setFar(v.Value);
+    this._onTransformUpdate(this.transform);
+    this.getAttributeRaw("far").watch((v) => {
+      c.setFar(v);
     }, true);
-    this.getAttribute("near").addObserver((v) => {
-      c.setNear(v.Value);
+    this.getAttributeRaw("near").watch((v) => {
+      c.setNear(v);
     }, true);
-    this.getAttribute("fovy").addObserver((v) => {
-      c.setFovy(v.Value);
+    this.getAttributeRaw("fovy").watch((v) => {
+      c.setFovy(v);
     }, true);
-    this.getAttribute("aspect").addObserver((v) => {
-      c.setAspect(v.Value);
+    this.getAttributeRaw("aspect").watch((v) => {
+      c.setAspect(v);
     }, true);
-    this.getAttribute("orthoSize").addObserver((v) => {
-      c.setOrthoSize(v.Value);
+    this.getAttributeRaw("orthoSize").watch((v) => {
+      c.setOrthoSize(v);
     }, true);
-    this.getAttribute("orthogonal").addObserver((v) => {
-      c.setOrthographicMode(v.Value);
+    this.getAttributeRaw("orthogonal").watch((v) => {
+      c.setOrthographicMode(v);
     }, true);
-    this.getAttribute("autoAspect").boundTo("_autoAspect");
+    this.getAttributeRaw("autoAspect").boundTo("_autoAspect");
   }
+
 
   public $mount(): void {
     this.containedScene = CameraComponent._findContainedScene(this.node);
     this.containedScene.queueRegistory.registerQueue(this._renderQueue);
+    this.node.on("transformUpdated", this._onTransformUpdate.bind(this));
   }
 
   public $unmount(): void {
@@ -124,7 +126,7 @@ export default class CameraComponent extends Component {
     }
   }
 
-  public $transformUpdated(t: TransformComponent): void {
+  private _onTransformUpdate(t: TransformComponent): void {
     if (this.camera) {
       this.camera.updateTransform(t);
     }
@@ -134,7 +136,7 @@ export default class CameraComponent extends Component {
     if (this._autoAspect) {
       const asp = args.viewport.Width / args.viewport.Height;
       if (this._aspectCache !== asp) {
-        this.setValue("aspect", asp);
+        this.setAttribute("aspect", asp);
         this._aspectCache = asp;
       }
     }

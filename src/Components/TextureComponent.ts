@@ -7,11 +7,11 @@ export default class TextureComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     src: {
       converter: "String",
-      defaultValue: undefined
+      default: null
     },
     minFilter: {
       converter: "Enum",
-      defaultValue: "LINEAR",
+      default: "LINEAR",
       table: {
         LINEAR: WebGLRenderingContext.LINEAR,
         NEAREST: WebGLRenderingContext.NEAREST,
@@ -23,7 +23,7 @@ export default class TextureComponent extends Component {
     },
     magFilter: {
       converter: "Enum",
-      defaultValue: "LINEAR",
+      default: "LINEAR",
       table: {
         LINEAR: WebGLRenderingContext.LINEAR,
         NEAREST: WebGLRenderingContext.NEAREST
@@ -31,7 +31,7 @@ export default class TextureComponent extends Component {
     },
     wrapS: {
       converter: "Enum",
-      defaultValue: "REPEAT",
+      default: "REPEAT",
       table: {
         REPEAT: WebGLRenderingContext.REPEAT,
         MIRRORED_REPEAT: WebGLRenderingContext.MIRRORED_REPEAT,
@@ -40,7 +40,7 @@ export default class TextureComponent extends Component {
     },
     wrapT: {
       converter: "Enum",
-      defaultValue: "REPEAT",
+      default: "REPEAT",
       table: {
         REPEAT: WebGLRenderingContext.REPEAT,
         MIRRORED_REPEAT: WebGLRenderingContext.MIRRORED_REPEAT,
@@ -52,16 +52,16 @@ export default class TextureComponent extends Component {
   public texture: Texture2D;
 
   public $mount(): void {
-    const src = this.getValue("src");
+    const src = this.getAttribute("src");
     this.texture = new Texture2D(this.companion.get("gl"));
-    this.texture.magFilter = this.getValue("magFilter");
-    this.texture.minFilter = this.getValue("minFilter");
-    this.texture.wrapT = this.getValue("wrapT");
-    this.texture.wrapS = this.getValue("wrapS");
-    this.attributes.get("magFilter").addObserver(v => this.texture.magFilter = v.Value);
-    this.attributes.get("minFilter").addObserver(v => this.texture.minFilter = v.Value);
-    this.attributes.get("wrapS").addObserver(v => this.texture.wrapS = v.Value);
-    this.attributes.get("wrapT").addObserver(v => this.texture.wrapT = v.Value);
+    this.texture.magFilter = this.getAttribute("magFilter");
+    this.texture.minFilter = this.getAttribute("minFilter");
+    this.texture.wrapT = this.getAttribute("wrapT");
+    this.texture.wrapS = this.getAttribute("wrapS");
+    this.getAttributeRaw("magFilter").watch(v => this.texture.magFilter = v);
+    this.getAttributeRaw("minFilter").watch(v => this.texture.minFilter = v);
+    this.getAttributeRaw("wrapS").watch(v => this.texture.wrapS = v);
+    this.getAttributeRaw("wrapT").watch(v => this.texture.wrapT = v);
     if (src) {
       this._loadTask(src);
     }
