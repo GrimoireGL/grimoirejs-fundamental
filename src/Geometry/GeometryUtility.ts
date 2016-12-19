@@ -1,24 +1,14 @@
 import Vector3 from "grimoirejs-math/ref/Vector3";
 export default class GeometryUtility {
   /**
-   * Generateor wrap for array
-   * @param  {number[]}                 array [description]
-   * @return {IterableIterator<number>}       [description]
-   */
-  public static *fromArray(array: number[]): IterableIterator<number> {
-    for (let i = 0; i < array.length; i++) {
-      yield array[i];
-    }
-  }
-  /**
    * Convert triangles topology to lines. Basically uses for making wireframes.
-   * @param  {IterableIterator<number>} indicies [description]
+   * @param  {IterableIterator<number>} indices [description]
    * @return {IterableIterator<number>}          [description]
    */
-  public static *linesFromTriangles(indicies: IterableIterator<number>): IterableIterator<number> {
+  public static *linesFromTriangles(indices: IterableIterator<number>): IterableIterator<number> {
     const ic: number[] = new Array(3);
     let i = 0;
-    for (let index of indicies) {
+    for (let index of indices) {
       ic[i % 3] = index;
       if (i % 3 === 2) {
         const a = ic[0], b = ic[1], c = ic[2];

@@ -1,3 +1,5 @@
+import Vector3 from "grimoirejs-math/ref/Vector3";
+import AABB from "grimoirejs-math/ref/AABB";
 import IndexBufferInfo from "./IndexBufferInfo";
 import Buffer from "../Resource/Buffer";
 import Geometry from "./Geometry";
@@ -9,11 +11,19 @@ import VertexBufferAttribInfo from "./VertexBufferAttribInfo";
  */
 export default class GeometryBuilder {
   public static build(gl: WebGLRenderingContext, info: GeometryBufferConstructionInfo): Geometry {
+    if (info["verticies"] | info["indicies"]) {
+      throw new Error("Misspelled API was fixed already. use vertices and indices");
+    }
     const buffers: { [key: string]: Buffer } = {};
     const attribs: { [key: string]: VertexBufferAttribInfo } = {};
-    for (let bufferKey in info.verticies) {
+    let aabb: AABB = info.aabb;
+    const needConstructAABB: boolean = !aabb;
+    if (needConstructAABB) {
+      aabb = new AABB();
+    }
+    for (let bufferKey in info.vertices) {
       const byteWidth = 4;
-      const buffer = info.verticies[bufferKey];
+      const buffer = info.vertices[bufferKey];
       let sizeSum = 0;
       for (let attribKey in buffer.size) {
         if (attribs[attribKey]) {
@@ -36,6 +46,7 @@ export default class GeometryBuilder {
       const bufferSource = new Array(sizeSum * buffer.count);
       const bufferGenerator = buffer.getGenerators();
       const generators: Iterator<number>[] = [];
+      let positionGeneratorIndex: number = 0;
       const sizes: number[] = [];
       const beforeEach = bufferGenerator.beforeEach ? bufferGenerator.beforeEach() : undefined;
       for (let attribKey in buffer.size) { // instanciate iterables
@@ -45,6 +56,9 @@ export default class GeometryBuilder {
         const generator = bufferGenerator[attribKey] as () => IterableIterator<number>;
         generators.push(generator());
         sizes.push(buffer.size[attribKey]);
+        if (attribKey === "position") {
+          positionGeneratorIndex = generators.length - 1;
+        }
       }
       let i = 0;
       for (let vertCount = 0; vertCount < buffer.count; vertCount++) {
@@ -61,31 +75,35 @@ export default class GeometryBuilder {
             bufferSource[i] = genResult.value;
             i++;
           }
+          if (needConstructAABB && genIndex === positionGeneratorIndex) {
+            aabb.expand(new Vector3(bufferSource[i - 3], bufferSource[i - 2], bufferSource[i - 1]))
+          }
         }
       }
       // instanciate buffers
       buffers[bufferKey] = new Buffer(gl, WebGLRenderingContext.ARRAY_BUFFER, buffer.usage ? buffer.usage : WebGLRenderingContext.STATIC_DRAW);
       buffers[bufferKey].update(new Float32Array(bufferSource));
     }
-    return new Geometry(buffers, attribs, this._generateIndicies(gl, info.indicies));
+    return new Geometry(buffers, attribs, this._generateIndices(gl, info.indices), aabb);
   }
 
-  private static _generateIndicies(gl: WebGLRenderingContext, indexGenerator: { [indexName: string]: { generator: () => IterableIterator<number>, topology: number } }): { [indexName: string]: IndexBufferInfo } {
+  private static _generateIndices(gl: WebGLRenderingContext, indexGenerator: { [indexName: string]: { generator: () => IterableIterator<number>, topology: number } }): { [indexName: string]: IndexBufferInfo } {
     const indexMap: { [indexName: string]: IndexBufferInfo } = {};
     for (let indexName in indexGenerator) {
-      const indicies: number[] = [];
+      const indices: number[] = [];
       const generatorInfo = indexGenerator[indexName];
       for (let variable of generatorInfo.generator()) {
-        indicies.push(variable);
+        indices.push(variable);
       }
-      const bufferType = this._getIndexType(indicies.length);
+      const bufferType = this._getIndexType(indices.length);
       const buffer = new Buffer(gl, WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, WebGLRenderingContext.STATIC_DRAW);
-      buffer.update(new bufferType.ctor(indicies));
+      buffer.update(new bufferType.ctor(indices));
       indexMap[indexName] = {
-        count: indicies.length,
+        count: indices.length,
         index: buffer,
         type: bufferType.format,
         byteSize: bufferType.byteSize,
+        byteOffset: 0,
         topology: generatorInfo.topology ? generatorInfo.topology : WebGLRenderingContext.TRIANGLES
       };
     }

@@ -3,7 +3,8 @@
   import AssetExternalResourceResolver from "./Asset/ExternalResourceResolver";
   import AssetImageResolver from "./Asset/ImageResolver";
   import AssetTextFileResolver from "./Asset/TextFileResolver";
-  import CameraPerspectiveCamera from "./Camera/PerspectiveCamera";
+  import CameraBasicCamera from "./Camera/BasicCamera";
+  import CameraViewCameraBase from "./Camera/ViewCameraBase";
   import ComponentsAssetLoadingManagerComponent from "./Components/AssetLoadingManagerComponent";
   import ComponentsCameraComponent from "./Components/CameraComponent";
   import ComponentsCanvasInitializerComponent from "./Components/CanvasInitializerComponent";
@@ -44,8 +45,6 @@
   import ConvertersNumberConverter from "./Converters/NumberConverter";
   import ConvertersObjectConverter from "./Converters/ObjectConverter";
   import ConvertersRotation3Converter from "./Converters/Rotation3Converter";
-  import ConvertersStringArrayConverter from "./Converters/StringArrayConverter";
-  import ConvertersStringConverter from "./Converters/StringConverter";
   import ConvertersTextureConverter from "./Converters/TextureConverter";
   import ConvertersVector2Converter from "./Converters/Vector2Converter";
   import ConvertersVector3Converter from "./Converters/Vector3Converter";
@@ -84,7 +83,11 @@
   import ResourceShader from "./Resource/Shader";
   import ResourceTexture2D from "./Resource/Texture2D";
   import ResourceUniformProxy from "./Resource/UniformProxy";
+  import SceneRendererDrawPriorty from "./SceneRenderer/DrawPriorty";
+  import SceneRendererRenderQueue from "./SceneRenderer/RenderQueue";
+  import SceneRendererRenderQueueRegistry from "./SceneRenderer/RenderQueueRegistry";
   import UtilRotationParser from "./Util/RotationParser";
+  import UtilTextureSizeCalculator from "./Util/TextureSizeCalculator";
   import __INTERFACE__1 from "./Camera/ICamera";
   import __INTERFACE__2 from "./Geometry/GeometryBufferConstructionInfo";
   import __INTERFACE__3 from "./Geometry/IGeometryFactoryDelegate";
@@ -99,11 +102,12 @@
   import __INTERFACE__12 from "./Material/Transformers/ITransformingArgument";
   import __INTERFACE__13 from "./Material/Transformers/PreferenceParser";
   import __INTERFACE__14 from "./Messages/IBufferUpdatedMessage";
-  import __INTERFACE__15 from "./Messages/IRenderMessage";
-  import __INTERFACE__16 from "./Messages/IRenderRendererMessage";
-  import __INTERFACE__17 from "./Messages/IResizeBufferMessage";
-  import __INTERFACE__18 from "./Objects/CanvasSizeObject";
-  import __INTERFACE__19 from "./Objects/RenderSceneArgument";
+  import __INTERFACE__15 from "./Messages/IRenderRendererMessage";
+  import __INTERFACE__16 from "./Messages/IResizeBufferMessage";
+  import __INTERFACE__17 from "./Objects/CanvasSizeObject";
+  import __INTERFACE__18 from "./Objects/RenderSceneArgument";
+  import __INTERFACE__19 from "./SceneRenderer/IRenderable";
+  import __INTERFACE__20 from "./SceneRenderer/IRenderArgument";
 
 import __MAIN__ from "./main"
 
@@ -116,7 +120,8 @@ var __EXPOSE__ = {
     "TextFileResolver": AssetTextFileResolver
   },
   "Camera": {
-    "PerspectiveCamera": CameraPerspectiveCamera
+    "BasicCamera": CameraBasicCamera,
+    "ViewCameraBase": CameraViewCameraBase
   },
   "Components": {
     "AssetLoadingManagerComponent": ComponentsAssetLoadingManagerComponent,
@@ -163,8 +168,6 @@ var __EXPOSE__ = {
     "NumberConverter": ConvertersNumberConverter,
     "ObjectConverter": ConvertersObjectConverter,
     "Rotation3Converter": ConvertersRotation3Converter,
-    "StringArrayConverter": ConvertersStringArrayConverter,
-    "StringConverter": ConvertersStringConverter,
     "TextureConverter": ConvertersTextureConverter,
     "Vector2Converter": ConvertersVector2Converter,
     "Vector3Converter": ConvertersVector3Converter,
@@ -212,8 +215,14 @@ var __EXPOSE__ = {
     "Texture2D": ResourceTexture2D,
     "UniformProxy": ResourceUniformProxy
   },
+  "SceneRenderer": {
+    "DrawPriorty": SceneRendererDrawPriorty,
+    "RenderQueue": SceneRendererRenderQueue,
+    "RenderQueueRegistry": SceneRendererRenderQueueRegistry
+  },
   "Util": {
-    "RotationParser": UtilRotationParser
+    "RotationParser": UtilRotationParser,
+    "TextureSizeCalculator": UtilTextureSizeCalculator
   }
 };
 

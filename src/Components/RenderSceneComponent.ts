@@ -16,34 +16,34 @@ export default class RenderSceneComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     layer: {
       converter: "String",
-      defaultValue: "default"
+      default: "default"
     },
     depthBuffer: {
-      defaultValue: undefined,
+      default: null,
       converter: "String"
     },
     out: {
       converter: "String",
-      defaultValue: "default"
+      default: "default"
     },
     clearColor: {
-      defaultValue: "#0000",
+      default: "#0000",
       converter: "Color4",
     },
     clearColorEnabled: {
-      defaultValue: true,
+      default: true,
       converter: "Boolean",
     },
     clearDepthEnabled: {
-      defaultValue: true,
+      default: true,
       converter: "Boolean",
     },
     clearDepth: {
-      defaultValue: 1.0,
+      default: 1.0,
       converter: "Number",
     },
     camera: {
-      defaultValue: undefined,
+      default: null,
       converter: "Component",
       target: "Camera"
     }
@@ -56,6 +56,8 @@ export default class RenderSceneComponent extends Component {
   private _materialContainer: MaterialContainerComponent;
 
   private _fbo: Framebuffer;
+
+  private _fboSize: { width: number, height: number };
 
   // backing fields
 
@@ -74,12 +76,12 @@ export default class RenderSceneComponent extends Component {
   // messages
 
   public $awake(): void {
-    this.getAttribute("layer").boundTo("_layer");
-    this.getAttribute("clearColor").boundTo("_clearColor");
-    this.getAttribute("clearColorEnabled").boundTo("_clearColorEnabled");
-    this.getAttribute("clearDepthEnabled").boundTo("_clearDepthEnabled");
-    this.getAttribute("clearDepth").boundTo("_clearDepth");
-    this.getAttribute("camera").boundTo("_camera");
+    this.getAttributeRaw("layer").boundTo("_layer");
+    this.getAttributeRaw("clearColor").boundTo("_clearColor");
+    this.getAttributeRaw("clearColorEnabled").boundTo("_clearColorEnabled");
+    this.getAttributeRaw("clearDepthEnabled").boundTo("_clearDepthEnabled");
+    this.getAttributeRaw("clearDepth").boundTo("_clearDepth");
+    this.getAttributeRaw("camera").boundTo("_camera");
   }
 
 
@@ -90,12 +92,13 @@ export default class RenderSceneComponent extends Component {
   }
 
   public $bufferUpdated(args: IBufferUpdatedMessage): void {
-    const out = this.getValue("out");
+    const out = this.getAttribute("out");
     if (out !== "default") {
       this._fbo = new Framebuffer(this.companion.get("gl"));
       this._fbo.update(args.buffers[out]);
+      this._fboSize = args.bufferSizes[out];
     }
-    const depthBuffer = this.getValue("depthBuffer");
+    const depthBuffer = this.getAttribute("depthBuffer");
     if (depthBuffer && this._fbo) {
       this._fbo.update(args.buffers[depthBuffer]);
     }
@@ -108,7 +111,7 @@ export default class RenderSceneComponent extends Component {
     }
     if (this._fbo) {
       this._fbo.bind();
-      this._gl.viewport(0, 0, args.viewport.Width, args.viewport.Height);
+      this._gl.viewport(0, 0, this._fboSize.width, this._fboSize.height);
     } else {
       this._gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
       this._gl.viewport(args.viewport.Left, this._canvas.height - args.viewport.Bottom, args.viewport.Width, args.viewport.Height);

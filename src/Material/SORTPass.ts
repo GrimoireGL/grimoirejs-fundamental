@@ -14,6 +14,9 @@ export default class SORTPass extends Pass {
   private _macroValues: { [key: string]: string } = {};
 
   public setMacro(key: string, value: string | boolean): void {
+    if (this._macroValues[key] === value) {
+      return; // Nothing to do if specified value is unchanged
+    }
     if (typeof value === "boolean") {
       this._macroValues[key] = value ? "" : null;
     } else {
@@ -33,6 +36,16 @@ export default class SORTPass extends Pass {
     this.fs = new Shader(this.gl, WebGLRenderingContext.FRAGMENT_SHADER);
     this.vs = new Shader(this.gl, WebGLRenderingContext.VERTEX_SHADER);
     this.program = new Program(this.gl);
+    for (let i = 0; i < sort.macros.length; i++) {
+      const macroInfo = sort.macros[i];
+      if (macroInfo.type === "boolean") {
+        if (macroInfo.default) {
+          this._macroValues[macroInfo.macroName] = "";
+        }
+      } else {
+        this._macroValues[macroInfo.macroName] = macroInfo.default;
+      }
+    }
     factory.macro.addObserver(() => {
       this._updateProgram();
     });
@@ -43,12 +56,12 @@ export default class SORTPass extends Pass {
     for (let attributeKey in this.sort.gomlAttributes) {
       this.sort.gomlAttributes[attributeKey].register(this.program.uniforms, args);
     }
-    for (let registerer of this.sort.systemRegisterers) {
-      registerer(this.program.uniforms, args);
+    for (let key in this.sort.systemRegisterers) {
+      this.sort.systemRegisterers[key](this.program.uniforms, args);
     }
     // apply gl states
-    for (let configurator of this.sort.configurator) {
-      configurator(this.gl)
+    for (let key in this.sort.configurator) {
+      this.sort.configurator[key](this.gl);
     }
   }
 

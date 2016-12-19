@@ -1,3 +1,4 @@
+import TextureComponent from "../Components/TextureComponent";
 import gr from "grimoirejs";
 import TextureReference from "../Material/TextureReference";
 import Attribute from "grimoirejs/ref/Node/Attribute";
@@ -53,6 +54,10 @@ function TextureConverter(this: Attribute, val: any): any {
           return new TextureReference((buffers) => buffers[param]);
         case "video":
           return new TextureReference(fromVideoTexture(this.companion.get("gl"), generateVideoTag(param)))
+        case "query":
+          const obtainedTag = this.tree(param);
+          const texture = obtainedTag.first().getComponent(TextureComponent);
+          return new TextureReference(() => texture.texture);
       }
     } else {
       const tex = new Texture2D(this.companion.get("gl"));
@@ -82,6 +87,7 @@ function TextureConverter(this: Attribute, val: any): any {
       return new TextureReference(fromVideoTexture(this.companion.get("gl"), val));
     }
   }
+  return null;
 }
 
 export default TextureConverter;

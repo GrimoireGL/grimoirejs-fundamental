@@ -1,7 +1,28 @@
 import ResourceBase from "./ResourceBase";
 type ImageSource = HTMLCanvasElement | HTMLImageElement | ImageData | ArrayBufferView;
+
+export type ImageUploadConfig = {
+  flipY?: boolean,
+  premultipliedAlpha?: boolean
+};
+
 export default class Texture2D extends ResourceBase {
+  /**
+   * ミップマップの更新が必要なフィルタ
+   * @type {number[]}
+   */
+  private static _filtersNeedsMipmap: number[] = [
+    WebGLRenderingContext.LINEAR_MIPMAP_LINEAR,
+    WebGLRenderingContext.LINEAR_MIPMAP_NEAREST,
+    WebGLRenderingContext.NEAREST_MIPMAP_LINEAR,
+    WebGLRenderingContext.NEAREST_MIPMAP_NEAREST
+  ];
+
+  public static _maxTextureSize: number;
+
   public readonly texture: WebGLTexture;
+
+
 
   public get magFilter(): number {
     return this._magFilter;
@@ -11,6 +32,7 @@ export default class Texture2D extends ResourceBase {
     if (this._magFilter !== filter) {
       this._texParameterChanged = true;
       this._magFilter = filter;
+      this._ensureMipmap();
     }
   }
 
@@ -22,6 +44,7 @@ export default class Texture2D extends ResourceBase {
     if (this._minFilter !== filter) {
       this._texParameterChanged = true;
       this._minFilter = filter;
+      this._ensureMipmap();
     }
   }
 
@@ -59,24 +82,42 @@ export default class Texture2D extends ResourceBase {
 
   constructor(gl: WebGLRenderingContext) {
     super(gl);
+    if (!Texture2D._maxTextureSize) {
+      Texture2D._maxTextureSize = gl.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE);
+    }
     this.texture = gl.createTexture();
   }
 
-  public update(level: number, width: number, height: number, border: number, format: number, type: number, pxiels?: ArrayBufferView, flipY?: boolean): void;
-  public update(image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement, flipY?: boolean): void;
-  public update(levelOrImage: any, widthOrFlipY: any, height?: number, border?: number, format?: number, type?: number, pixels?: ArrayBufferView, flipYForBuffer?: boolean): void {
+  public update(level: number, width: number, height: number, border: number, format: number, type: number, pxiels?: ArrayBufferView, config?: ImageUploadConfig): void;
+  public update(image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement, config?: ImageUploadConfig): void;
+  public update(levelOrImage: any, widthOrConfig: any, height?: number, border?: number, format?: number, type?: number, pixels?: ArrayBufferView, config?: ImageUploadConfig): void {
     this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.texture);
-    let flipY = false;
+    let uploadConfig: ImageUploadConfig;
     let image: HTMLImageElement;
     let width: number;
     let level: number;
     if (height === void 0) {
-      flipY = widthOrFlipY ? true : false;
+      uploadConfig = widthOrConfig || {
+        flipY: false,
+        premultipliedAlpha: false
+      };
       image = levelOrImage as HTMLImageElement;
     } else {
       level = levelOrImage as number;
-      width = widthOrFlipY as number;
+      width = widthOrConfig as number;
+      uploadConfig = config || {
+        flipY: false,
+        premultipliedAlpha: false
+      };
     }
+    if (uploadConfig.flipY === void 0) {
+      uploadConfig.flipY = false;
+    }
+    if (uploadConfig.premultipliedAlpha === void 0) {
+      uploadConfig.premultipliedAlpha = false;
+    }
+    this.gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, uploadConfig.flipY ? 1 : 0);
+    this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, uploadConfig.premultipliedAlpha ? 1 : 0);
     if (height === void 0) { // something image was specified
       if (image instanceof HTMLImageElement) {
         this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._justifyImage(image));
@@ -91,6 +132,7 @@ export default class Texture2D extends ResourceBase {
       }
       this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, level, format, width, height, border, format, type, pixels);
     }
+    this._ensureMipmap();
     this.valid = true;
   }
 
@@ -110,7 +152,7 @@ export default class Texture2D extends ResourceBase {
   // There should be more effective way to resize texture
   private _justifyImage(img: HTMLImageElement): HTMLCanvasElement | HTMLImageElement {
     const w = img.naturalWidth, h = img.naturalHeight;
-    const size = Math.pow(2, Math.log(Math.min(w, h)) / Math.LN2 | 0); // largest 2^n integer that does not exceed s
+    const size = Math.min(Math.pow(2, Math.log(Math.min(w, h)) / Math.LN2 | 0), Texture2D._maxTextureSize); // largest 2^n integer that does not exceed s
     if (w !== h || w !== size) {
       const canv = document.createElement("canvas");
       canv.height = canv.width = size;
@@ -125,7 +167,7 @@ export default class Texture2D extends ResourceBase {
     const h = canvas.height;
     const size = Math.pow(2, Math.log(Math.min(w, h)) / Math.LN2 | 0); // largest 2^n integer that does not exceed s
     if (w !== h || w !== size) {
-      canvas.height = canvas.width = size;
+      canvas.height = canvas.width = size * 2;
     }
     return canvas;
   }
@@ -148,5 +190,12 @@ export default class Texture2D extends ResourceBase {
     this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, this._wrapS);
     this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, this._wrapT);
     this._texParameterChanged = false;
+  }
+
+  private _ensureMipmap(): void {
+    if (Texture2D._filtersNeedsMipmap.indexOf(this.magFilter) >= 0 || Texture2D._filtersNeedsMipmap.indexOf(this.minFilter) >= 0) {
+      this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.texture);
+      this.gl.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
+    }
   }
 }

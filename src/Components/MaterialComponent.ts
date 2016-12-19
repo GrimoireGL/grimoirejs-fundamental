@@ -11,7 +11,7 @@ export default class MaterialComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     type: {
       converter: "String",
-      defaultValue: undefined
+      default: null
     }
   };
 
@@ -24,7 +24,7 @@ export default class MaterialComponent extends Component {
   public materialArgs: { [key: string]: any } = {};
 
   public $mount(): void {
-    const typeName = this.getValue("type");
+    const typeName = this.getAttribute("type");
     if (typeName) {
       this.materialPromise = (this.companion.get("MaterialFactory") as MaterialFactory).instanciate(typeName);
       this._registerAttributes();
@@ -39,10 +39,10 @@ export default class MaterialComponent extends Component {
         const cp: SORTPass = p as SORTPass;
         for (let key in cp.sort.gomlAttributes) {
           this.__addAtribute(key, cp.sort.gomlAttributes[key]);
-          this.attributes.get(key).addObserver((v) => {
-            this.materialArgs[key] = v.Value;
+          this.getAttributeRaw(key).watch((v) => {
+            this.materialArgs[key] = v;
           });
-          const value = this.materialArgs[key] = this.getValue(key);
+          const value = this.materialArgs[key] = this.getAttribute(key);
           if (value instanceof ResourceBase) {
             promises.push((value as ResourceBase).validPromise);
           }
@@ -52,21 +52,21 @@ export default class MaterialComponent extends Component {
             case "int": // should use integer converter
               this.__addAtribute(macro.attributeName, {
                 converter: "Number",
-                defaultValue: macro.default
+                default: macro.default
               });
-              this.getAttribute(macro.attributeName).addObserver(
+              this.getAttributeRaw(macro.attributeName).watch(
                 (v) => {
-                  cp.setMacro(macro.macroName, "" + Math.floor(v.Value));
+                  cp.setMacro(macro.macroName, "" + Math.floor(v));
                 }, true);
               return;
             case "bool": // should use integer converter
               this.__addAtribute(macro.attributeName, {
                 converter: "Boolean",
-                defaultValue: macro.default
+                default: macro.default
               });
-              this.getAttribute(macro.attributeName).addObserver(
+              this.getAttributeRaw(macro.attributeName).watch(
                 (v) => {
-                  cp.setMacro(macro.macroName, v.Value);
+                  cp.setMacro(macro.macroName, v);
                 }, true);
               return;
             default:

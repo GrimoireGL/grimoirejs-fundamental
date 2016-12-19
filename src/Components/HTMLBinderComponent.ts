@@ -1,7 +1,7 @@
+import IRenderArgument from "../SceneRenderer/IRenderArgument";
 import gr from "grimoirejs";
 import TransformComponent from "./TransformComponent";
 import GomlNode from "grimoirejs/ref/Node/GomlNode";
-import IRenderMessage from "../Messages/IRenderMessage";
 import CameraComponent from "./CameraComponent";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
@@ -12,11 +12,11 @@ import Matrix from "grimoirejs-math/ref/Matrix";
 export default class HTMLBinderComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     htmlQuery: {
-      defaultValue: undefined,
+      default: null,
       converter: "String"
     },
     targetRenderer: {
-      defaultValue: "render-scene",
+      default: "render-scene",
       converter: "String"
     }
   };
@@ -41,26 +41,27 @@ export default class HTMLBinderComponent extends Component {
 
   public $awake(): void {
     this._canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
-    this._currentTransform = this.node.getComponent("Transform") as TransformComponent;
+    this._currentTransform = this.node.getComponent(TransformComponent);
   }
 
   public $mount(): void {
     this._canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
-    this._currentTransform = this.node.getComponent("Transform") as TransformComponent;
+    this._currentTransform = this.node.getComponent(TransformComponent);
+    this.node.on("render", this._onRender.bind(this));
   }
 
   public $treeInitialized(): void {
-    this.getAttribute("targetRenderer").addObserver((v) => {
-      if (this._rendererQuery !== v.Value) {
+    this.getAttributeRaw("targetRenderer").watch((v) => {
+      if (this._rendererQuery !== v) {
         this._onRendererChanged();
       }
     }, true);
-    this.getAttribute("htmlQuery").addObserver((v) => {
-      this._onQueryChanged(v.Value);
+    this.getAttributeRaw("htmlQuery").watch((v) => {
+      this._onQueryChanged(v);
     }, true);
   }
 
-  public $render(args: IRenderMessage): void {
+  private _onRender(args: IRenderArgument): void {
     if (this._isFirstCall) {
       this._onRendererChanged();
       this._isFirstCall = false;
@@ -109,7 +110,7 @@ export default class HTMLBinderComponent extends Component {
 
   private _onRendererChanged(): void {
     let returned = false;
-    this.tree(this.getValue("targetRenderer")).forEach(n => { // should be obtained by get api
+    this.tree(this.getAttribute("targetRenderer")).forEach(n => { // should be obtained by get api
       if (returned) {
         return true;
       } else {

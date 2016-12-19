@@ -1,5 +1,6 @@
+import AABB from "grimoirejs-math/ref/AABB";
 interface GeometryBufferConstructionInfo {
-  verticies: {
+  vertices: {
     [bufferName: string]: {
       size: { [attributeName: string]: number }
       count: number;
@@ -11,12 +12,13 @@ interface GeometryBufferConstructionInfo {
       usage?: number;
     }
   };
-  indicies: {
+  indices: {
     [indexName: string]: {
       generator: () => IterableIterator<number>;
       topology: number;
     };
   };
+  aabb?: AABB;
 }
 
 export default GeometryBufferConstructionInfo;

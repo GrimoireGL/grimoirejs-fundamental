@@ -4,9 +4,10 @@ import Vector3 from "grimoirejs-math/ref/Vector3";
 import Vector4 from "grimoirejs-math/ref/Vector4";
 import Quaternion from "grimoirejs-math/ref/Quaternion";
 import ICamera from "../Camera/ICamera";
-import {mat4, vec3, vec4} from "gl-matrix";
+import GLM from "grimoirejs-math/ref/GLM";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+const {mat4, vec3, vec4} = GLM;
 /**
  * Provides object transformation like translation,rotation,scaling.
  */
@@ -14,15 +15,19 @@ export default class TransformComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     "position": {
       converter: "Vector3",
-      defaultValue: Vector3.Zero
+      default: Vector3.Zero
     },
     "rotation": {
       converter: "Rotation3",
-      defaultValue: Quaternion.Identity
+      default: Quaternion.Identity
     },
     "scale": {
       converter: "Vector3",
-      defaultValue: Vector3.One
+      default: Vector3.One
+    },
+    "rawMatrix": {
+      converter: "Object", // TODO should implement Matrix converter
+      default: null
     }
   };
   /**
@@ -109,6 +114,8 @@ export default class TransformComponent extends Component {
 
   private _globalScale: Vector3 = new Vector3([1, 1, 1]);
 
+  private _matrixTransformMode: boolean = false;
+
   public get globalPosition(): Vector3 {
     return this._globalPosition;
   }
@@ -119,7 +126,7 @@ export default class TransformComponent extends Component {
 
   public set localPosition(val: Vector3) {
     this._localPosition = val;
-    this.attributes.get("position").Value = val;
+    this.setAttribute("position", val);
   }
 
   public get localRotation(): Quaternion {
@@ -128,7 +135,7 @@ export default class TransformComponent extends Component {
 
   public set localRotation(val: Quaternion) {
     this._localRotation = val;
-    this.attributes.get("rotation").Value = val;
+    this.setAttribute("rotation", val);
   }
 
   public get globalScale(): Vector3 {
@@ -141,7 +148,7 @@ export default class TransformComponent extends Component {
 
   public set localScale(val: Vector3) {
     this._localScale = val;
-    this.attributes.get("scale").Value = val;
+    this.setAttribute("scale", val);
   }
 
   public get forward(): Vector3 {
@@ -168,28 +175,42 @@ export default class TransformComponent extends Component {
 
   public $awake(): void {
     // register observers
-    this.attributes.get("position").addObserver(() => {
-      this._localPosition = this.attributes.get("position").Value;
+    this.getAttributeRaw("position").watch((v) => {
+      this._localPosition = v;
+      this._matrixTransformMode = false;
+      this.updateTransform(true);
+    });
+    this.getAttributeRaw("rotation").watch((v) => {
+      this._localRotation = v;
+      this._matrixTransformMode = false;
       this.updateTransform();
     });
-    this.attributes.get("rotation").addObserver(() => {
-      this._localRotation = this.attributes.get("rotation").Value;
-      this.updateTransform();
+    this.getAttributeRaw("scale").watch((v) => {
+      this._localScale = v;
+      this._matrixTransformMode = false;
+      this.updateTransform(true);
     });
-    this.attributes.get("scale").addObserver(() => {
-      this._localScale = this.attributes.get("scale").Value;
-      this.updateTransform();
+    this.getAttributeRaw("rawMatrix").watch((v) => {
+      if (v !== null) {
+        const mat = v as Matrix;
+        this._matrixTransformMode = true;
+        // TODO should be addded?
+        // mat4.getTranslation(this._localPosition.rawElements, mat.rawElements);
+        // mat4.getScaling(this._localScale.rawElements, mat.rawElements);
+        // mat4.getRotation(this._localRotation.rawElements, mat.rawElements);
+        this.localTransform = mat;
+        this.updateGlobalTransform();
+      }
     });
     // assign attribute values to field
-    this._localPosition = this.attributes.get("position").Value;
-    this._localRotation = this.attributes.get("rotation").Value;
-    this._localScale = this.attributes.get("scale").Value;
+    this._localPosition = this.getAttribute("position");
+    this._localRotation = this.getAttribute("rotation");
+    this._localScale = this.getAttribute("scale");
     this.updateTransform();
   }
 
-
   public $mount(): void {
-    this._parentTransform = this.node.parent.getComponent("Transform") as TransformComponent;
+    this._parentTransform = this.node.parent.getComponent(TransformComponent);
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
     }
@@ -207,23 +228,27 @@ export default class TransformComponent extends Component {
    * update local transform and global transform.
    * This need to be called if you manually edit raw elements of scale,position or rotation to recalculate transform matricies.
    */
-  public updateTransform(): void {
-    mat4.fromRotationTranslationScale(this.localTransform.rawElements, this._localRotation.rawElements, this._localPosition.rawElements, this._localScale.rawElements);
-    this.updateGlobalTransform();
+  public updateTransform(noDirectionalUpdate?: boolean): void {
+    if (!this._matrixTransformMode) {
+      mat4.fromRotationTranslationScale(this.localTransform.rawElements, this._localRotation.rawElements, this._localPosition.rawElements, this._localScale.rawElements);
+    }
+    this.updateGlobalTransform(noDirectionalUpdate);
   }
   /**
    * Update global transoform.
    */
-  public updateGlobalTransform(): void {
+  public updateGlobalTransform(noDirectionalUpdate?: boolean): void {
     if (!this._parentTransform) {
       mat4.copy(this.globalTransform.rawElements, this.localTransform.rawElements);
     } else {
       mat4.mul(this.globalTransform.rawElements, this._parentTransform.globalTransform.rawElements, this.localTransform.rawElements);
     }
-    this._updateDirections();
+    if (noDirectionalUpdate) {
+      this._updateDirections();
+    }
     this._updateGlobalProperty();
-    this.node.sendMessage("transformUpdated", this);
-    this._children.forEach((v) => v.updateGlobalTransform());
+    this.node.emit("transformUpdated", this);
+    this._children.forEach((v) => v.updateGlobalTransform(noDirectionalUpdate));
   }
 
   private _updateDirections(): void {
@@ -243,3 +268,4 @@ export default class TransformComponent extends Component {
   }
 
 }
+

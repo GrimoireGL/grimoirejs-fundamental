@@ -7,6 +7,7 @@ function GeometryConverter(this: Attribute, val: any): any {
   } else if (val instanceof Geometry) {
     return val;
   }
+  throw new Error(`Specified geometry "${val}" is not supported for converting into geometry.`)
 }
 
 export default GeometryConverter;

@@ -12,7 +12,7 @@ export default class RotationParser {
    * @returns {number} parsed angle in radians.
    */
   public static parseAngle(input: string): number {
-    const regex = /^ *(-? *(?:0|[1-9]\d*)(?: *\.\d+)?) *(?:\/ *((?:0|[1-9]\d*)(?: *\.\d+)?))? *(p|prad|deg|d|r|rad)? *$/gm;
+    const regex = /^ *(-?[\de+-.]*) *(?:\/ *([\de+-.]*))? *(p|prad|deg|d|r|rad)? *$/gm;
     const result = regex.exec(input);
 
     if (result == null) {

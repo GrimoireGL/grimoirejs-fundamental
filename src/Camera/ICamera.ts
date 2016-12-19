@@ -47,6 +47,34 @@ interface ICamera {
    * @param {number} near [near clip]
    */
   setNear(near: number): void;
+
+  /**
+   * Getter for aspect ratio
+   * @return {number} [description]
+   */
+  getAspect(): number;
+
+  /**
+   * Setter for aspect ratio
+   * @return {number} [description]
+   */
+  setAspect(aspect: number);
+
+  /**
+   * Getter for fovy
+   * @return {number} [description]
+   */
+  getFovy(): number;
+
+  /**
+   * Setter for fovy
+   * @return {number} [description]
+   */
+  setFovy(fovy: number): void;
+
+  getOrthoSize(): number;
+
+  setOrthoSize(size: number): void;
   /**
    * Notify transform of this camera was updated to recalculate view-matrix.
    * @param {TransformComponent} transform [transform of camera]

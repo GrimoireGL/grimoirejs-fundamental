@@ -24,6 +24,15 @@ export default class UniformProxy {
     );
   }
 
+  public uniformMatrixArray(variableName: string, matricies: Float32Array): void {
+    const length = matricies.length / 16;
+    for (let i = 0; i < length; i++) {
+      this._passAsArray(variableName, i, (l) =>
+        this._gl.uniformMatrix4fv(l, false, new Float32Array(matricies.buffer, matricies.byteOffset + i * 64))
+      );
+    }
+  }
+
   public uniformFloat(variableName: string, val: number): void {
     this._pass(variableName, (l) =>
       this._gl.uniform1f(l, val)
@@ -100,6 +109,13 @@ export default class UniformProxy {
 
   private _pass(variableName: string, act: (location: WebGLUniformLocation) => void) {
     const location = this.program.findUniformLocation(variableName);
+    if (location) {
+      act(location);
+    }
+  }
+
+  private _passAsArray(variableName: string, index: number, act: (location: WebGLUniformLocation) => void) {
+    const location = this.program.findUniformLocation(variableName + "[" + index + "]");
     if (location) {
       act(location);
     }

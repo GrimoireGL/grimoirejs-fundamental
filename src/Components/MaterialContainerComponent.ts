@@ -1,3 +1,5 @@
+import DrawPriorty from "../SceneRenderer/DrawPriorty";
+import Attribute from "grimoirejs/ref/Node/Attribute";
 import gr from "grimoirejs";
 import ResourceBase from "../Resource/ResourceBase";
 import MaterialComponent from "./MaterialComponent";
@@ -11,15 +13,19 @@ export default class MaterialContainerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     material: {
       converter: "Material",
-      defaultValue: "new(unlit)",
+      default: "new(unlit)",
       componentBoundTo: "_materialComponent" // When the material was specified with the other material tag, this field would be assigned.
+    },
+    drawOrder: {
+      converter: "String",
+      default: null
     }
   };
 
   public static rewriteDefaultMaterial(materialName: string): void {
     if (materialName !== MaterialContainerComponent._defaultMaterial) {
       MaterialContainerComponent._defaultMaterial = materialName;
-      GrimoireInterface.componentDeclarations.get("MaterialContainer").attributes["material"].defaultValue = `new(${materialName})`;
+      GrimoireInterface.componentDeclarations.get("MaterialContainer").attributes["material"].default = `new(${materialName})`;
     }
   }
 
@@ -28,6 +34,18 @@ export default class MaterialContainerComponent extends Component {
   }
 
   private static _defaultMaterial = "unlit";
+
+  public getDrawPriorty(depth: number): number {
+    if (!this.ready) {
+      return Number.MAX_VALUE;
+    }
+    const orderCriteria = DrawPriorty[this._drawOrder ? this._drawOrder : this.material.drawOrder];
+    if (orderCriteria.descending) {
+      return (1.0 - depth / 10000) * orderCriteria.priorty;
+    } else {
+      return depth / 10000 * orderCriteria.priorty;
+    }
+  }
 
   public material: Material;
 
@@ -39,16 +57,19 @@ export default class MaterialContainerComponent extends Component {
 
   private _materialComponent: MaterialComponent;
 
+  private _drawOrder: string;
+
   public $mount(): void {
-    this.getAttribute("material").addObserver(this._onMaterialChanged);
+    this.getAttributeRaw("material").watch(this._onMaterialChanged);
     (this.companion.get("loader") as AssetLoader).register(this._onMaterialChanged());
+    this.getAttributeRaw("drawOrder").boundTo("_drawOrder");
   }
 
   /**
    * When the material attribute is changed.
    */
   private async _onMaterialChanged(): Promise<void> {
-    const materialPromise = this.getValue("material") as Promise<Material>;
+    const materialPromise = this.getAttribute("material") as Promise<Material>;
     if (materialPromise === void 0) {
       this.useMaterial = false;
       return; // When specified material is null
@@ -89,10 +110,10 @@ export default class MaterialContainerComponent extends Component {
         for (let key in cp.sort.gomlAttributes) {
           const val = cp.sort.gomlAttributes[key];
           this.__addAtribute(key, val);
-          this.getAttribute(key).addObserver((v) => {
-            this.materialArgs[key] = v.Value;
+          this.getAttributeRaw(key).watch((v) => {
+            this.materialArgs[key] = v;
           });
-          const value = this.materialArgs[key] = this.getValue(key);
+          const value = this.materialArgs[key] = this.getAttribute(key);
           if (value instanceof ResourceBase) {
             promises.push((value as ResourceBase).validPromise);
           }
@@ -102,21 +123,21 @@ export default class MaterialContainerComponent extends Component {
             case "int": // should use integer converter
               this.__addAtribute(macro.attributeName, {
                 converter: "Number",
-                defaultValue: macro.default
+                default: macro.default
               });
-              this.getAttribute(macro.attributeName).addObserver(
+              this.getAttributeRaw(macro.attributeName).watch(
                 (v) => {
-                  cp.setMacro(macro.macroName, "" + Math.floor(v.Value));
+                  cp.setMacro(macro.macroName, "" + Math.floor(v));
                 }, true);
               return;
             case "bool": // should use integer converter
               this.__addAtribute(macro.attributeName, {
                 converter: "Boolean",
-                defaultValue: macro.default
+                default: macro.default
               });
-              this.getAttribute(macro.attributeName).addObserver(
+              this.getAttributeRaw(macro.attributeName).watch(
                 (v) => {
-                  cp.setMacro(macro.macroName, v.Value);
+                  cp.setMacro(macro.macroName, v);
                 }, true);
               return;
           }

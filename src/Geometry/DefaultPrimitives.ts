@@ -1,9 +1,13 @@
+import AABB from "grimoirejs-math/ref/AABB";
 import Vector3 from "grimoirejs-math/ref/Vector3";
 import GeometryUtility from "./GeometryUtility";
 import GeometryFactory from "./GeometryFactory";
 import GeometryBuilder from "./GeometryBuilder";
-// TODO add normal and texCoords
-// TODO apply attributes
+
+const unitBox = new AABB();
+unitBox.expand(new Vector3(-1, -1, -1));
+unitBox.expand(new Vector3(1, 1, 1));
+
 export default class DefaultPrimitives {
   public static register(): void {
     DefaultPrimitives._registerTriangle();
@@ -20,7 +24,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("triangle", {
     }, (gl, attrs) => {
       return GeometryBuilder.build(gl, {
-        indicies: {
+        indices: {
           default: {
             generator: function* () {
               yield* GeometryUtility.triangleIndex(0);
@@ -34,7 +38,7 @@ export default class DefaultPrimitives {
             topology: WebGLRenderingContext.LINES
           }
         },
-        verticies: {
+        vertices: {
           main: {
             size: {
               position: 3,
@@ -65,7 +69,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("quad", {
     }, (gl, attrs) => {
       return GeometryBuilder.build(gl, {
-        indicies: {
+        indices: {
           default: {
             generator: function* () {
               yield* GeometryUtility.quadIndex(0);
@@ -79,7 +83,7 @@ export default class DefaultPrimitives {
             topology: WebGLRenderingContext.LINES
           }
         },
-        verticies: {
+        vertices: {
           main: {
             size: {
               position: 3,
@@ -110,7 +114,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cube", {
     }, (gl, attrs) => {
       return GeometryBuilder.build(gl, {
-        indicies: {
+        indices: {
           default: {
             generator: function* () {
               yield* GeometryUtility.cubeIndex(0);
@@ -124,7 +128,7 @@ export default class DefaultPrimitives {
             topology: WebGLRenderingContext.LINES
           }
         },
-        verticies: {
+        vertices: {
           main: {
             size: {
               position: 3,
@@ -146,7 +150,8 @@ export default class DefaultPrimitives {
               };
             }
           }
-        }
+        },
+        aabb: unitBox
       });
     });
   }
@@ -155,17 +160,17 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("sphere", {
       divVertical: {
         converter: "Number",
-        defaultValue: 100
+        default: 100
       },
       divHorizontal: {
         converter: "Number",
-        defaultValue: 100
+        default: 100
       }
     }, (gl, attrs) => {
       const dH = attrs["divHorizontal"];
       const dV = attrs["divVertical"];
       return GeometryBuilder.build(gl, {
-        indicies: {
+        indices: {
           default: {
             generator: function* () {
               yield* GeometryUtility.sphereIndex(0, dH, dV);
@@ -179,7 +184,7 @@ export default class DefaultPrimitives {
             topology: WebGLRenderingContext.LINES
           }
         },
-        verticies: {
+        vertices: {
           main: {
             size: {
               position: 3,
@@ -201,7 +206,8 @@ export default class DefaultPrimitives {
               };
             }
           }
-        }
+        },
+        aabb: unitBox
       });
     });
   }
@@ -209,12 +215,12 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("circle", {
       divide: {
         converter: "Number",
-        defaultValue: 50
+        default: 50
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
       return GeometryBuilder.build(gl, {
-        indicies: {
+        indices: {
           default: {
             generator: function* () {
               yield* GeometryUtility.ellipseIndex(0, div);
@@ -228,7 +234,7 @@ export default class DefaultPrimitives {
             topology: WebGLRenderingContext.LINES
           }
         },
-        verticies: {
+        vertices: {
           main: {
             size: {
               position: 3,
@@ -259,12 +265,12 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cylinder", {
       divide: {
         converter: "Number",
-        defaultValue: 50
+        default: 50
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
       return GeometryBuilder.build(gl, {
-        indicies: {
+        indices: {
           default: {
             generator: function* () {
               yield* GeometryUtility.cylinderIndex(0, div);
@@ -278,7 +284,7 @@ export default class DefaultPrimitives {
             topology: WebGLRenderingContext.LINES
           }
         },
-        verticies: {
+        vertices: {
           main: {
             size: {
               position: 3,
@@ -300,7 +306,8 @@ export default class DefaultPrimitives {
               };
             }
           }
-        }
+        },
+        aabb: unitBox
       });
     });
   }
@@ -308,12 +315,12 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cone", {
       divide: {
         converter: "Number",
-        defaultValue: 50
+        default: 50
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
       return GeometryBuilder.build(gl, {
-        indicies: {
+        indices: {
           default: {
             generator: function* () {
               yield* GeometryUtility.coneIndex(0, div);
@@ -327,7 +334,7 @@ export default class DefaultPrimitives {
             topology: WebGLRenderingContext.LINES
           }
         },
-        verticies: {
+        vertices: {
           main: {
             size: {
               position: 3,
@@ -349,7 +356,8 @@ export default class DefaultPrimitives {
               };
             }
           }
-        }
+        },
+        aabb: unitBox
       });
     });
   }
@@ -357,12 +365,12 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("plane", {
       divide: {
         converter: "Number",
-        defaultValue: 10
+        default: 10
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
       return GeometryBuilder.build(gl, {
-        indicies: {
+        indices: {
           default: {
             generator: function* () {
               yield* GeometryUtility.planeIndex(0, div);
@@ -376,7 +384,7 @@ export default class DefaultPrimitives {
             topology: WebGLRenderingContext.LINES
           }
         },
-        verticies: {
+        vertices: {
           main: {
             size: {
               position: 3,

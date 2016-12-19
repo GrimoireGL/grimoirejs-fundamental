@@ -1,3 +1,4 @@
+import RenderQueueRegistry from "../SceneRenderer/RenderQueueRegistry";
 import gr from "grimoirejs";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
@@ -8,6 +9,8 @@ export default class SceneComponent extends Component {
   };
 
   public sceneDescription: { [key: string]: any } = {};
+
+  public queueRegistory: RenderQueueRegistry = new RenderQueueRegistry();
 
   /**
    * The index of loop executed last time.

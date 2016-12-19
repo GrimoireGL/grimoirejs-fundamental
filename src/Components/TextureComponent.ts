@@ -7,11 +7,11 @@ export default class TextureComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     src: {
       converter: "String",
-      defaultValue: undefined
+      default: null
     },
     minFilter: {
       converter: "Enum",
-      defaultValue: "LINEAR",
+      default: "LINEAR",
       table: {
         LINEAR: WebGLRenderingContext.LINEAR,
         NEAREST: WebGLRenderingContext.NEAREST,
@@ -23,7 +23,7 @@ export default class TextureComponent extends Component {
     },
     magFilter: {
       converter: "Enum",
-      defaultValue: "LINEAR",
+      default: "LINEAR",
       table: {
         LINEAR: WebGLRenderingContext.LINEAR,
         NEAREST: WebGLRenderingContext.NEAREST
@@ -31,7 +31,7 @@ export default class TextureComponent extends Component {
     },
     wrapS: {
       converter: "Enum",
-      defaultValue: "REPEAT",
+      default: "REPEAT",
       table: {
         REPEAT: WebGLRenderingContext.REPEAT,
         MIRRORED_REPEAT: WebGLRenderingContext.MIRRORED_REPEAT,
@@ -40,7 +40,7 @@ export default class TextureComponent extends Component {
     },
     wrapT: {
       converter: "Enum",
-      defaultValue: "REPEAT",
+      default: "REPEAT",
       table: {
         REPEAT: WebGLRenderingContext.REPEAT,
         MIRRORED_REPEAT: WebGLRenderingContext.MIRRORED_REPEAT,
@@ -49,19 +49,19 @@ export default class TextureComponent extends Component {
     }
   };
 
-  private _texture: Texture2D;
+  public texture: Texture2D;
 
   public $mount(): void {
-    const src = this.getValue("src");
-    this._texture = new Texture2D(this.companion.get("gl"));
-    this._texture.magFilter = this.getValue("magFilter");
-    this._texture.minFilter = this.getValue("minFilter");
-    this._texture.wrapT = this.getValue("wrapT");
-    this._texture.wrapS = this.getValue("wrapS");
-    this.attributes.get("magFilter").addObserver(v => this._texture.magFilter = v.Value);
-    this.attributes.get("minFilter").addObserver(v => this._texture.minFilter = v.Value);
-    this.attributes.get("wrapS").addObserver(v => this._texture.wrapS = v.Value);
-    this.attributes.get("wrapT").addObserver(v => this._texture.wrapT = v.Value);
+    const src = this.getAttribute("src");
+    this.texture = new Texture2D(this.companion.get("gl"));
+    this.texture.magFilter = this.getAttribute("magFilter");
+    this.texture.minFilter = this.getAttribute("minFilter");
+    this.texture.wrapT = this.getAttribute("wrapT");
+    this.texture.wrapS = this.getAttribute("wrapS");
+    this.getAttributeRaw("magFilter").watch(v => this.texture.magFilter = v);
+    this.getAttributeRaw("minFilter").watch(v => this.texture.minFilter = v);
+    this.getAttributeRaw("wrapS").watch(v => this.texture.wrapS = v);
+    this.getAttributeRaw("wrapT").watch(v => this.texture.wrapT = v);
     if (src) {
       this._loadTask(src);
     }
@@ -69,6 +69,6 @@ export default class TextureComponent extends Component {
 
   private async _loadTask(src: string): Promise<void> {
     const img = await ImageResolver.resolve(src);
-    this._texture.update(img);
+    this.texture.update(img);
   }
 }
