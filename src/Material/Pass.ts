@@ -15,7 +15,7 @@ export default class Pass {
     }
     this.program.use();
     this.__beforeDraw(arg);
-    arg.geometry.draw(arg.targetBuffer, this.attributes, this.program, arg.drawCount, arg.drawOffset);
+    arg.geometry.drawByDefault(arg.targetBuffer, this.attributes, this.program, arg.drawCount, arg.drawOffset);
   }
 
   protected __beforeDraw(arg: IMaterialArgument) {

@@ -76,7 +76,7 @@ export default class CameraComponent extends Component {
   public $awake(): void {
     const c = this.camera = new BasicCamera();
     this.transform = this.node.getComponent(TransformComponent);
-    this.$transformUpdated(this.transform);
+    this._onTransformUpdate(this.transform);
     this.getAttributeRaw("far").watch((v) => {
       c.setFar(v);
     }, true);
@@ -98,9 +98,11 @@ export default class CameraComponent extends Component {
     this.getAttributeRaw("autoAspect").boundTo("_autoAspect");
   }
 
+
   public $mount(): void {
     this.containedScene = CameraComponent._findContainedScene(this.node);
     this.containedScene.queueRegistory.registerQueue(this._renderQueue);
+    this.node.on("transformUpdated", this._onTransformUpdate.bind(this));
   }
 
   public $unmount(): void {
@@ -124,7 +126,7 @@ export default class CameraComponent extends Component {
     }
   }
 
-  public $transformUpdated(t: TransformComponent): void {
+  private _onTransformUpdate(t: TransformComponent): void {
     if (this.camera) {
       this.camera.updateTransform(t);
     }

@@ -56,12 +56,12 @@ export default class SORTPass extends Pass {
     for (let attributeKey in this.sort.gomlAttributes) {
       this.sort.gomlAttributes[attributeKey].register(this.program.uniforms, args);
     }
-    for (let registerer of this.sort.systemRegisterers) {
-      registerer(this.program.uniforms, args);
+    for (let key in this.sort.systemRegisterers) {
+      this.sort.systemRegisterers[key](this.program.uniforms, args);
     }
     // apply gl states
-    for (let configurator of this.sort.configurator) {
-      configurator(this.gl)
+    for (let key in this.sort.configurator) {
+      this.sort.configurator[key](this.gl);
     }
   }
 

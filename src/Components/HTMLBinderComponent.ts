@@ -47,6 +47,7 @@ export default class HTMLBinderComponent extends Component {
   public $mount(): void {
     this._canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
     this._currentTransform = this.node.getComponent(TransformComponent);
+    this.node.on("render", this._onRender.bind(this));
   }
 
   public $treeInitialized(): void {
@@ -60,7 +61,7 @@ export default class HTMLBinderComponent extends Component {
     }, true);
   }
 
-  public $render(args: IRenderArgument): void {
+  private _onRender(args: IRenderArgument): void {
     if (this._isFirstCall) {
       this._onRendererChanged();
       this._isFirstCall = false;

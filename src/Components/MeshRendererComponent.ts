@@ -119,7 +119,6 @@ export default class MeshRenderer extends Component implements IRenderable {
       renderArgs.attributeValues = this._materialContainer.materialArgs;
       this._materialContainer.material.draw(renderArgs);
     }
-    this.companion.get("gl").flush();
-    this.node.sendMessage("render", args);
+    this.node.emit("render", args);
   }
 }

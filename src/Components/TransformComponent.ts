@@ -178,7 +178,7 @@ export default class TransformComponent extends Component {
     this.getAttributeRaw("position").watch((v) => {
       this._localPosition = v;
       this._matrixTransformMode = false;
-      this.updateTransform();
+      this.updateTransform(true);
     });
     this.getAttributeRaw("rotation").watch((v) => {
       this._localRotation = v;
@@ -188,7 +188,7 @@ export default class TransformComponent extends Component {
     this.getAttributeRaw("scale").watch((v) => {
       this._localScale = v;
       this._matrixTransformMode = false;
-      this.updateTransform();
+      this.updateTransform(true);
     });
     this.getAttributeRaw("rawMatrix").watch((v) => {
       if (v !== null) {
@@ -228,25 +228,27 @@ export default class TransformComponent extends Component {
    * update local transform and global transform.
    * This need to be called if you manually edit raw elements of scale,position or rotation to recalculate transform matricies.
    */
-  public updateTransform(): void {
+  public updateTransform(noDirectionalUpdate?: boolean): void {
     if (!this._matrixTransformMode) {
       mat4.fromRotationTranslationScale(this.localTransform.rawElements, this._localRotation.rawElements, this._localPosition.rawElements, this._localScale.rawElements);
     }
-    this.updateGlobalTransform();
+    this.updateGlobalTransform(noDirectionalUpdate);
   }
   /**
    * Update global transoform.
    */
-  public updateGlobalTransform(): void {
+  public updateGlobalTransform(noDirectionalUpdate?: boolean): void {
     if (!this._parentTransform) {
       mat4.copy(this.globalTransform.rawElements, this.localTransform.rawElements);
     } else {
       mat4.mul(this.globalTransform.rawElements, this._parentTransform.globalTransform.rawElements, this.localTransform.rawElements);
     }
-    this._updateDirections();
+    if (noDirectionalUpdate) {
+      this._updateDirections();
+    }
     this._updateGlobalProperty();
-    this.node.sendMessage("transformUpdated", this);
-    this._children.forEach((v) => v.updateGlobalTransform());
+    this.node.emit("transformUpdated", this);
+    this._children.forEach((v) => v.updateGlobalTransform(noDirectionalUpdate));
   }
 
   private _updateDirections(): void {
@@ -266,3 +268,4 @@ export default class TransformComponent extends Component {
   }
 
 }
+
