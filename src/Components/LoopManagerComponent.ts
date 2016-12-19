@@ -53,6 +53,9 @@ class LoopManagerComponent extends Component {
   }
 
   private _loop(): void {
+    this.node.emit("loop", {
+      loopIndex: this._loopIndex
+    });
     this._loopActions.forEach((a) => a.action(this._loopIndex));
     this._loopIndex++;
     this._registerNextLoop();
