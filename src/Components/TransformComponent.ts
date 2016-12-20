@@ -164,12 +164,12 @@ export default class TransformComponent extends Component {
   }
 
   public calcPVM(camera: CameraComponent): Matrix {
-    mat4.mul(this._cachePVM.rawElements, camera.camera.getProjectionViewMatrix().rawElements, this.globalTransform.rawElements);
+    mat4.mul(this._cachePVM.rawElements, camera.ProjectionViewMatrix.rawElements, this.globalTransform.rawElements);
     return this._cachePVM;
   }
 
   public calcVM(camera: CameraComponent): Matrix {
-    mat4.mul(this._cacheVM.rawElements, camera.camera.getViewMatrix().rawElements, this.globalTransform.rawElements);
+    mat4.mul(this._cacheVM.rawElements, camera.ViewMatrix.rawElements, this.globalTransform.rawElements);
     return this._cacheVM;
   }
 

@@ -17,7 +17,6 @@
     "./src/Asset/ExternalResourceResolver.ts",
     "./src/Asset/ImageResolver.ts",
     "./src/Asset/TextFileResolver.ts",
-    "./src/Camera/BasicCamera.ts",
     "./src/Components/AssetLoadingManagerComponent.ts",
     "./src/Components/CameraComponent.ts",
     "./src/Components/CanvasInitializerComponent.ts",

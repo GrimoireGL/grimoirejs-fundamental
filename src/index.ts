@@ -3,7 +3,6 @@
   import AssetExternalResourceResolver from "./Asset/ExternalResourceResolver";
   import AssetImageResolver from "./Asset/ImageResolver";
   import AssetTextFileResolver from "./Asset/TextFileResolver";
-  import CameraBasicCamera from "./Camera/BasicCamera";
   import ComponentsAssetLoadingManagerComponent from "./Components/AssetLoadingManagerComponent";
   import ComponentsCameraComponent from "./Components/CameraComponent";
   import ComponentsCanvasInitializerComponent from "./Components/CanvasInitializerComponent";
@@ -114,9 +113,6 @@ var __EXPOSE__ = {
     "ExternalResourceResolver": AssetExternalResourceResolver,
     "ImageResolver": AssetImageResolver,
     "TextFileResolver": AssetTextFileResolver
-  },
-  "Camera": {
-    "BasicCamera": CameraBasicCamera
   },
   "Components": {
     "AssetLoadingManagerComponent": ComponentsAssetLoadingManagerComponent,

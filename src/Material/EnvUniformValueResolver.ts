@@ -55,11 +55,11 @@ export default class EnvUniformValueResolver {
 
 // Matricies
 EnvUniformValueResolver.addResolver("_matPVM", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.transform.calcPVM(args.camera)));
-EnvUniformValueResolver.addResolver("_matP", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.camera.getProjectionMatrix()));
-EnvUniformValueResolver.addResolver("_matV", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.camera.getViewMatrix()));
+EnvUniformValueResolver.addResolver("_matP", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.ProjectionMatrix));
+EnvUniformValueResolver.addResolver("_matV", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.ViewMatrix));
 EnvUniformValueResolver.addResolver("_matM", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.transform.globalTransform));
 EnvUniformValueResolver.addResolver("_matVM", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.transform.calcVM(args.camera)));
-EnvUniformValueResolver.addResolver("_matPV", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.camera.getProjectionViewMatrix()));
+EnvUniformValueResolver.addResolver("_matPV", (valInfo, name) => (proxy, args) => proxy.uniformMatrix(name, args.camera.ProjectionViewMatrix));
 
 
 
