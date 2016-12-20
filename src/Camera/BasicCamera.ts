@@ -1,16 +1,22 @@
-import ViewCameraBase from "./ViewCameraBase";
 import TransformComponent from "../Components/TransformComponent";
 import Vector3 from "grimoirejs-math/ref/Vector3";
 import Vector4 from "grimoirejs-math/ref/Vector4";
 import Matrix from "grimoirejs-math/ref/Matrix";
-import ICamera from "./ICamera";
 import GLM from "grimoirejs-math/ref/GLM";
 const {mat4, vec3, vec4} = GLM;
 /**
  * Provides perspective camera as implementation of ICamera.
  */
-export default class BasicCamera extends ViewCameraBase {
-
+export default class BasicCamera {
+  private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
+  private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
+  private _eyeCache: Vector3 = Vector3.Zero;
+  private _lookAtCache: Vector3 = Vector3.Zero;
+  private _upCache: Vector3 = Vector3.Zero;
+  protected __viewMatrix: Matrix = new Matrix();
+  protected __projectionMatrix: Matrix = new Matrix();
+  protected __invProjectionMatrix: Matrix = new Matrix();
+  protected __projectionViewMatrix: Matrix = new Matrix();
   private _far: number;
   private _near: number;
   private _fovy: number;
@@ -75,6 +81,15 @@ export default class BasicCamera extends ViewCameraBase {
 
   public getOrthographicMode(): boolean {
     return this._orthographic;
+  }
+
+  public updateTransform(transform: TransformComponent): void {
+    vec3.transformMat4(this._eyeCache.rawElements, Vector3.Zero.rawElements, transform.globalTransform.rawElements);
+    vec4.transformMat4(this._lookAtCache.rawElements, BasicCamera._frontOrigin.rawElements, transform.globalTransform.rawElements);
+    vec3.add(this._lookAtCache.rawElements, this._lookAtCache.rawElements, this._eyeCache.rawElements);
+    vec4.transformMat4(this._upCache.rawElements, BasicCamera._upOrigin.rawElements, transform.globalTransform.rawElements);
+    mat4.lookAt(this.__viewMatrix.rawElements, this._eyeCache.rawElements, this._lookAtCache.rawElements, this._upCache.rawElements);
+    mat4.mul(this.__projectionViewMatrix.rawElements, this.__projectionMatrix.rawElements, this.__viewMatrix.rawElements);
   }
 
   private _recalculateProjection(): void {

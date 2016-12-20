@@ -4,7 +4,6 @@ import gr from "grimoirejs";
 import RenderSceneArgument from "../Objects/RenderSceneArgument";
 import TransformComponent from "./TransformComponent";
 import BasicCamera from "../Camera/BasicCamera";
-import ICamera from "../Camera/ICamera";
 import SceneComponent from "./SceneComponent";
 import GomlNode from "grimoirejs/ref/Node/GomlNode";
 import Component from "grimoirejs/ref/Node/Component";
@@ -42,7 +41,7 @@ export default class CameraComponent extends Component {
     }
   };
 
-  public camera: ICamera;
+  public camera: BasicCamera;
 
   public containedScene: SceneComponent;
 

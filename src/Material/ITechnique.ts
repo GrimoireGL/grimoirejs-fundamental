@@ -17,3 +17,4 @@ interface ITechniqueRecipe {
     enable: number[]
   }
 }
+export default ITechniqueRecipe;

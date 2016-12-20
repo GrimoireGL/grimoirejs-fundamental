@@ -4,7 +4,6 @@
   import AssetImageResolver from "./Asset/ImageResolver";
   import AssetTextFileResolver from "./Asset/TextFileResolver";
   import CameraBasicCamera from "./Camera/BasicCamera";
-  import CameraViewCameraBase from "./Camera/ViewCameraBase";
   import ComponentsAssetLoadingManagerComponent from "./Components/AssetLoadingManagerComponent";
   import ComponentsCameraComponent from "./Components/CameraComponent";
   import ComponentsCanvasInitializerComponent from "./Components/CanvasInitializerComponent";
@@ -85,12 +84,12 @@
   import SceneRendererRenderQueueRegistry from "./SceneRenderer/RenderQueueRegistry";
   import UtilRotationParser from "./Util/RotationParser";
   import UtilTextureSizeCalculator from "./Util/TextureSizeCalculator";
-  import __INTERFACE__1 from "./Camera/ICamera";
-  import __INTERFACE__2 from "./Geometry/GeometryBufferConstructionInfo";
-  import __INTERFACE__3 from "./Geometry/IGeometryFactoryDelegate";
-  import __INTERFACE__4 from "./Geometry/IndexBufferInfo";
-  import __INTERFACE__5 from "./Geometry/VertexBufferAttribInfo";
-  import __INTERFACE__6 from "./Material/IMaterialArgument";
+  import __INTERFACE__1 from "./Geometry/GeometryBufferConstructionInfo";
+  import __INTERFACE__2 from "./Geometry/IGeometryFactoryDelegate";
+  import __INTERFACE__3 from "./Geometry/IndexBufferInfo";
+  import __INTERFACE__4 from "./Geometry/VertexBufferAttribInfo";
+  import __INTERFACE__5 from "./Material/IMaterialArgument";
+  import __INTERFACE__6 from "./Material/ITechnique";
   import __INTERFACE__7 from "./Material/Transformers/Interfaces/IMacroInfo";
   import __INTERFACE__8 from "./Material/Transformers/Interfaces/IMaterialAttributeDeclaration";
   import __INTERFACE__9 from "./Material/Transformers/Interfaces/ISORTPassInfo";
@@ -117,8 +116,7 @@ var __EXPOSE__ = {
     "TextFileResolver": AssetTextFileResolver
   },
   "Camera": {
-    "BasicCamera": CameraBasicCamera,
-    "ViewCameraBase": CameraViewCameraBase
+    "BasicCamera": CameraBasicCamera
   },
   "Components": {
     "AssetLoadingManagerComponent": ComponentsAssetLoadingManagerComponent,

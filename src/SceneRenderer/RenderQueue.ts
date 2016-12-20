@@ -1,5 +1,4 @@
 import IRenderArgument from "./IRenderArgument";
-import ICamera from "../Camera/ICamera";
 import IRenderable from "./IRenderable";
 
 type RenderQueueElement = {

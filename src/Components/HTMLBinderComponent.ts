@@ -68,7 +68,7 @@ export default class HTMLBinderComponent extends Component {
     }
     if (this._queriedElement && args.caller.node === this._targetNode) {
       const vp = args.viewport;
-      const rawPos = Matrix.transform(this._currentTransform.calcPVM(args.camera.camera), new Vector4(0, 0, 0, 1));
+      const rawPos = Matrix.transform(this._currentTransform.calcPVM(args.camera), new Vector4(0, 0, 0, 1));
       const rawScPos = {
         x: rawPos.X / rawPos.W,
         y: rawPos.Y / rawPos.W,
