@@ -27,7 +27,6 @@
   import ComponentsTextureComponent from "./Components/TextureComponent";
   import ComponentsTransformComponent from "./Components/TransformComponent";
   import ConvertersAngle2DConverter from "./Converters/Angle2DConverter";
-  import ConvertersBooleanConverter from "./Converters/BooleanConverter";
   import ConvertersCanvasSizeConverter from "./Converters/CanvasSizeConverter";
   import ConvertersColor3Converter from "./Converters/Color3Converter";
   import ConvertersColor4Converter from "./Converters/Color4Converter";
@@ -141,7 +140,6 @@ var __EXPOSE__ = {
   },
   "Converters": {
     "Angle2DConverter": ConvertersAngle2DConverter,
-    "BooleanConverter": ConvertersBooleanConverter,
     "CanvasSizeConverter": ConvertersCanvasSizeConverter,
     "Color3Converter": ConvertersColor3Converter,
     "Color4Converter": ConvertersColor4Converter,

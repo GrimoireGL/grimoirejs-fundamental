@@ -41,7 +41,6 @@
     "./src/Components/TextureComponent.ts",
     "./src/Components/TransformComponent.ts",
     "./src/Converters/Angle2DConverter.ts",
-    "./src/Converters/BooleanConverter.ts",
     "./src/Converters/CanvasSizeConverter.ts",
     "./src/Converters/Color3Converter.ts",
     "./src/Converters/Color4Converter.ts",
