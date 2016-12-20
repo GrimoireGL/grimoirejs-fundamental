@@ -24,6 +24,19 @@ export default class TextureBufferComponent extends Component {
         DEPTH_COMPONENT: WebGLRenderingContext["DEPTH_COMPONENT"],
         DEPTH_STENCIL: WebGLRenderingContext["DEPTH_STENCIL"]
       }
+    },
+    type: {
+      converter: "Enum",
+      default: WebGLRenderingContext.UNSIGNED_BYTE,
+      table: {
+        UNSIGNED_BYTE: WebGLRenderingContext.UNSIGNED_BYTE,
+        UNSIGNED_SHORT_5_6_5: WebGLRenderingContext.UNSIGNED_SHORT_5_6_5,
+        UNSIGNED_SHORT_4_4_4_4: WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4,
+        UNSIGNED_SHORT_5_5_5_1: WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1,
+        UNSIGNED_SHORT: WebGLRenderingContext.UNSIGNED_SHORT,
+        UNSIGNED_INT: WebGLRenderingContext.UNSIGNED_INT,
+        FLOAT: WebGLRenderingContext.FLOAT
+      }
     }
   };
 
@@ -44,8 +57,9 @@ export default class TextureBufferComponent extends Component {
       throw new Error(`Attribute 'name' must be specified.`);
     }
     const format = this.getAttribute("format");
+    const type = this.getAttribute("type");
     const newSize = TextureSizeCalculator.getPow2Size(arg.width, arg.height);
-    this.buffer.update(0, newSize.width, newSize.height, 0, format, WebGLRenderingContext.UNSIGNED_BYTE, null);
+    this.buffer.update(0, newSize.width, newSize.height, 0, format, type, null);
     arg.bufferSizes[bufferName] = { width: newSize.width, height: newSize.height };
     arg.buffers[bufferName] = this.buffer;
   }
