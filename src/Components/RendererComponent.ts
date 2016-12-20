@@ -59,7 +59,7 @@ export default class RendererComponent extends Component {
     if (this.node.children.length === 0) {
       this.node.addChildByName("render-scene", {});
     }
-    this.node.broadcastMessage("resizeBuffer", <IResizeBufferMessage>{ // TODO apply when viewport was changed
+    this.node.broadcastMessage("resizeBuffer", <IResizeBufferMessage>{
       width: this._viewportCache.Width,
       height: this._viewportCache.Height,
       buffers: this._buffers,
