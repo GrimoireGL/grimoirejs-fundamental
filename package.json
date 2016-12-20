@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "@types/json5": "0.0.29",
-    "grimoirejs": "^0.12.0",
+    "grimoirejs": "^0.12.1",
     "grimoirejs-math": "^1.7.2",
     "json5": "^0.5.1"
   },
