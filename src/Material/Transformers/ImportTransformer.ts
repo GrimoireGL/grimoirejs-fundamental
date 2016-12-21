@@ -1,5 +1,5 @@
+import ImportResolver from "../../Sort/ImportResolver";
 import ITransformingArgument from "./ITransformingArgument";
-import ImportResolver from "../ImportResolver";
 async function _parseImport(source: string): Promise<string> {
   while (true) {
     const regexResult = /\s*@import\s+"([^"]+)"/.exec(source);

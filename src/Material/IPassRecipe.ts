@@ -1,4 +1,5 @@
-interface ITechniqueRecipe {
+import IState from "./IState";
+interface IPassRecipe {
   fragment: string;
   vertex: string;
   uniforms: {
@@ -13,8 +14,12 @@ interface ITechniqueRecipe {
   attributes: {
     [key: string]: string; // variable-name to semantic key
   },
-  states: {
-    enable: number[]
-  }
+  macros: {
+    [key: string]: {
+
+    };
+  },
+  states: IState
 }
-export default ITechniqueRecipe;
+
+export default IPassRecipe;

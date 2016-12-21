@@ -51,7 +51,6 @@
   import MaterialDefaultMacro from "./Material/DefaultMacro";
   import MaterialDefaultMaterial from "./Material/DefaultMaterial";
   import MaterialEnvUniformValueResolver from "./Material/EnvUniformValueResolver";
-  import MaterialImportResolver from "./Material/ImportResolver";
   import MaterialMacroRegistory from "./Material/MacroRegistory";
   import MaterialMaterial from "./Material/Material";
   import MaterialMaterialFactory from "./Material/MaterialFactory";
@@ -80,6 +79,9 @@
   import SceneRendererDrawPriorty from "./SceneRenderer/DrawPriorty";
   import SceneRendererRenderQueue from "./SceneRenderer/RenderQueue";
   import SceneRendererRenderQueueRegistry from "./SceneRenderer/RenderQueueRegistry";
+  import SortImportResolver from "./Sort/ImportResolver";
+  import SortParser from "./Sort/Parser";
+  import SortSortTransformUtility from "./Sort/SortTransformUtility";
   import UtilRotationParser from "./Util/RotationParser";
   import UtilTextureSizeCalculator from "./Util/TextureSizeCalculator";
   import __INTERFACE__1 from "./Geometry/GeometryBufferConstructionInfo";
@@ -87,21 +89,22 @@
   import __INTERFACE__3 from "./Geometry/IndexBufferInfo";
   import __INTERFACE__4 from "./Geometry/VertexBufferAttribInfo";
   import __INTERFACE__5 from "./Material/IMaterialArgument";
-  import __INTERFACE__6 from "./Material/ITechnique";
-  import __INTERFACE__7 from "./Material/Transformers/Interfaces/IMacroInfo";
-  import __INTERFACE__8 from "./Material/Transformers/Interfaces/IMaterialAttributeDeclaration";
-  import __INTERFACE__9 from "./Material/Transformers/Interfaces/ISORTPassInfo";
-  import __INTERFACE__10 from "./Material/Transformers/Interfaces/IVariableInfo";
-  import __INTERFACE__11 from "./Material/Transformers/ITransformer";
-  import __INTERFACE__12 from "./Material/Transformers/ITransformingArgument";
-  import __INTERFACE__13 from "./Material/Transformers/PreferenceParser";
-  import __INTERFACE__14 from "./Messages/IBufferUpdatedMessage";
-  import __INTERFACE__15 from "./Messages/IRenderRendererMessage";
-  import __INTERFACE__16 from "./Messages/IResizeBufferMessage";
-  import __INTERFACE__17 from "./Objects/CanvasSizeObject";
-  import __INTERFACE__18 from "./Objects/RenderSceneArgument";
-  import __INTERFACE__19 from "./SceneRenderer/IRenderable";
-  import __INTERFACE__20 from "./SceneRenderer/IRenderArgument";
+  import __INTERFACE__6 from "./Material/IPassRecipe";
+  import __INTERFACE__7 from "./Material/ITechniqueRecipe";
+  import __INTERFACE__8 from "./Material/Transformers/Interfaces/IMacroInfo";
+  import __INTERFACE__9 from "./Material/Transformers/Interfaces/IMaterialAttributeDeclaration";
+  import __INTERFACE__10 from "./Material/Transformers/Interfaces/ISORTPassInfo";
+  import __INTERFACE__11 from "./Material/Transformers/Interfaces/IVariableInfo";
+  import __INTERFACE__12 from "./Material/Transformers/ITransformer";
+  import __INTERFACE__13 from "./Material/Transformers/ITransformingArgument";
+  import __INTERFACE__14 from "./Material/Transformers/PreferenceParser";
+  import __INTERFACE__15 from "./Messages/IBufferUpdatedMessage";
+  import __INTERFACE__16 from "./Messages/IRenderRendererMessage";
+  import __INTERFACE__17 from "./Messages/IResizeBufferMessage";
+  import __INTERFACE__18 from "./Objects/CanvasSizeObject";
+  import __INTERFACE__19 from "./Objects/RenderSceneArgument";
+  import __INTERFACE__20 from "./SceneRenderer/IRenderable";
+  import __INTERFACE__21 from "./SceneRenderer/IRenderArgument";
 
 import __MAIN__ from "./main"
 
@@ -168,7 +171,6 @@ var __EXPOSE__ = {
     "DefaultMacro": MaterialDefaultMacro,
     "DefaultMaterial": MaterialDefaultMaterial,
     "EnvUniformValueResolver": MaterialEnvUniformValueResolver,
-    "ImportResolver": MaterialImportResolver,
     "MacroRegistory": MaterialMacroRegistory,
     "Material": MaterialMaterial,
     "MaterialFactory": MaterialMaterialFactory,
@@ -203,6 +205,11 @@ var __EXPOSE__ = {
     "DrawPriorty": SceneRendererDrawPriorty,
     "RenderQueue": SceneRendererRenderQueue,
     "RenderQueueRegistry": SceneRendererRenderQueueRegistry
+  },
+  "Sort": {
+    "ImportResolver": SortImportResolver,
+    "Parser": SortParser,
+    "SortTransformUtility": SortSortTransformUtility
   },
   "Util": {
     "RotationParser": UtilRotationParser,

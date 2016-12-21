@@ -1,0 +1,34 @@
+@Pass{
+@BlendFunc(SRC_ALPHA,ONE_MINUS_SRC_ALPHA)
+@DepthFunc(LEQUAL)
+@ExposeMacro(bool,TEST,test,false)
+FS_PREC(mediump,float)
+varying vec2 vTexCoord;
+#ifdef VS
+@POSITION
+attribute vec3 position;
+@TEXCOORD
+attribute vec2 texCoord;
+uniform mat4 _matPVM;
+void main()
+{
+  gl_Position = _matPVM * vec4(position,1.0);
+  vTexCoord = texCoord;
+}
+#endif
+#ifdef FS
+@{type:"color",default:"white"}
+uniform vec4 color;
+@{usedFlag:"_textureUsed"}
+uniform sampler2D texture;
+uniform bool _textureUsed;
+void main(void)
+{
+  if(_textureUsed){
+    gl_FragColor = color * texture2D(texture,vTexCoord);
+  }else{
+    gl_FragColor = color;
+ }
+}
+#endif
+}
