@@ -15,6 +15,7 @@ interface IMaterialArgument {
   drawOffset: number;
   drawCount: number;
   defaultTexture: Texture2D;
+  technique: string;
 }
 
 export default IMaterialArgument;

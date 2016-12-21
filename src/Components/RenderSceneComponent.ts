@@ -46,6 +46,10 @@ export default class RenderSceneComponent extends Component {
       default: null,
       converter: "Component",
       target: "Camera"
+    },
+    technique: {
+      default: "default",
+      converter: "String"
     }
   };
 
