@@ -7,11 +7,13 @@ export default class Material {
 
   public argumentDeclarations: { [key: string]: IAttributeDeclaration } = {};
 
-  private _argumentDeclarationObservers: ((string, IAttributeDeclaration, isAdd: boolean) => void)[] = [];
-
   public arguments: { [key: string]: any } = {};
 
+  public macroDeclarations: { [key: string]: IAttributeDeclaration } = {};
+
   public techniques: { [key: string]: Technique } = {};
+
+  private _macroObserver: { [key: string]: ((value: boolean | number) => void)[] } = {};
 
   constructor(public gl: WebGLRenderingContext, public techniqueRecipes: { [key: string]: ITechniqueRecipe }) {
     for (let key in techniqueRecipes) {
@@ -26,24 +28,25 @@ export default class Material {
     }
   }
 
-  public addArgument(key: string, argumentDeclaration: IAttributeDeclaration): void {
-    this.argumentDeclarations[key] = argumentDeclaration;
-    this._argumentDeclarationObservers.forEach(o => o(key, argumentDeclaration, true));
+  public addMacroObserver(key: string, macroDeclaration: IAttributeDeclaration, onChanged: (value: boolean | number) => void): void {
+    if (!this._macroObserver[key]) {
+      this._macroObserver[key] = [];
+    }
+    this._macroObserver[key].push(onChanged);
+    this.macroDeclarations[key] = macroDeclaration;
   }
 
-  public onArgumentChange(handler: ((name: string, decl: IAttributeDeclaration, isAdd: boolean) => void)): void {
-    this._argumentDeclarationObservers.push(handler);
-  }
-
-  public offArgumentChange(handler: ((name: string, decl: IAttributeDeclaration, isAdd: boolean) => void)): void {
-    const index = this._argumentDeclarationObservers.indexOf(handler);
-    if (index > -1) {
-      this._argumentDeclarationObservers.splice(index, 1);
+  public setMacroValue(key: string, value: boolean | number): void {
+    if (this._macroObserver[key]) {
+      this._macroObserver[key].forEach(o => o(value));
     }
   }
 
+  public addArgument(key: string, argumentDeclaration: IAttributeDeclaration): void {
+    this.argumentDeclarations[key] = argumentDeclaration;
+  }
+
   public deleteArgument(key: string): void {
-    this._argumentDeclarationObservers.forEach(o => o(key, this.argumentDeclarations[key], false));
-    this.argumentDeclarations[key] = null;
+    delete this.argumentDeclarations[key];
   }
 }

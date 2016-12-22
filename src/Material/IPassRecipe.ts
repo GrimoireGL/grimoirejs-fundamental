@@ -1,3 +1,4 @@
+import IMacro from "./IMacro";
 import IVariableInfo from "./IVariableInfo";
 import IState from "./IState";
 interface IPassRecipe {
@@ -10,9 +11,7 @@ interface IPassRecipe {
     [key: string]: IVariableInfo; // variable-name to semantic key
   },
   macros: {
-    [key: string]: {
-
-    };
+    [key: string]: IMacro;
   },
   states: IState
 }

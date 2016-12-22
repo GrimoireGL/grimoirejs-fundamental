@@ -1,3 +1,4 @@
+import IMacro from "../Material/IMacro";
 import IVariableInfo from "../Material/IVariableInfo";
 import IState from "../Material/IState";
 import Preferences from "./Preferences";
@@ -85,19 +86,34 @@ export default class SortTransformUtility {
     return uncommentedSource;
   }
 
-  public static parseMacros(source: string): { [key: string]: any } {
+  public static parseMacros(source: string): { [key: string]: IMacro } {
     const result = {};
-    const regex = /@ExposeMacro\s*\(\s*([a-zA-Z0-9_])\s*,\s*([a-zA-Z0-9_])\s*,\s*([a-zA-Z0-9_])\s*,\s*([a-zA-Z0-9_])\s*\)/g;
+    const regex = /@ExposeMacro\s*\(\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*\)/g;
     let regexResult;
     while ((regexResult = regex.exec(source))) {
       if (!regexResult[1] || !regexResult[2] || !regexResult[3] || !regexResult[4]) {
         throw new Error(`Invalid parameter was passed on @ExposeMacro preference on '${regexResult[0]}'`);
       }
-      result[regex[2]] = {
-        name: regex[3],
-        macroName: regex[2],
-        type: regex[1],
-        value: regex[4]
+      if (regexResult[1] !== "bool" && regexResult[1] !== "int") {
+        throw new Error(`Invalid macro type "${regexResult[1]}". regexResult type must be int or bool`);
+      }
+      let value;
+      if (regexResult[1] === "bool") {
+        if (regexResult[4] !== "true" && regexResult[4] !== "false") {
+          throw new Error(`Default macro value "${regexResult[4]}" is invalid for bool type macro. Must be true or false`);
+        }
+        value = regexResult[4] === "true";
+      } else {
+        value = parseFloat(regexResult[4]);
+        if (isNaN(value)) {
+          throw new Error(`Default macro value "${regexResult[4]}" is invalid for int type macro. Must be a number.`);
+        }
+      }
+      result[regexResult[2]] = <IMacro>{
+        name: regexResult[3],
+        macroName: regexResult[2],
+        type: regexResult[1],
+        value: value
       };
     }
     return result;

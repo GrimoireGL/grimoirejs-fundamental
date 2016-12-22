@@ -36,6 +36,12 @@ export default class MaterialComponent extends Component {
       this.__addAtribute(key, this.material.argumentDeclarations[key]);
       this.getAttributeRaw(key).boundTo(key, this.material.arguments);
     }
+    for (let key in this.material.macroDeclarations) {
+      this.__addAtribute(key, this.material.macroDeclarations[key]);
+      this.getAttributeRaw(key).watch((v) => {
+        this.material.setMacroValue(key, v);
+      }, true);
+    }
     this.ready = true;
   }
 }

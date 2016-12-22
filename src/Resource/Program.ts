@@ -19,6 +19,10 @@ export default class Program extends ResourceBase {
     this.program = gl.createProgram();
   }
 
+  public get isLastUsed(): boolean {
+    return ResourceCache.useProgramCheck(this.gl, this.program);
+  }
+
   public update(shaders: Shader[]): void {
     if (this.valid) {
       // detach all attached shaders previously
@@ -38,7 +42,7 @@ export default class Program extends ResourceBase {
   }
 
   public use(): void {
-    if (!ResourceCache.useProgramCheck(this.gl, this.program)) {
+    if (!this.isLastUsed) {
       this.gl.useProgram(this.program);
     }
     this.uniforms.onUse();

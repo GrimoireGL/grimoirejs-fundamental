@@ -33,11 +33,17 @@ export default class Pass {
 
   private _registers: ((proxy: UniformProxy, args: IMaterialArgument) => void)[];
 
+  private _macro: { [key: string]: any } = {};
+
   private _disposers: (() => void)[];
 
   private _gl: WebGLRenderingContext;
 
   private _disables: number[];
+
+  private _fsCode: string;
+
+  private _vsCode: string;
 
   constructor(public material: Material, public passRecipe: IPassRecipe) {
     const registers = UniformResolverRegistry.generateRegisterers(material, passRecipe);
@@ -47,6 +53,21 @@ export default class Pass {
     this.program = new Program(this._gl);
     this.fs = new Shader(this._gl, WebGLRenderingContext.FRAGMENT_SHADER);
     this.vs = new Shader(this._gl, WebGLRenderingContext.VERTEX_SHADER);
+    for (let key in passRecipe.macros) {
+      const macro = passRecipe.macros[key];
+      this._macro[key] = macro.value;
+      this.material.addMacroObserver(key, {
+        converter: macro.type === "bool" ? "Boolean" : "Number",
+        default: macro.value
+      }, (value) => {
+        if (macro.type === "bool") {
+          this._macro[macro.macroName] = value ? "" : undefined;
+        } else {
+          this._macro[macro.macroName] = value;
+        }
+        this._updateProgram();
+      });
+    }
     this._updateProgram();
     this._disables = Pass._glEnableTargets.concat();
     for (let i = 0; i < passRecipe.states.enable.length; i++) {
@@ -56,7 +77,10 @@ export default class Pass {
         this._disables.splice(index, 1);
       }
     }
+
   }
+
+
 
   public draw(args: IMaterialArgument): void {
     this.program.use();
@@ -131,6 +155,14 @@ export default class Pass {
   }
 
   private _generateShaderCode(shaderType: string): string {
-    return `#define ${shaderType}\n${header}/*BEGINNING OF USER CODE*/\n${shaderType === "VS" ? this.passRecipe.vertex : this.passRecipe.fragment}`;
+    return `#define ${shaderType}\n${this._macroCode()}\n${header}/*BEGINNING OF USER CODE*/\n${shaderType === "VS" ? this.passRecipe.vertex : this.passRecipe.fragment}`;
+  }
+
+  private _macroCode(): string {
+    let macroCode = "";
+    for (let macroName in this._macro) {
+      macroCode += `#define ${macroName} ${this._macro[macroName]}\n`;
+    }
+    return macroCode;
   }
 }
