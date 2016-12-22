@@ -32,6 +32,10 @@ export default class MaterialComponent extends Component {
 
   private async _registerAttributes(): Promise<void> {
     this.material = await this.materialPromise;
+    for (let key in this.material.argumentDeclarations) {
+      this.__addAtribute(key, this.material.argumentDeclarations[key]);
+      this.getAttributeRaw(key).boundTo(key, this.material.arguments);
+    }
     this.ready = true;
   }
 }

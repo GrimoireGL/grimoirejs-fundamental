@@ -31,11 +31,11 @@ export default class Material {
     this._argumentDeclarationObservers.forEach(o => o(key, argumentDeclaration, true));
   }
 
-  public onArgumentChange(handler: ((string, IAttributeDeclaration, isAdd: boolean) => void)): void {
+  public onArgumentChange(handler: ((name: string, decl: IAttributeDeclaration, isAdd: boolean) => void)): void {
     this._argumentDeclarationObservers.push(handler);
   }
 
-  public offArgumentChange(handler: ((string, IAttributeDeclaration, isAdd: boolean) => void)): void {
+  public offArgumentChange(handler: ((name: string, decl: IAttributeDeclaration, isAdd: boolean) => void)): void {
     const index = this._argumentDeclarationObservers.indexOf(handler);
     if (index > -1) {
       this._argumentDeclarationObservers.splice(index, 1);

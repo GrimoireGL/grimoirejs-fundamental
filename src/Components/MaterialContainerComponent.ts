@@ -106,6 +106,10 @@ export default class MaterialContainerComponent extends Component {
     }
     const material = await materialPromise;
     this.material = material;
+    for (let key in this.material.argumentDeclarations) {
+      this.__addAtribute(key, this.material.argumentDeclarations[key]);
+      this.getAttributeRaw(key).boundTo(key, this.material.arguments);
+    }
     this.ready = true;
   }
 

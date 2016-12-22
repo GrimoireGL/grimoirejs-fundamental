@@ -58,6 +58,8 @@
   import MaterialTextureReference from "./Material/TextureReference";
   import MaterialUniformResolverRegistry from "./Material/UniformResolverRegistry";
   import MaterialUniformsMatricesRegister from "./Material/Uniforms/MatricesRegister";
+  import MaterialUniformsMiscRegister from "./Material/Uniforms/MiscRegister";
+  import MaterialUniformsUserValueRegister from "./Material/Uniforms/UserValueRegister";
   import ResourceBuffer from "./Resource/Buffer";
   import ResourceFrameBuffer from "./Resource/FrameBuffer";
   import ResourceGLExtRequestor from "./Resource/GLExtRequestor";
@@ -168,7 +170,9 @@ var __EXPOSE__ = {
     "TextureReference": MaterialTextureReference,
     "UniformResolverRegistry": MaterialUniformResolverRegistry,
     "Uniforms": {
-      "MatricesRegister": MaterialUniformsMatricesRegister
+      "MatricesRegister": MaterialUniformsMatricesRegister,
+      "MiscRegister": MaterialUniformsMiscRegister,
+      "UserValueRegister": MaterialUniformsUserValueRegister
     }
   },
   "Resource": {

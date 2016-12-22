@@ -1,3 +1,4 @@
+import IVariableInfo from "../Material/IVariableInfo";
 import IState from "../Material/IState";
 import Preferences from "./Preferences";
 import TypeToConstant from "./TypeToConstant";
@@ -202,7 +203,7 @@ export default class SortTransformUtility {
     return new RegExp(`(?:@([a-zA-Z0-9_]+)?(\\{.+\\})?)?\\s*${variableType}\\s+(?:(lowp|mediump|highp)\\s+)?([a-z0-9A-Z]+)\\s+([a-zA-Z0-9_]+)(?:\\s*\\[\\s*([a-zA-Z0-9_]+)\\s*\\]\\s*)?\\s*;`, "g");
   }
 
-  public static parseVariables(source: string, variableType: string): { [key: string]: any } {
+  public static parseVariables(source: string, variableType: string): { [key: string]: IVariableInfo } {
     const result = {};
     const regex = SortTransformUtility.generateVariableFetchRegex(variableType);
     let regexResult: RegExpExecArray;
@@ -226,12 +227,12 @@ export default class SortTransformUtility {
           arrayCount = regexResult[6];
         }
       }
-      result[name] = {
+      result[name] = <IVariableInfo>{
         semantic: semantic,
         name: name,
         type: type,
         precision: precision,
-        annotation: rawAnnotations ? JSON.parse(SortTransformUtility.asValidJSON(rawAnnotations)) : {},
+        attributes: rawAnnotations ? JSON.parse(SortTransformUtility.asValidJSON(rawAnnotations)) : {},
         isArray: isArray,
         count: arrayCount
       };

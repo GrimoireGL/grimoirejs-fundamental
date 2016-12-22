@@ -88,6 +88,7 @@
     "./src/Material/TextureReference.ts",
     "./src/Material/UniformResolverRegistry.ts",
     "./src/Material/Uniforms/MatricesRegister.ts",
+    "./src/Material/Uniforms/MiscRegister.ts",
     "./src/Material/Uniforms/UserValueRegister.ts",
     "./src/Messages/IBufferUpdatedMessage.ts",
     "./src/Messages/IRenderRendererMessage.ts",
