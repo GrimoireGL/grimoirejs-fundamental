@@ -11,7 +11,8 @@ import TransformComponent from "./TransformComponent";
 import Geometry from "../Geometry/Geometry";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-
+import GLM from "grimoirejs-math/ref/GLM";
+const {vec3} = GLM;
 
 export default class MeshRenderer extends Component implements IRenderable {
 
@@ -65,12 +66,12 @@ export default class MeshRenderer extends Component implements IRenderable {
   private _drawOffset: number;
   private _drawCount: number;
 
+  private _priortyCalcCache = new Float32Array(3);
+
   public getRenderingPriorty(camera: CameraComponent, cameraMoved: boolean, lastPriorty: number): number {
-    return this._materialContainer.getDrawPriorty(
-      camera.transform.globalPosition
-        .addWith(this._geometry.aabb.Center)
-        .subtractWith(this._transformComponent.globalPosition)
-        .magnitude); // Obtains distance between camera and center of aabb
+    vec3.add(this._priortyCalcCache, camera.transform.globalPosition.rawElements, this._geometry.aabb.Center.rawElements);
+    vec3.sub(this._priortyCalcCache, this._priortyCalcCache, this._transformComponent.globalPosition.rawElements);
+    return this._materialContainer.getDrawPriorty(vec3.sqrLen(this._priortyCalcCache)); // Obtains distance between camera and center of aabb
   }
 
   public $awake(): void {

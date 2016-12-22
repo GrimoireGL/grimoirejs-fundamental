@@ -87,40 +87,40 @@ export default class Pass {
       this._gl.disable(this._disables[i]);
     }
     if (functions.blendColor) {
-      this._gl.blendColor.apply(this._gl, functions.blendColor);
+      this._gl.blendColor(functions.blendColor[0], functions.blendColor[1], functions.blendColor[2], functions.blendColor[3]);
     }
     if (functions.blendEquationSeparate) {
-      this._gl.blendEquationSeparate.apply(this._gl, functions.blendEquationSeparate);
+      this._gl.blendEquationSeparate(functions.blendEquationSeparate[0], functions.blendEquationSeparate[1]);
     }
     if (functions.blendFuncSeparate) {
-      this._gl.blendFuncSeparate.apply(this._gl, functions.blendFuncSeparate);
+      this._gl.blendFuncSeparate(functions.blendFuncSeparate[0], functions.blendFuncSeparate[1], functions.blendFuncSeparate[2], functions.blendFuncSeparate[3]);
     }
     if (functions.colorMask) {
-      this._gl.colorMask.apply(this._gl, functions.colorMask);
+      this._gl.colorMask(functions.colorMask[0], functions.colorMask[1], functions.colorMask[2], functions.colorMask[3]);
     }
     if (functions.cullFace) {
-      this._gl.cullFace.apply(this._gl, functions.cullFace);
+      this._gl.cullFace(functions.cullFace[0]);
     }
     if (functions.depthFunc) {
-      this._gl.depthFunc.apply(this._gl, functions.depthFunc);
+      this._gl.depthFunc(functions.depthFunc[0]);
     }
     if (functions.depthMask) {
-      this._gl.depthMask.apply(this._gl, functions.depthMask);
+      this._gl.depthMask(functions.depthMask[0]);
     }
     if (functions.depthRange) {
-      this._gl.depthRange.apply(this._gl, functions.depthRange);
+      this._gl.depthRange(functions.depthRange[0], functions.depthRange[1]);
     }
     if (functions.frontFace) {
-      this._gl.frontFace.apply(this._gl, functions.frontFace);
+      this._gl.frontFace(functions.frontFace[0]);
     }
     if (functions.lineWidth) {
-      this._gl.lineWidth.apply(this._gl, functions.lineWidth);
+      this._gl.lineWidth(functions.lineWidth[0]);
     }
     if (functions.polygonOffset) {
-      this._gl.polygonOffset.apply(this._gl, functions.polygonOffset);
+      this._gl.polygonOffset(functions.polygonOffset[0], functions.polygonOffset[1]);
     }
     if (functions.scissor) {
-      this._gl.scissor.apply(this._gl, functions.scissor);
+      this._gl.scissor(functions.scissor[0], functions.scissor[1], functions.scissor[2], functions.scissor[3]);
     }
   }
 

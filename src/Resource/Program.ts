@@ -61,7 +61,7 @@ export default class Program extends ResourceBase {
 
   public findUniformLocation(variableName: string): WebGLUniformLocation {
     const location = this._uniformLocations[variableName];
-    if (!location) {
+    if (location === void 0) {
       return this._uniformLocations[variableName] = this.gl.getUniformLocation(this.program, variableName);
     } else {
       return location;
