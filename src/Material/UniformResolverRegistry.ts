@@ -1,10 +1,11 @@
+import UniformProxy from "../Resource/UniformProxy";
 import IPassRecipe from "./IPassRecipe";
 import IMaterialArgument from "./IMaterialArgument";
 import Material from "./Material";
 import IVariableInfo from "./IVariableInfo";
 
 export interface IUniformRegisterOnRegister {
-  (args: IMaterialArgument, variableInfo: IVariableInfo, material: Material): void;
+  (proxy: UniformProxy, args: IMaterialArgument, variableInfo: IVariableInfo, material: Material): void;
 }
 
 export interface IUniformRegisterOnDispose {

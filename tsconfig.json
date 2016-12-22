@@ -87,6 +87,7 @@
     "./src/Material/Static/Unlit-Color.sort.d.ts",
     "./src/Material/Static/Unlit-Textured.sort.d.ts",
     "./src/Material/Static/Unlit.sort.d.ts",
+    "./src/Material/Technique.ts",
     "./src/Material/TextureReference.ts",
     "./src/Material/Transformers/AnnotationRemover.ts",
     "./src/Material/Transformers/CommentRemover.ts",
