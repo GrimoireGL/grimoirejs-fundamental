@@ -106,6 +106,7 @@ export default class SortTransformUtility {
     const result: IState = {
       enable: [WebGLRenderingContext.CULL_FACE, WebGLRenderingContext.BLEND, WebGLRenderingContext.DEPTH_TEST],
       functions: {
+        blendColor: [0, 0, 0, 0],
         cullFace: [WebGLRenderingContext.BACK],
         blendFuncSeparate: [WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA, WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA],
         blendEquationSeparate: [WebGLRenderingContext.FUNC_ADD, WebGLRenderingContext.FUNC_ADD],

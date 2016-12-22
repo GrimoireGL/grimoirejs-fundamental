@@ -1,4 +1,5 @@
 interface IVariableInfo {
+  name: string;
   type: number;
   count: number;
   default: any;

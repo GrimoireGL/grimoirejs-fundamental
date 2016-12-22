@@ -1,7 +1,6 @@
+import SortParser from "../Sort/Parser";
 import DrawPriorty from "../SceneRenderer/DrawPriorty";
-import SORTPass from "./SORTPass";
 import MacroRegistory from "./MacroRegistory";
-import PassFactory from "./PassFactory";
 import TextFileResolver from "../Asset/TextFileResolver";
 import Material from "./Material";
 import ShaderHeader from "raw!./Static/header.glsl";
@@ -33,10 +32,9 @@ export default class MaterialFactory {
    * @return {Promise<void>}          [description]
    */
   public static async addSORTMaterial(typeName: string, source: string): Promise<void> {
-    const sortInfos = await PassFactory.passInfoFromSORT(source);
+    const techniques = await SortParser.parse(source);
     MaterialFactory.addMaterialType(typeName, (factory) => {
-      const sorts = sortInfos.map(p => new SORTPass(factory, p));
-      return new Material(sorts, MaterialFactory._parseSortDrawOrder(source));
+      return new Material(factory.gl, techniques);
     });
   }
 
@@ -75,20 +73,6 @@ export default class MaterialFactory {
     }
   }
 
-  private static _parseSortDrawOrder(source: string): string {
-    const regex = /@DrawOrder\(\s*([a-zA-Z0-9]+)\s*\)/;
-    const result = regex.exec(source);
-    if (!result) {
-      return undefined;
-    } else {
-      const drawOrder = result[1];
-      if (DrawPriorty[drawOrder] === void 0) {
-        throw new Error(`Specified draw order ${drawOrder} was not found.`);
-      } else {
-        return drawOrder;
-      }
-    }
-  }
 
   private _waitForRegistered(typeName: string): Promise<Material> {
     return new Promise<Material>((resolve) => {

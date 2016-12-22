@@ -41,20 +41,20 @@ export default class DefaultPrimitives {
         vertices: {
           main: {
             size: {
-              position: 3,
-              normal: 3,
-              texCoord: 2
+              POSITION: 3,
+              NORMAL: 3,
+              TEXCOORD: 2
             },
             count: GeometryUtility.triangleSize(),
             getGenerators: () => {
               return {
-                position: function* () {
+                POSITION: function* () {
                   yield* GeometryUtility.trianglePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit);
                 },
-                normal: function* () {
+                NORMAL: function* () {
                   yield* GeometryUtility.triangleNormal(Vector3.ZUnit);
                 },
-                texCoord: function* () {
+                TEXCOORD: function* () {
                   yield* GeometryUtility.triangleTexCoord();
                 }
               };
@@ -86,20 +86,20 @@ export default class DefaultPrimitives {
         vertices: {
           main: {
             size: {
-              position: 3,
-              normal: 3,
-              texCoord: 2
+              POSITION: 3,
+              NORMAL: 3,
+              TEXCOORD: 2
             },
             count: GeometryUtility.quadSize(),
             getGenerators: () => {
               return {
-                position: function* () {
+                POSITION: function* () {
                   yield* GeometryUtility.quadPosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit);
                 },
-                normal: function* () {
+                NORMAL: function* () {
                   yield* GeometryUtility.quadNormal(Vector3.ZUnit);
                 },
-                texCoord: function* () {
+                TEXCOORD: function* () {
                   yield* GeometryUtility.quadTexCoord();
                 }
               };
@@ -131,20 +131,20 @@ export default class DefaultPrimitives {
         vertices: {
           main: {
             size: {
-              position: 3,
-              normal: 3,
-              texCoord: 2
+              POSITION: 3,
+              NORMAL: 3,
+              TEXCOORD: 2
             },
             count: GeometryUtility.cubeSize(),
             getGenerators: () => {
               return {
-                position: function* () {
+                POSITION: function* () {
                   yield* GeometryUtility.cubePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis());
                 },
-                normal: function* () {
+                NORMAL: function* () {
                   yield* GeometryUtility.cubeNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis());
                 },
-                texCoord: function* () {
+                TEXCOORD: function* () {
                   yield* GeometryUtility.cubeTexCoord();
                 }
               };
@@ -187,20 +187,20 @@ export default class DefaultPrimitives {
         vertices: {
           main: {
             size: {
-              position: 3,
-              normal: 3,
-              texCoord: 2
+              POSITION: 3,
+              NORMAL: 3,
+              TEXCOORD: 2
             },
             count: GeometryUtility.sphereSize(dH, dV),
             getGenerators: () => {
               return {
-                position: function* () {
+                POSITION: function* () {
                   yield* GeometryUtility.spherePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), dH, dV);
                 },
-                normal: function* () {
+                NORMAL: function* () {
                   yield* GeometryUtility.sphereNormal(Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), dH, dV);
                 },
-                texCoord: function* () {
+                TEXCOORD: function* () {
                   yield* GeometryUtility.sphereTexCoord(dH, dV);
                 }
               };
@@ -237,20 +237,20 @@ export default class DefaultPrimitives {
         vertices: {
           main: {
             size: {
-              position: 3,
-              normal: 3,
-              texCoord: 2
+              POSITION: 3,
+              NORMAL: 3,
+              TEXCOORD: 2
             },
             count: GeometryUtility.ellipseSize(div),
             getGenerators: () => {
               return {
-                position: function* () {
+                POSITION: function* () {
                   yield* GeometryUtility.ellipsePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, div);
                 },
-                normal: function* () {
+                NORMAL: function* () {
                   yield* GeometryUtility.ellipseNormal(Vector3.ZUnit, div);
                 },
-                texCoord: function* () {
+                TEXCOORD: function* () {
                   yield* GeometryUtility.ellipseTexCoord(div);
                 }
               };
@@ -287,20 +287,20 @@ export default class DefaultPrimitives {
         vertices: {
           main: {
             size: {
-              position: 3,
-              normal: 3,
-              texCoord: 2
+              POSITION: 3,
+              NORMAL: 3,
+              TEXCOORD: 2
             },
             count: GeometryUtility.cylinderSize(div),
             getGenerators: () => {
               return {
-                position: function* () {
+                POSITION: function* () {
                   yield* GeometryUtility.cylinderPosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
                 },
-                normal: function* () {
+                NORMAL: function* () {
                   yield* GeometryUtility.cylinderNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
                 },
-                texCoord: function* () {
+                TEXCOORD: function* () {
                   yield* GeometryUtility.cylinderTexCoord(div);
                 }
               };
@@ -337,20 +337,20 @@ export default class DefaultPrimitives {
         vertices: {
           main: {
             size: {
-              position: 3,
-              normal: 3,
-              texCoord: 2
+              POSITION: 3,
+              NORMAL: 3,
+              TEXCOORD: 2
             },
             count: GeometryUtility.coneSize(div),
             getGenerators: () => {
               return {
-                position: function* () {
+                POSITION: function* () {
                   yield* GeometryUtility.conePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
                 },
-                normal: function* () {
+                NORMAL: function* () {
                   yield* GeometryUtility.coneNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
                 },
-                texCoord: function* () {
+                TEXCOORD: function* () {
                   yield* GeometryUtility.coneTexCoord(div);
                 }
               };
@@ -387,20 +387,20 @@ export default class DefaultPrimitives {
         vertices: {
           main: {
             size: {
-              position: 3,
-              normal: 3,
-              texCoord: 2
+              POSITION: 3,
+              NORMAL: 3,
+              TEXCOORD: 2
             },
             count: GeometryUtility.planeSize(div),
             getGenerators: () => {
               return {
-                position: function* () {
+                POSITION: function* () {
                   yield* GeometryUtility.planePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, div);
                 },
-                normal: function* () {
+                NORMAL: function* () {
                   yield* GeometryUtility.planeNormal(Vector3.ZUnit, div);
                 },
-                texCoord: function* () {
+                TEXCOORD: function* () {
                   yield* GeometryUtility.planeTexCoord(div);
                 }
               };

@@ -50,22 +50,14 @@
   import GeometryGeometryUtility from "./Geometry/GeometryUtility";
   import MaterialDefaultMacro from "./Material/DefaultMacro";
   import MaterialDefaultMaterial from "./Material/DefaultMaterial";
-  import MaterialEnvUniformValueResolver from "./Material/EnvUniformValueResolver";
   import MaterialMacroRegistory from "./Material/MacroRegistory";
   import MaterialMaterial from "./Material/Material";
   import MaterialMaterialFactory from "./Material/MaterialFactory";
   import MaterialPass from "./Material/Pass";
-  import MaterialPassFactory from "./Material/PassFactory";
-  import MaterialSORTPass from "./Material/SORTPass";
+  import MaterialTechnique from "./Material/Technique";
   import MaterialTextureReference from "./Material/TextureReference";
-  import MaterialTransformersAnnotationRemover from "./Material/Transformers/AnnotationRemover";
-  import MaterialTransformersCommentRemover from "./Material/Transformers/CommentRemover";
-  import MaterialTransformersGLSLUtil from "./Material/Transformers/GLSLUtil";
-  import MaterialTransformersImportTransformer from "./Material/Transformers/ImportTransformer";
-  import MaterialTransformersSORTPassParser from "./Material/Transformers/SORTPassParser";
-  import MaterialTransformersUniformRegisterer from "./Material/Transformers/UniformRegisterer";
-  import MaterialTransformersVariableAnnotationRemover from "./Material/Transformers/VariableAnnotationRemover";
-  import MaterialTransformersVariableParser from "./Material/Transformers/VariableParser";
+  import MaterialUniformResolverRegistry from "./Material/UniformResolverRegistry";
+  import MaterialUniformsMatricesRegister from "./Material/Uniforms/MatricesRegister";
   import ResourceBuffer from "./Resource/Buffer";
   import ResourceFrameBuffer from "./Resource/FrameBuffer";
   import ResourceGLExtRequestor from "./Resource/GLExtRequestor";
@@ -80,8 +72,11 @@
   import SceneRendererRenderQueue from "./SceneRenderer/RenderQueue";
   import SceneRendererRenderQueueRegistry from "./SceneRenderer/RenderQueueRegistry";
   import SortImportResolver from "./Sort/ImportResolver";
+  import SortNameSemanticsPair from "./Sort/NameSemanticsPair";
   import SortParser from "./Sort/Parser";
+  import SortPreferences from "./Sort/Preferences";
   import SortSortTransformUtility from "./Sort/SortTransformUtility";
+  import SortTypeToConstant from "./Sort/TypeToConstant";
   import UtilRotationParser from "./Util/RotationParser";
   import UtilTextureSizeCalculator from "./Util/TextureSizeCalculator";
   import __INTERFACE__1 from "./Geometry/GeometryBufferConstructionInfo";
@@ -90,21 +85,16 @@
   import __INTERFACE__4 from "./Geometry/VertexBufferAttribInfo";
   import __INTERFACE__5 from "./Material/IMaterialArgument";
   import __INTERFACE__6 from "./Material/IPassRecipe";
-  import __INTERFACE__7 from "./Material/ITechniqueRecipe";
-  import __INTERFACE__8 from "./Material/Transformers/Interfaces/IMacroInfo";
-  import __INTERFACE__9 from "./Material/Transformers/Interfaces/IMaterialAttributeDeclaration";
-  import __INTERFACE__10 from "./Material/Transformers/Interfaces/ISORTPassInfo";
-  import __INTERFACE__11 from "./Material/Transformers/Interfaces/IVariableInfo";
-  import __INTERFACE__12 from "./Material/Transformers/ITransformer";
-  import __INTERFACE__13 from "./Material/Transformers/ITransformingArgument";
-  import __INTERFACE__14 from "./Material/Transformers/PreferenceParser";
-  import __INTERFACE__15 from "./Messages/IBufferUpdatedMessage";
-  import __INTERFACE__16 from "./Messages/IRenderRendererMessage";
-  import __INTERFACE__17 from "./Messages/IResizeBufferMessage";
-  import __INTERFACE__18 from "./Objects/CanvasSizeObject";
-  import __INTERFACE__19 from "./Objects/RenderSceneArgument";
-  import __INTERFACE__20 from "./SceneRenderer/IRenderable";
-  import __INTERFACE__21 from "./SceneRenderer/IRenderArgument";
+  import __INTERFACE__7 from "./Material/IState";
+  import __INTERFACE__8 from "./Material/ITechniqueRecipe";
+  import __INTERFACE__9 from "./Material/IVariableInfo";
+  import __INTERFACE__10 from "./Messages/IBufferUpdatedMessage";
+  import __INTERFACE__11 from "./Messages/IRenderRendererMessage";
+  import __INTERFACE__12 from "./Messages/IResizeBufferMessage";
+  import __INTERFACE__13 from "./Objects/CanvasSizeObject";
+  import __INTERFACE__14 from "./Objects/RenderSceneArgument";
+  import __INTERFACE__15 from "./SceneRenderer/IRenderable";
+  import __INTERFACE__16 from "./SceneRenderer/IRenderArgument";
 
 import __MAIN__ from "./main"
 
@@ -170,23 +160,15 @@ var __EXPOSE__ = {
   "Material": {
     "DefaultMacro": MaterialDefaultMacro,
     "DefaultMaterial": MaterialDefaultMaterial,
-    "EnvUniformValueResolver": MaterialEnvUniformValueResolver,
     "MacroRegistory": MaterialMacroRegistory,
     "Material": MaterialMaterial,
     "MaterialFactory": MaterialMaterialFactory,
     "Pass": MaterialPass,
-    "PassFactory": MaterialPassFactory,
-    "SORTPass": MaterialSORTPass,
+    "Technique": MaterialTechnique,
     "TextureReference": MaterialTextureReference,
-    "Transformers": {
-      "AnnotationRemover": MaterialTransformersAnnotationRemover,
-      "CommentRemover": MaterialTransformersCommentRemover,
-      "GLSLUtil": MaterialTransformersGLSLUtil,
-      "ImportTransformer": MaterialTransformersImportTransformer,
-      "SORTPassParser": MaterialTransformersSORTPassParser,
-      "UniformRegisterer": MaterialTransformersUniformRegisterer,
-      "VariableAnnotationRemover": MaterialTransformersVariableAnnotationRemover,
-      "VariableParser": MaterialTransformersVariableParser
+    "UniformResolverRegistry": MaterialUniformResolverRegistry,
+    "Uniforms": {
+      "MatricesRegister": MaterialUniformsMatricesRegister
     }
   },
   "Resource": {
@@ -208,8 +190,11 @@ var __EXPOSE__ = {
   },
   "Sort": {
     "ImportResolver": SortImportResolver,
+    "NameSemanticsPair": SortNameSemanticsPair,
     "Parser": SortParser,
-    "SortTransformUtility": SortSortTransformUtility
+    "Preferences": SortPreferences,
+    "SortTransformUtility": SortSortTransformUtility,
+    "TypeToConstant": SortTypeToConstant
   },
   "Util": {
     "RotationParser": UtilRotationParser,

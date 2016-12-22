@@ -110,7 +110,8 @@ export default class MeshRenderer extends Component implements IRenderable {
       drawCount: this._drawCount,
       drawOffset: this._drawOffset,
       sceneDescription: args.sceneDescription,
-      defaultTexture: args.defaultTexture
+      defaultTexture: args.defaultTexture,
+      technique: args.technique
     };
     if (args.material) {
       renderArgs.attributeValues = args.materialArgs;

@@ -52,7 +52,6 @@ class SortParser {
   }
 
   private static _parsePassSource(passSource: string): IPassRecipe {
-    console.log(passSource);
     const shaderSource = SortTransformUtility.removePreferences(passSource);
     const attributes = SortTransformUtility.parseVariables(passSource, "attribute");
     const uniforms = SortTransformUtility.parseVariables(passSource, "uniform");

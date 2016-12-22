@@ -3,7 +3,6 @@ import Attribute from "grimoirejs/ref/Node/Attribute";
 import gr from "grimoirejs";
 import ResourceBase from "../Resource/ResourceBase";
 import MaterialComponent from "./MaterialComponent";
-import SORTPass from "../Material/SORTPass";
 import Material from "../Material/Material";
 import AssetLoader from "../Asset/AssetLoader";
 import Component from "grimoirejs/ref/Node/Component";
@@ -39,7 +38,10 @@ export default class MaterialContainerComponent extends Component {
     if (!this.ready) {
       return Number.MAX_VALUE;
     }
-    const orderCriteria = DrawPriorty[this._drawOrder ? this._drawOrder : this.material.drawOrder];
+    const orderCriteria = DrawPriorty[this._drawOrder ? this._drawOrder : this.material.techniques["default"].drawOrder];
+    if (orderCriteria === void 0) {
+      throw new Error(`Specified drawing order "${this.material.techniques["default"].drawOrder}" is not defined`);
+    }
     if (orderCriteria.descending) {
       return (1.0 - depth / 10000) * orderCriteria.priorty;
     } else {
@@ -103,49 +105,6 @@ export default class MaterialContainerComponent extends Component {
       return;
     }
     const material = await materialPromise;
-    const promises: Promise<any>[] = [];
-    material.pass.forEach((p) => {
-      if (p instanceof SORTPass) {
-        const cp: SORTPass = p as SORTPass;
-        for (let key in cp.sort.gomlAttributes) {
-          const val = cp.sort.gomlAttributes[key];
-          this.__addAtribute(key, val);
-          this.getAttributeRaw(key).watch((v) => {
-            this.materialArgs[key] = v;
-          });
-          const value = this.materialArgs[key] = this.getAttribute(key);
-          if (value instanceof ResourceBase) {
-            promises.push((value as ResourceBase).validPromise);
-          }
-        }
-        for (let macro of cp.sort.macros) {
-          switch (macro.type) {
-            case "int": // should use integer converter
-              this.__addAtribute(macro.attributeName, {
-                converter: "Number",
-                default: macro.default
-              });
-              this.getAttributeRaw(macro.attributeName).watch(
-                (v) => {
-                  cp.setMacro(macro.macroName, "" + Math.floor(v));
-                }, true);
-              return;
-            case "bool": // should use integer converter
-              this.__addAtribute(macro.attributeName, {
-                converter: "Boolean",
-                default: macro.default
-              });
-              this.getAttributeRaw(macro.attributeName).watch(
-                (v) => {
-                  cp.setMacro(macro.macroName, v);
-                }, true);
-              return;
-          }
-
-        }
-      }
-    });
-    Promise.all(promises);
     this.material = material;
     this.ready = true;
   }

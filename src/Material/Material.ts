@@ -1,3 +1,5 @@
+import ITechniqueRecipe from "./ITechniqueRecipe";
+import Technique from "./Technique";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import IMaterialArgument from "./IMaterialArgument";
 import Pass from "./Pass";
@@ -9,11 +11,19 @@ export default class Material {
 
   public arguments: { [key: string]: any } = {};
 
-  constructor(public pass: Pass[], public drawOrder: string = "UseAlpha") {
+  public techniques: { [key: string]: Technique } = {};
+
+  constructor(public gl: WebGLRenderingContext, public techniqueRecipes: { [key: string]: ITechniqueRecipe }) {
+    for (let key in techniqueRecipes) {
+      this.techniques[key] = new Technique(this, techniqueRecipes[key]);
+    }
   }
 
   public draw(arg: IMaterialArgument): void {
-    this.pass.forEach(p => p.draw(arg));
+    const technique = this.techniques[arg.technique];
+    if (technique) {
+      technique.draw(arg);
+    }
   }
 
   public addArgument(key: string, argumentDeclaration: IAttributeDeclaration): void {

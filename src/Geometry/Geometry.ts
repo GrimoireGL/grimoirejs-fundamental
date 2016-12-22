@@ -25,7 +25,7 @@ export default class Geometry {
     attribNames.forEach(name => {
       Geometry.bindBufferToAttribute(this, program, name, name);
     });
-    Geometry.drawWithCurrentVertexBuffer(this, program, indexName, count, offset);
+    Geometry.drawWithCurrentVertexBuffer(this, indexName, count, offset);
   }
 	/**
 	 * bind a vertex buffer to specified attribute variable.
@@ -51,13 +51,13 @@ export default class Geometry {
     return true;
   }
 
-  public static drawWithCurrentVertexBuffer(geometry: Geometry, program: Program, indexName: string, count: number = Number.MAX_VALUE, offset: number = 0): void {
+  public static drawWithCurrentVertexBuffer(geometry: Geometry, indexName: string, count: number = Number.MAX_VALUE, offset: number = 0): void {
     const targetIndex = geometry.indices[indexName];
     if (targetIndex === void 0) {
       throw new Error(`Specified index buffer "${indexName}" was not found on this geometry.All of the index buffer available on this geometry is "${Object.keys(geometry.indices)}"`);
     }
     targetIndex.index.bind();
-    program.gl.drawElements(targetIndex.topology, Math.min(targetIndex.count, count), targetIndex.type, Math.min(offset * targetIndex.byteSize + targetIndex.byteOffset, (targetIndex.count - 1) * targetIndex.byteSize));
+    targetIndex.index.gl.drawElements(targetIndex.topology, Math.min(targetIndex.count, count), targetIndex.type, Math.min(offset * targetIndex.byteSize + targetIndex.byteOffset, (targetIndex.count - 1) * targetIndex.byteSize));
 
   }
 }

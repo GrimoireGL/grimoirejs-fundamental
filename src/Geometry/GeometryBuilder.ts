@@ -56,7 +56,7 @@ export default class GeometryBuilder {
         const generator = bufferGenerator[attribKey] as () => IterableIterator<number>;
         generators.push(generator());
         sizes.push(buffer.size[attribKey]);
-        if (attribKey === "position") {
+        if (attribKey === "POSITION") {
           positionGeneratorIndex = generators.length - 1;
         }
       }

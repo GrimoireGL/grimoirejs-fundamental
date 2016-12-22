@@ -5,11 +5,11 @@ import Material from "./Material";
 import IVariableInfo from "./IVariableInfo";
 
 export interface IUniformRegisterOnRegister {
-  (proxy: UniformProxy, args: IMaterialArgument, variableInfo: IVariableInfo, material: Material): void;
+  (proxy: UniformProxy, args: IMaterialArgument): void;
 }
 
 export interface IUniformRegisterOnDispose {
-  (variableInfo: IVariableInfo, material: Material): void;
+  (): void;
 }
 
 
@@ -31,7 +31,7 @@ export class UniformResolverRegistry {
     this._generators[semantic.toUpperCase()] = generator;
   }
 
-  public generateRegisterers(passInfo: IPassRecipe, material: Material): {
+  public generateRegisterers(material: Material, passInfo: IPassRecipe): {
     registerers: IUniformRegisterOnRegister[],
     disposers: IUniformRegisterOnDispose[]
   } {
