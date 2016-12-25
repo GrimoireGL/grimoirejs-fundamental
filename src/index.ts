@@ -26,10 +26,7 @@
   import ComponentsTextureBufferComponent from "./Components/TextureBufferComponent";
   import ComponentsTextureComponent from "./Components/TextureComponent";
   import ComponentsTransformComponent from "./Components/TransformComponent";
-  import ConvertersAngle2DConverter from "./Converters/Angle2DConverter";
   import ConvertersCanvasSizeConverter from "./Converters/CanvasSizeConverter";
-  import ConvertersColor3Converter from "./Converters/Color3Converter";
-  import ConvertersColor4Converter from "./Converters/Color4Converter";
   import ConvertersComponentConverter from "./Converters/ComponentConverter";
   import ConvertersEnumConverter from "./Converters/EnumConverter";
   import ConvertersGeometryConverter from "./Converters/GeometryConverter";
@@ -37,11 +34,7 @@
   import ConvertersNumberArrayConverter from "./Converters/NumberArrayConverter";
   import ConvertersNumberConverter from "./Converters/NumberConverter";
   import ConvertersObjectConverter from "./Converters/ObjectConverter";
-  import ConvertersRotation3Converter from "./Converters/Rotation3Converter";
   import ConvertersTextureConverter from "./Converters/TextureConverter";
-  import ConvertersVector2Converter from "./Converters/Vector2Converter";
-  import ConvertersVector3Converter from "./Converters/Vector3Converter";
-  import ConvertersVector4Converter from "./Converters/Vector4Converter";
   import ConvertersViewportConverter from "./Converters/ViewportConverter";
   import GeometryDefaultPrimitives from "./Geometry/DefaultPrimitives";
   import GeometryGeometry from "./Geometry/Geometry";
@@ -79,24 +72,24 @@
   import SortPreferences from "./Sort/Preferences";
   import SortSortTransformUtility from "./Sort/SortTransformUtility";
   import SortTypeToConstant from "./Sort/TypeToConstant";
-  import UtilRotationParser from "./Util/RotationParser";
   import UtilTextureSizeCalculator from "./Util/TextureSizeCalculator";
   import __INTERFACE__1 from "./Geometry/GeometryBufferConstructionInfo";
   import __INTERFACE__2 from "./Geometry/IGeometryFactoryDelegate";
   import __INTERFACE__3 from "./Geometry/IndexBufferInfo";
   import __INTERFACE__4 from "./Geometry/VertexBufferAttribInfo";
-  import __INTERFACE__5 from "./Material/IMaterialArgument";
-  import __INTERFACE__6 from "./Material/IPassRecipe";
-  import __INTERFACE__7 from "./Material/IState";
-  import __INTERFACE__8 from "./Material/ITechniqueRecipe";
-  import __INTERFACE__9 from "./Material/IVariableInfo";
-  import __INTERFACE__10 from "./Messages/IBufferUpdatedMessage";
-  import __INTERFACE__11 from "./Messages/IRenderRendererMessage";
-  import __INTERFACE__12 from "./Messages/IResizeBufferMessage";
-  import __INTERFACE__13 from "./Objects/CanvasSizeObject";
-  import __INTERFACE__14 from "./Objects/RenderSceneArgument";
-  import __INTERFACE__15 from "./SceneRenderer/IRenderable";
-  import __INTERFACE__16 from "./SceneRenderer/IRenderArgument";
+  import __INTERFACE__5 from "./Material/IMacro";
+  import __INTERFACE__6 from "./Material/IMaterialArgument";
+  import __INTERFACE__7 from "./Material/IPassRecipe";
+  import __INTERFACE__8 from "./Material/IState";
+  import __INTERFACE__9 from "./Material/ITechniqueRecipe";
+  import __INTERFACE__10 from "./Material/IVariableInfo";
+  import __INTERFACE__11 from "./Messages/IBufferUpdatedMessage";
+  import __INTERFACE__12 from "./Messages/IRenderRendererMessage";
+  import __INTERFACE__13 from "./Messages/IResizeBufferMessage";
+  import __INTERFACE__14 from "./Objects/CanvasSizeObject";
+  import __INTERFACE__15 from "./Objects/RenderSceneArgument";
+  import __INTERFACE__16 from "./SceneRenderer/IRenderable";
+  import __INTERFACE__17 from "./SceneRenderer/IRenderArgument";
 
 import __MAIN__ from "./main"
 
@@ -134,10 +127,7 @@ var __EXPOSE__ = {
     "TransformComponent": ComponentsTransformComponent
   },
   "Converters": {
-    "Angle2DConverter": ConvertersAngle2DConverter,
     "CanvasSizeConverter": ConvertersCanvasSizeConverter,
-    "Color3Converter": ConvertersColor3Converter,
-    "Color4Converter": ConvertersColor4Converter,
     "ComponentConverter": ConvertersComponentConverter,
     "EnumConverter": ConvertersEnumConverter,
     "GeometryConverter": ConvertersGeometryConverter,
@@ -145,11 +135,7 @@ var __EXPOSE__ = {
     "NumberArrayConverter": ConvertersNumberArrayConverter,
     "NumberConverter": ConvertersNumberConverter,
     "ObjectConverter": ConvertersObjectConverter,
-    "Rotation3Converter": ConvertersRotation3Converter,
     "TextureConverter": ConvertersTextureConverter,
-    "Vector2Converter": ConvertersVector2Converter,
-    "Vector3Converter": ConvertersVector3Converter,
-    "Vector4Converter": ConvertersVector4Converter,
     "ViewportConverter": ConvertersViewportConverter
   },
   "Geometry": {
@@ -201,7 +187,6 @@ var __EXPOSE__ = {
     "TypeToConstant": SortTypeToConstant
   },
   "Util": {
-    "RotationParser": UtilRotationParser,
     "TextureSizeCalculator": UtilTextureSizeCalculator
   }
 };
