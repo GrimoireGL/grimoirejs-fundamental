@@ -18,10 +18,10 @@ UniformResolverRegistry.add("TIME", (valInfo: IVariableInfo) => (proxy: UniformP
 UniformResolverRegistry.add("HAS_TEXTURE", (valInfo: IVariableInfo, material: Material) => {
   const sampler = valInfo.attributes["sampler"];
   if (!sampler) {
-    throw new Error(`The variable have HAS_TEXTURE as semantics must have sampler attribute`);
+    throw new Error(`The variable having HAS_TEXTURE as semantics must have sampler attribute`);
   }
   return (proxy: UniformProxy, args: IMaterialArgument) => {
-    const hasTexture = !!material.arguments[valInfo.name] && !!material.arguments[valInfo.name].get(args.buffers);
+    const hasTexture = !!material.arguments[sampler] && !!material.arguments[sampler].get(args.buffers);
     proxy.uniformBool(valInfo.name, hasTexture);
   };
 });
