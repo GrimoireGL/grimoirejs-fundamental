@@ -36,7 +36,7 @@ function basicRegister(type: number, isArray: boolean, converter: string, defaul
   registerTarget[type] = function(valInfo: IVariableInfo, material: Material) {
     material.addArgument(valInfo.name, {
       converter: converter,
-      default: defaultValue
+      default: valInfo.attributes["default"] ? valInfo.attributes["default"] : defaultValue
     });
     return {
       register: (proxy: UniformProxy, args: IMaterialArgument) => {
@@ -56,6 +56,7 @@ basicRegister(gl.INT_VEC2, false, "Vector2", [0, 0], (proxy, name, value) => pro
 basicRegister(gl.INT_VEC3, false, "Vector3", [0, 0, 0], (proxy, name, value) => proxy.uniformVector3(name, value));
 basicRegister(gl.INT_VEC4, false, "Vector4", [0, 0, 0, 0], (proxy, name, value) => proxy.uniformVector4(name, value));
 basicRegister(gl.FLOAT_VEC2, false, "Vector2", [0, 0], (proxy, name, value) => proxy.uniformVector2(name, value));
+basicRegister(gl.FLOAT_MAT4, true, "Object", [0, 0], (proxy, name, value) => proxy.uniformMatrixArray(name, value));
 basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: TextureReference, args) => {
   let texture;
   if (value && (texture = value.get(args.buffers))) {
@@ -67,9 +68,11 @@ basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: Textur
 
 _userValueRegisterers.single[gl.FLOAT_VEC3] = function(valInfo: IVariableInfo, material: Material) {
   const isColor = valInfo.attributes["type"] === "color";
+  const attrDefault = valInfo.attributes["default"];
+  const defaultValue = attrDefault? attrDefault:(isColor ? [1, 1, 1] : [0, 0, 0]);
   material.addArgument(valInfo.name, {
     converter: isColor ? "Color3" : "Vector3",
-    default: isColor ? [1, 1, 1] : [0, 0, 0]
+    default: defaultValue
   });
   return {
     register: isColor ? (proxy: UniformProxy, args: IMaterialArgument) => {
@@ -85,9 +88,11 @@ _userValueRegisterers.single[gl.FLOAT_VEC3] = function(valInfo: IVariableInfo, m
 
 _userValueRegisterers.single[gl.FLOAT_VEC4] = function(valInfo: IVariableInfo, material: Material) {
   const isColor = valInfo.attributes["type"] === "color";
+  const attrDefault = valInfo.attributes["default"];
+  const defaultValue = attrDefault? attrDefault:(isColor ? [1, 1, 1, 1] : [0, 0, 0, 0]);
   material.addArgument(valInfo.name, {
     converter: isColor ? "Color4" : "Vector4",
-    default: isColor ? [1, 1, 1, 1] : [0, 0, 0, 0]
+    default: defaultValue
   });
   return {
     register: isColor ? (proxy: UniformProxy, args: IMaterialArgument) => {

@@ -55,7 +55,7 @@ export default class Pass {
     this.vs = new Shader(this._gl, WebGLRenderingContext.VERTEX_SHADER);
     for (let key in passRecipe.macros) {
       const macro = passRecipe.macros[key];
-      this._macro[key] = macro.value;
+      this._macro[macro.macroName] = macro.value;
       this.material.addMacroObserver(key, {
         converter: macro.type === "bool" ? "Boolean" : "Number",
         default: macro.value

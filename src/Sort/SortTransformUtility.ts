@@ -110,8 +110,8 @@ export default class SortTransformUtility {
         }
       }
       result[regexResult[2]] = <IMacro>{
-        name: regexResult[3],
-        macroName: regexResult[2],
+        name: regexResult[2],
+        macroName: regexResult[3],
         type: regexResult[1],
         value: value
       };

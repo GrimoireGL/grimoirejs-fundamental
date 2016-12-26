@@ -40,16 +40,16 @@ function asBooleanArgs(args: string[], length: number): boolean[] {
 
 export default {
   Enable: function(state: IState, args: string[]) {
-    const enableTarget = WebGLRenderingContext[args[1]];
+    const enableTarget = WebGLRenderingContext[args[0]];
     if (typeof enableTarget !== "number") {
-      throw new Error("Unknown WebGL constant was specified @Enable");
+      throw new Error(`Unknown WebGL constant "${args[0]}" was specified on @Enable`);
     }
     state.enable.push(enableTarget);
   },
   Disable: function(state: IState, args: string[]) {
-    const disableTarget = WebGLRenderingContext[args[1]];
+    const disableTarget = WebGLRenderingContext[args[0]];
     if (typeof disableTarget !== "number") {
-      throw new Error("Unknown WebGL constant was specified @Enable");
+      throw new Error(`Unknown WebGL constant "${args[0]}" was specified on @Disable`);
     }
     const index = state.enable.indexOf(disableTarget);
     if (index !== index) {
