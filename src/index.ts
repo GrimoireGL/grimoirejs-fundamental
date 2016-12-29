@@ -3,8 +3,6 @@
   import AssetExternalResourceResolver from "./Asset/ExternalResourceResolver";
   import AssetImageResolver from "./Asset/ImageResolver";
   import AssetTextFileResolver from "./Asset/TextFileResolver";
-  import CameraBasicCamera from "./Camera/BasicCamera";
-  import CameraViewCameraBase from "./Camera/ViewCameraBase";
   import ComponentsAssetLoadingManagerComponent from "./Components/AssetLoadingManagerComponent";
   import ComponentsCameraComponent from "./Components/CameraComponent";
   import ComponentsCanvasInitializerComponent from "./Components/CanvasInitializerComponent";
@@ -28,11 +26,7 @@
   import ComponentsTextureBufferComponent from "./Components/TextureBufferComponent";
   import ComponentsTextureComponent from "./Components/TextureComponent";
   import ComponentsTransformComponent from "./Components/TransformComponent";
-  import ConvertersAngle2DConverter from "./Converters/Angle2DConverter";
-  import ConvertersBooleanConverter from "./Converters/BooleanConverter";
   import ConvertersCanvasSizeConverter from "./Converters/CanvasSizeConverter";
-  import ConvertersColor3Converter from "./Converters/Color3Converter";
-  import ConvertersColor4Converter from "./Converters/Color4Converter";
   import ConvertersComponentConverter from "./Converters/ComponentConverter";
   import ConvertersEnumConverter from "./Converters/EnumConverter";
   import ConvertersGeometryConverter from "./Converters/GeometryConverter";
@@ -40,11 +34,7 @@
   import ConvertersNumberArrayConverter from "./Converters/NumberArrayConverter";
   import ConvertersNumberConverter from "./Converters/NumberConverter";
   import ConvertersObjectConverter from "./Converters/ObjectConverter";
-  import ConvertersRotation3Converter from "./Converters/Rotation3Converter";
   import ConvertersTextureConverter from "./Converters/TextureConverter";
-  import ConvertersVector2Converter from "./Converters/Vector2Converter";
-  import ConvertersVector3Converter from "./Converters/Vector3Converter";
-  import ConvertersVector4Converter from "./Converters/Vector4Converter";
   import ConvertersViewportConverter from "./Converters/ViewportConverter";
   import GeometryDefaultPrimitives from "./Geometry/DefaultPrimitives";
   import GeometryGeometry from "./Geometry/Geometry";
@@ -53,23 +43,16 @@
   import GeometryGeometryUtility from "./Geometry/GeometryUtility";
   import MaterialDefaultMacro from "./Material/DefaultMacro";
   import MaterialDefaultMaterial from "./Material/DefaultMaterial";
-  import MaterialEnvUniformValueResolver from "./Material/EnvUniformValueResolver";
-  import MaterialImportResolver from "./Material/ImportResolver";
   import MaterialMacroRegistory from "./Material/MacroRegistory";
   import MaterialMaterial from "./Material/Material";
   import MaterialMaterialFactory from "./Material/MaterialFactory";
   import MaterialPass from "./Material/Pass";
-  import MaterialPassFactory from "./Material/PassFactory";
-  import MaterialSORTPass from "./Material/SORTPass";
+  import MaterialTechnique from "./Material/Technique";
   import MaterialTextureReference from "./Material/TextureReference";
-  import MaterialTransformersAnnotationRemover from "./Material/Transformers/AnnotationRemover";
-  import MaterialTransformersCommentRemover from "./Material/Transformers/CommentRemover";
-  import MaterialTransformersGLSLUtil from "./Material/Transformers/GLSLUtil";
-  import MaterialTransformersImportTransformer from "./Material/Transformers/ImportTransformer";
-  import MaterialTransformersSORTPassParser from "./Material/Transformers/SORTPassParser";
-  import MaterialTransformersUniformRegisterer from "./Material/Transformers/UniformRegisterer";
-  import MaterialTransformersVariableAnnotationRemover from "./Material/Transformers/VariableAnnotationRemover";
-  import MaterialTransformersVariableParser from "./Material/Transformers/VariableParser";
+  import MaterialUniformResolverRegistry from "./Material/UniformResolverRegistry";
+  import MaterialUniformsMatricesRegister from "./Material/Uniforms/MatricesRegister";
+  import MaterialUniformsMiscRegister from "./Material/Uniforms/MiscRegister";
+  import MaterialUniformsUserValueRegister from "./Material/Uniforms/UserValueRegister";
   import ResourceBuffer from "./Resource/Buffer";
   import ResourceFrameBuffer from "./Resource/FrameBuffer";
   import ResourceGLExtRequestor from "./Resource/GLExtRequestor";
@@ -83,28 +66,30 @@
   import SceneRendererDrawPriorty from "./SceneRenderer/DrawPriorty";
   import SceneRendererRenderQueue from "./SceneRenderer/RenderQueue";
   import SceneRendererRenderQueueRegistry from "./SceneRenderer/RenderQueueRegistry";
-  import UtilRotationParser from "./Util/RotationParser";
+  import SortImportResolver from "./Sort/ImportResolver";
+  import SortNameSemanticsPair from "./Sort/NameSemanticsPair";
+  import SortParser from "./Sort/Parser";
+  import SortPreferences from "./Sort/Preferences";
+  import SortSortTransformUtility from "./Sort/SortTransformUtility";
+  import SortTypeToConstant from "./Sort/TypeToConstant";
   import UtilTextureSizeCalculator from "./Util/TextureSizeCalculator";
-  import __INTERFACE__1 from "./Camera/ICamera";
-  import __INTERFACE__2 from "./Geometry/GeometryBufferConstructionInfo";
-  import __INTERFACE__3 from "./Geometry/IGeometryFactoryDelegate";
-  import __INTERFACE__4 from "./Geometry/IndexBufferInfo";
-  import __INTERFACE__5 from "./Geometry/VertexBufferAttribInfo";
+  import __INTERFACE__1 from "./Geometry/GeometryBufferConstructionInfo";
+  import __INTERFACE__2 from "./Geometry/IGeometryFactoryDelegate";
+  import __INTERFACE__3 from "./Geometry/IndexBufferInfo";
+  import __INTERFACE__4 from "./Geometry/VertexBufferAttribInfo";
+  import __INTERFACE__5 from "./Material/IMacro";
   import __INTERFACE__6 from "./Material/IMaterialArgument";
-  import __INTERFACE__7 from "./Material/Transformers/Interfaces/IMacroInfo";
-  import __INTERFACE__8 from "./Material/Transformers/Interfaces/IMaterialAttributeDeclaration";
-  import __INTERFACE__9 from "./Material/Transformers/Interfaces/ISORTPassInfo";
-  import __INTERFACE__10 from "./Material/Transformers/Interfaces/IVariableInfo";
-  import __INTERFACE__11 from "./Material/Transformers/ITransformer";
-  import __INTERFACE__12 from "./Material/Transformers/ITransformingArgument";
-  import __INTERFACE__13 from "./Material/Transformers/PreferenceParser";
-  import __INTERFACE__14 from "./Messages/IBufferUpdatedMessage";
-  import __INTERFACE__15 from "./Messages/IRenderRendererMessage";
-  import __INTERFACE__16 from "./Messages/IResizeBufferMessage";
-  import __INTERFACE__17 from "./Objects/CanvasSizeObject";
-  import __INTERFACE__18 from "./Objects/RenderSceneArgument";
-  import __INTERFACE__19 from "./SceneRenderer/IRenderable";
-  import __INTERFACE__20 from "./SceneRenderer/IRenderArgument";
+  import __INTERFACE__7 from "./Material/IPassRecipe";
+  import __INTERFACE__8 from "./Material/IState";
+  import __INTERFACE__9 from "./Material/ITechniqueRecipe";
+  import __INTERFACE__10 from "./Material/IVariableInfo";
+  import __INTERFACE__11 from "./Messages/IBufferUpdatedMessage";
+  import __INTERFACE__12 from "./Messages/IRenderRendererMessage";
+  import __INTERFACE__13 from "./Messages/IResizeBufferMessage";
+  import __INTERFACE__14 from "./Objects/CanvasSizeObject";
+  import __INTERFACE__15 from "./Objects/RenderSceneArgument";
+  import __INTERFACE__16 from "./SceneRenderer/IRenderable";
+  import __INTERFACE__17 from "./SceneRenderer/IRenderArgument";
 
 import __MAIN__ from "./main"
 
@@ -115,10 +100,6 @@ var __EXPOSE__ = {
     "ExternalResourceResolver": AssetExternalResourceResolver,
     "ImageResolver": AssetImageResolver,
     "TextFileResolver": AssetTextFileResolver
-  },
-  "Camera": {
-    "BasicCamera": CameraBasicCamera,
-    "ViewCameraBase": CameraViewCameraBase
   },
   "Components": {
     "AssetLoadingManagerComponent": ComponentsAssetLoadingManagerComponent,
@@ -146,11 +127,7 @@ var __EXPOSE__ = {
     "TransformComponent": ComponentsTransformComponent
   },
   "Converters": {
-    "Angle2DConverter": ConvertersAngle2DConverter,
-    "BooleanConverter": ConvertersBooleanConverter,
     "CanvasSizeConverter": ConvertersCanvasSizeConverter,
-    "Color3Converter": ConvertersColor3Converter,
-    "Color4Converter": ConvertersColor4Converter,
     "ComponentConverter": ConvertersComponentConverter,
     "EnumConverter": ConvertersEnumConverter,
     "GeometryConverter": ConvertersGeometryConverter,
@@ -158,11 +135,7 @@ var __EXPOSE__ = {
     "NumberArrayConverter": ConvertersNumberArrayConverter,
     "NumberConverter": ConvertersNumberConverter,
     "ObjectConverter": ConvertersObjectConverter,
-    "Rotation3Converter": ConvertersRotation3Converter,
     "TextureConverter": ConvertersTextureConverter,
-    "Vector2Converter": ConvertersVector2Converter,
-    "Vector3Converter": ConvertersVector3Converter,
-    "Vector4Converter": ConvertersVector4Converter,
     "ViewportConverter": ConvertersViewportConverter
   },
   "Geometry": {
@@ -175,24 +148,17 @@ var __EXPOSE__ = {
   "Material": {
     "DefaultMacro": MaterialDefaultMacro,
     "DefaultMaterial": MaterialDefaultMaterial,
-    "EnvUniformValueResolver": MaterialEnvUniformValueResolver,
-    "ImportResolver": MaterialImportResolver,
     "MacroRegistory": MaterialMacroRegistory,
     "Material": MaterialMaterial,
     "MaterialFactory": MaterialMaterialFactory,
     "Pass": MaterialPass,
-    "PassFactory": MaterialPassFactory,
-    "SORTPass": MaterialSORTPass,
+    "Technique": MaterialTechnique,
     "TextureReference": MaterialTextureReference,
-    "Transformers": {
-      "AnnotationRemover": MaterialTransformersAnnotationRemover,
-      "CommentRemover": MaterialTransformersCommentRemover,
-      "GLSLUtil": MaterialTransformersGLSLUtil,
-      "ImportTransformer": MaterialTransformersImportTransformer,
-      "SORTPassParser": MaterialTransformersSORTPassParser,
-      "UniformRegisterer": MaterialTransformersUniformRegisterer,
-      "VariableAnnotationRemover": MaterialTransformersVariableAnnotationRemover,
-      "VariableParser": MaterialTransformersVariableParser
+    "UniformResolverRegistry": MaterialUniformResolverRegistry,
+    "Uniforms": {
+      "MatricesRegister": MaterialUniformsMatricesRegister,
+      "MiscRegister": MaterialUniformsMiscRegister,
+      "UserValueRegister": MaterialUniformsUserValueRegister
     }
   },
   "Resource": {
@@ -212,8 +178,15 @@ var __EXPOSE__ = {
     "RenderQueue": SceneRendererRenderQueue,
     "RenderQueueRegistry": SceneRendererRenderQueueRegistry
   },
+  "Sort": {
+    "ImportResolver": SortImportResolver,
+    "NameSemanticsPair": SortNameSemanticsPair,
+    "Parser": SortParser,
+    "Preferences": SortPreferences,
+    "SortTransformUtility": SortSortTransformUtility,
+    "TypeToConstant": SortTypeToConstant
+  },
   "Util": {
-    "RotationParser": UtilRotationParser,
     "TextureSizeCalculator": UtilTextureSizeCalculator
   }
 };

@@ -1,3 +1,4 @@
+import SceneComponent from "./SceneComponent";
 import gr from "grimoirejs";
 import Attribute from "grimoirejs/ref/Node/Attribute";
 import Vector3 from "grimoirejs-math/ref/Vector3";
@@ -22,12 +23,16 @@ export default class MouseCameraControlComponent extends Component {
       converter: "Number"
     },
     center: {
-      default: 20,
+      default: null,
       converter: "Number"
     },
-    origin: {
-      default: "0,0,0",
-      converter: "Vector3"
+    distance:{
+      default:null,
+      converter:"Number"
+    },
+    origin:{
+      default:"0,0,0",
+      converter:"Vector3"
     }
   };
 
@@ -50,22 +55,33 @@ export default class MouseCameraControlComponent extends Component {
   private _xsum: number = 0;
   private _ysum: number = 0;
 
-  private _center: number = 0;
   public $awake(): void {
-    this.getAttributeRaw("center").boundTo("_center");
     this.getAttributeRaw("rotateSpeed").boundTo("_rotateSpeed");
     this.getAttributeRaw("zoomSpeed").boundTo("_zoomSpeed");
     this.getAttributeRaw("moveSpeed").boundTo("_moveSpeed");
     this.getAttributeRaw("origin").boundTo("_origin");
-    this._transform = this.node.getComponent(TransformComponent);
   }
 
   public $mount(): void {
+    const center = this.getAttribute("center");
+    let distance = null;
+    if(center !== null){
+      console.warn("The attribute 'center' is deprecated now. This attribute would be removed on next version. Use 'distance' instead.");
+      distance = center;
+    }else{
+      distance = this.getAttribute("distance");
+    }
+    this._transform = this.node.getComponent(TransformComponent);
     this._initialRight = Vector3.copy(this._transform.right);
     this._initialUp = Vector3.copy(this._transform.up);
-    this._initialDirection = this._transform.localPosition.subtractWith(this._origin);
+    this._initialDirection = Vector3.copy(this._transform.forward.negateThis());
     this._initialRotation = this._transform.localRotation;
-    this._origin = this._transform.localPosition.addWith(this._transform.forward.multiplyWith(this._center));
+    const origin = this.getAttribute("origin");
+    if(distance !== null){
+      this._origin = this._transform.localPosition.addWith(this._transform.forward.multiplyWith(distance));
+    }else{
+      this._origin = origin;
+    }
     let scriptTag = this.companion.get("canvasElement");
     scriptTag.addEventListener("mousemove", this._mouseMove.bind(this));
     scriptTag.addEventListener("contextmenu", this._contextMenu.bind(this));

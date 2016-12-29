@@ -57,6 +57,13 @@ export default class UniformProxy {
     );
   }
 
+  public uniformIntVector2(variableName: string, val: Vector2): void {
+    this._pass(variableName, (l) =>
+      this._gl.uniform2i(l, val.X, val.Y)
+    );
+  }
+
+
   public uniformVector2Array(variableName: string, val: number[]): void {
     this._pass(variableName, (l) => this._gl.uniform2fv(l, val));
   }
@@ -64,6 +71,12 @@ export default class UniformProxy {
   public uniformVector3(variableName: string, val: Vector3): void {
     this._pass(variableName, (l) =>
       this._gl.uniform3f(l, val.X, val.Y, val.Z)
+    );
+  }
+
+  public uniformIntVector3(variableName: string, val: Vector3): void {
+    this._pass(variableName, (l) =>
+      this._gl.uniform3i(l, val.X, val.Y, val.Z)
     );
   }
 
@@ -78,6 +91,12 @@ export default class UniformProxy {
   }
 
   public uniformVector4(variableName: string, val: Vector4): void {
+    this._pass(variableName, (l) =>
+      this._gl.uniform4f(l, val.X, val.Y, val.Z, val.W)
+    );
+  }
+
+  public uniformIntVector4(variableName: string, val: Vector4): void {
     this._pass(variableName, (l) =>
       this._gl.uniform4f(l, val.X, val.Y, val.Z, val.W)
     );

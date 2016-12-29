@@ -1,9 +1,9 @@
+import CameraComponent from "./CameraComponent";
 import gr from "grimoirejs";
 import Matrix from "grimoirejs-math/ref/Matrix";
 import Vector3 from "grimoirejs-math/ref/Vector3";
 import Vector4 from "grimoirejs-math/ref/Vector4";
 import Quaternion from "grimoirejs-math/ref/Quaternion";
-import ICamera from "../Camera/ICamera";
 import GLM from "grimoirejs-math/ref/GLM";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
@@ -163,13 +163,13 @@ export default class TransformComponent extends Component {
     return this._right;
   }
 
-  public calcPVM(camera: ICamera): Matrix {
-    mat4.mul(this._cachePVM.rawElements, camera.getProjectionViewMatrix().rawElements, this.globalTransform.rawElements);
+  public calcPVM(camera: CameraComponent): Matrix {
+    mat4.mul(this._cachePVM.rawElements, camera.ProjectionViewMatrix.rawElements, this.globalTransform.rawElements);
     return this._cachePVM;
   }
 
-  public calcVM(camera: ICamera): Matrix {
-    mat4.mul(this._cacheVM.rawElements, camera.getViewMatrix().rawElements, this.globalTransform.rawElements);
+  public calcVM(camera: CameraComponent): Matrix {
+    mat4.mul(this._cacheVM.rawElements, camera.ViewMatrix.rawElements, this.globalTransform.rawElements);
     return this._cacheVM;
   }
 

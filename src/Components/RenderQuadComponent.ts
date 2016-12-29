@@ -39,6 +39,10 @@ export default class RenderQuadComponent extends Component {
     clearDepth: {
       default: 1.0,
       converter: "Number",
+    },
+    technique: {
+      default: "default",
+      converter: "String"
     }
   };
 
@@ -62,6 +66,8 @@ export default class RenderQuadComponent extends Component {
 
   private _clearDepthEnabled: boolean;
 
+  private _technique: string;
+
   private _materialContainer: MaterialContainerComponent;
 
   public $awake(): void {
@@ -70,6 +76,7 @@ export default class RenderQuadComponent extends Component {
     this.getAttributeRaw("clearColorEnabled").boundTo("_clearColorEnabled");
     this.getAttributeRaw("clearDepthEnabled").boundTo("_clearDepthEnabled");
     this.getAttributeRaw("clearDepth").boundTo("_clearDepth");
+    this.getAttributeRaw("technique").boundTo("_technique");
   }
 
   public $mount(): void {
@@ -123,7 +130,8 @@ export default class RenderQuadComponent extends Component {
       transform: null,
       buffers: args.buffers,
       viewport: args.viewport,
-      defaultTexture: this.companion.get("defaultTexture")
+      defaultTexture: this.companion.get("defaultTexture"),
+      technique: this._technique
     };
     renderArgs.attributeValues = this._materialContainer.materialArgs;
     // do render

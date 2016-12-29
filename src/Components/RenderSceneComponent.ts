@@ -1,7 +1,6 @@
 import gr from "grimoirejs";
 import RenderSceneArgument from "../Objects/RenderSceneArgument";
 import ResourceBase from "../Resource/ResourceBase";
-import SORTPass from "../Material/SORTPass";
 import AssetLoader from "../Asset/AssetLoader";
 import Material from "../Material/Material";
 import Color4 from "grimoirejs-math/ref/Color4";
@@ -46,6 +45,10 @@ export default class RenderSceneComponent extends Component {
       default: null,
       converter: "Component",
       target: "Camera"
+    },
+    technique: {
+      default: "default",
+      converter: "String"
     }
   };
 
@@ -73,6 +76,8 @@ export default class RenderSceneComponent extends Component {
 
   private _camera: CameraComponent;
 
+  private _technique: string;
+
   // messages
 
   public $awake(): void {
@@ -82,6 +87,7 @@ export default class RenderSceneComponent extends Component {
     this.getAttributeRaw("clearDepthEnabled").boundTo("_clearDepthEnabled");
     this.getAttributeRaw("clearDepth").boundTo("_clearDepth");
     this.getAttributeRaw("camera").boundTo("_camera");
+    this.getAttributeRaw("technique").boundTo("_technique");
   }
 
 
@@ -135,7 +141,8 @@ export default class RenderSceneComponent extends Component {
       viewport: args.viewport,
       material: useMaterial ? this._materialContainer.material : undefined,
       materialArgs: useMaterial ? this._materialContainer.material : undefined,
-      loopIndex: args.loopIndex
+      loopIndex: args.loopIndex,
+      technique: this._technique
     });
   }
 }

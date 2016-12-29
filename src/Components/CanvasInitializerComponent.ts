@@ -63,7 +63,7 @@ class CanvasInitializerComponent extends Component {
       // canvas should be placed siblings of the script tag
       this._generateCanvas(this._scriptTag);
     } else {
-      // TODO for the script element not included in body tag
+      throw new Error("goml script should have body as ancesotor to instanciate canvas element in the location");
     }
     // apply sizes on changed
     this.getAttributeRaw("width").watch((v) => {

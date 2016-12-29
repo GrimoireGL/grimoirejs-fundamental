@@ -15,6 +15,7 @@ function EnumConverter(this: Attribute, val: any): any {
       return result;
     }
   }
+  return null;
 }
 
 export default EnumConverter;
