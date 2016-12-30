@@ -8,17 +8,18 @@ class SortParser {
   private static _parsedCache: { [key: number]: { [key: string]: ITechniqueRecipe } } = {};
 
   public static parse(source: string): Promise<{ [key: string]: ITechniqueRecipe }> {
-    const sourceHash = SortParser._getHash(source);
-    if (SortParser._parsedCache[sourceHash] !== void 0) { // When specified source was loaded already
-      return new Promise((resolve, reject) => {
-        resolve(SortParser._parsedCache[sourceHash]);
-      });
-    } else {
-      return SortParser._parse(source).then(v => {
-        SortParser._parsedCache[sourceHash] = v;
-        return v;
-      });
-    }
+    // const sourceHash = SortParser._getHash(source);
+    // if (SortParser._parsedCache[sourceHash] !== void 0) { // When specified source was loaded already
+    //   return new Promise((resolve, reject) => {
+    //     resolve(SortParser._parsedCache[sourceHash]);
+    //   });
+    // } else {
+    //
+    // }
+    return SortParser._parse(source).then(v => {
+      SortParser._parsedCache[source] = v;
+      return v;
+    });
   }
 
   private static _parse(source: string): Promise<{ [key: string]: ITechniqueRecipe }> {

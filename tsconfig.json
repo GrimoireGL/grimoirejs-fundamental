@@ -74,8 +74,6 @@
     "./src/Material/MaterialFactory.ts",
     "./src/Material/Pass.ts",
     "./src/Material/Static/header.glsl.d.ts",
-    "./src/Material/Static/Unlit-Color.sort.d.ts",
-    "./src/Material/Static/Unlit-Textured.sort.d.ts",
     "./src/Material/Static/Unlit.sort.d.ts",
     "./src/Material/Technique.ts",
     "./src/Material/TextureReference.ts",

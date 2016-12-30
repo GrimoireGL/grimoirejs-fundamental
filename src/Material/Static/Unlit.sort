@@ -21,15 +21,14 @@
   #ifdef FS
   @{type:"color",default:"white"}
   uniform vec4 color;
-  @USER_VALUE{usedFlag:"_textureUsed"}
+
   uniform sampler2D texture;
+  @HAS_TEXTURE{sampler:"texture"}
   uniform bool _textureUsed;
 
   uniform float _time;
   void main(void)
   {
-    gl_FragColor = color;
-    return;
     if(_textureUsed){
       gl_FragColor = color * texture2D(texture,vTexCoord);
     }else{
