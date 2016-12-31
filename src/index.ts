@@ -38,7 +38,6 @@
   import ConvertersViewportConverter from "./Converters/ViewportConverter";
   import GeometryDefaultPrimitives from "./Geometry/DefaultPrimitives";
   import GeometryGeometry from "./Geometry/Geometry";
-  import GeometryGeometryBuilder from "./Geometry/GeometryBuilder";
   import GeometryGeometryFactory from "./Geometry/GeometryFactory";
   import GeometryGeometryUtility from "./Geometry/GeometryUtility";
   import MaterialDefaultMacro from "./Material/DefaultMacro";
@@ -76,7 +75,7 @@
   import __INTERFACE__1 from "./Geometry/GeometryBufferConstructionInfo";
   import __INTERFACE__2 from "./Geometry/IGeometryFactoryDelegate";
   import __INTERFACE__3 from "./Geometry/IndexBufferInfo";
-  import __INTERFACE__4 from "./Geometry/VertexBufferAttribInfo";
+  import __INTERFACE__4 from "./Geometry/VertexBufferAccessor";
   import __INTERFACE__5 from "./Material/IMacro";
   import __INTERFACE__6 from "./Material/IMaterialArgument";
   import __INTERFACE__7 from "./Material/IPassRecipe";
@@ -141,7 +140,6 @@ var __EXPOSE__ = {
   "Geometry": {
     "DefaultPrimitives": GeometryDefaultPrimitives,
     "Geometry": GeometryGeometry,
-    "GeometryBuilder": GeometryGeometryBuilder,
     "GeometryFactory": GeometryGeometryFactory,
     "GeometryUtility": GeometryGeometryUtility
   },

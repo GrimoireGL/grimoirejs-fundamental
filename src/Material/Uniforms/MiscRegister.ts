@@ -17,7 +17,6 @@ UniformResolverRegistry.add("VIEWPORT_SIZE", (valInfo: IVariableInfo) => (proxy:
 });
 
 UniformResolverRegistry.add("TIME", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
-  const vp = args.viewport;
   proxy.uniformFloat(valInfo.name, Date.now() % 1.0e7);
 });
 
@@ -30,6 +29,14 @@ UniformResolverRegistry.add("HAS_TEXTURE", (valInfo: IVariableInfo, material: Ma
     const hasTexture = !!material.arguments[sampler] && !!material.arguments[sampler].get(args.buffers);
     proxy.uniformBool(valInfo.name, hasTexture);
   };
+});
+
+UniformResolverRegistry.add("CAMERA_POSITION",(valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
+  proxy.uniformVector3(valInfo.name, args.camera.transform.globalPosition);
+});
+
+UniformResolverRegistry.add("CAMERA_DIRECTION",(valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
+  proxy.uniformVector3(valInfo.name, args.camera.transform.forward);
 });
 
 export default null;

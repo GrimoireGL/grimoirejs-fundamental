@@ -9,7 +9,7 @@ export default class GeometryRegistoryComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     defaultGeometry: {
       converter: "StringArray",
-      default: ["quad", "cube", "sphere"]
+      default: ["quad","cube","sphere"]
     }
   };
 
