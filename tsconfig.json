@@ -58,6 +58,7 @@
     "./src/Geometry/GeometryUtility.ts",
     "./src/Geometry/IGeometryFactoryDelegate.ts",
     "./src/Geometry/IndexBufferInfo.ts",
+    "./src/Geometry/VertexBufferAccessor.ts",
     "./src/Geometry/VertexBufferAttribInfo.ts",
     "./src/index.ts",
     "./src/main.ts",
