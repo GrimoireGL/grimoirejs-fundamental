@@ -72,23 +72,25 @@
   import SortSortTransformUtility from "./Sort/SortTransformUtility";
   import SortTypeToConstant from "./Sort/TypeToConstant";
   import UtilTextureSizeCalculator from "./Util/TextureSizeCalculator";
-  import __INTERFACE__1 from "./Geometry/GeometryBufferConstructionInfo";
-  import __INTERFACE__2 from "./Geometry/IGeometryFactoryDelegate";
-  import __INTERFACE__3 from "./Geometry/IndexBufferInfo";
-  import __INTERFACE__4 from "./Geometry/VertexBufferAccessor";
-  import __INTERFACE__5 from "./Material/IMacro";
-  import __INTERFACE__6 from "./Material/IMaterialArgument";
-  import __INTERFACE__7 from "./Material/IPassRecipe";
-  import __INTERFACE__8 from "./Material/IState";
-  import __INTERFACE__9 from "./Material/ITechniqueRecipe";
-  import __INTERFACE__10 from "./Material/IVariableInfo";
-  import __INTERFACE__11 from "./Messages/IBufferUpdatedMessage";
-  import __INTERFACE__12 from "./Messages/IRenderRendererMessage";
-  import __INTERFACE__13 from "./Messages/IResizeBufferMessage";
-  import __INTERFACE__14 from "./Objects/CanvasSizeObject";
-  import __INTERFACE__15 from "./Objects/RenderSceneArgument";
-  import __INTERFACE__16 from "./SceneRenderer/IRenderable";
-  import __INTERFACE__17 from "./SceneRenderer/IRenderArgument";
+  import __INTERFACE__1 from "./Geometry/IGeometryFactoryDelegate";
+  import __INTERFACE__2 from "./Geometry/IndexBufferInfo";
+  import __INTERFACE__3 from "./Geometry/VertexBufferAccessor";
+  import __INTERFACE__4 from "./Material/IMacro";
+  import __INTERFACE__5 from "./Material/IMaterialArgument";
+  import __INTERFACE__6 from "./Material/IPassRecipe";
+  import __INTERFACE__7 from "./Material/IState";
+  import __INTERFACE__8 from "./Material/ITechniqueRecipe";
+  import __INTERFACE__9 from "./Material/IVariableInfo";
+  import __INTERFACE__10 from "./Messages/IBufferUpdatedMessage";
+  import __INTERFACE__11 from "./Messages/IRenderRendererMessage";
+  import __INTERFACE__12 from "./Messages/IResizeBufferMessage";
+  import __INTERFACE__13 from "./Objects/CanvasSizeObject";
+  import __INTERFACE__14 from "./Objects/RenderSceneArgument";
+  import __INTERFACE__15 from "./SceneRenderer/IRenderable";
+  import __INTERFACE__16 from "./SceneRenderer/IRenderArgument";
+
+var __VERSION__ = "0.10.10";
+var __NAME__ = "grimoirejs-fundamental";
 
 import __MAIN__ from "./main"
 
@@ -191,6 +193,10 @@ var __EXPOSE__ = {
 
 let __BASE__ = __MAIN__();
 
+Object.assign(__EXPOSE__,{
+    __VERSION__:__VERSION__,
+    __NAME__:__NAME__
+});
 Object.assign(__BASE__|| {},__EXPOSE__);
 
 window["GrimoireJS"].lib.fundamental = __EXPOSE__;

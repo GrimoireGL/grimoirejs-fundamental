@@ -52,7 +52,6 @@
     "./src/Converters/ViewportConverter.ts",
     "./src/Geometry/DefaultPrimitives.ts",
     "./src/Geometry/Geometry.ts",
-    "./src/Geometry/GeometryBufferConstructionInfo.ts",
     "./src/Geometry/GeometryFactory.ts",
     "./src/Geometry/GeometryUtility.ts",
     "./src/Geometry/IGeometryFactoryDelegate.ts",
