@@ -1,9 +1,12 @@
+import MaterialFactory from "./MaterialFactory";
 import ITechniqueRecipe from "./ITechniqueRecipe";
 import Technique from "./Technique";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import IMaterialArgument from "./IMaterialArgument";
 import Pass from "./Pass";
 export default class Material {
+
+  public factory:MaterialFactory;
 
   public argumentDeclarations: { [key: string]: IAttributeDeclaration } = {};
 

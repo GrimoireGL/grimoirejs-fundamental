@@ -82,10 +82,10 @@ export default class MouseCameraControlComponent extends Component {
     }else{
       this._origin = origin;
     }
-    let scriptTag = this.companion.get("canvasElement");
-    scriptTag.addEventListener("mousemove", this._mouseMove.bind(this));
-    scriptTag.addEventListener("contextmenu", this._contextMenu.bind(this));
-    scriptTag.addEventListener("mousewheel", this._mouseWheel.bind(this));
+    const canvasElement = this.companion.get("canvasElement");
+    canvasElement.addEventListener("mousemove", this._mouseMove.bind(this));
+    canvasElement.addEventListener("contextmenu", this._contextMenu.bind(this));
+    canvasElement.addEventListener("wheel", this._mouseWheel.bind(this));
   }
 
   private _contextMenu(m: MouseEvent): void {
@@ -105,14 +105,14 @@ export default class MouseCameraControlComponent extends Component {
     const diffX = m.screenX - this._lastScreenPos.x;
     const diffY = m.screenY - this._lastScreenPos.y;
     let distance = this._transform.localPosition.subtractWith(this._origin).magnitude;
-    if ((m.buttons & 1) > 0) { // When left button was pressed
+    if (this._checkButtonPress(m,true)) { // When left button was pressed
       this._xsum += diffX;
       this._ysum += diffY;
       this._ysum = Math.min(Math.PI * 50, this._ysum);
       this._ysum = Math.max(-Math.PI * 50, this._ysum);
       updated = true;
     }
-    if ((m.buttons & 2) > 0) { // When right button was pressed, move origin.
+    if (this._checkButtonPress(m,false)) { // When right button was pressed, move origin.
       let moveX = -diffX * this._moveSpeed * 0.01;
       let moveY = diffY * this._moveSpeed * 0.01;
       this._origin = this._origin.addWith(this._transform.right.multiplyWith(moveX)).addWith(this._transform.up.multiplyWith(moveY));
@@ -137,8 +137,23 @@ export default class MouseCameraControlComponent extends Component {
     };
   }
 
-  private _mouseWheel(m: MouseWheelEvent): void {
+  private _checkButtonPress(m:MouseEvent,isRight:boolean){
+    if('buttons' in m){
+      if(isRight){
+        return (m.buttons & 1) > 0;
+      }else{
+        return (m.buttons & 2) > 0;
+      }
+    }else{
+      if(isRight){
+        return m.which === 1;
+      }else{
+        return m.which === 3;
+      }
+    }
+  }
 
+  private _mouseWheel(m: MouseWheelEvent): void {
     let dir = Vector3.normalize(Vector3.subtract(this._transform.localPosition, this._origin));
     let moveDist = -m.deltaY * this._zoomSpeed * 0.05;
     let distance = Vector3.subtract(this._origin, this._transform.localPosition).magnitude;

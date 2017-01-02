@@ -100,7 +100,10 @@ export default {
     state.functions.scissor = asNumberArgs(args, 4);
     state.enable.push(WebGLRenderingContext.SCISSOR_TEST);
   },
-  ExposeMacro: function(state: IState, args: string[]) {
+  ExposeMacro: function() {
+    return;
+  },
+  ReferMacro:function(){
     return;
   }
 };

@@ -5,21 +5,41 @@ import TextFileResolver from "../Asset/TextFileResolver";
 import Material from "./Material";
 import ShaderHeader from "raw!./Static/header.glsl";
 /**
- * Manage factories for materials.
+ * Manage generators for materials.
  * Materials can be instanciated with this instance.
+ * Every gl reference can contain 1 of MaterialFactory at most.
  */
 export default class MaterialFactory {
+
+  /**
+   * Map for gl reference and MaterialFactory.
+   * @type {Map<WebGLRenderingContext,MaterialFactory>}
+   */
+  public static factories:Map<WebGLRenderingContext,MaterialFactory> = new Map<WebGLRenderingContext,MaterialFactory>();
+
+  /**
+   * Obtain an instance of MaterialFactory from WebGLRenderingContext
+   * @param  {WebGLRenderingContext} gl [description]
+   * @return {MaterialFactory}          [description]
+   */
+  public static get(gl:WebGLRenderingContext):MaterialFactory{
+    const factory = this.factories.get(gl);
+    if(!factory){
+      throw new Error("There was no associated MaterialFactory with specified WebGLRenderingContext");
+    }
+    return factory;
+  }
 
   public static defaultShaderHeader: string = ShaderHeader;
   /**
    * Actual material generator.
    */
-  public static factories: { [key: string]: ((factory: MaterialFactory) => Material) } = {};
+  public static generators: { [key: string]: ((factory: MaterialFactory) => Material) } = {};
 
   public static registerdHandlers: { [key: string]: (() => void)[] } = {};
 
   public static addMaterialType(typeName: string, factory: (factory: MaterialFactory) => Material): void {
-    MaterialFactory.factories[typeName] = factory;
+    MaterialFactory.generators[typeName] = factory;
     if (MaterialFactory.registerdHandlers[typeName]) { // Check registered handler are exisiting
       MaterialFactory.registerdHandlers[typeName].forEach((t) => t());
     }
@@ -63,11 +83,15 @@ export default class MaterialFactory {
 
   constructor(public gl: WebGLRenderingContext) {
     this.macro = new MacroRegistory();
+    if(MaterialFactory.factories.has(gl)){
+      throw new Error(`MaterialFactory can not be instanciated dupelicately for a WebGLRenderingContext.`);
+    }
+    MaterialFactory.factories.set(gl,this);
   }
 
   public async instanciate(typeName: string): Promise<Material> {
-    if (MaterialFactory.factories[typeName]) {
-      return MaterialFactory.factories[typeName](this);
+    if (MaterialFactory.generators[typeName]) {
+      return MaterialFactory.generators[typeName](this);
     } else { // when the type is not registered yet.
       return await this._waitForRegistered(typeName);
     }
@@ -77,7 +101,7 @@ export default class MaterialFactory {
   private _waitForRegistered(typeName: string): Promise<Material> {
     return new Promise<Material>((resolve) => {
       MaterialFactory._onRegister(typeName, () => {
-        resolve(MaterialFactory.factories[typeName](this));
+        resolve(MaterialFactory.generators[typeName](this));
       });
     });
   }

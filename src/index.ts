@@ -89,7 +89,7 @@
   import __INTERFACE__15 from "./SceneRenderer/IRenderable";
   import __INTERFACE__16 from "./SceneRenderer/IRenderArgument";
 
-var __VERSION__ = "0.10.10";
+var __VERSION__ = "0.11.0beta0";
 var __NAME__ = "grimoirejs-fundamental";
 
 import __MAIN__ from "./main"
