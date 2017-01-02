@@ -1,3 +1,4 @@
+import HashCalculator from "../Util/HashCalculator";
 import IPassRecipe from "../Material/IPassRecipe";
 import SortTransformUtility from "./SortTransformUtility";
 import ITechniqueRecipe from "../Material/ITechniqueRecipe";
@@ -8,18 +9,17 @@ class SortParser {
   private static _parsedCache: { [key: number]: { [key: string]: ITechniqueRecipe } } = {};
 
   public static parse(source: string): Promise<{ [key: string]: ITechniqueRecipe }> {
-    // const sourceHash = SortParser._getHash(source);
-    // if (SortParser._parsedCache[sourceHash] !== void 0) { // When specified source was loaded already
-    //   return new Promise((resolve, reject) => {
-    //     resolve(SortParser._parsedCache[sourceHash]);
-    //   });
-    // } else {
-    //
-    // }
-    return SortParser._parse(source).then(v => {
-      SortParser._parsedCache[source] = v;
-      return v;
-    });
+    const sourceHash = HashCalculator.calcHash(source);
+    if (SortParser._parsedCache[sourceHash] !== void 0) { // When specified source was loaded already
+      return new Promise((resolve, reject) => {
+        resolve(SortParser._parsedCache[sourceHash]);
+      });
+    } else {
+      return SortParser._parse(source).then(v => {
+        SortParser._parsedCache[source] = v;
+        return v;
+      });
+    }
   }
 
   private static _parse(source: string): Promise<{ [key: string]: ITechniqueRecipe }> {
@@ -66,17 +66,6 @@ class SortParser {
       macros: macros,
       states: states
     };
-  }
-
-  private static _getHash(source: string): number {
-    let hash = 0, i, chr, len;
-    if (source.length === 0) return hash;
-    for (i = 0, len = this.length; i < len; i++) {
-      chr = source.charCodeAt(i);
-      hash = ((hash << 5) - hash) + chr;
-      hash |= 0;
-    }
-    return hash;
   }
 }
 

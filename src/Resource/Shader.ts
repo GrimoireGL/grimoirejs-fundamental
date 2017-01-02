@@ -1,5 +1,6 @@
 import ResourceBase from "./ResourceBase";
 export default class Shader extends ResourceBase {
+
   public shader: WebGLShader;
 
   constructor(gl: WebGLRenderingContext, public readonly type: number, public sourceCode?: string) {

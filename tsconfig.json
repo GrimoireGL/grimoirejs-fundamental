@@ -88,6 +88,8 @@
     "./src/Resource/Buffer.ts",
     "./src/Resource/FrameBuffer.ts",
     "./src/Resource/GLExtRequestor.ts",
+    "./src/Resource/ManagedProgram.ts",
+    "./src/Resource/ManagedShader.ts",
     "./src/Resource/Program.ts",
     "./src/Resource/RenderBuffer.ts",
     "./src/Resource/ResourceBase.ts",
@@ -106,6 +108,7 @@
     "./src/Sort/Preferences.ts",
     "./src/Sort/SortTransformUtility.ts",
     "./src/Sort/TypeToConstant.ts",
+    "./src/Util/HashCalculator.ts",
     "./src/Util/TextureSizeCalculator.ts"
   ],
   "exclude": [],

@@ -1,3 +1,5 @@
+import ManagedProgram from "../Resource/ManagedProgram";
+import ManagedShader from "../Resource/ManagedShader";
 import MaterialFactory from "./MaterialFactory";
 import Shader from "../Resource/Shader";
 import Geometry from "../Geometry/Geometry";
@@ -26,11 +28,11 @@ export default class Pass {
      * [program description]
      * @type {Program}
      */
-    public program: Program;
+    public program: ManagedProgram;
 
-    public fs: Shader;
+    public fs: ManagedShader;
 
-    public vs: Shader;
+    public vs: ManagedShader;
 
     private _registers: ((proxy: UniformProxy, args: IMaterialArgument) => void)[];
 
@@ -53,9 +55,6 @@ export default class Pass {
         this._gl = material.gl;
         const factory = MaterialFactory.get(this._gl);
         const macroRegister = factory.macro;
-        this.program = new Program(this._gl);
-        this.fs = new Shader(this._gl, WebGLRenderingContext.FRAGMENT_SHADER);
-        this.vs = new Shader(this._gl, WebGLRenderingContext.VERTEX_SHADER);
         // register macro
         for (let key in passRecipe.macros) {
             const macro = passRecipe.macros[key];
@@ -163,9 +162,19 @@ export default class Pass {
     }
 
     private _updateProgram(): void {
-        this.fs.update(this._generateShaderCode("FS"));
-        this.vs.update(this._generateShaderCode("VS"));
-        this.program.update([this.vs, this.fs]);
+        let lFS = this.fs;
+        this.fs = ManagedShader.getShader(this._gl,WebGLRenderingContext.FRAGMENT_SHADER,this._generateShaderCode("FS"));
+        let lVS = this.vs;
+        this.vs = ManagedShader.getShader(this._gl,WebGLRenderingContext.VERTEX_SHADER,this._generateShaderCode("VS"));
+        if(lFS && lVS){
+          lFS.release();
+          lVS.release();
+        }
+        let lP = this.program;
+        this.program = ManagedProgram.getProgram(this._gl,[this.vs,this.fs]);
+        if(lP){
+          lP.release();
+        }
     }
 
     private _generateShaderCode(shaderType: string): string {
