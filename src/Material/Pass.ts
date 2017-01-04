@@ -78,7 +78,7 @@ export default class Pass {
                 if(!immediate){
                   this._updateProgram();
                 }
-              });
+              },true);
             }
         }
         this._updateProgram();

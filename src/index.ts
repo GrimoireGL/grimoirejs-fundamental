@@ -55,6 +55,8 @@
   import ResourceBuffer from "./Resource/Buffer";
   import ResourceFrameBuffer from "./Resource/FrameBuffer";
   import ResourceGLExtRequestor from "./Resource/GLExtRequestor";
+  import ResourceManagedProgram from "./Resource/ManagedProgram";
+  import ResourceManagedShader from "./Resource/ManagedShader";
   import ResourceProgram from "./Resource/Program";
   import ResourceRenderBuffer from "./Resource/RenderBuffer";
   import ResourceResourceBase from "./Resource/ResourceBase";
@@ -71,6 +73,7 @@
   import SortPreferences from "./Sort/Preferences";
   import SortSortTransformUtility from "./Sort/SortTransformUtility";
   import SortTypeToConstant from "./Sort/TypeToConstant";
+  import UtilHashCalculator from "./Util/HashCalculator";
   import UtilTextureSizeCalculator from "./Util/TextureSizeCalculator";
   import __INTERFACE__1 from "./Geometry/IGeometryFactoryDelegate";
   import __INTERFACE__2 from "./Geometry/IndexBufferInfo";
@@ -89,7 +92,7 @@
   import __INTERFACE__15 from "./SceneRenderer/IRenderable";
   import __INTERFACE__16 from "./SceneRenderer/IRenderArgument";
 
-var __VERSION__ = "0.11.0beta0";
+var __VERSION__ = "0.11.0-beta1";
 var __NAME__ = "grimoirejs-fundamental";
 
 import __MAIN__ from "./main"
@@ -165,6 +168,8 @@ var __EXPOSE__ = {
     "Buffer": ResourceBuffer,
     "FrameBuffer": ResourceFrameBuffer,
     "GLExtRequestor": ResourceGLExtRequestor,
+    "ManagedProgram": ResourceManagedProgram,
+    "ManagedShader": ResourceManagedShader,
     "Program": ResourceProgram,
     "RenderBuffer": ResourceRenderBuffer,
     "ResourceBase": ResourceResourceBase,
@@ -187,6 +192,7 @@ var __EXPOSE__ = {
     "TypeToConstant": SortTypeToConstant
   },
   "Util": {
+    "HashCalculator": UtilHashCalculator,
     "TextureSizeCalculator": UtilTextureSizeCalculator
   }
 };

@@ -117,12 +117,12 @@ export default class SortTransformUtility {
         target:"expose"
       };
     }
-    regex = /@ReferMacro\s*\(\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*\)/g;
+    regex = /@ReferMacro\s*\(\s*([a-zA-Z0-9_]+)\s*,\s*(.+)\s*\)/g;
     while ((regexResult = regex.exec(source))) {
       if (!regexResult[1] || !regexResult[2]) {
         throw new Error(`Invalid parameter was passed on @ReferMacro preference on '${regexResult[0]}'`);
       }
-      result[regexResult[2]] = <IMacro>{
+      result[regexResult[1]] = <IMacro>{
         name: regexResult[1],
         macroName: regexResult[1],
         value: regexResult[2],
