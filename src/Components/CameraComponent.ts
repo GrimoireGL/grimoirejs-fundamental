@@ -162,8 +162,6 @@ export default class CameraComponent extends Component {
 
 
   public $awake(): void {
-    this.transform = this.node.getComponent(TransformComponent);
-    this.updateTransform();
     this.getAttributeRaw("far").watch((v) => {
       this.Far = v;
     }, true);
@@ -187,6 +185,7 @@ export default class CameraComponent extends Component {
 
 
   public $mount(): void {
+    this.transform = this.node.getComponent(TransformComponent);
     this.containedScene = CameraComponent._findContainedScene(this.node);
     this.containedScene.queueRegistory.registerQueue(this._renderQueue);
     this.node.on("transformUpdated", this.updateTransform.bind(this));
