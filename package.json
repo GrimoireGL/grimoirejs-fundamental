@@ -26,6 +26,7 @@
     "babel-core": "^6.21.0",
     "babel-loader": "^6.2.10",
     "grimoirejs-cauldron": "^2.2.4",
+    "babel-preset-es2015": "^6.18.0",
     "raw-loader": "^0.5.1",
     "regenerator-runtime": "^0.10.1",
     "sinon": "^1.17.6",
@@ -47,5 +48,10 @@
     "generate-expose": "cauldron generate-exposure --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref",
     "generate-reference": "cauldron generate-reference --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  }
 }
