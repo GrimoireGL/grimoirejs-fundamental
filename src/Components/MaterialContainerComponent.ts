@@ -61,8 +61,10 @@ export default class MaterialContainerComponent extends Component {
 
   private _drawOrder: string;
 
+  private _registeredAttributes:boolean;
+
   public $mount(): void {
-    this.getAttributeRaw("material").watch(this._onMaterialChanged);
+    this.getAttributeRaw("material").watch(this._onMaterialChanged.bind(this));
     (this.companion.get("loader") as AssetLoader).register(this._onMaterialChanged());
     this.getAttributeRaw("drawOrder").boundTo("_drawOrder");
   }
@@ -77,6 +79,9 @@ export default class MaterialContainerComponent extends Component {
       return; // When specified material is null
     }
     this.useMaterial = true;
+    if(this._registeredAttributes){
+      this.__removeAttributes();
+    }
     if (!this._materialComponent) { // the material must be instanciated by attribute.
       this._prepareInternalMaterial(materialPromise);
     } else {
@@ -116,6 +121,7 @@ export default class MaterialContainerComponent extends Component {
         this.material.setMacroValue(key, v);
       }, true);
     }
+    this._registeredAttributes = true;
     this.materialReady = true;
   }
 
