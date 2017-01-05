@@ -152,7 +152,7 @@ export default class CameraComponent extends Component {
 
   public $awake(): void {
     this.transform = this.node.getComponent(TransformComponent);
-    this.updateTransform(this.transform);
+    this.updateTransform();
     this.getAttributeRaw("far").watch((v) => {
       this.Far = v;
     }, true);
@@ -179,6 +179,7 @@ export default class CameraComponent extends Component {
     this.containedScene = CameraComponent._findContainedScene(this.node);
     this.containedScene.queueRegistory.registerQueue(this._renderQueue);
     this.node.on("transformUpdated", this.updateTransform.bind(this));
+    this.updateTransform();
   }
 
   public $unmount(): void {
@@ -193,6 +194,7 @@ export default class CameraComponent extends Component {
   }
 
   public renderScene(args: RenderSceneArgument): void {
+    args = args as IRenderArgument;
     if (this.containedScene) {
       this._justifyAspect(args);
       (args as IRenderArgument).sceneDescription = this.containedScene.sceneDescription;
@@ -211,7 +213,8 @@ export default class CameraComponent extends Component {
     }
   }
 
-  public updateTransform(transform: TransformComponent): void {
+  public updateTransform(): void {
+    const transform = this.transform;
     vec3.transformMat4(this._eyeCache.rawElements, Vector3.Zero.rawElements, transform.globalTransform.rawElements);
     vec4.transformMat4(this._lookAtCache.rawElements, CameraComponent._frontOrigin.rawElements, transform.globalTransform.rawElements);
     vec3.add(this._lookAtCache.rawElements, this._lookAtCache.rawElements, this._eyeCache.rawElements);
