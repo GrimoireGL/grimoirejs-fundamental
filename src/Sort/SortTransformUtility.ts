@@ -138,7 +138,7 @@ export default class SortTransformUtility {
       functions: {
         blendColor: [0, 0, 0, 0],
         cullFace: [WebGLRenderingContext.BACK],
-        blendFuncSeparate: [WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA, WebGLRenderingContext.ONE, WebGLRenderingContext.ZERO],
+        blendFuncSeparate: [WebGLRenderingContext.ONE, WebGLRenderingContext.ZERO, WebGLRenderingContext.ONE, WebGLRenderingContext.ZERO],
         blendEquationSeparate: [WebGLRenderingContext.FUNC_ADD, WebGLRenderingContext.FUNC_ADD],
         lineWidth: [1],
         frontFace: [WebGLRenderingContext.CCW],

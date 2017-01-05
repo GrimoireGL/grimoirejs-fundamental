@@ -58,7 +58,7 @@ export default {
   },
   BlendFunc: function(state: IState, args: string[]) {
     const config = asGLConstantArgs(args, 2);
-    state.functions.blendFuncSeparate = [config[0], config[1], WebGLRenderingContext.ONE,WebGLRenderingContext.ZERO];
+    state.functions.blendFuncSeparate = [config[0], config[1], config[0],config[1]];
   },
   BlendFuncSeparate: function(state: IState, args: string[]) {
     state.functions.blendFuncSeparate = asGLConstantArgs(args, 4);
