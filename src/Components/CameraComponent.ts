@@ -131,6 +131,17 @@ export default class CameraComponent extends Component {
     return this._orthographic;
   }
 
+  public set AutoAspect(autoMode:boolean){
+    if(this._autoAspect !== autoMode){
+      this._autoAspect = autoMode;
+      this._recalculateProjection();
+    }
+  }
+
+  public get AutoAspect():boolean{
+    return this._autoAspect;
+  }
+
   /**
  * Find scene tag recursively.
  * @param  {GomlNode}       node [the node to searching currently]
