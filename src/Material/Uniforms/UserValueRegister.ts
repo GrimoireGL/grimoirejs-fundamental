@@ -1,3 +1,4 @@
+import Texture2D from "../../Resource/Texture2D";
 import TextureReference from "../TextureReference";
 import Material from "../Material";
 import IVariableInfo from "../IVariableInfo";
@@ -62,7 +63,7 @@ basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: Textur
     if (value && (texture = value.get(args.buffers))) {
         proxy.uniformTexture2D(name, texture);
     } else {
-        proxy.uniformTexture2D(name, args.defaultTexture);
+        proxy.uniformTexture2D(name, Texture2D.defaultTextures.get(proxy.program.gl));
     }
 });
 

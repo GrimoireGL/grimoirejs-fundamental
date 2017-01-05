@@ -198,7 +198,6 @@ export default class CameraComponent extends Component {
     if (this.containedScene) {
       this._justifyAspect(args);
       (args as IRenderArgument).sceneDescription = this.containedScene.sceneDescription;
-      (args as IRenderArgument).defaultTexture = this.companion.get("defaultTexture");
       this._renderQueue.renderAll(args as IRenderArgument, true, args.loopIndex);
     }
   }
@@ -206,7 +205,7 @@ export default class CameraComponent extends Component {
   private _justifyAspect(args: RenderSceneArgument): void {
     if (this._autoAspect) {
       const asp = args.viewport.Width / args.viewport.Height;
-      if (this._aspectCache !== asp) {
+      if (this._aspectCache !== asp) { // Detect changing viewport size
         this.setAttribute("aspect", asp);
         this._aspectCache = asp;
       }

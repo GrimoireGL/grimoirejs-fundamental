@@ -14,7 +14,6 @@ interface IMaterialArgument {
   buffers: { [key: string]: Texture2D; };
   drawOffset: number;
   drawCount: number;
-  defaultTexture: Texture2D;
   technique: string;
 }
 

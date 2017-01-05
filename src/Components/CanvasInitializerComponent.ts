@@ -48,12 +48,6 @@ class CanvasInitializerComponent extends Component {
   // Resize mode of height
   private _heightMode: ResizeMode;
 
-  /**
-   * Default texture to be used when no texture was specified
-   * @type {Texture2D}
-   */
-  private _defaultTexture: Texture2D;
-
   // Ratio of aspect
   private _ratio: number;
 
@@ -85,12 +79,10 @@ class CanvasInitializerComponent extends Component {
     window.addEventListener("resize", () => this._onWindowResize());
     this._configureCanvas(this.canvas, scriptTag as HTMLScriptElement);
     const gl = this._getContext(this.canvas);
-    this._defaultTexture = new Texture2D(gl);
-    this._defaultTexture.update(0, 1, 1, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0]));
     this.companion.set(ns("gl"), gl);
     this.companion.set(ns("canvasElement"), this.canvas);
     this.companion.set(ns("GLExtRequestor"), new GLExtRequestor(gl));
-    this.companion.set(ns("defaultTexture"), this._defaultTexture);
+    Texture2D.generateDefaultTexture(gl);
     return this.canvas;
   }
 

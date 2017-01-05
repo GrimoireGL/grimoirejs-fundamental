@@ -129,7 +129,6 @@ export default class RenderSceneComponent extends Component {
     }
     args.camera.updateContainedScene(args.loopIndex);
     args.camera.renderScene(<RenderSceneArgument>{
-      caller: this,
       camera: camera,
       buffers: args.buffers,
       layer: this._layer,

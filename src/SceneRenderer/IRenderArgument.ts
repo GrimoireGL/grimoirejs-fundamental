@@ -21,7 +21,6 @@ interface IRenderArgument {
   materialArgs?: { [key: string]: any };
   sceneDescription: { [key: string]: any };
   loopIndex: number;
-  defaultTexture: Texture2D;
   technique: string;
 }
 
