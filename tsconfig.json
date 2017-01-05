@@ -83,7 +83,6 @@
     "./src/Messages/IRenderRendererMessage.ts",
     "./src/Messages/IResizeBufferMessage.ts",
     "./src/Objects/CanvasSizeObject.ts",
-    "./src/Objects/MaterialReference.ts",
     "./src/Objects/RenderSceneArgument.ts",
     "./src/raw.d.ts",
     "./src/Resource/Buffer.ts",
