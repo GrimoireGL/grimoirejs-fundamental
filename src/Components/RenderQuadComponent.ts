@@ -101,7 +101,7 @@ export default class RenderQuadComponent extends Component {
   }
 
   public $render(args: IRenderRendererMessage): void {
-    if (!this._materialContainer.ready) {
+    if (!this._materialContainer.materialReady) {
       return;
     }
     // bound render target

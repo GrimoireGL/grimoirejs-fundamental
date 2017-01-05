@@ -10,8 +10,6 @@ interface RenderSceneArgument {
   buffers: { [key: string]: Texture2D };
   layer: string;
   viewport: Rectangle;
-  material?: Material;
-  materialArgs?: { [key: string]: any };
   loopIndex: number;
 }
 
