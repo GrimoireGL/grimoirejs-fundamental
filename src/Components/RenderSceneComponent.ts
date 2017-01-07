@@ -71,7 +71,7 @@ export default class RenderSceneComponent extends Component {
 
   private _clearDepth: number;
 
-  private _camera: CameraComponent;
+  public camera: CameraComponent;
 
   private _technique: string;
 
@@ -83,7 +83,7 @@ export default class RenderSceneComponent extends Component {
     this.getAttributeRaw("clearColorEnabled").boundTo("_clearColorEnabled");
     this.getAttributeRaw("clearDepthEnabled").boundTo("_clearDepthEnabled");
     this.getAttributeRaw("clearDepth").boundTo("_clearDepth");
-    this.getAttributeRaw("camera").boundTo("_camera");
+    this.getAttributeRaw("camera").boundTo("camera");
     this.getAttributeRaw("technique").boundTo("_technique");
   }
 
@@ -107,7 +107,7 @@ export default class RenderSceneComponent extends Component {
   }
 
   public $render(args: IRenderRendererMessage): void {
-    const camera = this._camera ? this._camera : args.camera;
+    const camera = this.camera ? this.camera : args.camera;
     if (!camera) {
       return;
     }
@@ -128,7 +128,7 @@ export default class RenderSceneComponent extends Component {
       this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
     }
     args.camera.updateContainedScene(args.loopIndex);
-    args.camera.renderScene(<RenderSceneArgument>{
+    args.camera.renderScene({
       camera: camera,
       buffers: args.buffers,
       layer: this._layer,

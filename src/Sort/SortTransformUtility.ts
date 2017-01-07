@@ -190,6 +190,7 @@ export default class SortTransformUtility {
       }
       if (c === "\n") {
         if (isLineComment) {
+          text += "\n";
           isLineComment = false;
           continue;
         } else if (isMultiLineComment) {
