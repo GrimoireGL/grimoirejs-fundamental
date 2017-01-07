@@ -26,13 +26,13 @@ export default class MouseCameraControlComponent extends Component {
       default: null,
       converter: "Number"
     },
-    distance:{
-      default:null,
-      converter:"Number"
+    distance: {
+      default: null,
+      converter: "Number"
     },
-    origin:{
-      default:"0,0,0",
-      converter:"Vector3"
+    origin: {
+      default: "0,0,0",
+      converter: "Vector3"
     }
   };
 
@@ -55,20 +55,32 @@ export default class MouseCameraControlComponent extends Component {
   private _xsum: number = 0;
   private _ysum: number = 0;
 
+  private _listeners: any;
+
   public $awake(): void {
     this.getAttributeRaw("rotateSpeed").boundTo("_rotateSpeed");
     this.getAttributeRaw("zoomSpeed").boundTo("_zoomSpeed");
     this.getAttributeRaw("moveSpeed").boundTo("_moveSpeed");
     this.getAttributeRaw("origin").boundTo("_origin");
+    this._listeners = {
+      mousemove: this._mouseMove.bind(this),
+      contextmenu: this._contextMenu.bind(this),
+      wheel: this._mouseWheel.bind(this)
+    };
+
+    const canvasElement = this.companion.get("canvasElement");
+    canvasElement.addEventListener("mousemove", this._listeners.mousemove);
+    canvasElement.addEventListener("contextmenu", this._listeners.contextmenu);
+    canvasElement.addEventListener("wheel", this._listeners.wheel);
   }
 
   public $mount(): void {
     const center = this.getAttribute("center");
     let distance = null;
-    if(center !== null){
+    if (center !== null) {
       console.warn("The attribute 'center' is deprecated now. This attribute would be removed on next version. Use 'distance' instead.");
       distance = center;
-    }else{
+    } else {
       distance = this.getAttribute("distance");
     }
     this._transform = this.node.getComponent(TransformComponent);
@@ -77,22 +89,30 @@ export default class MouseCameraControlComponent extends Component {
     this._initialDirection = Vector3.copy(this._transform.forward.negateThis());
     this._initialRotation = this._transform.localRotation;
     const origin = this.getAttribute("origin");
-    if(distance !== null){
+    if (distance !== null) {
       this._origin = this._transform.localPosition.addWith(this._transform.forward.multiplyWith(distance));
-    }else{
+    } else {
       this._origin = origin;
     }
+  }
+  public $dispose() {
     const canvasElement = this.companion.get("canvasElement");
-    canvasElement.addEventListener("mousemove", this._mouseMove.bind(this));
-    canvasElement.addEventListener("contextmenu", this._contextMenu.bind(this));
-    canvasElement.addEventListener("wheel", this._mouseWheel.bind(this));
+    canvasElement.removeEventListener("mousemove", this._listeners.mousemove);
+    canvasElement.removeEventListener("contextmenu", this._listeners.contextmenu);
+    canvasElement.removeEventListener("wheel", this._listeners.wheel);
   }
 
   private _contextMenu(m: MouseEvent): void {
+    if (!this.isActive) {
+      return;
+    }
     m.preventDefault();
   }
 
   private _mouseMove(m: MouseEvent): void {
+    if (!this.isActive) {
+      return;
+    }
     if (this._lastScreenPos === null) {
       this._lastScreenPos = {
         x: m.screenX,
@@ -105,14 +125,14 @@ export default class MouseCameraControlComponent extends Component {
     const diffX = m.screenX - this._lastScreenPos.x;
     const diffY = m.screenY - this._lastScreenPos.y;
     let distance = this._transform.localPosition.subtractWith(this._origin).magnitude;
-    if (this._checkButtonPress(m,true)) { // When left button was pressed
+    if (this._checkButtonPress(m, true)) { // When left button was pressed
       this._xsum += diffX;
       this._ysum += diffY;
       this._ysum = Math.min(Math.PI * 50, this._ysum);
       this._ysum = Math.max(-Math.PI * 50, this._ysum);
       updated = true;
     }
-    if (this._checkButtonPress(m,false)) { // When right button was pressed, move origin.
+    if (this._checkButtonPress(m, false)) { // When right button was pressed, move origin.
       let moveX = -diffX * this._moveSpeed * 0.01;
       let moveY = diffY * this._moveSpeed * 0.01;
       this._origin = this._origin.addWith(this._transform.right.multiplyWith(moveX)).addWith(this._transform.up.multiplyWith(moveY));
@@ -137,28 +157,31 @@ export default class MouseCameraControlComponent extends Component {
     };
   }
 
-  private _checkButtonPress(m:MouseEvent,isRight:boolean){
-    if('buttons' in m){
-      if(isRight){
+  private _checkButtonPress(m: MouseEvent, isRight: boolean) {
+    if ('buttons' in m) {
+      if (isRight) {
         return (m.buttons & 1) > 0;
-      }else{
+      } else {
         return (m.buttons & 2) > 0;
       }
-    }else{
-      if(isRight){
+    } else {
+      if (isRight) {
         return m.which === 1;
-      }else{
+      } else {
         return m.which === 3;
       }
     }
   }
 
   private _mouseWheel(m: MouseWheelEvent): void {
+    if (!this.isActive) {
+      return;
+    }
     let dir = Vector3.normalize(Vector3.subtract(this._transform.localPosition, this._origin));
     let moveDist = -m.deltaY * this._zoomSpeed * 0.05;
     let distance = Vector3.subtract(this._origin, this._transform.localPosition).magnitude;
     let nextDist = Math.max(1, distance - moveDist);
-    this._transform.localPosition = this._origin.addWith(dir.multiplyWith(nextDist))
+    this._transform.localPosition = this._origin.addWith(dir.multiplyWith(nextDist));
     m.preventDefault();
   }
 }
