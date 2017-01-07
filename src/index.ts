@@ -14,7 +14,6 @@
   import ComponentsMaterialComponent from "./Components/MaterialComponent";
   import ComponentsMaterialContainerComponent from "./Components/MaterialContainerComponent";
   import ComponentsMaterialImporterComponent from "./Components/MaterialImporterComponent";
-  import ComponentsMaterialManagerComponent from "./Components/MaterialManagerComponent";
   import ComponentsMeshRendererComponent from "./Components/MeshRendererComponent";
   import ComponentsMouseCameraControlComponent from "./Components/MouseCameraControlComponent";
   import ComponentsRenderBufferComponent from "./Components/RenderBufferComponent";
@@ -92,7 +91,7 @@
   import __INTERFACE__15 from "./SceneRenderer/IRenderable";
   import __INTERFACE__16 from "./SceneRenderer/IRenderArgument";
 
-var __VERSION__ = "0.11.0-beta7";
+var __VERSION__ = "0.11.0-beta9";
 var __NAME__ = "grimoirejs-fundamental";
 
 import __MAIN__ from "./main"
@@ -117,7 +116,6 @@ var __EXPOSE__ = {
     "MaterialComponent": ComponentsMaterialComponent,
     "MaterialContainerComponent": ComponentsMaterialContainerComponent,
     "MaterialImporterComponent": ComponentsMaterialImporterComponent,
-    "MaterialManagerComponent": ComponentsMaterialManagerComponent,
     "MeshRendererComponent": ComponentsMeshRendererComponent,
     "MouseCameraControlComponent": ComponentsMouseCameraControlComponent,
     "RenderBufferComponent": ComponentsRenderBufferComponent,

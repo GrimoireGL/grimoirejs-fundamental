@@ -28,7 +28,6 @@
     "./src/Components/MaterialComponent.ts",
     "./src/Components/MaterialContainerComponent.ts",
     "./src/Components/MaterialImporterComponent.ts",
-    "./src/Components/MaterialManagerComponent.ts",
     "./src/Components/MeshRendererComponent.ts",
     "./src/Components/MouseCameraControlComponent.ts",
     "./src/Components/RenderBufferComponent.ts",
