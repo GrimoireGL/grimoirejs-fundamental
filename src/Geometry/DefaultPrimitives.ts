@@ -49,7 +49,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cylinder", {
       divide: {
         converter: "Number",
-        default: 6
+        default: 30
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
@@ -57,15 +57,24 @@ export default class DefaultPrimitives {
       const theta = div % 2 != 0 ? Math.PI / div : 0;
       const vertices = [].concat.apply([], [
         GeometryUtility.circle([0, 1, 0], [0, 0, 1], [0, 0, -1], [1, 0, 0], div),
-        GeometryUtility.circle([0, -1, 0], [0, 0, 1], [0, 0, 1], [1, 0, 0], div)
+        GeometryUtility.circle([0, -1, 0], [0, 0, 1], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div),
       ]);
-      console.log(Math.PI/div);
+      const length = Math.sin(Math.PI / div);
+      const radius = Math.cos(Math.PI / div);
+      const s = Math.PI / div;
+      for (let i = 0; i < div; i++) {
+        let step = s * (i * 2 + 1);
+        Array.prototype.push.apply(vertices, GeometryUtility.plane([-Math.sin(step) * radius, 0, -Math.cos(step) * radius], [0, 0, 1], [0, 1, 0], [-Math.cos(step) * length, 0, Math.sin(step) * length], 1, 1));
+      }
       geometry.addAttributes(vertices, primitiveLayout);
       const os = div + 2;
       const indices = [].concat.apply([], [
         GeometryUtility.circleIndex(0, div),
         GeometryUtility.circleIndex(os, div)
       ]);
+      for (let i = 0; i < div; i++) {
+        Array.prototype.push.apply(indices, GeometryUtility.planeIndex(os * 2 + i * 4, 1, 1));
+      }
       geometry.addIndex("default", indices);
       return geometry;
     });
