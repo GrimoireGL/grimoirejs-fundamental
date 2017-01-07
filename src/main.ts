@@ -29,14 +29,9 @@ import TextureBufferComponent from "./Components/TextureBufferComponent";
 import TextureComponent from "./Components/TextureComponent";
 import TransformComponent from "./Components/TransformComponent";
 import CanvasSizeConverter from "./Converters/CanvasSizeConverter";
-import ComponentConverter from "./Converters/ComponentConverter";
-import EnumConverter from "./Converters/EnumConverter";
 import GeometryConverter from "./Converters/GeometryConverter";
 import MaterialConverter from "./Converters/MaterialConverter";
 import TextureConverter from "./Converters/TextureConverter";
-import NumberArrayConverter from "./Converters/NumberArrayConverter";
-import NumberConverter from "./Converters/NumberConverter";
-import ObjectConverter from "./Converters/ObjectConverter";
 import Texture2DConverter from "./Converters/TextureConverter";
 import ViewportConverter from "./Converters/ViewportConverter";
 
@@ -68,14 +63,9 @@ export default () => {
     GrimoireInterface.registerComponent(_$ns("Transform"), TransformComponent);
 
     GrimoireInterface.registerConverter(_$ns("CanvasSize"), CanvasSizeConverter);
-    GrimoireInterface.registerConverter(_$ns("Component"), ComponentConverter);
-    GrimoireInterface.registerConverter(_$ns("Enum"), EnumConverter);
     GrimoireInterface.registerConverter(_$ns("Geometry"), GeometryConverter);
     GrimoireInterface.registerConverter(_$ns("Material"), MaterialConverter);
     GrimoireInterface.registerConverter(_$ns("Texture"), TextureConverter);
-    GrimoireInterface.registerConverter(_$ns("NumberArray"), NumberArrayConverter);
-    GrimoireInterface.registerConverter(_$ns("Number"), NumberConverter);
-    GrimoireInterface.registerConverter(_$ns("Object"), ObjectConverter);
     GrimoireInterface.registerConverter(_$ns("Texture2D"), TextureConverter);
     GrimoireInterface.registerConverter(_$ns("Viewport"), ViewportConverter);
 

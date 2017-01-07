@@ -27,13 +27,9 @@
   import ComponentsTextureComponent from "./Components/TextureComponent";
   import ComponentsTransformComponent from "./Components/TransformComponent";
   import ConvertersCanvasSizeConverter from "./Converters/CanvasSizeConverter";
-  import ConvertersComponentConverter from "./Converters/ComponentConverter";
-  import ConvertersEnumConverter from "./Converters/EnumConverter";
   import ConvertersGeometryConverter from "./Converters/GeometryConverter";
   import ConvertersMaterialConverter from "./Converters/MaterialConverter";
-  import ConvertersNumberArrayConverter from "./Converters/NumberArrayConverter";
-  import ConvertersNumberConverter from "./Converters/NumberConverter";
-  import ConvertersObjectConverter from "./Converters/ObjectConverter";
+  import ConvertersNodeConverter from "./Converters/NodeConverter";
   import ConvertersTextureConverter from "./Converters/TextureConverter";
   import ConvertersViewportConverter from "./Converters/ViewportConverter";
   import GeometryDefaultPrimitives from "./Geometry/DefaultPrimitives";
@@ -132,13 +128,9 @@ var __EXPOSE__ = {
   },
   "Converters": {
     "CanvasSizeConverter": ConvertersCanvasSizeConverter,
-    "ComponentConverter": ConvertersComponentConverter,
-    "EnumConverter": ConvertersEnumConverter,
     "GeometryConverter": ConvertersGeometryConverter,
     "MaterialConverter": ConvertersMaterialConverter,
-    "NumberArrayConverter": ConvertersNumberArrayConverter,
-    "NumberConverter": ConvertersNumberConverter,
-    "ObjectConverter": ConvertersObjectConverter,
+    "NodeConverter": ConvertersNodeConverter,
     "TextureConverter": ConvertersTextureConverter,
     "ViewportConverter": ConvertersViewportConverter
   },
