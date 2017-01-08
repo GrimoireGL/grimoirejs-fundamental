@@ -33,7 +33,8 @@ export default class DefaultPrimitives {
     DefaultPrimitives._registerCircle();
     DefaultPrimitives._registerCylinder();
     // DefaultPrimitives._registerCone();
-    // DefaultPrimitives._registerPlane();
+    DefaultPrimitives._registerPlane();
+    DefaultPrimitives._registerTriangle();
   }
 
   private static _registerQuad(): void {
@@ -42,6 +43,15 @@ export default class DefaultPrimitives {
       const geometry = new Geometry(gl);
       geometry.addAttributes(GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], 1, 1), primitiveLayout);
       geometry.addIndex("default", GeometryUtility.planeIndex(0, 1, 1));
+      return geometry;
+    });
+  }
+  private static _registerTriangle(): void {
+    GeometryFactory.addType("triangle", {
+    }, (gl, attrs) => {
+      const geometry = new Geometry(gl);
+      geometry.addAttributes(GeometryUtility.triangle([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]), primitiveLayout);
+      geometry.addIndex("default", GeometryUtility.triangleIndex(0));
       return geometry;
     });
   }
@@ -143,6 +153,28 @@ export default class DefaultPrimitives {
       const geometry = new Geometry(gl);
       geometry.addAttributes(GeometryUtility.circle([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], div), primitiveLayout);
       geometry.addIndex("default", GeometryUtility.circleIndex(0, div));
+      return geometry;
+    });
+  }
+  private static _registerPlane(): void {
+    GeometryFactory.addType("plane", {
+      divide: {
+        converter: "Number",
+        default: 10
+      }
+    }, (gl, attrs) => {
+      const hdiv = attrs["divide"];
+      const vdiv = attrs["divide"];
+      const geometry = new Geometry(gl);
+      const vertices = [].concat.apply([], [
+        GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], hdiv, vdiv), GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [-1, 0, 0], hdiv, vdiv)
+      ]);
+      geometry.addAttributes(vertices, primitiveLayout);
+      const indices = [].concat.apply([], [
+        GeometryUtility.planeIndex(0, hdiv, vdiv),
+        GeometryUtility.planeIndex((hdiv + 1) * (vdiv + 1), hdiv, vdiv)
+      ]);
+      geometry.addIndex("default", indices);
       return geometry;
     });
   }
