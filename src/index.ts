@@ -30,6 +30,7 @@
   import ConvertersGeometryConverter from "./Converters/GeometryConverter";
   import ConvertersMaterialConverter from "./Converters/MaterialConverter";
   import ConvertersNodeConverter from "./Converters/NodeConverter";
+  import ConvertersPositionConverter from "./Converters/PositionConverter";
   import ConvertersTextureConverter from "./Converters/TextureConverter";
   import ConvertersViewportConverter from "./Converters/ViewportConverter";
   import GeometryDefaultPrimitives from "./Geometry/DefaultPrimitives";
@@ -131,6 +132,7 @@ var __EXPOSE__ = {
     "GeometryConverter": ConvertersGeometryConverter,
     "MaterialConverter": ConvertersMaterialConverter,
     "NodeConverter": ConvertersNodeConverter,
+    "PositionConverter": ConvertersPositionConverter,
     "TextureConverter": ConvertersTextureConverter,
     "ViewportConverter": ConvertersViewportConverter
   },

@@ -44,6 +44,7 @@
     "./src/Converters/GeometryConverter.ts",
     "./src/Converters/MaterialConverter.ts",
     "./src/Converters/NodeConverter.ts",
+    "./src/Converters/PositionConverter.ts",
     "./src/Converters/TextureConverter.ts",
     "./src/Converters/ViewportConverter.ts",
     "./src/Geometry/DefaultPrimitives.ts",

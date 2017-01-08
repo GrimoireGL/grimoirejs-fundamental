@@ -1,3 +1,5 @@
+import PositionConverter from "./Converters/PositionConverter";
+import NodeConverter from "./Converters/NodeConverter";
 import DefaultMaterial from "./Material/DefaultMaterial";
 import GLExtRequestor from "./Resource/GLExtRequestor";
 import DefaultPrimitives from "./Geometry/DefaultPrimitives";
@@ -68,6 +70,8 @@ export default () => {
     GrimoireInterface.registerConverter(_$ns("Texture"), TextureConverter);
     GrimoireInterface.registerConverter(_$ns("Texture2D"), TextureConverter);
     GrimoireInterface.registerConverter(_$ns("Viewport"), ViewportConverter);
+    GrimoireInterface.registerConverter(_$ns("Node"), NodeConverter);
+    GrimoireInterface.registerConverter(_$ns("Position"), PositionConverter);
 
     GrimoireInterface.registerNode("goml", ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "MaterialManager", "RendererManager", "Fullscreen"]);
     GrimoireInterface.registerNode("renderer", ["Renderer"]);
