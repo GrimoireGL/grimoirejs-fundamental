@@ -34,8 +34,8 @@ export default class GeometryUtility {
       ret[3 + 8 * i] = normal[0];
       ret[4 + 8 * i] = normal[1];
       ret[5 + 8 * i] = normal[2];
-      ret[6 + 8 * i] = 1;
-      ret[7 + 8 * i] = 1;
+      ret[6 + 8 * i] = 0.5 + (c * up[0] + s * right[0]) / 2;
+      ret[7 + 8 * i] = 0.5 + (c * up[1] + s * right[1]) / 2;
     }
     return ret;
   }
@@ -161,7 +161,6 @@ export default class GeometryUtility {
       ret[3 * i + 1] = i + 3;
       ret[3 * i + 2] = i + 2;
     }
-    // TODO もうむりぽ
     return ret;
   }
 }

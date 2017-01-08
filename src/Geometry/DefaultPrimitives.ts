@@ -59,21 +59,28 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cone", {
       divide: {
         converter: "Number",
-        default: 5
+        default: 6
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
       const geometry = new Geometry(gl);
       const theta = div % 2 != 0 ? Math.PI / div : 0;
       const vertices = [].concat.apply([], [
-        GeometryUtility.circle([0, -1, 0], [0, 0, 1], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div),
+        GeometryUtility.circle([0, -0.5, 0], [0, -1, 0], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div),
       ]);
-      const length = Math.sin(Math.PI / div) / Math.pow(3,0.5) * 2;
-      const radius = Math.cos(Math.PI / div);
+      const g = Math.cos(Math.PI / div) / 3;
+      const length = Math.sin(Math.PI / div) / Math.pow(3, 0.5) * 2;
+      const radius = Math.cos(Math.PI / div) - g;
       const s = Math.PI / div;
+
       for (let i = 0; i < div; i++) {
         let step = s * (i * 2 + 1);
-        Array.prototype.push.apply(vertices, GeometryUtility.triangle([-Math.sin(step) * radius, -0.5, -Math.cos(step) * radius], [0, 0, 1], [0, 1, 0], [-Math.cos(step) * length, 0, Math.sin(step) * length]));
+        Array.prototype.push.apply(vertices, GeometryUtility.triangle(
+          [-Math.sin(step) * radius, 0, -Math.cos(step) * radius],
+          [0, 0, 1],
+          [Math.sin(step) * radius, 1, Math.cos(step) * radius],
+          [-Math.cos(step) * length, 0, Math.sin(step) * length]
+        ));
       }
       geometry.addAttributes(vertices, primitiveLayout);
       const os = div + 2;
@@ -91,22 +98,26 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cylinder", {
       divide: {
         converter: "Number",
-        default: 30
+        default: 5
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
       const geometry = new Geometry(gl);
       const theta = div % 2 != 0 ? Math.PI / div : 0;
       const vertices = [].concat.apply([], [
-        GeometryUtility.circle([0, 1, 0], [0, 0, 1], [0, 0, -1], [1, 0, 0], div),
-        GeometryUtility.circle([0, -1, 0], [0, 0, 1], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div),
+        GeometryUtility.circle([0, 1, 0], [0, 1, 0], [0, 0, -1], [1, 0, 0], div),
+        GeometryUtility.circle([0, -1, 0], [0, -1, 0], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div)
       ]);
       const length = Math.sin(Math.PI / div);
       const radius = Math.cos(Math.PI / div);
       const s = Math.PI / div;
       for (let i = 0; i < div; i++) {
         let step = s * (i * 2 + 1);
-        Array.prototype.push.apply(vertices, GeometryUtility.plane([-Math.sin(step) * radius, 0, -Math.cos(step) * radius], [0, 0, 1], [0, 1, 0], [-Math.cos(step) * length, 0, Math.sin(step) * length], 1, 1));
+        Array.prototype.push.apply(vertices, GeometryUtility.plane(
+          [-Math.sin(step) * radius, 0, -Math.cos(step) * radius],
+          [-Math.sin(step), 0, -Math.cos(step)],
+          [0, 1, 0],
+          [-Math.cos(step) * length, 0, Math.sin(step) * length], 1, 1));
       }
       geometry.addAttributes(vertices, primitiveLayout);
       const os = div + 2;
@@ -199,7 +210,7 @@ export default class DefaultPrimitives {
       const vdiv = attrs["divide"];
       const geometry = new Geometry(gl);
       const vertices = [].concat.apply([], [
-        GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], hdiv, vdiv), GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [-1, 0, 0], hdiv, vdiv)
+        GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], hdiv, vdiv), GeometryUtility.plane([0, 0, 0], [0, 0, -1], [0, 1, 0], [-1, 0, 0], hdiv, vdiv)
       ]);
       geometry.addAttributes(vertices, primitiveLayout);
       const indices = [].concat.apply([], [
