@@ -30,6 +30,14 @@ class CanvasInitializerComponent extends Component {
     containerClass: {
       default: "gr-container",
       converter: "String"
+    },
+    preserveDrawingBuffer:{
+      default:true,
+      converter:"Boolean"
+    },
+    antialias:{
+      default:true,
+      converter:"Boolean"
     }
   };
 
@@ -66,6 +74,12 @@ class CanvasInitializerComponent extends Component {
     });
     this.getAttributeRaw("height").watch((v) => {
       this._resize();
+    });
+    this.getAttributeRaw("antialias").watch((v)=>{
+      console.warn("Changing antialias attribute is not supported. This is only works when the canvas element created.");
+    });
+    this.getAttributeRaw("preserveDrawingBuffer").watch((v)=>{
+      console.warn("Changing preserveDrawingBuffer attribute is not supported. This is only works when the canvas element created.");
     });
   }
 
@@ -194,9 +208,13 @@ class CanvasInitializerComponent extends Component {
   }
 
   private _getContext(canvas: HTMLCanvasElement): WebGLRenderingContext {
-    let context: WebGLRenderingContext = canvas.getContext("webgl") as WebGLRenderingContext;
+    const contextConfig = {
+      antialias:this.getAttribute("antialias"),
+      preserveDrawingBuffer:this.getAttribute("preserveDrawingBuffer")
+    };
+    let context: WebGLRenderingContext = canvas.getContext("webgl",contextConfig) as WebGLRenderingContext;
     if (!context) {
-      context = canvas.getContext("webgl-experimental") as WebGLRenderingContext;
+      context = canvas.getContext("webgl-experimental",contextConfig) as WebGLRenderingContext;
     }
     return context;
   }
