@@ -57,15 +57,14 @@ export default class MouseCameraControlComponent extends Component {
       contextmenu: this._contextMenu.bind(this),
       wheel: this._mouseWheel.bind(this)
     };
-
-    const canvasElement = this.companion.get("canvasElement");
-    canvasElement.addEventListener("mousemove", this._listeners.mousemove);
-    canvasElement.addEventListener("contextmenu", this._listeners.contextmenu);
-    canvasElement.addEventListener("wheel", this._listeners.wheel);
   }
 
   public $mount(): void {
     this._transform = this.node.getComponent(TransformComponent);
+    const canvasElement = this.companion.get("canvasElement");
+    canvasElement.addEventListener("mousemove", this._listeners.mousemove);
+    canvasElement.addEventListener("contextmenu", this._listeners.contextmenu);
+    canvasElement.addEventListener("wheel", this._listeners.wheel);
     // this._initialDirection = Vector3.copy(this._transform.forward.negateThis());
     // this._initialRotation = this._transform.localRotation;
     // console.log(this._initialRotation)
@@ -91,7 +90,7 @@ export default class MouseCameraControlComponent extends Component {
       this._distance = this._transform.localPosition.subtractWith(this._center).magnitude;
     }
   }
-  public $dispose() {
+  public $unmount() {
     const canvasElement = this.companion.get("canvasElement");
     canvasElement.removeEventListener("mousemove", this._listeners.mousemove);
     canvasElement.removeEventListener("contextmenu", this._listeners.contextmenu);
@@ -174,8 +173,8 @@ export default class MouseCameraControlComponent extends Component {
     }
     let dir = Vector3.subtract(this._transform.localPosition, this._center).normalized;
     let moveDist = m.deltaY * this._zoomSpeed * 0.05;
-    let distance = Vector3.subtract(this._center, this._transform.localPosition).magnitude;
-    let nextDist = Math.max(1, distance + moveDist);
+    this._distance = Vector3.subtract(this._center, this._transform.localPosition).magnitude;
+    let nextDist = Math.max(1, this._distance + moveDist);
     this._transform.localPosition = this._center.addWith(dir.multiplyWith(nextDist));
     m.preventDefault();
   }
