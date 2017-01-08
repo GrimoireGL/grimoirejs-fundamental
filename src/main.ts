@@ -18,7 +18,6 @@ import LoopManagerComponent from "./Components/LoopManagerComponent";
 import MaterialComponent from "./Components/MaterialComponent";
 import MaterialContainerComponent from "./Components/MaterialContainerComponent";
 import MaterialImporterComponent from "./Components/MaterialImporterComponent";
-import MaterialManagerComponent from "./Components/MaterialManagerComponent";
 import MeshRendererComponent from "./Components/MeshRendererComponent";
 import MouseCameraControlComponent from "./Components/MouseCameraControlComponent";
 import RenderBufferComponent from "./Components/RenderBufferComponent";
@@ -51,7 +50,6 @@ export default () => {
     GrimoireInterface.registerComponent(_$ns("Material"), MaterialComponent);
     GrimoireInterface.registerComponent(_$ns("MaterialContainer"), MaterialContainerComponent);
     GrimoireInterface.registerComponent(_$ns("MaterialImporter"), MaterialImporterComponent);
-    GrimoireInterface.registerComponent(_$ns("MaterialManager"), MaterialManagerComponent);
     GrimoireInterface.registerComponent(_$ns("MeshRenderer"), MeshRendererComponent);
     GrimoireInterface.registerComponent(_$ns("MouseCameraControl"), MouseCameraControlComponent);
     GrimoireInterface.registerComponent(_$ns("RenderBuffer"), RenderBufferComponent);
@@ -73,7 +71,7 @@ export default () => {
     GrimoireInterface.registerConverter(_$ns("Node"), NodeConverter);
     GrimoireInterface.registerConverter(_$ns("Position"), PositionConverter);
 
-    GrimoireInterface.registerNode("goml", ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "MaterialManager", "RendererManager", "Fullscreen"]);
+    GrimoireInterface.registerNode("goml", ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "RendererManager", "Fullscreen"]);
     GrimoireInterface.registerNode("renderer", ["Renderer"]);
     GrimoireInterface.registerNode("scene", ["Scene"]);
     GrimoireInterface.registerNode("camera", ["Camera"], { position: "0,0,10" }, "object");

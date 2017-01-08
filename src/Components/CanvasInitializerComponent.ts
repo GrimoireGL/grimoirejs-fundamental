@@ -1,3 +1,4 @@
+import MaterialFactory from "../Material/MaterialFactory";
 import gr from "grimoirejs/ref/GrimoireInterface";
 import Texture2D from "../Resource/Texture2D";
 import CanvasSizeObject from "../Objects/CanvasSizeObject";
@@ -81,6 +82,7 @@ class CanvasInitializerComponent extends Component {
     const gl = this._getContext(this.canvas);
     this.companion.set(ns("gl"), gl);
     this.companion.set(ns("canvasElement"), this.canvas);
+    this.companion.set(ns("MaterialFactory"), new MaterialFactory(gl));
     this.companion.set(ns("GLExtRequestor"), new GLExtRequestor(gl));
     Texture2D.generateDefaultTexture(gl);
     return this.canvas;
