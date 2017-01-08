@@ -24,10 +24,13 @@ export default class GeometryUtility {
   }
   public static triangle(center: number[], normal: number[], up: number[], right: number[]): number[] {
     const ret = new Array(24);
+    const delta = 2 * Math.PI / 3;
     for (let i = 0; i < 3; i++) {
-      ret[0 + 8 * i] = Math.sin(Math.PI * 2 / 3 * i);
-      ret[1 + 8 * i] = Math.cos(Math.PI * 2 / 3 * i);
-      ret[2 + 8 * i] = center[2];
+      const s = Math.sin(delta * i);
+      const c = Math.cos(delta * i);
+      ret[0 + 8 * i] = center[0] + c * up[0] + s * right[0];
+      ret[1 + 8 * i] = center[1] + c * up[1] + s * right[1];
+      ret[2 + 8 * i] = center[2] + c * up[2] + s * right[2];
       ret[3 + 8 * i] = normal[0];
       ret[4 + 8 * i] = normal[1];
       ret[5 + 8 * i] = normal[2];

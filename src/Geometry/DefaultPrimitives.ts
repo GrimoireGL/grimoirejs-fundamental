@@ -32,7 +32,7 @@ export default class DefaultPrimitives {
     DefaultPrimitives._registerSphere();
     DefaultPrimitives._registerCircle();
     DefaultPrimitives._registerCylinder();
-    // DefaultPrimitives._registerCone();
+    DefaultPrimitives._registerCone();
     DefaultPrimitives._registerPlane();
     DefaultPrimitives._registerTriangle();
   }
@@ -52,6 +52,38 @@ export default class DefaultPrimitives {
       const geometry = new Geometry(gl);
       geometry.addAttributes(GeometryUtility.triangle([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]), primitiveLayout);
       geometry.addIndex("default", GeometryUtility.triangleIndex(0));
+      return geometry;
+    });
+  }
+  private static _registerCone(): void {
+    GeometryFactory.addType("cone", {
+      divide: {
+        converter: "Number",
+        default: 5
+      }
+    }, (gl, attrs) => {
+      const div = attrs["divide"];
+      const geometry = new Geometry(gl);
+      const theta = div % 2 != 0 ? Math.PI / div : 0;
+      const vertices = [].concat.apply([], [
+        GeometryUtility.circle([0, -1, 0], [0, 0, 1], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div),
+      ]);
+      const length = Math.sin(Math.PI / div) / Math.pow(3,0.5) * 2;
+      const radius = Math.cos(Math.PI / div);
+      const s = Math.PI / div;
+      for (let i = 0; i < div; i++) {
+        let step = s * (i * 2 + 1);
+        Array.prototype.push.apply(vertices, GeometryUtility.triangle([-Math.sin(step) * radius, -0.5, -Math.cos(step) * radius], [0, 0, 1], [0, 1, 0], [-Math.cos(step) * length, 0, Math.sin(step) * length]));
+      }
+      geometry.addAttributes(vertices, primitiveLayout);
+      const os = div + 2;
+      const indices = [].concat.apply([], [
+        GeometryUtility.circleIndex(0, div)
+      ]);
+      for (let i = 0; i < div; i++) {
+        Array.prototype.push.apply(indices, GeometryUtility.triangleIndex(os + i * 3));
+      }
+      geometry.addIndex("default", indices);
       return geometry;
     });
   }
