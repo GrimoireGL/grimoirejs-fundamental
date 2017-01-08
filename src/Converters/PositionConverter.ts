@@ -9,23 +9,22 @@ function PositionConverter(this: Attribute, val: any): any {
   if (val === null) {
     return null;
   }
-  if (typeof val === "string") {
-    if (_lastVal === val) {
-      return _node.getAttribute("position");
-    } else {
-      try { // TODO: remove try cache after fixed grimoirejs-math.
-        let vec = Attribute.convert("Vector3", this, val);
-        if (vec) {
-          return vec;
-        }
-      } catch (e) {
-        ;
+  if (_lastVal === val) {
+    return _node.getAttribute("position");
+  } else {
+    _lastVal = null;
+    try { // TODO: remove try cache after fixed grimoirejs-math.
+      let vec = Attribute.convert("Vector3", this, val);
+      if (vec) {
+        return vec;
       }
+    } catch (e) {
+      ;
+    }
+    _node = Attribute.convert("Node", this, val) as GomlNode;
+    if (_node) {
       _lastVal = val;
-      _node = Attribute.convert("Node", this, val) as GomlNode;
-      if (_node) {
-        return _node.getAttribute("position");
-      }
+      return _node.getAttribute("position");
     }
   }
 }
