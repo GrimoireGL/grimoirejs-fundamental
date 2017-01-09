@@ -4,6 +4,10 @@
   "description": "Base components,converters and nodes for Web3D with Grimoire.js",
   "main": "./ref/index.js",
   "typings": "./ref/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:GrimoireGL/grimoirejs-fundamental.git"
+  },
   "files": [
     "src",
     "ref",
@@ -16,8 +20,6 @@
   ],
   "dependencies": {
     "@types/json5": "0.0.29",
-    "grimoirejs": "beta",
-    "grimoirejs-math": "^1.8.0",
     "json5": "^0.5.1"
   },
   "devDependencies": {
@@ -36,7 +38,13 @@
     "webpack-dev-server": "^1.16.2",
     "webpack-shell-plugin": "^0.5.0",
     "xmldom": "^0.1.27",
-    "yargs": "^6.5.0"
+    "yargs": "^6.5.0",
+    "grimoirejs": "beta",
+    "grimoirejs-math": "latest"
+  },
+  "peerDependencies":{
+    "grimoirejs": "latest",
+    "grimoirejs-math": "latest"
   },
   "repository": "",
   "scripts": {
