@@ -1,5 +1,18 @@
 export default class GeometryUtility {
-
+  public static linesFromTriangles(indices: number[]): number[] {
+    const ret: number[] = [];
+    const ic: number[] = new Array(3);
+    let i = 0;
+    for (let index of indices) {
+      ic[i % 3] = index;
+      if (i % 3 === 2) {
+        const a = ic[0], b = ic[1], c = ic[2];
+        Array.prototype.push.apply(ret, [a, b, b, c, c, a]);
+      }
+      i++;
+    }
+    return ret;
+  }
   public static plane(center: number[], normal: number[], up: number[], right: number[], hdiv: number = 1, vdiv: number = 1): number[] {
     const ret = new Array(8 * (hdiv + 1) * (vdiv + 1));
     const sp = [center[0] - up[0] - right[0], center[1] - up[1] - right[1], center[2] - up[2] - right[2]];
