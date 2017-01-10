@@ -22,6 +22,29 @@ export default class GeometryUtility {
     }
     return ret;
   }
+
+  public static cylinderPlane(center: number[], normal: number[], up: number[], right: number[], divide: number, order: number): number[] {
+    const ret = new Array(32);
+    const sp = [center[0] - up[0] - right[0], center[1] - up[1] - right[1], center[2] - up[2] - right[2]];
+    const sr = [right[0] * 2, right[1] * 2, right[2] * 2];
+    const su = [up[0] * 2, up[1] * 2, up[2] * 2];
+    for (let v = 0; v < 2; v++) {
+      for (let h = 0; h < 2; h++) {
+        const fi = (2 * v + h) * 8;
+        ret[fi + 0] = sp[0] + sr[0] * h + su[0] * v;
+        ret[fi + 1] = sp[1] + sr[1] * h + su[1] * v;
+        ret[fi + 2] = sp[2] + sr[2] * h + su[2] * v;
+
+        ret[fi + 3] = normal[0];
+        ret[fi + 4] = normal[1];
+        ret[fi + 5] = normal[2];
+
+        ret[fi + 6] = 1 / divide * (order + 1 + h);
+        ret[fi + 7] = v == 0 ? 1 : 0;
+      }
+    }
+    return ret;
+  }
   public static triangle(center: number[], normal: number[], up: number[], right: number[]): number[] {
     const ret = new Array(24);
     const delta = 2 * Math.PI / 3;
@@ -36,6 +59,32 @@ export default class GeometryUtility {
       ret[5 + 8 * i] = normal[2];
       ret[6 + 8 * i] = 0.5 + (c * up[0] + s * right[0]) / 2;
       ret[7 + 8 * i] = 0.5 + (c * up[1] + s * right[1]) / 2;
+    }
+    return ret;
+  }
+
+  public static coneTriangle(center: number[], normal: number[], up: number[], right: number[], divide: number, order: number): number[] {
+    const ret = new Array(24);
+    const delta = 2 * Math.PI / 3;
+    for (let i = 0; i < 3; i++) {
+      const s = Math.sin(delta * i);
+      const c = Math.cos(delta * i);
+      ret[0 + 8 * i] = center[0] + c * up[0] + s * right[0];
+      ret[1 + 8 * i] = center[1] + c * up[1] + s * right[1];
+      ret[2 + 8 * i] = center[2] + c * up[2] + s * right[2];
+      ret[3 + 8 * i] = normal[0];
+      ret[4 + 8 * i] = normal[1];
+      ret[5 + 8 * i] = normal[2];
+      if (i == 0) {
+        ret[6 + 8 * i] = 0;
+        ret[7 + 8 * i] = 0;
+      } else if (i == 1) {
+        ret[6 + 8 * i] = Math.cos(-Math.PI / divide / 2 * (order + 1));
+        ret[7 + 8 * i] = Math.sin(-Math.PI / divide / 2 * (order + 1));
+      } else {
+        ret[6 + 8 * i] = Math.cos(-Math.PI / divide / 2 * (order));
+        ret[7 + 8 * i] = Math.sin(-Math.PI / divide / 2 * (order));
+      }
     }
     return ret;
   }

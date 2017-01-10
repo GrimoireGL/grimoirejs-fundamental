@@ -75,11 +75,13 @@ export default class DefaultPrimitives {
 
       for (let i = 0; i < div; i++) {
         let step = s * (i * 2 + 1);
-        Array.prototype.push.apply(vertices, GeometryUtility.triangle(
+        Array.prototype.push.apply(vertices, GeometryUtility.coneTriangle(
           [-Math.sin(step) * radius, 0, -Math.cos(step) * radius],
           [0, 0, 1],
           [Math.sin(step) * radius, 1, Math.cos(step) * radius],
-          [-Math.cos(step) * length, 0, Math.sin(step) * length]
+          [-Math.cos(step) * length, 0, Math.sin(step) * length],
+          div,
+          i
         ));
       }
       geometry.addAttributes(vertices, primitiveLayout);
@@ -113,11 +115,11 @@ export default class DefaultPrimitives {
       const s = Math.PI / div;
       for (let i = 0; i < div; i++) {
         let step = s * (i * 2 + 1);
-        Array.prototype.push.apply(vertices, GeometryUtility.plane(
+        Array.prototype.push.apply(vertices, GeometryUtility.cylinderPlane(
           [-Math.sin(step) * radius, 0, -Math.cos(step) * radius],
           [-Math.sin(step), 0, -Math.cos(step)],
           [0, 1, 0],
-          [-Math.cos(step) * length, 0, Math.sin(step) * length], 1, 1));
+          [-Math.cos(step) * length, 0, Math.sin(step) * length], div, i));
       }
       geometry.addAttributes(vertices, primitiveLayout);
       const os = div + 2;
