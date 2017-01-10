@@ -77,7 +77,7 @@ export default class DefaultPrimitives {
         let step = s * (i * 2 + 1);
         Array.prototype.push.apply(vertices, GeometryUtility.coneTriangle(
           [-Math.sin(step) * radius, 0, -Math.cos(step) * radius],
-          [0, 0, 1],
+          [-Math.cos(Math.PI / 2 - step), 1, -Math.sin(Math.PI / 2 - step)],
           [Math.sin(step) * radius, 1, Math.cos(step) * radius],
           [-Math.cos(step) * length, 0, Math.sin(step) * length],
           div,
@@ -119,7 +119,8 @@ export default class DefaultPrimitives {
           [-Math.sin(step) * radius, 0, -Math.cos(step) * radius],
           [-Math.sin(step), 0, -Math.cos(step)],
           [0, 1, 0],
-          [-Math.cos(step) * length, 0, Math.sin(step) * length], div, i));
+          [-Math.cos(step) * length, 0, Math.sin(step) * length],
+          div, i));
       }
       geometry.addAttributes(vertices, primitiveLayout);
       const os = div + 2;
