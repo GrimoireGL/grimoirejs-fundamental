@@ -17,7 +17,7 @@ UniformResolverRegistry.add("MODEL", (valInfo: IVariableInfo) => (proxy: Uniform
 });
 
 UniformResolverRegistry.add("MODELVIEW", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
-  proxy.uniformMatrix(valInfo.name, args.transform.globalTransform.multiplyWith(args.camera.ViewMatrix));
+  proxy.uniformMatrix(valInfo.name, args.camera.ViewMatrix.multiplyWith(args.transform.globalTransform));
 })
 
 UniformResolverRegistry.add("VIEW", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {

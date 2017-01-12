@@ -56,6 +56,15 @@ export default class Geometry {
     }
   }
 
+  /**
+   * add new index buffer to this geometry.
+   * @param {string}                       indexName [description]
+   * @param {Buffer|number[]|BufferSource} buffer    [description]
+   * @param {number                    =         WebGLRenderingContext.TRIANGLES} topology [description]
+   * @param {number                    =         0}                               offset   [description]
+   * @param {number                    =         null}                            count    [description]
+   * @param {number                    =         0}                               type     [description]
+   */
   public addIndex(indexName:string,buffer:Buffer|number[]|BufferSource,topology:number = WebGLRenderingContext.TRIANGLES,offset:number = 0,count:number = null,type:number = 0):void{
     if(!count){
       if((buffer instanceof Buffer || buffer instanceof ArrayBuffer || buffer instanceof DataView)){
@@ -114,7 +123,6 @@ export default class Geometry {
       throw new Error(`Specified index buffer "${indexName}" was not found on this geometry.All of the index buffer available on this geometry is "${Object.keys(geometry.indices)}"`);
     }
     targetIndex.index.bind();
-    debugger;
     targetIndex.index.gl.drawElements(targetIndex.topology, Math.min(targetIndex.count, count), targetIndex.type, Math.min(offset * targetIndex.byteSize + targetIndex.byteOffset, targetIndex.byteOffset + (targetIndex.count - 1) * targetIndex.byteSize));
 
   }
