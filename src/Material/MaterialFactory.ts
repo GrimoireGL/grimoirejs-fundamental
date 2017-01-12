@@ -5,7 +5,7 @@ import TextFileResolver from "../Asset/TextFileResolver";
 import Material from "./Material";
 import ShaderHeader from "raw!./Static/header.glsl";
 /**
- * Manage generators for materials.
+ * Manage materialGenerators for materials.
  * Materials can be instanciated with this instance.
  * Every gl reference can contain 1 of MaterialFactory at most.
  */
@@ -34,12 +34,12 @@ export default class MaterialFactory {
   /**
    * Actual material generator.
    */
-  public static generators: { [key: string]: ((factory: MaterialFactory) => Material) } = {};
+  public static materialGenerators: { [key: string]: ((factory: MaterialFactory) => Material) } = {};
 
   public static registerdHandlers: { [key: string]: (() => void)[] } = {};
 
-  public static addMaterialType(typeName: string, factory: (factory: MaterialFactory) => Material): void {
-    MaterialFactory.generators[typeName] = factory;
+  public static addMaterialType(typeName: string, materialGenerator: (factory: MaterialFactory) => Material): void {
+    MaterialFactory.materialGenerators[typeName] = materialGenerator;
     if (MaterialFactory.registerdHandlers[typeName]) { // Check registered handler are exisiting
       MaterialFactory.registerdHandlers[typeName].forEach((t) => t());
     }
@@ -90,8 +90,8 @@ export default class MaterialFactory {
   }
 
   public async instanciate(typeName: string): Promise<Material> {
-    if (MaterialFactory.generators[typeName]) {
-      return MaterialFactory.generators[typeName](this);
+    if (MaterialFactory.materialGenerators[typeName]) {
+      return MaterialFactory.materialGenerators[typeName](this);
     } else { // when the type is not registered yet.
       return await this._waitForRegistered(typeName);
     }
@@ -101,7 +101,7 @@ export default class MaterialFactory {
   private _waitForRegistered(typeName: string): Promise<Material> {
     return new Promise<Material>((resolve) => {
       MaterialFactory._onRegister(typeName, () => {
-        resolve(MaterialFactory.generators[typeName](this));
+        resolve(MaterialFactory.materialGenerators[typeName](this));
       });
     });
   }

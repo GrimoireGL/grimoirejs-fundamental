@@ -72,14 +72,14 @@ export default () => {
     GrimoireInterface.registerConverter(_$ns("Position"), PositionConverter);
 
     GrimoireInterface.registerNode("goml", ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "RendererManager", "Fullscreen"]);
-    GrimoireInterface.registerNode("renderer", ["Renderer"]);
     GrimoireInterface.registerNode("scene", ["Scene"]);
-    GrimoireInterface.registerNode("camera", ["Camera"], { position: "0,0,10" }, "object");
-    GrimoireInterface.registerNode("empty", []);
     GrimoireInterface.registerNode("object", ["Transform"]);
+    GrimoireInterface.registerNode("camera", ["Camera"], { position: "0,0,10" }, "object");
+    GrimoireInterface.registerNode("mesh", ["MaterialContainer", "MeshRenderer"], {}, "object");
+    GrimoireInterface.registerNode("renderer", ["Renderer"]);
+
     GrimoireInterface.registerNode("geometry", ["Geometry"]);
     GrimoireInterface.registerNode("texture", ["Texture"]);
-    GrimoireInterface.registerNode("mesh", ["MaterialContainer", "MeshRenderer"], {}, "object");
     GrimoireInterface.registerNode("material", ["Material"]);
     GrimoireInterface.registerNode("import-material", ["MaterialImporter"]);
     GrimoireInterface.registerNode("texture-buffer", ["TextureBuffer"]);
