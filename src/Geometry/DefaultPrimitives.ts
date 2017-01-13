@@ -43,6 +43,7 @@ export default class DefaultPrimitives {
       const geometry = new Geometry(gl);
       geometry.addAttributes(GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], 1, 1), primitiveLayout);
       geometry.addIndex("default", GeometryUtility.planeIndex(0, 1, 1));
+      geometry.addIndex("wireframe", GeometryUtility.linesFromTriangles(GeometryUtility.planeIndex(0, 1, 1)), WebGLRenderingContext.LINES);
       return geometry;
     });
   }
@@ -52,6 +53,7 @@ export default class DefaultPrimitives {
       const geometry = new Geometry(gl);
       geometry.addAttributes(GeometryUtility.triangle([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]), primitiveLayout);
       geometry.addIndex("default", GeometryUtility.triangleIndex(0));
+      geometry.addIndex("wireframe", GeometryUtility.linesFromTriangles(GeometryUtility.triangleIndex(0)), WebGLRenderingContext.LINES);
       return geometry;
     });
   }
@@ -93,6 +95,7 @@ export default class DefaultPrimitives {
         Array.prototype.push.apply(indices, GeometryUtility.triangleIndex(os + i * 3));
       }
       geometry.addIndex("default", indices);
+      geometry.addIndex("wireframe", GeometryUtility.linesFromTriangles(indices), WebGLRenderingContext.LINES);
       return geometry;
     });
   }
@@ -132,6 +135,7 @@ export default class DefaultPrimitives {
         Array.prototype.push.apply(indices, GeometryUtility.planeIndex(os * 2 + i * 4, 1, 1));
       }
       geometry.addIndex("default", indices);
+      geometry.addIndex("wireframe", GeometryUtility.linesFromTriangles(indices), WebGLRenderingContext.LINES);
       return geometry;
     });
   }
@@ -166,6 +170,7 @@ export default class DefaultPrimitives {
         GeometryUtility.planeIndex(4 * os, hdiv, vdiv),
         GeometryUtility.planeIndex(5 * os, hdiv, vdiv)]);
       geometry.addIndex("default", indices);
+      geometry.addIndex("wireframe", GeometryUtility.linesFromTriangles(indices), WebGLRenderingContext.LINES);
       return geometry;
     });
   }
@@ -199,6 +204,7 @@ export default class DefaultPrimitives {
       const geometry = new Geometry(gl);
       geometry.addAttributes(GeometryUtility.circle([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], div), primitiveLayout);
       geometry.addIndex("default", GeometryUtility.circleIndex(0, div));
+      geometry.addIndex("wireframe", GeometryUtility.linesFromTriangles(GeometryUtility.circleIndex(0, div)), WebGLRenderingContext.LINES);
       return geometry;
     });
   }
@@ -221,157 +227,8 @@ export default class DefaultPrimitives {
         GeometryUtility.planeIndex((hdiv + 1) * (vdiv + 1), hdiv, vdiv)
       ]);
       geometry.addIndex("default", indices);
+      geometry.addIndex("wireframe", GeometryUtility.linesFromTriangles(indices), WebGLRenderingContext.LINES);
       return geometry;
     });
   }
-  //
-  // private static _registerCylinder(): void {
-  //   GeometryFactory.addType("cylinder", {
-  //     divide: {
-  //       converter: "Number",
-  //       default: 50
-  //     }
-  //   }, (gl, attrs) => {
-  //     const div = attrs["divide"];
-  //     return GeometryBuilder.build(gl, {
-  //       indices: {
-  //         default: {
-  //           generator: function* () {
-  //             yield* GeometryUtility.cylinderIndex(0, div);
-  //           },
-  //           topology: WebGLRenderingContext.TRIANGLES
-  //         },
-  //         wireframe: {
-  //           generator: function* () {
-  //             yield* GeometryUtility.linesFromTriangles(GeometryUtility.cylinderIndex(0, div));
-  //           },
-  //           topology: WebGLRenderingContext.LINES
-  //         }
-  //       },
-  //       vertices: {
-  //         main: {
-  //           size: {
-  //             POSITION: 3,
-  //             NORMAL: 3,
-  //             TEXCOORD: 2
-  //           },
-  //           count: GeometryUtility.cylinderSize(div),
-  //           getGenerators: () => {
-  //             return {
-  //               POSITION: function* () {
-  //                 yield* GeometryUtility.cylinderPosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
-  //               },
-  //               NORMAL: function* () {
-  //                 yield* GeometryUtility.cylinderNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
-  //               },
-  //               TEXCOORD: function* () {
-  //                 yield* GeometryUtility.cylinderTexCoord(div);
-  //               }
-  //             };
-  //           }
-  //         }
-  //       },
-  //       aabb: unitBox
-  //     });
-  //   });
-  // }
-  // private static _registerCone(): void {
-  //   GeometryFactory.addType("cone", {
-  //     divide: {
-  //       converter: "Number",
-  //       default: 50
-  //     }
-  //   }, (gl, attrs) => {
-  //     const div = attrs["divide"];
-  //     return GeometryBuilder.build(gl, {
-  //       indices: {
-  //         default: {
-  //           generator: function* () {
-  //             yield* GeometryUtility.coneIndex(0, div);
-  //           },
-  //           topology: WebGLRenderingContext.TRIANGLES
-  //         },
-  //         wireframe: {
-  //           generator: function* () {
-  //             yield* GeometryUtility.linesFromTriangles(GeometryUtility.coneIndex(0, div));
-  //           },
-  //           topology: WebGLRenderingContext.LINES
-  //         }
-  //       },
-  //       vertices: {
-  //         main: {
-  //           size: {
-  //             POSITION: 3,
-  //             NORMAL: 3,
-  //             TEXCOORD: 2
-  //           },
-  //           count: GeometryUtility.coneSize(div),
-  //           getGenerators: () => {
-  //             return {
-  //               POSITION: function* () {
-  //                 yield* GeometryUtility.conePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
-  //               },
-  //               NORMAL: function* () {
-  //                 yield* GeometryUtility.coneNormal(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, Vector3.ZUnit.negateThis(), div);
-  //               },
-  //               TEXCOORD: function* () {
-  //                 yield* GeometryUtility.coneTexCoord(div);
-  //               }
-  //             };
-  //           }
-  //         }
-  //       },
-  //       aabb: unitBox
-  //     });
-  //   });
-  // }
-  // private static _registerPlane(): void {
-  //   GeometryFactory.addType("plane", {
-  //     divide: {
-  //       converter: "Number",
-  //       default: 10
-  //     }
-  //   }, (gl, attrs) => {
-  //     const div = attrs["divide"];
-  //     return GeometryBuilder.build(gl, {
-  //       indices: {
-  //         default: {
-  //           generator: function* () {
-  //             yield* GeometryUtility.planeIndex(0, div);
-  //           },
-  //           topology: WebGLRenderingContext.TRIANGLES
-  //         },
-  //         wireframe: {
-  //           generator: function* () {
-  //             yield* GeometryUtility.linesFromTriangles(GeometryUtility.planeIndex(0, div));
-  //           },
-  //           topology: WebGLRenderingContext.LINES
-  //         }
-  //       },
-  //       vertices: {
-  //         main: {
-  //           size: {
-  //             POSITION: 3,
-  //             NORMAL: 3,
-  //             TEXCOORD: 2
-  //           },
-  //           count: GeometryUtility.planeSize(div),
-  //           getGenerators: () => {
-  //             return {
-  //               POSITION: function* () {
-  //                 yield* GeometryUtility.planePosition(Vector3.Zero, Vector3.YUnit, Vector3.XUnit, div);
-  //               },
-  //               NORMAL: function* () {
-  //                 yield* GeometryUtility.planeNormal(Vector3.ZUnit, div);
-  //               },
-  //               TEXCOORD: function* () {
-  //                 yield* GeometryUtility.planeTexCoord(div);
-  //               }
-  //             };
-  //           }
-  //         }
-  //       }
-  //     });
-  //   });
-  // }
 }
