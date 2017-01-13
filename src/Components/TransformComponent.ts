@@ -206,7 +206,6 @@ export default class TransformComponent extends Component {
     this._localPosition = this.getAttribute("position");
     this._localRotation = this.getAttribute("rotation");
     this._localScale = this.getAttribute("scale");
-    this.updateTransform();
   }
 
   public $mount(): void {
@@ -243,7 +242,7 @@ export default class TransformComponent extends Component {
     } else {
       mat4.mul(this.globalTransform.rawElements, this._parentTransform.globalTransform.rawElements, this.localTransform.rawElements);
     }
-    if (noDirectionalUpdate) {
+    if (!noDirectionalUpdate) {
       this._updateDirections();
     }
     this._updateGlobalProperty();
@@ -268,4 +267,3 @@ export default class TransformComponent extends Component {
   }
 
 }
-

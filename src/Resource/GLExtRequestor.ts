@@ -1,3 +1,4 @@
+import MaterialFactory from "../Material/MaterialFactory";
 interface ExtensionRequest {
   extensionName: string;
   isNecessary: boolean;
@@ -76,6 +77,9 @@ export default class GLExtRequestor {
       ext = this.extensions[name] = GLExtRequestor._customExtensionResolvers[name](this.gl);
     }
     this._readyExtensions[name] = this.extensions[name] !== void 0;
+    if(ext){
+      MaterialFactory.get(this.gl).macro.setValue(name.toUpperCase(),"");
+    }
     return !!this._readyExtensions[name];
   }
 }

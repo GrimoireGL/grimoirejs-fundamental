@@ -10,7 +10,6 @@ import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import Framebuffer from "../Resource/FrameBuffer";
 import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
 import CameraComponent from "./CameraComponent";
-import MaterialContainerComponent from "./MaterialContainerComponent";
 export default class RenderSceneComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     layer: {
@@ -56,8 +55,6 @@ export default class RenderSceneComponent extends Component {
 
   private _canvas: HTMLCanvasElement;
 
-  private _materialContainer: MaterialContainerComponent;
-
   private _fbo: Framebuffer;
 
   private _fboSize: { width: number, height: number };
@@ -74,7 +71,7 @@ export default class RenderSceneComponent extends Component {
 
   private _clearDepth: number;
 
-  private _camera: CameraComponent;
+  public camera: CameraComponent;
 
   private _technique: string;
 
@@ -86,7 +83,7 @@ export default class RenderSceneComponent extends Component {
     this.getAttributeRaw("clearColorEnabled").boundTo("_clearColorEnabled");
     this.getAttributeRaw("clearDepthEnabled").boundTo("_clearDepthEnabled");
     this.getAttributeRaw("clearDepth").boundTo("_clearDepth");
-    this.getAttributeRaw("camera").boundTo("_camera");
+    this.getAttributeRaw("camera").boundTo("camera");
     this.getAttributeRaw("technique").boundTo("_technique");
   }
 
@@ -94,7 +91,6 @@ export default class RenderSceneComponent extends Component {
   public $mount(): void {
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
-    this._materialContainer = this.node.getComponent(MaterialContainerComponent);
   }
 
   public $bufferUpdated(args: IBufferUpdatedMessage): void {
@@ -111,7 +107,7 @@ export default class RenderSceneComponent extends Component {
   }
 
   public $render(args: IRenderRendererMessage): void {
-    const camera = this._camera ? this._camera : args.camera;
+    const camera = this.camera ? this.camera : args.camera;
     if (!camera) {
       return;
     }
@@ -132,15 +128,11 @@ export default class RenderSceneComponent extends Component {
       this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
     }
     args.camera.updateContainedScene(args.loopIndex);
-    const useMaterial = this._materialContainer.useMaterial;
-    args.camera.renderScene(<RenderSceneArgument>{
-      caller: this,
+    args.camera.renderScene({
       camera: camera,
       buffers: args.buffers,
       layer: this._layer,
       viewport: args.viewport,
-      material: useMaterial ? this._materialContainer.material : undefined,
-      materialArgs: useMaterial ? this._materialContainer.material : undefined,
       loopIndex: args.loopIndex,
       technique: this._technique
     });

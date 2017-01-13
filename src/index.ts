@@ -14,7 +14,6 @@
   import ComponentsMaterialComponent from "./Components/MaterialComponent";
   import ComponentsMaterialContainerComponent from "./Components/MaterialContainerComponent";
   import ComponentsMaterialImporterComponent from "./Components/MaterialImporterComponent";
-  import ComponentsMaterialManagerComponent from "./Components/MaterialManagerComponent";
   import ComponentsMeshRendererComponent from "./Components/MeshRendererComponent";
   import ComponentsMouseCameraControlComponent from "./Components/MouseCameraControlComponent";
   import ComponentsRenderBufferComponent from "./Components/RenderBufferComponent";
@@ -27,13 +26,10 @@
   import ComponentsTextureComponent from "./Components/TextureComponent";
   import ComponentsTransformComponent from "./Components/TransformComponent";
   import ConvertersCanvasSizeConverter from "./Converters/CanvasSizeConverter";
-  import ConvertersComponentConverter from "./Converters/ComponentConverter";
-  import ConvertersEnumConverter from "./Converters/EnumConverter";
   import ConvertersGeometryConverter from "./Converters/GeometryConverter";
   import ConvertersMaterialConverter from "./Converters/MaterialConverter";
-  import ConvertersNumberArrayConverter from "./Converters/NumberArrayConverter";
-  import ConvertersNumberConverter from "./Converters/NumberConverter";
-  import ConvertersObjectConverter from "./Converters/ObjectConverter";
+  import ConvertersNodeConverter from "./Converters/NodeConverter";
+  import ConvertersPositionConverter from "./Converters/PositionConverter";
   import ConvertersTextureConverter from "./Converters/TextureConverter";
   import ConvertersViewportConverter from "./Converters/ViewportConverter";
   import GeometryDefaultPrimitives from "./Geometry/DefaultPrimitives";
@@ -92,7 +88,7 @@
   import __INTERFACE__15 from "./SceneRenderer/IRenderable";
   import __INTERFACE__16 from "./SceneRenderer/IRenderArgument";
 
-var __VERSION__ = "0.11.0-beta1";
+var __VERSION__ = "0.11.0-beta11";
 var __NAME__ = "grimoirejs-fundamental";
 
 import __MAIN__ from "./main"
@@ -117,7 +113,6 @@ var __EXPOSE__ = {
     "MaterialComponent": ComponentsMaterialComponent,
     "MaterialContainerComponent": ComponentsMaterialContainerComponent,
     "MaterialImporterComponent": ComponentsMaterialImporterComponent,
-    "MaterialManagerComponent": ComponentsMaterialManagerComponent,
     "MeshRendererComponent": ComponentsMeshRendererComponent,
     "MouseCameraControlComponent": ComponentsMouseCameraControlComponent,
     "RenderBufferComponent": ComponentsRenderBufferComponent,
@@ -132,13 +127,10 @@ var __EXPOSE__ = {
   },
   "Converters": {
     "CanvasSizeConverter": ConvertersCanvasSizeConverter,
-    "ComponentConverter": ConvertersComponentConverter,
-    "EnumConverter": ConvertersEnumConverter,
     "GeometryConverter": ConvertersGeometryConverter,
     "MaterialConverter": ConvertersMaterialConverter,
-    "NumberArrayConverter": ConvertersNumberArrayConverter,
-    "NumberConverter": ConvertersNumberConverter,
-    "ObjectConverter": ConvertersObjectConverter,
+    "NodeConverter": ConvertersNodeConverter,
+    "PositionConverter": ConvertersPositionConverter,
     "TextureConverter": ConvertersTextureConverter,
     "ViewportConverter": ConvertersViewportConverter
   },

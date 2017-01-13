@@ -97,7 +97,7 @@ export default class MeshRenderer extends Component implements IRenderable {
     if (!this.node.isActive || !this.enabled || this._layer !== args.layer) {
       return;
     }
-    if (!this._geometry || (!args.material && !this._materialContainer.ready)) {
+    if (!this._geometry || (!args.material && !this._materialContainer.material)) {
       return; // material is not instanciated yet.
     }
     const renderArgs = <IMaterialArgument>{
@@ -111,16 +111,10 @@ export default class MeshRenderer extends Component implements IRenderable {
       drawCount: this._drawCount,
       drawOffset: this._drawOffset,
       sceneDescription: args.sceneDescription,
-      defaultTexture: args.defaultTexture,
       technique: args.technique
     };
-    if (args.material) {
-      renderArgs.attributeValues = args.materialArgs;
-      args.material.draw(renderArgs);
-    } else {
-      renderArgs.attributeValues = this._materialContainer.materialArgs;
-      this._materialContainer.material.draw(renderArgs);
-    }
+    renderArgs.attributeValues = this._materialContainer.materialArgs;
+    this._materialContainer.material.draw(renderArgs);
     this.node.emit("render", args);
   }
 }

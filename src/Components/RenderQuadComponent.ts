@@ -101,7 +101,7 @@ export default class RenderQuadComponent extends Component {
   }
 
   public $render(args: IRenderRendererMessage): void {
-    if (!this._materialContainer.ready) {
+    if (!this._materialContainer.materialReady) {
       return;
     }
     // bound render target
@@ -130,7 +130,6 @@ export default class RenderQuadComponent extends Component {
       transform: null,
       buffers: args.buffers,
       viewport: args.viewport,
-      defaultTexture: this.companion.get("defaultTexture"),
       technique: this._technique
     };
     renderArgs.attributeValues = this._materialContainer.materialArgs;

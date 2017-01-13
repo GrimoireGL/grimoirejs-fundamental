@@ -64,7 +64,7 @@ export default class UniformProxy {
   }
 
 
-  public uniformVector2Array(variableName: string, val: number[]): void {
+  public uniformVector2Array(variableName: string, val: number[]|Float32Array): void {
     this._pass(variableName, (l) => this._gl.uniform2fv(l, val));
   }
 
@@ -80,7 +80,7 @@ export default class UniformProxy {
     );
   }
 
-  public uniformVector3Array(variableName: string, val: number[]): void {
+  public uniformVector3Array(variableName: string, val: number[]|Float32Array): void {
     this._pass(variableName, (l) => this._gl.uniform3fv(l, val));
   }
 
@@ -102,7 +102,7 @@ export default class UniformProxy {
     );
   }
 
-  public uniformVector4Array(variableName: string, val: number[]): void {
+  public uniformVector4Array(variableName: string, val: number[]|Float32Array): void {
     this._pass(variableName, (l) => this._gl.uniform4fv(l, val));
   }
 

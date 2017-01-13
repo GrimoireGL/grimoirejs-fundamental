@@ -138,7 +138,7 @@ export default class SortTransformUtility {
       functions: {
         blendColor: [0, 0, 0, 0],
         cullFace: [WebGLRenderingContext.BACK],
-        blendFuncSeparate: [WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA, WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA],
+        blendFuncSeparate: [WebGLRenderingContext.ONE, WebGLRenderingContext.ZERO, WebGLRenderingContext.ONE, WebGLRenderingContext.ZERO],
         blendEquationSeparate: [WebGLRenderingContext.FUNC_ADD, WebGLRenderingContext.FUNC_ADD],
         lineWidth: [1],
         frontFace: [WebGLRenderingContext.CCW],
@@ -190,6 +190,7 @@ export default class SortTransformUtility {
       }
       if (c === "\n") {
         if (isLineComment) {
+          text += "\n";
           isLineComment = false;
           continue;
         } else if (isMultiLineComment) {

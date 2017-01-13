@@ -131,6 +131,17 @@ export default class CameraComponent extends Component {
     return this._orthographic;
   }
 
+  public set AutoAspect(autoMode:boolean){
+    if(this._autoAspect !== autoMode){
+      this._autoAspect = autoMode;
+      this._recalculateProjection();
+    }
+  }
+
+  public get AutoAspect():boolean{
+    return this._autoAspect;
+  }
+
   /**
  * Find scene tag recursively.
  * @param  {GomlNode}       node [the node to searching currently]
@@ -151,8 +162,6 @@ export default class CameraComponent extends Component {
 
 
   public $awake(): void {
-    this.transform = this.node.getComponent(TransformComponent);
-    this.updateTransform(this.transform);
     this.getAttributeRaw("far").watch((v) => {
       this.Far = v;
     }, true);
@@ -176,9 +185,11 @@ export default class CameraComponent extends Component {
 
 
   public $mount(): void {
+    this.transform = this.node.getComponent(TransformComponent);
     this.containedScene = CameraComponent._findContainedScene(this.node);
     this.containedScene.queueRegistory.registerQueue(this._renderQueue);
     this.node.on("transformUpdated", this.updateTransform.bind(this));
+    this.updateTransform();
   }
 
   public $unmount(): void {
@@ -193,10 +204,10 @@ export default class CameraComponent extends Component {
   }
 
   public renderScene(args: RenderSceneArgument): void {
+    args = args as IRenderArgument;
     if (this.containedScene) {
       this._justifyAspect(args);
       (args as IRenderArgument).sceneDescription = this.containedScene.sceneDescription;
-      (args as IRenderArgument).defaultTexture = this.companion.get("defaultTexture");
       this._renderQueue.renderAll(args as IRenderArgument, true, args.loopIndex);
     }
   }
@@ -204,14 +215,15 @@ export default class CameraComponent extends Component {
   private _justifyAspect(args: RenderSceneArgument): void {
     if (this._autoAspect) {
       const asp = args.viewport.Width / args.viewport.Height;
-      if (this._aspectCache !== asp) {
+      if (this._aspectCache !== asp) { // Detect changing viewport size
         this.setAttribute("aspect", asp);
         this._aspectCache = asp;
       }
     }
   }
 
-  public updateTransform(transform: TransformComponent): void {
+  public updateTransform(): void {
+    const transform = this.transform;
     vec3.transformMat4(this._eyeCache.rawElements, Vector3.Zero.rawElements, transform.globalTransform.rawElements);
     vec4.transformMat4(this._lookAtCache.rawElements, CameraComponent._frontOrigin.rawElements, transform.globalTransform.rawElements);
     vec3.add(this._lookAtCache.rawElements, this._lookAtCache.rawElements, this._eyeCache.rawElements);

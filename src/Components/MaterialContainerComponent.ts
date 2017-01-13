@@ -35,7 +35,7 @@ export default class MaterialContainerComponent extends Component {
   private static _defaultMaterial = "unlit";
 
   public getDrawPriorty(depth: number): number {
-    if (!this.ready) {
+    if (!this.materialReady) {
       return Number.MAX_VALUE;
     }
     const orderCriteria = DrawPriorty[this._drawOrder ? this._drawOrder : this.material.techniques["default"].drawOrder];
@@ -53,7 +53,7 @@ export default class MaterialContainerComponent extends Component {
 
   public materialArgs: { [key: string]: any; } = {};
 
-  public ready: boolean = false;
+  public materialReady: boolean = false;
 
   public useMaterial: boolean = false;
 
@@ -61,8 +61,10 @@ export default class MaterialContainerComponent extends Component {
 
   private _drawOrder: string;
 
+  private _registeredAttributes:boolean;
+
   public $mount(): void {
-    this.getAttributeRaw("material").watch(this._onMaterialChanged);
+    this.getAttributeRaw("material").watch(this._onMaterialChanged.bind(this));
     (this.companion.get("loader") as AssetLoader).register(this._onMaterialChanged());
     this.getAttributeRaw("drawOrder").boundTo("_drawOrder");
   }
@@ -77,6 +79,9 @@ export default class MaterialContainerComponent extends Component {
       return; // When specified material is null
     }
     this.useMaterial = true;
+    if(this._registeredAttributes){
+      this.__removeAttributes();
+    }
     if (!this._materialComponent) { // the material must be instanciated by attribute.
       this._prepareInternalMaterial(materialPromise);
     } else {
@@ -91,10 +96,10 @@ export default class MaterialContainerComponent extends Component {
   private async _prepareExternalMaterial(materialPromise: Promise<Material>): Promise<void> {
     const loader = this.companion.get("loader") as AssetLoader;
     loader.register(materialPromise);
-    const material = await materialPromise;
+    const material = await materialPromise; // waiting for material load completion
     this.material = material;
     this.materialArgs = this._materialComponent.materialArgs;
-    this.ready = true;
+    this.materialReady = true;
   }
 
   private async _prepareInternalMaterial(materialPromise: Promise<Material>): Promise<void> {
@@ -104,7 +109,7 @@ export default class MaterialContainerComponent extends Component {
     if (!materialPromise) {
       return;
     }
-    const material = await materialPromise;
+    const material = await materialPromise; // waiting for material load completion
     this.material = material;
     for (let key in this.material.argumentDeclarations) {
       this.__addAtribute(key, this.material.argumentDeclarations[key]);
@@ -116,7 +121,8 @@ export default class MaterialContainerComponent extends Component {
         this.material.setMacroValue(key, v);
       }, true);
     }
-    this.ready = true;
+    this._registeredAttributes = true;
+    this.materialReady = true;
   }
 
 }
