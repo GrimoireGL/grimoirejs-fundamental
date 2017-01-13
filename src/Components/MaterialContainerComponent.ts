@@ -8,13 +8,28 @@ import AssetLoader from "../Asset/AssetLoader";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import GrimoireInterface from "grimoirejs";
+
+/**
+ * マテリアルとマテリアルへの属性を管理するためのコンポーネント
+ *
+ * このコンポーネントは将来的に`MeshRenderer`と統合されます。
+ * 指定されたマテリアルの初期化の管理や、マテリアルによって動的に追加される属性の管理を行います、
+ */
 export default class MaterialContainerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
+    /**
+     * 対象のマテリアル
+     */
     material: {
       converter: "Material",
       default: "new(unlit)",
       componentBoundTo: "_materialComponent" // When the material was specified with the other material tag, this field would be assigned.
     },
+    /**
+     * 描画順序
+     *
+     * デフォルトの状態では、マテリアルから読み込んだ描画順序設定を用います
+     */
     drawOrder: {
       converter: "String",
       default: null

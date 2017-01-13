@@ -78,6 +78,7 @@
     "./src/Messages/IBufferUpdatedMessage.ts",
     "./src/Messages/IRenderRendererMessage.ts",
     "./src/Messages/IResizeBufferMessage.ts",
+    "./src/nodes.ts",
     "./src/Objects/CanvasSizeObject.ts",
     "./src/Objects/RenderSceneArgument.ts",
     "./src/raw.d.ts",

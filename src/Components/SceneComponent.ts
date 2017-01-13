@@ -3,6 +3,11 @@ import gr from "grimoirejs";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
+/**
+ * 特定のシーン内に関連する処理を行うためのコンポーネント
+ *
+ * このコンポーネントには属性が存在しません。
+ */
 export default class SceneComponent extends Component {
 
   public static attributes: { [key: string]: IAttributeDeclaration } = {

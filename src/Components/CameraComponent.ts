@@ -13,35 +13,77 @@ import GomlNode from "grimoirejs/ref/Node/GomlNode";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
+/**
+ * シーンを描画するカメラのコンポーネント
+ *
+ * このコンポーネントによって、透視射影や正方射影などの歪みを調整します。
+ * また、このコンポーネントの付属するノードに属する`Transoform`によって、カメラの位置や向きが確定されます。
+ */
 export default class CameraComponent extends Component {
   private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
   private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
 
   public static attributes: { [key: string]: IAttributeDeclaration } = {
+    /**
+     * カメラの視野角。
+     * orthogonal属性がtrueである場合この属性は無視されます。
+     */
     fovy: {
       default: "45d",
       converter: "Angle2D"
     },
+    /**
+     * カメラに映るもっとも近い距離です。
+     * 0よりも大きく、far属性よりも小さい必要があります。
+     */
     near: {
       default: 0.01,
       converter: "Number"
     },
+    /**
+     * カメラに映る最も遠い距離です。
+     * near属性よりも大きい必要があります。
+     *
+     * far - nearの値があまりにも大きいと、Z-fighting(手前の物体が奥に表示されたように見えたりする)現象が起きる可能性があります。
+     * この差があまりに大きい時、カメラに映る物体の座標の小さいz座標の値の差は0に近似されます。
+     * 逆にこの値が小さい時は、カメラに映る物体はある程度小さいz座標の差でも問題なく表示されます。
+     * **大切なのは、写したい空間よりも無駄に大きくしないこと。常に適切な値を設定するべきです**
+     */
     far: {
       default: 100,
       converter: "Number"
     },
+    /**
+     * カメラのアスペクト比
+     * カメラの横の大きさと縦の大きさの比率を指定します。autoAspect属性がtrueである時、毎回のレンダリング時にこの値を自動調整します。
+     */
     aspect: {
       default: 1.6,
       converter: "Number"
     },
+    /**
+     * アスペクト比の自動調整が有効か否か
+     * レンダリング時にそのビューポートの大きさに応じて比率を自動調整するかどうかを示します。
+     */
     autoAspect: {
       default: true,
       converter: "Boolean"
     },
+    /**
+     * 正射影時の横の基準サイズ
+     * 正射影時はfovy属性を用いて自動的に写す領域を決定できません。
+     * そのため、横の一片のサイズをこの属性で指定します。**アスペクト比は計算に用いられることに注意してください。**
+     */
     orthoSize: {
       default: 100,
       converter: "Number"
     },
+    /**
+     * このカメラが正射影かどうか
+     *
+     * この属性がfalseである場合、カメラは透視射影としてシーンをレンダリングします。この場合、レンダリング結果にパース(奥行き感)が出ます。
+     * 一方、この属性がtrueである場合、カメラは正射影としてシーンをレンダリングします。この場合、レンダリング結果には奥行き感は出ません。
+     */
     orthogonal: {
       default: false,
       converter: "Boolean"

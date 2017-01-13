@@ -8,7 +8,11 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Vector4 from "grimoirejs-math/ref/Vector4";
 import Matrix from "grimoirejs-math/ref/Matrix";
 
-
+/**
+ * (Deprecated)DOM要素とTransformを同期させるためのコンポーネント
+ *
+ * このコンポーネントはfundamentalからは削除されます。(別のパッケージとして分離予定)
+ */
 export default class HTMLBinderComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     htmlQuery: {

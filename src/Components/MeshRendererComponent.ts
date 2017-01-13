@@ -14,6 +14,11 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import GLM from "grimoirejs-math/ref/GLM";
 const {vec3} = GLM;
 
+/**
+ * シーン中に存在するメッシュ一つあたりのレンダリングを司るコンポーネント
+ *
+ * このメッシュが、対象となるノードの`Transform`や描画に用いる`Camera`、マテリアルなどを考慮して実際のレンダリングを行います。
+ */
 export default class MeshRenderer extends Component implements IRenderable {
 
   /**
@@ -35,22 +40,41 @@ export default class MeshRenderer extends Component implements IRenderable {
   }
 
   public static attributes: { [key: string]: IAttributeDeclaration } = {
+    /**
+     * 描画に用いる形状データ
+     */
     geometry: {
       converter: "Geometry",
       default: "quad"
     },
+    /**
+     * 描画に用いるインデックスバッファ名
+     */
     targetBuffer: {
       converter: "String",
       default: "default"
     },
+    /**
+     * このメッシュが属するレイヤー
+     *
+     * 詳しくは`render-scene`ノードを参考にしてください。
+     */
     layer: {
       converter: "String",
       default: "default"
     },
+    /**
+     * 描画するインデックスの個数
+     *
+     * デフォルトの状態でジオメトリの全インデックスを描画する
+     */
     drawCount: {
       converter: "Number",
       default: Number.MAX_VALUE
     },
+    /**
+     * 描画するジオメトリのインデックスのオフセット
+     */
     drawOffset: {
       converter: "Number",
       default: 0

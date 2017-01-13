@@ -3,7 +3,7 @@ import Attribute from "grimoirejs/ref/Node/Attribute";
 import MaterialFactory from "../Material/MaterialFactory";
 import MaterialComponent from "../Components/MaterialComponent";
 
-function MaterialConverter(this: Attribute, val: any): any {
+export default function MaterialConverter(this: Attribute, val: any): any {
   if (typeof val === "string") {
     const regex = /\s*new\s*\(\s*([a-zA-Z\d\-]+)\s*\)/;
     let regexResult: RegExpExecArray;
@@ -24,5 +24,3 @@ function MaterialConverter(this: Attribute, val: any): any {
   }
   return null; // TODO ??
 }
-
-export default MaterialConverter;
