@@ -178,11 +178,11 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("sphere", {
       divVertical: {
         converter: "Number",
-        default: 100
+        default: 50
       },
       divHorizontal: {
         converter: "Number",
-        default: 100
+        default: 50
       }
     }, (gl, attrs) => {
       const dH = attrs["divHorizontal"];
@@ -190,6 +190,7 @@ export default class DefaultPrimitives {
       const geometry = new Geometry(gl);
       geometry.addAttributes(GeometryUtility.sphere([0, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, -1], dV, dH), primitiveLayout);
       geometry.addIndex("default", GeometryUtility.sphereIndex(0, dV, dH));
+      geometry.addIndex("wireframe", GeometryUtility.linesFromTriangles(GeometryUtility.sphereIndex(0, dV, dH)), WebGLRenderingContext.LINES);
       return geometry;
     });
   }
