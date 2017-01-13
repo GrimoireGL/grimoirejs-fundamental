@@ -40,6 +40,9 @@ export default class MouseCameraControlComponent extends Component {
   private _moveSpeed: number;
   private _center: Vector3;
   private _distance: number;
+  private _updated: boolean = false;
+
+  private _lastCenter: Vector3 = null;
 
   private _lastScreenPos: { x: number, y: number } = null;
 
@@ -93,6 +96,23 @@ export default class MouseCameraControlComponent extends Component {
       this._distance = this._transform.localPosition.subtractWith(this._center).magnitude;
     }
   }
+  public $update() {
+    if (this._updated || !this._lastCenter || !this._center.equalWith(this._lastCenter)) {
+      this._updated = false;
+      this._lastCenter = this._center;
+
+      // rotate excution
+      let rotationVartical = Quaternion.angleAxis(-this._xsum * this._rotateSpeed * 0.01, Vector3.YUnit);
+      let rotationHorizontal = Quaternion.angleAxis(-this._ysum * this._rotateSpeed * 0.01, Vector3.XUnit);
+      let rotation = Quaternion.multiply(rotationVartical, rotationHorizontal);
+
+      const rotationMat = Matrix.rotationQuaternion(rotation);
+      const direction = Matrix.transformNormal(rotationMat, this._initialDirection);
+      this._transform.localPosition = this._center.addWith(this._d).addWith(Vector3.normalize(direction).multiplyWith(this._distance));
+      this._transform.localRotation = rotation;
+      this._transform.localRotation = Quaternion.multiply(rotation, this._initialRotation);
+    }
+  }
 
   private _contextMenu(m: MouseEvent): void {
     if (!this.isActive) {
@@ -113,7 +133,6 @@ export default class MouseCameraControlComponent extends Component {
       return;
     }
 
-    let updated = false;
     const diffX = m.screenX - this._lastScreenPos.x;
     const diffY = m.screenY - this._lastScreenPos.y;
     if (this._checkButtonPress(m, true)) { // When left button was pressed
@@ -121,27 +140,15 @@ export default class MouseCameraControlComponent extends Component {
       this._ysum += diffY;
       this._ysum = Math.min(Math.PI * 50, this._ysum);
       this._ysum = Math.max(-Math.PI * 50, this._ysum);
-      updated = true;
+      this._updated = true;
     }
     if (this._checkButtonPress(m, false)) { // When right button was pressed, move origin.
       let moveX = -diffX * this._moveSpeed * 0.01;
       let moveY = diffY * this._moveSpeed * 0.01;
       this._d = this._d.addWith(this._transform.right.multiplyWith(moveX)).addWith(this._transform.up.multiplyWith(moveY));
-      updated = true;
+      this._updated = true;
     }
 
-    if (updated) {
-      // rotate excution
-      let rotationVartical = Quaternion.angleAxis(-this._xsum * this._rotateSpeed * 0.01, Vector3.YUnit);
-      let rotationHorizontal = Quaternion.angleAxis(-this._ysum * this._rotateSpeed * 0.01, Vector3.XUnit);
-      let rotation = Quaternion.multiply(rotationVartical, rotationHorizontal);
-
-      const rotationMat = Matrix.rotationQuaternion(rotation);
-      const direction = Matrix.transformNormal(rotationMat, this._initialDirection);
-      this._transform.localPosition = this._center.addWith(this._d).addWith(Vector3.normalize(direction).multiplyWith(this._distance));
-      this._transform.localRotation = rotation;
-      this._transform.localRotation = Quaternion.multiply(rotation, this._initialRotation);
-    }
     this._lastScreenPos = {
       x: m.screenX,
       y: m.screenY
