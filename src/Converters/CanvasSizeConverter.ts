@@ -22,5 +22,3 @@ export default function CanvasSizeConverter(this:Attribute, val: any): any {
     size: Number.parseFloat(val)
   } as CanvasSizeObject;
 }
-
-export default CanvasSizeConverter;

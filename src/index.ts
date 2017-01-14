@@ -48,6 +48,7 @@
   import MaterialUniformsMatricesRegister from "./Material/Uniforms/MatricesRegister";
   import MaterialUniformsMiscRegister from "./Material/Uniforms/MiscRegister";
   import MaterialUniformsUserValueRegister from "./Material/Uniforms/UserValueRegister";
+  import nodes from "./nodes";
   import ResourceBuffer from "./Resource/Buffer";
   import ResourceFrameBuffer from "./Resource/FrameBuffer";
   import ResourceGLExtRequestor from "./Resource/GLExtRequestor";
@@ -156,6 +157,7 @@ var __EXPOSE__ = {
       "UserValueRegister": MaterialUniformsUserValueRegister
     }
   },
+  "nodes": nodes,
   "Resource": {
     "Buffer": ResourceBuffer,
     "FrameBuffer": ResourceFrameBuffer,
