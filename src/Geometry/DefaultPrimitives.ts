@@ -62,7 +62,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cone", {
       divide: {
         converter: "Number",
-        default: 6
+        default: 50
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
@@ -104,7 +104,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cylinder", {
       divide: {
         converter: "Number",
-        default: 5
+        default: 50
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
@@ -216,7 +216,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("circle", {
       divide: {
         converter: "Number",
-        default: 10
+        default: 30
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
