@@ -41,7 +41,7 @@ function fromVideoTexture(gl: WebGLRenderingContext, val: HTMLVideoElement): Tex
 
 
 
-function TextureConverter(this: Attribute, val: any): any {
+export default function TextureConverter(this: Attribute, val: any): any {
   if (val instanceof Texture2D) {
     return new TextureReference(val);
   }
@@ -89,5 +89,3 @@ function TextureConverter(this: Attribute, val: any): any {
   }
   return null;
 }
-
-export default TextureConverter;

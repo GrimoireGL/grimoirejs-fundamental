@@ -3,7 +3,7 @@ import Attribute from "grimoirejs/ref/Node/Attribute";
 import MaterialFactory from "../Material/MaterialFactory";
 import MaterialComponent from "../Components/MaterialComponent";
 
-function MaterialConverter(this: Attribute, val: any): any {
+export default function MaterialConverter(this: Attribute, val: any): any {
   if (typeof val === "string") {
     const regex = /\s*new\s*\(\s*([a-zA-Z\d\-]+)\s*\)/;
     let regexResult: RegExpExecArray;
@@ -11,12 +11,16 @@ function MaterialConverter(this: Attribute, val: any): any {
       this.component[this.declaration["componentBoundTo"]] = null;
       return (this.companion.get("MaterialFactory") as MaterialFactory).instanciate(regexResult[1]);
     } else {
-      const mc = this.tree(val).first().getComponent(MaterialComponent);
-      this.component[this.declaration["componentBoundTo"]] = mc;
-      return mc.materialPromise;
+      const node = this.tree(val).first();
+      if(node){
+        const mc = node.getComponent(MaterialComponent);
+        this.component[this.declaration["componentBoundTo"]] = mc;
+        return mc.materialPromise;
+      }else{
+        console.warn(`There was no matching material component filtered by '${val}'`);
+        return null;
+      }
     }
   }
   return null; // TODO ??
 }
-
-export default MaterialConverter;

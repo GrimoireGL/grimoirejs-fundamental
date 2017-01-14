@@ -4,16 +4,30 @@ import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import DefaultLoaderChunk from "raw!../Asset/defaultLoader.html";
 
+/**
+ * アセットの読み込みを司るコンポーネント。ローダーの表示などを司る。
+ */
 export default class AssetLoadingManagerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
+    /**
+     * ローディング状況(読み取り専用)
+     *
+     * 現在の読み込み状況を0-1で表す。
+     */
     loadingProgress: {
       default: 0,
       converter: "Number"
     },
+    /**
+     * リソースの読み込み完了後に、自動的にレンダリングループを開始するかどうか
+     */
     autoStart: {
       default: true,
       converter: "Boolean"
     },
+    /**
+     * リソースのロード時にローディング画面を表示するかどうか
+     */
     enableLoader: {
       default: true,
       converter: "Boolean"

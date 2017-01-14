@@ -5,7 +5,7 @@ import Component from "grimoirejs/ref/Node/Component";
 
 let _lastVal;
 let _node;
-function PositionConverter(this: Attribute, val: any): any {
+export default function PositionConverter(this: Attribute, val: any): any {
   if (val === null) {
     return null;
   }
@@ -28,5 +28,3 @@ function PositionConverter(this: Attribute, val: any): any {
     }
   }
 }
-
-export default PositionConverter;

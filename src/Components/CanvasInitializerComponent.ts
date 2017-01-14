@@ -13,28 +13,55 @@ enum ResizeMode {
   Manual
 }
 
+/**
+ * キャンバスの初期化及び設定を司るコンポーネント
+ *
+ * このコンポーネントによって、適切な位置に`<canvas>`を初期化してWebGLコンテキストを初期化します。
+ */
 class CanvasInitializerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
+    /**
+     * キャンバスタグの横幅を指定します。
+     */
     width: {
       default: "fit",
       converter: "CanvasSize"
     },
+    /**
+     * キャンバスタグの縦幅を指定します。
+     */
     height: {
       default: "fit",
       converter: "CanvasSize"
     },
+    /**
+     * キャンバス要素の直接の親要素のコンテナに割り当てるidを指定します。
+     */
     containerId: {
       default: "",
       converter: "String"
     },
+    /**
+     * キャンバス要素の直接の親要素のコンテナに割り当てるクラス名を指定します。
+     */
     containerClass: {
       default: "gr-container",
       converter: "String"
     },
+    /**
+     * GLコンテキストの初期化時に、preserveDrawingBufferフラグを有効にするか指定します。
+     *
+     * 描画結果をdataURLに変換する際などはこの属性がtrueでないと正常にレンダリング結果を取得できません。
+     */
     preserveDrawingBuffer:{
       default:true,
       converter:"Boolean"
     },
+    /**
+     * GLコンテキストの初期化時に、MSAAによるアンチエイリアスを有効にするか指定します。
+     *
+     * この属性は、途中で動的に変更することができません。
+     */
     antialias:{
       default:true,
       converter:"Boolean"

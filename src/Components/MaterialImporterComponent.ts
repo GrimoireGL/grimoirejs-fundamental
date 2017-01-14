@@ -3,12 +3,21 @@ import MaterialFactory from "../Material/MaterialFactory";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
+/**
+ * マテリアル設定ファイルを読み込むためのコンポーネント
+ */
 export default class MaterialImporterComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
+    /**
+     * マテリアル名として登録される名前
+     */
     typeName: {
       default: null,
       converter: "String"
     },
+    /**
+     * 読み込み先のファイルパス
+     */
     src: {
       default: null,
       converter: "String"

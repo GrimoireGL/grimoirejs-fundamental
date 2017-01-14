@@ -48,6 +48,7 @@
   import MaterialUniformsMatricesRegister from "./Material/Uniforms/MatricesRegister";
   import MaterialUniformsMiscRegister from "./Material/Uniforms/MiscRegister";
   import MaterialUniformsUserValueRegister from "./Material/Uniforms/UserValueRegister";
+  import nodes from "./nodes";
   import ResourceBuffer from "./Resource/Buffer";
   import ResourceFrameBuffer from "./Resource/FrameBuffer";
   import ResourceGLExtRequestor from "./Resource/GLExtRequestor";
@@ -88,7 +89,7 @@
   import __INTERFACE__15 from "./SceneRenderer/IRenderable";
   import __INTERFACE__16 from "./SceneRenderer/IRenderArgument";
 
-var __VERSION__ = "0.11.0-beta11";
+var __VERSION__ = "0.11.0-beta14";
 var __NAME__ = "grimoirejs-fundamental";
 
 import __MAIN__ from "./main"
@@ -156,6 +157,7 @@ var __EXPOSE__ = {
       "UserValueRegister": MaterialUniformsUserValueRegister
     }
   },
+  "nodes": nodes,
   "Resource": {
     "Buffer": ResourceBuffer,
     "FrameBuffer": ResourceFrameBuffer,
