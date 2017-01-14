@@ -227,9 +227,9 @@ export default class GeometryUtility {
         ret[fi + 0] = center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs);
         ret[fi + 1] = center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs);
         ret[fi + 2] = center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs);
-        ret[fi + 3] = -(center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs));
-        ret[fi + 4] = -(center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs));
-        ret[fi + 5] = -(center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs));
+        ret[fi + 3] = center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs);
+        ret[fi + 4] = center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs);
+        ret[fi + 5] = (center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs));
         const theta = hDelta * h;
         ret[fi + 6] = theta / Math.PI / 2;
         ret[fi + 7] = phi / Math.PI;
@@ -247,19 +247,19 @@ export default class GeometryUtility {
     // upper side
     for (let i = 0; i < hdiv; i++) {
       ret[3 * i + 0] = top;
-      ret[3 * i + 1] = getIndex(i, 0);
-      ret[3 * i + 2] = getIndex(i + 1, 0);
+      ret[3 * i + 1] = getIndex(i + 1, 0);
+      ret[3 * i + 2] = getIndex(i, 0);
     }
     const k = 3 * hdiv;
     // middle
     for (let j = 0; j < vdiv - 1; j++) {
       for (let i = 0; i < hdiv; i++) {
         ret[(hdiv * j + i) * 6 + k] = getIndex(i, j);
-        ret[(hdiv * j + i) * 6 + k + 1] = getIndex(i, j + 1);
-        ret[(hdiv * j + i) * 6 + k + 2] = getIndex(i + 1, j);
+        ret[(hdiv * j + i) * 6 + k + 1] = getIndex(i + 1, j);
+        ret[(hdiv * j + i) * 6 + k + 2] = getIndex(i , j + 1);
         ret[(hdiv * j + i) * 6 + k + 3] = getIndex(i, j + 1);
-        ret[(hdiv * j + i) * 6 + k + 4] = getIndex(i + 1, j + 1);
-        ret[(hdiv * j + i) * 6 + k + 5] = getIndex(i + 1, j);
+        ret[(hdiv * j + i) * 6 + k + 4] = getIndex(i + 1, j);
+        ret[(hdiv * j + i) * 6 + k + 5] = getIndex(i + 1, j + 1);
       }
     }
     const l = hdiv * (vdiv - 1) * 6 + k;
@@ -267,8 +267,8 @@ export default class GeometryUtility {
     // lower side
     for (let i = 0; i < hdiv; i++) {
       ret[3 * i + l + 0] = bottom;
-      ret[3 * i + l + 1] = getIndex(i + 1, vdiv - 1);
-      ret[3 * i + l + 2] = getIndex(i, vdiv - 1);
+      ret[3 * i + l + 1] = getIndex(i, vdiv - 1);
+      ret[3 * i + l + 2] = getIndex(i + 1, vdiv - 1);
     }
     return ret;
   }
