@@ -227,9 +227,9 @@ export default class GeometryUtility {
         ret[fi + 0] = center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs);
         ret[fi + 1] = center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs);
         ret[fi + 2] = center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs);
-        ret[fi + 3] = center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs);
-        ret[fi + 4] = center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs);
-        ret[fi + 5] = center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs);
+        ret[fi + 3] = -(center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs));
+        ret[fi + 4] = -(center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs));
+        ret[fi + 5] = -(center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs));
         const theta = hDelta * h;
         ret[fi + 6] = theta / Math.PI / 2;
         ret[fi + 7] = phi / Math.PI;
