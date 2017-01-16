@@ -18,259 +18,46 @@ $ npm install grimoirejs-fundamental --save
 
   |ノード名|説明|
   |:-:|:-:|
-  |[`<goml>`](#gomlノード)|ツリーに唯一一つ必要なコンポーネントなどをつけておくためのノード。|
-  |[`<scene>`](#sceneノード)|カメラや、ライト、メッシュなど空間に配置するためのノードです。|
-  |[`<object>`](#objectノード)|メッシュやカメラなどのベースとなるノードです。このノードの子要素には親要素の変型量(`position`や`rotation`)などが伝搬します。|
-  |[`<camera>`](#cameraノード)|3D空間を撮影するためのカメラを意味するノードです。シーンをレンダリングするには最低一つのカメラがシーンに属していなければなりません。|
-  |[`<mesh>`](#meshノード)|3D空間上に存在する映るものを意味するノードです。シーンに何かを写すには最低一つのメッシュがシーンに属していなければなりません。|
-  |[`<renderer>`](#rendererノード)|キャンバス上の領域をどのように描画するかを示すためのノードです。gomlの読み込み時に一つも存在しない場合は、自動的にgoml直下に生成されます。|
-  |[`<geometry>`](#geometryノード)|単純な変形(`scale`、`position`、`rotation`だけで表せない)、例えば円の分割数などを指定したい別の形状を明示的に生成するためのノードです。|
-  |[`<texture>`](#textureノード)|テクスチャを読み込むためのノードです。通常、テクスチャはurlをマテリアルに指定するなどして読み込まれますが、|
-  |[`<material>`](#materialノード)|マテリアルを生成するためのノードです。メッシュからこのノードを参照して利用することにより、複数のメッシュで共通のマテリアルのインスタンスを参照させることができます。|
-  |[`<import-material>`](#import-materialノード)|Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテリアルを読み込むためのノードです。|
-  |[`<texture-buffer>`](#texture-bufferノード)|`<renderer>`ノードの直下に含まれうるノードの一つです。|
-  |[`<render-buffer>`](#render-bufferノード)|`<renderer>`ノードの直下に含まれうるノードの一つです。|
-  |[`<render-scene>`](#render-sceneノード)|`<renderer>`ノードの直下に含まれうるノードの一つです。|
-  |[`<render-quad>`](#render-quadノード)|`<renderer>`ノードの直下に含まれうるノードの一つです。|
 
 ### コンポーネント
 
   |コンポーネント名|説明|
   |:-:|:-:|
-  |[`<AssetLoadingManagerComponent>`](#AssetLoadingManagerComponentコンポーネント)||
-  |[`<CameraComponent>`](#CameraComponentコンポーネント)||
-  |[`<FullscreenComponent>`](#FullscreenComponentコンポーネント)||
-  |[`<GeometryComponent>`](#GeometryComponentコンポーネント)||
-  |[`<GeometryRegistoryComponent>`](#GeometryRegistoryComponentコンポーネント)||
-  |[`<HTMLBinderComponent>`](#HTMLBinderComponentコンポーネント)||
+  |[`<AssetLoadingManagerComponent>`](#AssetLoadingManagerComponentコンポーネント)|アセットの読み込みを司るコンポーネント。ローダーの表示などを司る。|
+  |[`<CameraComponent>`](#CameraComponentコンポーネント)|このコンポーネントによって、透視射影や正方射影などの歪みを調整します。|
+  |[`<CanvasInitializerComponent>`](#CanvasInitializerComponentコンポーネント)|このコンポーネントによって、適切な位置に`<canvas>`を初期化してWebGLコンテキストを初期化します。|
+  |[`<FullscreenComponent>`](#FullscreenComponentコンポーネント)|Grimoire.jsによって管理されているキャンバス(正確にはその親のコンテナ)のフルスクリーン状態等を管理します。|
+  |[`<GeometryComponent>`](#GeometryComponentコンポーネント)|`type`属性に指定されたタイプのジオメトリを生成して、`name`属性に指定された名前で利用できる形にして登録します。|
+  |[`<GeometryRegistoryComponent>`](#GeometryRegistoryComponentコンポーネント)|あまりユーザーが直接操作することはありません。|
+  |[`<HTMLBinderComponent>`](#HTMLBinderComponentコンポーネント)|このコンポーネントはfundamentalからは削除されます。(別のパッケージとして分離予定)|
+  |[`<LoopManagerComponent>`](#LoopManagerComponentコンポーネント)|全体のループを管理しているコンポーネント。あまり直接ユーザーがいじることはありません。|
   |[`<MaterialComponent>`](#MaterialComponentコンポーネント)||
-  |[`<MaterialContainerComponent>`](#MaterialContainerComponentコンポーネント)||
-  |[`<MaterialImporterComponent>`](#MaterialImporterComponentコンポーネント)||
-  |[`<MeshRenderer>`](#MeshRendererコンポーネント)||
+  |[`<MaterialContainerComponent>`](#MaterialContainerComponentコンポーネント)|このコンポーネントは将来的に`MeshRenderer`と統合されます。|
+  |[`<MaterialImporterComponent>`](#MaterialImporterComponentコンポーネント)|マテリアル設定ファイルを読み込むためのコンポーネント|
   |[`<MouseCameraControlComponent>`](#MouseCameraControlComponentコンポーネント)||
   |[`<RenderBufferComponent>`](#RenderBufferComponentコンポーネント)||
   |[`<RendererComponent>`](#RendererComponentコンポーネント)||
-  |[`<RendererManagerComponent>`](#RendererManagerComponentコンポーネント)||
+  |[`<RendererManagerComponent>`](#RendererManagerComponentコンポーネント)|全レンダラーを管理するためのコンポーネント|
   |[`<RenderQuadComponent>`](#RenderQuadComponentコンポーネント)||
   |[`<RenderSceneComponent>`](#RenderSceneComponentコンポーネント)||
-  |[`<SceneComponent>`](#SceneComponentコンポーネント)||
+  |[`<SceneComponent>`](#SceneComponentコンポーネント)|このコンポーネントには属性が存在しません。|
   |[`<TextureBufferComponent>`](#TextureBufferComponentコンポーネント)||
   |[`<TextureComponent>`](#TextureComponentコンポーネント)||
-  |[`<TransformComponent>`](#TransformComponentコンポーネント)||
+  |[`<TransformComponent>`](#TransformComponentコンポーネント)|このコンポーネントによって物体の座標や回転量、拡大料などが定義されます。|
 
 ### コンバーター
 
   |コンバーター名|説明|
   |:-:|:-:|
-  |[`<CanvasSizeConverter>`](#CanvasSizeConverterコンバーター)||
-  |[`<GeometryConverter>`](#GeometryConverterコンバーター)||
-  |[`<MaterialConverter>`](#MaterialConverterコンバーター)||
-  |[`<NodeConverter>`](#NodeConverterコンバーター)||
-  |[`<PositionConverter>`](#PositionConverterコンバーター)||
-  |[`<TextureConverter>`](#TextureConverterコンバーター)||
-  |[`<ViewportConverter>`](#ViewportConverterコンバーター)||
+  |[`CanvasSizeConverter`](#CanvasSizeConverterコンバーター)||
+  |[`GeometryConverter`](#GeometryConverterコンバーター)||
+  |[`MaterialConverter`](#MaterialConverterコンバーター)||
+  |[`NodeConverter`](#NodeConverterコンバーター)||
+  |[`PositionConverter`](#PositionConverterコンバーター)||
+  |[`TextureConverter`](#TextureConverterコンバーター)||
+  |[`ViewportConverter`](#ViewportConverterコンバーター)||
 
 ## ノード詳細
-
-
-### gomlノード
-
-
-
-
-ツリーに唯一一つ必要なコンポーネントなどをつけておくためのノード。
-特に、`<canvas>`の初期化やループの管理など、最初の初期化時のパラメーターを受け取るためのコンポーネントとともに、
-`<canvas>`の設定(`width`や`height`)またはフルスクリーンなどのコンポーネントを含む。
-
-#### コンポーネント
-
-* CanvasInitializer
-* LoopManager
-* AssetLoadingManager
-* GeometryRegistory
-* RendererManager
-* Fullscreen
-
-
-### sceneノード
-
-
-
-
-カメラや、ライト、メッシュなど空間に配置するためのノードです。
-全ての場面に存在する座標を持ちうるノード(`TransformComponent`を含むノード)は必ずこのノードの子ノードのとして存在する必要があります。
-
-#### コンポーネント
-
-* Scene
-
-
-### objectノード
-
-
-
-
-メッシュやカメラなどのベースとなるノードです。このノードの子要素には親要素の変型量(`position`や`rotation`)などが伝搬します。
-詳しくは`TransformComponent`を参照すると良いでしょう。
-
-#### コンポーネント
-
-* Transform
-
-
-### cameraノード
-
-**継承元:&lt;object&gt;**
-
-
-
-3D空間を撮影するためのカメラを意味するノードです。シーンをレンダリングするには最低一つのカメラがシーンに属していなければなりません。
-
-#### コンポーネント
-
-* Camera
-
-
-### meshノード
-
-**継承元:&lt;object&gt;**
-
-
-
-3D空間上に存在する映るものを意味するノードです。シーンに何かを写すには最低一つのメッシュがシーンに属していなければなりません。
-
-メッシュは、マテリアル(材質)とジオメトリ(形状)からなります。この2つの指定を変えることで、様々な表現が3D空間上で可能になります。
-
-#### コンポーネント
-
-* MaterialContainer
-* MeshRenderer
-
-
-### rendererノード
-
-
-
-
-キャンバス上の領域をどのように描画するかを示すためのノードです。gomlの読み込み時に一つも存在しない場合は、自動的にgoml直下に生成されます。
-
-1つ以上のレンダラーを含むことで、キャンバスの複数の領域をレンダリングしたりすることができるようになります。
-また、この子要素に指定する`<render-XXX>`ノードなどによって、どのようにその領域を描画するかが決定されます。
-
-通常、`<renderer>`の子ノードに何も存在しない場合、自動的に`<render-scene>`タグが生成されます。
-
-#### コンポーネント
-
-* Renderer
-
-
-### geometryノード
-
-
-
-
-単純な変形(`scale`、`position`、`rotation`だけで表せない)、例えば円の分割数などを指定したい別の形状を明示的に生成するためのノードです。
-
-#### コンポーネント
-
-* Geometry
-
-
-### textureノード
-
-
-
-
-テクスチャを読み込むためのノードです。通常、テクスチャはurlをマテリアルに指定するなどして読み込まれますが、
-サンプラの指定などをしたい場合、このタグで明示的に読み込むことにより読み込むことができます。
-
-#### コンポーネント
-
-* Texture
-
-
-### materialノード
-
-
-
-
-マテリアルを生成するためのノードです。メッシュからこのノードを参照して利用することにより、複数のメッシュで共通のマテリアルのインスタンスを参照させることができます。
-
-これは、同時にマテリアルの値が編集できるだけでなく、パフォーマンス的にも大きな利点をもたらします。
-
-#### コンポーネント
-
-* Material
-
-
-### import-materialノード
-
-
-
-
-Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテリアルを読み込むためのノードです。
-
-#### コンポーネント
-
-* MaterialImporter
-
-
-### texture-bufferノード
-
-
-
-
-`<renderer>`ノードの直下に含まれうるノードの一つです。
-
-このノードによってレンダリングに用いるカラーバッファを生成することができます。
-カラーバッファはオフスクリーンレンダリングなどへの利用など様々な面で利用することができます。
-
-#### コンポーネント
-
-* TextureBuffer
-
-
-### render-bufferノード
-
-
-
-
-`<renderer>`ノードの直下に含まれうるノードの一つです。
-
-このノードによってレンダリングに用いる深度バッファやステンシルバッファを生成することができます。
-
-#### コンポーネント
-
-* RenderBuffer
-
-
-### render-sceneノード
-
-
-
-
-`<renderer>`ノードの直下に含まれうるノードの一つです。
-
-このノードは`out`に指定されたテクスチャ(デフォルトではキャンバス自身)に対して、シーンの内容を描画します。
-
-#### コンポーネント
-
-* RenderScene
-
-
-### render-quadノード
-
-
-
-
-`<renderer>`ノードの直下に含まれうるノードの一つです。
-
-このノードは`out`に指定されたテクスチャ(デフォルトではキャンバス自身)に対して、単純な四角形(`quad`)を指定されたマテリアルで描画します。
-
-#### コンポーネント
-
-* MaterialContainer
-* RenderQuad
 
 
 
@@ -281,7 +68,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 ### AssetLoadingManagerComponentコンポーネント
 
 
-
+アセットの読み込みを司るコンポーネント。ローダーの表示などを司る。
 
 #### 属性
 
@@ -289,7 +76,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 |:-:|:-:|:-:|
 |loadingProgress|Number|現在の読み込み状況を0-1で表す。|
 |autoStart|Boolean|リソースの読み込み完了後に、自動的にレンダリングループを開始するかどうか|
-|enableLoader|Boolean||
+|enableLoader|Boolean|リソースのロード時にローディング画面を表示するかどうか|
 
 
 ##### loadingProgress属性
@@ -315,7 +102,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 **初期値** ・・・ `true`  
 **コンバーター** ・・・ `Boolean`
 
-
+リソースのロード時にローディング画面を表示するかどうか
 
 
 
@@ -324,17 +111,20 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+このコンポーネントによって、透視射影や正方射影などの歪みを調整します。
+また、このコンポーネントの付属するノードに属する`Transoform`によって、カメラの位置や向きが確定されます。
+
 #### 属性
 
 |名前|コンバーター|詳細|
 |:-:|:-:|:-:|
-|fovy|Angle2D||
-|near|Number||
-|far|Number||
-|aspect|Number||
-|autoAspect|Boolean||
-|orthoSize|Number||
-|orthogonal|Boolean||
+|fovy|Angle2D|カメラの視野角。|
+|near|Number|カメラに映るもっとも近い距離です。|
+|far|Number|far - nearの値があまりにも大きいと、Z-fighting(手前の物体が奥に表示されたように見えたりする)現象が起きる可能性があります。|
+|aspect|Number|カメラのアスペクト比|
+|autoAspect|Boolean|アスペクト比の自動調整が有効か否か|
+|orthoSize|Number|正射影時の横の基準サイズ|
+|orthogonal|Boolean|この属性がfalseである場合、カメラは透視射影としてシーンをレンダリングします。この場合、レンダリング結果にパース(奥行き感)が出ます。|
 
 
 ##### fovy属性
@@ -342,7 +132,8 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 **初期値** ・・・ `45d`  
 **コンバーター** ・・・ `Angle2D`
 
-
+カメラの視野角。
+orthogonal属性がtrueである場合この属性は無視されます。
 
 
 ##### near属性
@@ -350,7 +141,8 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 **初期値** ・・・ `0.01`  
 **コンバーター** ・・・ `Number`
 
-
+カメラに映るもっとも近い距離です。
+0よりも大きく、far属性よりも小さい必要があります。
 
 
 ##### far属性
@@ -360,13 +152,19 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+far - nearの値があまりにも大きいと、Z-fighting(手前の物体が奥に表示されたように見えたりする)現象が起きる可能性があります。
+この差があまりに大きい時、カメラに映る物体の座標の小さいz座標の値の差は0に近似されます。
+逆にこの値が小さい時は、カメラに映る物体はある程度小さいz座標の差でも問題なく表示されます。
+**大切なのは、写したい空間よりも無駄に大きくしないこと。常に適切な値を設定するべきです**
+
 
 ##### aspect属性
 
 **初期値** ・・・ `1.6`  
 **コンバーター** ・・・ `Number`
 
-
+カメラのアスペクト比
+カメラの横の大きさと縦の大きさの比率を指定します。autoAspect属性がtrueである時、毎回のレンダリング時にこの値を自動調整します。
 
 
 ##### autoAspect属性
@@ -374,7 +172,8 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 **初期値** ・・・ `true`  
 **コンバーター** ・・・ `Boolean`
 
-
+アスペクト比の自動調整が有効か否か
+レンダリング時にそのビューポートの大きさに応じて比率を自動調整するかどうかを示します。
 
 
 ##### orthoSize属性
@@ -382,7 +181,9 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 **初期値** ・・・ `100`  
 **コンバーター** ・・・ `Number`
 
-
+正射影時の横の基準サイズ
+正射影時はfovy属性を用いて自動的に写す領域を決定できません。
+そのため、横の一片のサイズをこの属性で指定します。**アスペクト比は計算に用いられることに注意してください。**
 
 
 ##### orthogonal属性
@@ -392,6 +193,81 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+この属性がfalseである場合、カメラは透視射影としてシーンをレンダリングします。この場合、レンダリング結果にパース(奥行き感)が出ます。
+一方、この属性がtrueである場合、カメラは正射影としてシーンをレンダリングします。この場合、レンダリング結果には奥行き感は出ません。
+
+
+
+### CanvasInitializerComponentコンポーネント
+
+
+
+
+このコンポーネントによって、適切な位置に`<canvas>`を初期化してWebGLコンテキストを初期化します。
+
+#### 属性
+
+|名前|コンバーター|詳細|
+|:-:|:-:|:-:|
+|width|CanvasSize|キャンバスタグの横幅を指定します。|
+|height|CanvasSize|キャンバスタグの縦幅を指定します。|
+|containerId|String|キャンバス要素の直接の親要素のコンテナに割り当てるidを指定します。|
+|containerClass|String|キャンバス要素の直接の親要素のコンテナに割り当てるクラス名を指定します。|
+|preserveDrawingBuffer|Boolean|描画結果をdataURLに変換する際などはこの属性がtrueでないと正常にレンダリング結果を取得できません。|
+|antialias|Boolean|この属性は、途中で動的に変更することができません。|
+
+
+##### width属性
+
+**初期値** ・・・ `fit`  
+**コンバーター** ・・・ `CanvasSize`
+
+キャンバスタグの横幅を指定します。
+
+
+##### height属性
+
+**初期値** ・・・ `fit`  
+**コンバーター** ・・・ `CanvasSize`
+
+キャンバスタグの縦幅を指定します。
+
+
+##### containerId属性
+
+**初期値** ・・・ ``  
+**コンバーター** ・・・ `String`
+
+キャンバス要素の直接の親要素のコンテナに割り当てるidを指定します。
+
+
+##### containerClass属性
+
+**初期値** ・・・ `gr-container`  
+**コンバーター** ・・・ `String`
+
+キャンバス要素の直接の親要素のコンテナに割り当てるクラス名を指定します。
+
+
+##### preserveDrawingBuffer属性
+
+**初期値** ・・・ `true`  
+**コンバーター** ・・・ `Boolean`
+
+
+
+描画結果をdataURLに変換する際などはこの属性がtrueでないと正常にレンダリング結果を取得できません。
+
+
+##### antialias属性
+
+**初期値** ・・・ `true`  
+**コンバーター** ・・・ `Boolean`
+
+
+
+この属性は、途中で動的に変更することができません。
+
 
 
 ### FullscreenComponentコンポーネント
@@ -399,12 +275,20 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+Grimoire.jsによって管理されているキャンバス(正確にはその親のコンテナ)のフルスクリーン状態等を管理します。
+(他の要素をフルスクリーン化することも可能ですが、通常このGrimoire.jsによって生成されるキャンバスを含むDOM要素に対して用いられます。)
+
+また、一部の古いブラウザでは動作しない機能であることに注意してください。
+また、`fullscreen`属性は必ず マウスのイベントなどのユーザーのインタラクションを伴うイベントからの呼び出しで **動的に** trueにされる必要があります。
+
+最初からtrueに設定して初期状態でキャンバスをフルスクリーン状態にすることはWebAPIの制約上できません。
+
 #### 属性
 
 |名前|コンバーター|詳細|
 |:-:|:-:|:-:|
-|fullscreen|Boolean||
-|fullscreenTarget|String||
+|fullscreen|Boolean|このフラグをtrueにする際は、**必ず**、マウスイベントなどのユーザーのインタラクションを伴うイベントからの呼び出しで変更されなければなりません。|
+|fullscreenTarget|String|nullが指定された場合、キャンバスの親要素が用いられます。|
 
 
 ##### fullscreen属性
@@ -414,6 +298,10 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+このフラグをtrueにする際は、**必ず**、マウスイベントなどのユーザーのインタラクションを伴うイベントからの呼び出しで変更されなければなりません。
+
+したがって、GOMLで初期状態からこのフラグをtrueにすることはできません。
+
 
 ##### fullscreenTarget属性
 
@@ -422,6 +310,8 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+nullが指定された場合、キャンバスの親要素が用いられます。
+
 
 
 ### GeometryComponentコンポーネント
@@ -429,12 +319,16 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+`type`属性に指定されたタイプのジオメトリを生成して、`name`属性に指定された名前で利用できる形にして登録します。
+
+このコンポーネントは`type`属性に応じて、**動的** に属性が増えることに気をつけてください。
+
 #### 属性
 
 |名前|コンバーター|詳細|
 |:-:|:-:|:-:|
-|type|String||
-|name|String||
+|type|String|`GeometryFactory`に登録されたプリミティブのジェネレーターの名前を指します。|
+|name|String|`GeometryConverter`によって取得される際に利用されるジオメトリ名です。|
 
 
 ##### type属性
@@ -444,6 +338,10 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+`GeometryFactory`に登録されたプリミティブのジェネレーターの名前を指します。
+この指定する名前によって、動的に属性が増えることに気をつけてください。
+また、増えたジオメトリの属性は動的に操作できないことに気をつけてください。
+
 
 ##### name属性
 
@@ -452,6 +350,9 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+`GeometryConverter`によって取得される際に利用されるジオメトリ名です。
+もし、`quad`など事前に登録されたジオメトリを指定した場合、そのジオメトリを上書きすることができます。
+
 
 
 ### GeometryRegistoryComponentコンポーネント
@@ -459,11 +360,13 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+あまりユーザーが直接操作することはありません。
+
 #### 属性
 
 |名前|コンバーター|詳細|
 |:-:|:-:|:-:|
-|defaultGeometry|StringArray||
+|defaultGeometry|StringArray|デフォルトで生成するジオメトリの種類|
 
 
 ##### defaultGeometry属性
@@ -471,7 +374,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 **初期値** ・・・ `quad,cube,sphere`  
 **コンバーター** ・・・ `StringArray`
 
-
+デフォルトで生成するジオメトリの種類
 
 
 
@@ -479,6 +382,8 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+
+このコンポーネントはfundamentalからは削除されます。(別のパッケージとして分離予定)
 
 #### 属性
 
@@ -500,6 +405,27 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 **初期値** ・・・ `render-scene`  
 **コンバーター** ・・・ `String`
+
+
+
+
+
+### LoopManagerComponentコンポーネント
+
+
+全体のループを管理しているコンポーネント。あまり直接ユーザーがいじることはありません。
+
+#### 属性
+
+|名前|コンバーター|詳細|
+|:-:|:-:|:-:|
+|loopEnabled|Boolean||
+
+
+##### loopEnabled属性
+
+**初期値** ・・・ `false`  
+**コンバーター** ・・・ `Boolean`
 
 
 
@@ -531,12 +457,15 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+このコンポーネントは将来的に`MeshRenderer`と統合されます。
+指定されたマテリアルの初期化の管理や、マテリアルによって動的に追加される属性の管理を行います、
+
 #### 属性
 
 |名前|コンバーター|詳細|
 |:-:|:-:|:-:|
-|material|Material||
-|drawOrder|String||
+|material|Material|対象のマテリアル|
+|drawOrder|String|デフォルトの状態では、マテリアルから読み込んだ描画順序設定を用います|
 
 
 ##### material属性
@@ -544,7 +473,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 **初期値** ・・・ `new(unlit)`  
 **コンバーター** ・・・ `Material`
 
-
+対象のマテリアル
 
 
 ##### drawOrder属性
@@ -554,19 +483,21 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+デフォルトの状態では、マテリアルから読み込んだ描画順序設定を用います
+
 
 
 ### MaterialImporterComponentコンポーネント
 
 
-
+マテリアル設定ファイルを読み込むためのコンポーネント
 
 #### 属性
 
 |名前|コンバーター|詳細|
 |:-:|:-:|:-:|
-|typeName|String||
-|src|String||
+|typeName|String|マテリアル名として登録される名前|
+|src|String|読み込み先のファイルパス|
 
 
 ##### typeName属性
@@ -574,7 +505,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 **初期値** ・・・ `null`  
 **コンバーター** ・・・ `String`
 
-
+マテリアル名として登録される名前
 
 
 ##### src属性
@@ -582,64 +513,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 **初期値** ・・・ `null`  
 **コンバーター** ・・・ `String`
 
-
-
-
-
-### MeshRendererコンポーネント
-
-
-
-
-#### 属性
-
-|名前|コンバーター|詳細|
-|:-:|:-:|:-:|
-|geometry|Geometry||
-|targetBuffer|String||
-|layer|String||
-|drawCount|Number||
-|drawOffset|Number||
-
-
-##### geometry属性
-
-**初期値** ・・・ `quad`  
-**コンバーター** ・・・ `Geometry`
-
-
-
-
-##### targetBuffer属性
-
-**初期値** ・・・ `default`  
-**コンバーター** ・・・ `String`
-
-
-
-
-##### layer属性
-
-**初期値** ・・・ `default`  
-**コンバーター** ・・・ `String`
-
-
-
-
-##### drawCount属性
-
-**初期値** ・・・ `1.7976931348623157e+308`  
-**コンバーター** ・・・ `Number`
-
-
-
-
-##### drawOffset属性
-
-**初期値** ・・・ `0`  
-**コンバーター** ・・・ `Number`
-
-
+読み込み先のファイルパス
 
 
 
@@ -655,7 +529,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 |rotateSpeed|Number||
 |zoomSpeed|Number||
 |moveSpeed|Number||
-|center|Vector3||
+|center|Position||
 |distance|Number||
 
 
@@ -686,7 +560,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 ##### center属性
 
 **初期値** ・・・ `0,0,0`  
-**コンバーター** ・・・ `Vector3`
+**コンバーター** ・・・ `Position`
 
 
 
@@ -754,7 +628,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 ### RendererManagerComponentコンポーネント
 
 
-
+全レンダラーを管理するためのコンポーネント
 
 #### 属性
 
@@ -945,6 +819,8 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+このコンポーネントには属性が存在しません。
+
 #### 属性
 
 |名前|コンバーター|詳細|
@@ -981,14 +857,17 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+このコンポーネントによって物体の座標や回転量、拡大料などが定義されます。
+シーン中の全ての物体は必ずこのコンポーネントを含まなければなりません。
+
 #### 属性
 
 |名前|コンバーター|詳細|
 |:-:|:-:|:-:|
-|position|Vector3||
-|rotation|Rotation3||
-|scale|Vector3||
-|rawMatrix|Object||
+|position|Vector3|この物体の座標|
+|rotation|Rotation3|この物体の回転量|
+|scale|Vector3|この物体の拡大率|
+|rawMatrix|Object|利用されません|
 
 
 ##### position属性
@@ -996,7 +875,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 **初期値** ・・・ `0,0,0`  
 **コンバーター** ・・・ `Vector3`
 
-
+この物体の座標
 
 
 ##### rotation属性
@@ -1004,7 +883,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 **初期値** ・・・ `0,0,0,1`  
 **コンバーター** ・・・ `Rotation3`
 
-
+この物体の回転量
 
 
 ##### scale属性
@@ -1012,7 +891,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 **初期値** ・・・ `1,1,1`  
 **コンバーター** ・・・ `Vector3`
 
-
+この物体の拡大率
 
 
 ##### rawMatrix属性
@@ -1020,7 +899,7 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 **初期値** ・・・ `null`  
 **コンバーター** ・・・ `Object`
 
-
+利用されません
 
 
 
@@ -1057,3 +936,4 @@ Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテ�
 
 
 
+undefined

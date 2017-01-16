@@ -8,7 +8,7 @@ export class ImageResolver extends ExternalResourceResolver<HTMLImageElement> {
           resolve(imgTag);
         };
         imgTag.onerror = (e) => {
-          reject(e);
+          reject(`Error has been occured during loading "${abs}(${path})"\n${e}`);
         };
         imgTag.src = abs;
       });
