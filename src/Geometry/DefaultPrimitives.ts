@@ -35,6 +35,7 @@ export default class DefaultPrimitives {
     DefaultPrimitives._registerCone();
     DefaultPrimitives._registerPlane();
     DefaultPrimitives._registerTriangle();
+    DefaultPrimitives._registerCapsule();
   }
 
   private static _registerQuad(): void {
@@ -61,7 +62,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cone", {
       divide: {
         converter: "Number",
-        default: 6
+        default: 50
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
@@ -103,7 +104,7 @@ export default class DefaultPrimitives {
     GeometryFactory.addType("cylinder", {
       divide: {
         converter: "Number",
-        default: 5
+        default: 50
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
@@ -194,11 +195,28 @@ export default class DefaultPrimitives {
       return geometry;
     });
   }
+  private static _registerCapsule(): void {
+    GeometryFactory.addType("capsule", {
+      divide: {
+        converter: "Number",
+        default: 50
+      }
+    }, (gl, attrs) => {
+      const dH = attrs["divide"];
+      const dV = attrs["divide"] % 2 == 1 ? attrs["divide"] + 1 : attrs["divide"];
+
+      const geometry = new Geometry(gl);
+      geometry.addAttributes(GeometryUtility.capsule([0, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, -1], dV, dH), primitiveLayout);
+      geometry.addIndex("default", GeometryUtility.sphereIndex(0, dV, dH));
+      geometry.addIndex("wireframe", GeometryUtility.linesFromTriangles(GeometryUtility.sphereIndex(0, dV, dH)), WebGLRenderingContext.LINES);
+      return geometry;
+    });
+  }
   private static _registerCircle(): void {
     GeometryFactory.addType("circle", {
       divide: {
         converter: "Number",
-        default: 10
+        default: 30
       }
     }, (gl, attrs) => {
       const div = attrs["divide"];
