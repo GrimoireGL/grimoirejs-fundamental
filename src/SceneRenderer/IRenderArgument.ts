@@ -1,3 +1,4 @@
+import RenderSceneComponent from "../Components/RenderSceneComponent";
 import gr from "grimoirejs";
 import Component from "grimoirejs/ref/Node/Component";
 import Rectangle from "grimoirejs-math/ref/Rectangle";
@@ -12,7 +13,7 @@ interface IRenderArgument {
    * Reference to CameraComponent used for rendering in this time.
    * @type {CameraComponent}
    */
-  caller: Component;
+  renderer: RenderSceneComponent;
   camera: CameraComponent;
   buffers: { [key: string]: Texture2D };
   layer: string;
