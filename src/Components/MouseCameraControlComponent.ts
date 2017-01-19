@@ -35,11 +35,11 @@ export default class MouseCameraControlComponent extends Component {
 
   // propaty bound to
   private _transform: TransformComponent;
-  private _rotateSpeed: number;
-  private _zoomSpeed: number;
-  private _moveSpeed: number;
-  private _center: Vector3;
-  private _distance: number;
+  public rotateSpeed: number;
+  public zoomSpeed: number;
+  public moveSpeed: number;
+  public center: Vector3;
+  public distance: number;
   private _updated: boolean = false;
 
   private _lastCenter: Vector3 = null;
@@ -84,31 +84,31 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   public $initialized() {
-    let look = Vector3.normalize(this._center.subtractWith(this._transform.localPosition));
+    let look = Vector3.normalize(this.center.subtractWith(this._transform.localPosition));
     let g = Quaternion.fromToRotation(this._transform.forward, look).normalize();
     this._transform.localRotation = g;
     this._initialRotation = g;
     this._initialDirection = Vector3.copy(this._transform.forward.negateThis()).normalized;
 
-    if (this._distance !== null) {
-      this._transform.localPosition = this._center.addWith(this._initialDirection.multiplyWith(this._distance));
+    if (this.distance !== null) {
+      this._transform.localPosition = this.center.addWith(this._initialDirection.multiplyWith(this.distance));
     } else {
-      this._distance = this._transform.localPosition.subtractWith(this._center).magnitude;
+      this.distance = this._transform.localPosition.subtractWith(this.center).magnitude;
     }
   }
   public $update() {
-    if (this._updated || !this._lastCenter || !this._center.equalWith(this._lastCenter)) {
+    if (this._updated || !this._lastCenter || !this.center.equalWith(this._lastCenter)) {
       this._updated = false;
-      this._lastCenter = this._center;
+      this._lastCenter = this.center;
 
       // rotate excution
-      let rotationVartical = Quaternion.angleAxis(-this._xsum * this._rotateSpeed * 0.01, Vector3.YUnit);
-      let rotationHorizontal = Quaternion.angleAxis(-this._ysum * this._rotateSpeed * 0.01, Vector3.XUnit);
+      let rotationVartical = Quaternion.angleAxis(-this._xsum * this.rotateSpeed * 0.01, Vector3.YUnit);
+      let rotationHorizontal = Quaternion.angleAxis(-this._ysum * this.rotateSpeed * 0.01, Vector3.XUnit);
       let rotation = Quaternion.multiply(rotationVartical, rotationHorizontal);
 
       const rotationMat = Matrix.rotationQuaternion(rotation);
       const direction = Matrix.transformNormal(rotationMat, this._initialDirection);
-      this._transform.localPosition = this._center.addWith(this._d).addWith(Vector3.normalize(direction).multiplyWith(this._distance));
+      this._transform.localPosition = this.center.addWith(this._d).addWith(Vector3.normalize(direction).multiplyWith(this.distance));
       this._transform.localRotation = rotation;
       this._transform.localRotation = Quaternion.multiply(rotation, this._initialRotation);
     }
@@ -143,8 +143,8 @@ export default class MouseCameraControlComponent extends Component {
       this._updated = true;
     }
     if (this._checkButtonPress(m, false)) { // When right button was pressed, move origin.
-      let moveX = -diffX * this._moveSpeed * 0.01;
-      let moveY = diffY * this._moveSpeed * 0.01;
+      let moveX = -diffX * this.moveSpeed * 0.01;
+      let moveY = diffY * this.moveSpeed * 0.01;
       this._d = this._d.addWith(this._transform.right.multiplyWith(moveX)).addWith(this._transform.up.multiplyWith(moveY));
       this._updated = true;
     }
@@ -175,10 +175,10 @@ export default class MouseCameraControlComponent extends Component {
     if (!this.isActive) {
       return;
     }
-    let dir = Vector3.subtract(this._transform.localPosition, this._center).normalized;
-    let moveDist = m.deltaY * this._zoomSpeed * 0.05;
-    this._distance = Math.max(1, this._distance + moveDist);
-    this._transform.localPosition = this._center.addWith(dir.multiplyWith(this._distance));
+    let dir = Vector3.subtract(this._transform.localPosition, this.center).normalized;
+    let moveDist = m.deltaY * this.zoomSpeed * 0.05;
+    this.distance = Math.max(1, this.distance + moveDist);
+    this._transform.localPosition = this.center.addWith(dir.multiplyWith(this.distance));
     m.preventDefault();
   }
 }

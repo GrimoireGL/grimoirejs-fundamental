@@ -81,29 +81,25 @@ export default class MeshRenderer extends Component implements IRenderable {
     }
   };
 
-  private _geometry: Geometry;
-  private _targetBuffer: string;
+  private geometry: Geometry;
+  private targetBuffer: string;
+  private layer: string;
+  private drawOffset: number;
+  private drawCount: number;
   private _materialContainer: MaterialContainerComponent;
   private _transformComponent: TransformComponent;
   private _containedScene: SceneComponent;
-  private _layer: string;
-  private _drawOffset: number;
-  private _drawCount: number;
 
   private _priortyCalcCache = new Float32Array(3);
 
   public getRenderingPriorty(camera: CameraComponent, cameraMoved: boolean, lastPriorty: number): number {
-    vec3.add(this._priortyCalcCache, camera.transform.globalPosition.rawElements, this._geometry.aabb.Center.rawElements);
+    vec3.add(this._priortyCalcCache, camera.transform.globalPosition.rawElements, this.geometry.aabb.Center.rawElements);
     vec3.sub(this._priortyCalcCache, this._priortyCalcCache, this._transformComponent.globalPosition.rawElements);
     return this._materialContainer.getDrawPriorty(vec3.sqrLen(this._priortyCalcCache)); // Obtains distance between camera and center of aabb
   }
 
   public $awake(): void {
-    this.getAttributeRaw("targetBuffer").boundTo("_targetBuffer");
-    this.getAttributeRaw("layer").boundTo("_layer");
-    this.getAttributeRaw("drawOffset").boundTo("_drawOffset");
-    this.getAttributeRaw("drawCount").boundTo("_drawCount");
-    this.getAttributeRaw("geometry").boundTo("_geometry");
+    this.__bindAttributes();
   }
 
   public $mount(): void {
@@ -118,22 +114,22 @@ export default class MeshRenderer extends Component implements IRenderable {
   }
 
   public render(args: IRenderArgument): void {
-    if (!this.node.isActive || !this.enabled || this._layer !== args.layer) {
+    if (!this.node.isActive || !this.enabled || this.layer !== args.layer) {
       return;
     }
-    if (!this._geometry || (!args.material && !this._materialContainer.material)) {
+    if (!this.geometry || (!args.material && !this._materialContainer.material)) {
       return; // material is not instanciated yet.
     }
     const renderArgs = <IMaterialArgument>{
-      targetBuffer: this._targetBuffer,
-      geometry: this._geometry,
+      targetBuffer: this.targetBuffer,
+      geometry: this.geometry,
       attributeValues: null,
       camera: args.camera,
       transform: this._transformComponent,
       buffers: args.buffers,
       viewport: args.viewport,
-      drawCount: this._drawCount,
-      drawOffset: this._drawOffset,
+      drawCount: this.drawCount,
+      drawOffset: this.drawOffset,
       sceneDescription: args.sceneDescription,
       technique: args.technique
     };
