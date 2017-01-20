@@ -61,30 +61,30 @@ export default class RenderSceneComponent extends Component {
 
   // backing fields
 
-  private _layer: string;
+  public layer: string;
 
-  private _clearColor: Color4;
+  public clearColor: Color4;
 
-  private _clearColorEnabled: boolean;
+  public clearColorEnabled: boolean;
 
-  private _clearDepthEnabled: boolean;
+  public clearDepthEnabled: boolean;
 
-  private _clearDepth: number;
+  public clearDepth: number;
 
   public camera: CameraComponent;
 
-  private _technique: string;
+  public technique: string;
 
   // messages
 
   public $awake(): void {
-    this.getAttributeRaw("layer").boundTo("_layer");
-    this.getAttributeRaw("clearColor").boundTo("_clearColor");
-    this.getAttributeRaw("clearColorEnabled").boundTo("_clearColorEnabled");
-    this.getAttributeRaw("clearDepthEnabled").boundTo("_clearDepthEnabled");
-    this.getAttributeRaw("clearDepth").boundTo("_clearDepth");
+    this.getAttributeRaw("layer").boundTo("layer");
+    this.getAttributeRaw("clearColor").boundTo("clearColor");
+    this.getAttributeRaw("clearColorEnabled").boundTo("clearColorEnabled");
+    this.getAttributeRaw("clearDepthEnabled").boundTo("clearDepthEnabled");
+    this.getAttributeRaw("clearDepth").boundTo("clearDepth");
     this.getAttributeRaw("camera").boundTo("camera");
-    this.getAttributeRaw("technique").boundTo("_technique");
+    this.getAttributeRaw("technique").boundTo("technique");
   }
 
 
@@ -119,12 +119,12 @@ export default class RenderSceneComponent extends Component {
       this._gl.viewport(args.viewport.Left, this._canvas.height - args.viewport.Bottom, args.viewport.Width, args.viewport.Height);
     }
     // clear buffer if needed
-    if (this._fbo && this._clearColorEnabled) {
-      this._gl.clearColor(this._clearColor.R, this._clearColor.G, this._clearColor.B, this._clearColor.A);
+    if (this._fbo && this.clearColorEnabled) {
+      this._gl.clearColor(this.clearColor.R, this.clearColor.G, this.clearColor.B, this.clearColor.A);
       this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
     }
-    if (this._clearDepthEnabled) {
-      this._gl.clearDepth(this._clearDepth);
+    if (this.clearDepthEnabled) {
+      this._gl.clearDepth(this.clearDepth);
       this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
     }
     args.camera.updateContainedScene(args.loopIndex);
@@ -132,10 +132,10 @@ export default class RenderSceneComponent extends Component {
       renderer:this,
       camera: camera,
       buffers: args.buffers,
-      layer: this._layer,
+      layer: this.layer,
       viewport: args.viewport,
       loopIndex: args.loopIndex,
-      technique: this._technique
+      technique: this.technique
     });
   }
 }

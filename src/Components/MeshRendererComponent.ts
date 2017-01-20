@@ -80,7 +80,7 @@ export default class MeshRenderer extends Component implements IRenderable {
       default: 0
     }
   };
-
+  public index:number;
   private geometry: Geometry;
   private targetBuffer: string;
   private layer: string;
@@ -131,10 +131,15 @@ export default class MeshRenderer extends Component implements IRenderable {
       drawCount: this.drawCount,
       drawOffset: this.drawOffset,
       sceneDescription: args.sceneDescription,
-      technique: args.technique
+      technique: args.technique,
+      renderable:this
     };
     renderArgs.attributeValues = this._materialContainer.materialArgs;
     this._materialContainer.material.draw(renderArgs);
     this.node.emit("render", args);
+  }
+
+  public setRenderableIndex(index:number):void{
+    this.index = index;
   }
 }

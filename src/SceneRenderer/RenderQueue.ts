@@ -24,7 +24,7 @@ export default class RenderQueue {
     let index = 0;
     for (; index < this._rendeables.length; index++) {
       const r = this._rendeables[index];
-      if (r.rendarable.id === rendarable.id) {
+      if (r.rendarable.index === rendarable.index) {
         break;
       }
     }
