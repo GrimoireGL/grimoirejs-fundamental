@@ -34,4 +34,8 @@ export default class RenderQueueRegistry {
     });
     this._queues.forEach(q => q.remove(renderable));
   }
+
+  public getByIndex(index:number):IRenderable{
+    return this._renderables[index];
+  }
 }

@@ -9,6 +9,6 @@ export default class MeshIndexCalculator{
   }
 
   public static fromColor(color:Uint8Array):number{
-    return color[0] + color[1] << 8 + color[2] << 16 + color[3] << 24;
+    return color[0] + (color[1] << 8) + (color[2] << 16) + (color[3] << 24);
   }
 }
