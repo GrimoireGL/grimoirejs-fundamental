@@ -73,7 +73,7 @@ export default () => {
     GrimoireInterface.registerConverter(_$ns("Texture2D"), TextureConverter);
     GrimoireInterface.registerConverter(_$ns("Viewport"), ViewportConverter);
     GrimoireInterface.registerConverter(_$ns("Node"), NodeConverter);
-    GrimoireInterface.registerConverter(_$ns("Position"), PositionConverter);
+    GrimoireInterface.registerConverter(PositionConverter);
 
     GrimoireInterface.registerNode("goml", ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "RendererManager", "Fullscreen"]);
     GrimoireInterface.registerNode("scene", ["Scene"]);
