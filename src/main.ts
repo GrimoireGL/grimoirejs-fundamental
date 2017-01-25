@@ -1,3 +1,4 @@
+import TimeComponent from "./Components/TimeComponent";
 import RenderHitArea from "./Components/RenderHitareaComponent";
 import PositionConverter from "./Converters/PositionConverter";
 import NodeConverter from "./Converters/NodeConverter";
@@ -63,6 +64,7 @@ export default () => {
     GrimoireInterface.registerComponent(_$ns("Texture"), TextureComponent);
     GrimoireInterface.registerComponent(_$ns("Transform"), TransformComponent);
     GrimoireInterface.registerComponent(_$ns("RenderHitArea"), RenderHitArea);
+    GrimoireInterface.registerComponent(_$ns("Time"), TimeComponent);
 
     GrimoireInterface.registerConverter(_$ns("CanvasSize"), CanvasSizeConverter);
     GrimoireInterface.registerConverter(_$ns("Geometry"), GeometryConverter);
@@ -86,7 +88,7 @@ export default () => {
     GrimoireInterface.registerNode("import-material", ["MaterialImporter"]);
     GrimoireInterface.registerNode("texture-buffer", ["TextureBuffer"]);
     GrimoireInterface.registerNode("render-buffer", ["RenderBuffer"]);
-    GrimoireInterface.registerNode("render-scene", ["RenderScene","RenderHitArea"], {
+    GrimoireInterface.registerNode("render-scene", ["RenderScene", "RenderHitArea"], {
       material: null
     });
     GrimoireInterface.registerNode("render-quad", ["MaterialContainer", "RenderQuad"], {

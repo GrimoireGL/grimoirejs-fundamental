@@ -40,6 +40,7 @@
     "./src/Components/SceneComponent.ts",
     "./src/Components/TextureBufferComponent.ts",
     "./src/Components/TextureComponent.ts",
+    "./src/Components/TimeComponent.ts",
     "./src/Components/TransformComponent.ts",
     "./src/Converters/CanvasSizeConverter.ts",
     "./src/Converters/GeometryConverter.ts",
