@@ -1,3 +1,4 @@
+import MaterialFactory from "../Material/MaterialFactory";
 import gr from "grimoirejs/ref/GrimoireInterface";
 import Texture2D from "../Resource/Texture2D";
 import CanvasSizeObject from "../Objects/CanvasSizeObject";
@@ -12,23 +13,58 @@ enum ResizeMode {
   Manual
 }
 
+/**
+ * キャンバスの初期化及び設定を司るコンポーネント
+ *
+ * このコンポーネントによって、適切な位置に`<canvas>`を初期化してWebGLコンテキストを初期化します。
+ */
 class CanvasInitializerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
+    /**
+     * キャンバスタグの横幅を指定します。
+     */
     width: {
       default: "fit",
       converter: "CanvasSize"
     },
+    /**
+     * キャンバスタグの縦幅を指定します。
+     */
     height: {
       default: "fit",
       converter: "CanvasSize"
     },
+    /**
+     * キャンバス要素の直接の親要素のコンテナに割り当てるidを指定します。
+     */
     containerId: {
       default: "",
       converter: "String"
     },
+    /**
+     * キャンバス要素の直接の親要素のコンテナに割り当てるクラス名を指定します。
+     */
     containerClass: {
       default: "gr-container",
       converter: "String"
+    },
+    /**
+     * GLコンテキストの初期化時に、preserveDrawingBufferフラグを有効にするか指定します。
+     *
+     * 描画結果をdataURLに変換する際などはこの属性がtrueでないと正常にレンダリング結果を取得できません。
+     */
+    preserveDrawingBuffer:{
+      default:true,
+      converter:"Boolean"
+    },
+    /**
+     * GLコンテキストの初期化時に、MSAAによるアンチエイリアスを有効にするか指定します。
+     *
+     * この属性は、途中で動的に変更することができません。
+     */
+    antialias:{
+      default:true,
+      converter:"Boolean"
     }
   };
 
@@ -48,12 +84,6 @@ class CanvasInitializerComponent extends Component {
   // Resize mode of height
   private _heightMode: ResizeMode;
 
-  /**
-   * Default texture to be used when no texture was specified
-   * @type {Texture2D}
-   */
-  private _defaultTexture: Texture2D;
-
   // Ratio of aspect
   private _ratio: number;
 
@@ -72,6 +102,12 @@ class CanvasInitializerComponent extends Component {
     this.getAttributeRaw("height").watch((v) => {
       this._resize();
     });
+    this.getAttributeRaw("antialias").watch((v)=>{
+      console.warn("Changing antialias attribute is not supported. This is only works when the canvas element created.");
+    });
+    this.getAttributeRaw("preserveDrawingBuffer").watch((v)=>{
+      console.warn("Changing preserveDrawingBuffer attribute is not supported. This is only works when the canvas element created.");
+    });
   }
 
   /**
@@ -85,12 +121,11 @@ class CanvasInitializerComponent extends Component {
     window.addEventListener("resize", () => this._onWindowResize());
     this._configureCanvas(this.canvas, scriptTag as HTMLScriptElement);
     const gl = this._getContext(this.canvas);
-    this._defaultTexture = new Texture2D(gl);
-    this._defaultTexture.update(0, 1, 1, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0]));
     this.companion.set(ns("gl"), gl);
     this.companion.set(ns("canvasElement"), this.canvas);
+    this.companion.set(ns("MaterialFactory"), new MaterialFactory(gl));
     this.companion.set(ns("GLExtRequestor"), new GLExtRequestor(gl));
-    this.companion.set(ns("defaultTexture"), this._defaultTexture);
+    Texture2D.generateDefaultTexture(gl);
     return this.canvas;
   }
 
@@ -200,9 +235,13 @@ class CanvasInitializerComponent extends Component {
   }
 
   private _getContext(canvas: HTMLCanvasElement): WebGLRenderingContext {
-    let context: WebGLRenderingContext = canvas.getContext("webgl") as WebGLRenderingContext;
+    const contextConfig = {
+      antialias:this.getAttribute("antialias"),
+      preserveDrawingBuffer:this.getAttribute("preserveDrawingBuffer")
+    };
+    let context: WebGLRenderingContext = canvas.getContext("webgl",contextConfig) as WebGLRenderingContext;
     if (!context) {
-      context = canvas.getContext("webgl-experimental") as WebGLRenderingContext;
+      context = canvas.getContext("webgl-experimental",contextConfig) as WebGLRenderingContext;
     }
     return context;
   }

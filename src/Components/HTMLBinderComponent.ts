@@ -1,3 +1,4 @@
+import RenderSceneComponent from "./RenderSceneComponent";
 import IRenderArgument from "../SceneRenderer/IRenderArgument";
 import gr from "grimoirejs";
 import TransformComponent from "./TransformComponent";
@@ -8,7 +9,11 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Vector4 from "grimoirejs-math/ref/Vector4";
 import Matrix from "grimoirejs-math/ref/Matrix";
 
-
+/**
+ * (Deprecated)DOM要素とTransformを同期させるためのコンポーネント
+ *
+ * このコンポーネントはfundamentalからは削除されます。(別のパッケージとして分離予定)
+ */
 export default class HTMLBinderComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     htmlQuery: {
@@ -21,7 +26,7 @@ export default class HTMLBinderComponent extends Component {
     }
   };
 
-  private _targetNode: GomlNode;
+  private _targetRenderer: RenderSceneComponent;
 
   private _htmlQuery: string;
 
@@ -66,7 +71,7 @@ export default class HTMLBinderComponent extends Component {
       this._onRendererChanged();
       this._isFirstCall = false;
     }
-    if (this._queriedElement && args.caller.node === this._targetNode) {
+    if (this._queriedElement && args.renderer === this._targetRenderer) {
       const vp = args.viewport;
       const rawPos = Matrix.transform(this._currentTransform.calcPVM(args.camera), new Vector4(0, 0, 0, 1));
       const rawScPos = {
@@ -114,8 +119,10 @@ export default class HTMLBinderComponent extends Component {
       if (returned) {
         return true;
       } else {
-        this._targetNode = n;
-        returned = true;
+        this._targetRenderer = n.getComponent(RenderSceneComponent);
+        if(this._targetRenderer){
+          returned = true;
+        }
       }
     });
   }

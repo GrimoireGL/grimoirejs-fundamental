@@ -2,7 +2,7 @@ import ResourceBase from "./ResourceBase";
 export default class Buffer extends ResourceBase {
   public readonly buffer: WebGLBuffer;
 
-  constructor(gl: WebGLRenderingContext, public readonly target: number = WebGLRenderingContext.ARRAY_BUFFER, public usage: number = WebGLRenderingContext.ELEMENT_ARRAY_BUFFER) {
+  constructor(gl: WebGLRenderingContext, public readonly target: number = WebGLRenderingContext.ARRAY_BUFFER, public usage: number = WebGLRenderingContext.STATIC_DRAW) {
     super(gl);
     this.buffer = gl.createBuffer();
   }

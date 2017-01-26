@@ -7,6 +7,9 @@ interface LoopAction {
   priorty: number;
 }
 
+/**
+ * 全体のループを管理しているコンポーネント。あまり直接ユーザーがいじることはありません。
+ */
 class LoopManagerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     loopEnabled: {

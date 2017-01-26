@@ -12,7 +12,7 @@ function _toPixel(parentSize: number, rep: string): number {
   }
 }
 
-function ViewportConverter(this: Attribute, val: any): any {
+export default function ViewportConverter(val: any): any {
   if (val instanceof Rectangle) {
     return () => val;
   }
@@ -30,5 +30,3 @@ function ViewportConverter(this: Attribute, val: any): any {
   }
   throw new Error(`${val} could not be parsed`);
 }
-
-export default ViewportConverter;

@@ -9,23 +9,38 @@ import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 const {mat4, vec3, vec4} = GLM;
 /**
- * Provides object transformation like translation,rotation,scaling.
+ * シーン中に存在する物体の変形を司るコンポーネント
+ *
+ * このコンポーネントによって物体の座標や回転量、拡大料などが定義されます。
+ * シーン中の全ての物体は必ずこのコンポーネントを含まなければなりません。
  */
 export default class TransformComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
-    "position": {
+    /**
+     * この物体の座標
+     */
+    position: {
       converter: "Vector3",
-      default: Vector3.Zero
+      default: [0,0,0]
     },
-    "rotation": {
+    /**
+     * この物体の回転量
+     */
+    rotation: {
       converter: "Rotation3",
-      default: Quaternion.Identity
+      default: [0,0,0,1]
     },
-    "scale": {
+    /**
+     * この物体の拡大率
+     */
+    scale: {
       converter: "Vector3",
-      default: Vector3.One
+      default: [1,1,1]
     },
-    "rawMatrix": {
+    /**
+     * 利用されません
+     */
+    rawMatrix: {
       converter: "Object", // TODO should implement Matrix converter
       default: null
     }
@@ -206,7 +221,6 @@ export default class TransformComponent extends Component {
     this._localPosition = this.getAttribute("position");
     this._localRotation = this.getAttribute("rotation");
     this._localScale = this.getAttribute("scale");
-    this.updateTransform();
   }
 
   public $mount(): void {
@@ -243,7 +257,7 @@ export default class TransformComponent extends Component {
     } else {
       mat4.mul(this.globalTransform.rawElements, this._parentTransform.globalTransform.rawElements, this.localTransform.rawElements);
     }
-    if (noDirectionalUpdate) {
+    if (!noDirectionalUpdate) {
       this._updateDirections();
     }
     this._updateGlobalProperty();
@@ -268,4 +282,3 @@ export default class TransformComponent extends Component {
   }
 
 }
-

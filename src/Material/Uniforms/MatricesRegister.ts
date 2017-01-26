@@ -16,6 +16,10 @@ UniformResolverRegistry.add("MODEL", (valInfo: IVariableInfo) => (proxy: Uniform
   proxy.uniformMatrix(valInfo.name, args.transform.globalTransform);
 });
 
+UniformResolverRegistry.add("MODELVIEW", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
+  proxy.uniformMatrix(valInfo.name, args.camera.ViewMatrix.multiplyWith(args.transform.globalTransform));
+})
+
 UniformResolverRegistry.add("VIEW", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
   proxy.uniformMatrix(valInfo.name, args.camera.ViewMatrix);
 });
@@ -49,7 +53,7 @@ UniformResolverRegistry.add("MODELINVERSETRANSPOSE", (valInfo: IVariableInfo) =>
 });
 
 UniformResolverRegistry.add("MODELVIEWINVERSETRANSPOSE", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
-  proxy.uniformMatrix(valInfo.name, Matrix.transpose(Matrix.inverse(args.transform.calcVM(args.camera))));
+  proxy.uniformMatrix3(valInfo.name, Matrix.transpose(Matrix.inverse(args.transform.calcVM(args.camera))));
 });
 
 export default null;

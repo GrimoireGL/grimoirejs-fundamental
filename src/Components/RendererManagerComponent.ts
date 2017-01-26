@@ -3,16 +3,28 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import LoopManagerComponent from "./LoopManagerComponent";
 import Component from "grimoirejs/ref/Node/Component";
 import gr from "grimoirejs";
+/**
+ * 全レンダラーを管理するためのコンポーネント
+ */
 export default class RendererManagerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
+    /**
+     * キャンバスの初期化色
+     */
     bgColor: {
       default: new Color4(0, 0, 0, 0),
       converter: "Color4"
     },
+    /**
+     * キャンバスの初期化深度値
+     */
     clearDepth: {
       default: 1.0,
       converter: "Number"
     },
+    /**
+     * goml内にrendererが一つもなかった場合に自動的に補完するかどうか
+     */
     complementRenderer: {
       default: true,
       converter: "Boolean"
@@ -48,7 +60,9 @@ export default class RendererManagerComponent extends Component {
       this.gl.clearColor(c.R, c.G, c.B, c.A);
       this.gl.clearDepth(this._clearDepth);
       this.gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);
-      this.node.broadcastMessage(1, "renderViewport", { loopIndex: loopIndex });
+      this.node.broadcastMessage(1, "renderViewport", {
+        loopIndex: loopIndex
+       });
     }
   }
 }

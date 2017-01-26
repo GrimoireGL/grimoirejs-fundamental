@@ -41,7 +41,7 @@ function fromVideoTexture(gl: WebGLRenderingContext, val: HTMLVideoElement): Tex
 
 
 
-function TextureConverter(this: Attribute, val: any): any {
+export default function TextureConverter(val: any, attr: Attribute): any {
   if (val instanceof Texture2D) {
     return new TextureReference(val);
   }
@@ -53,24 +53,24 @@ function TextureConverter(this: Attribute, val: any): any {
         case "backbuffer":
           return new TextureReference((buffers) => buffers[param]);
         case "video":
-          return new TextureReference(fromVideoTexture(this.companion.get("gl"), generateVideoTag(param)))
+          return new TextureReference(fromVideoTexture(attr.companion.get("gl"), generateVideoTag(param)))
         case "query":
-          const obtainedTag = this.tree(param);
+          const obtainedTag = attr.tree(param);
           const texture = obtainedTag.first().getComponent(TextureComponent);
           return new TextureReference(() => texture.texture);
       }
     } else {
-      const tex = new Texture2D(this.companion.get("gl"));
+      const tex = new Texture2D(attr.companion.get("gl"));
       ImageResolver.resolve(val).then(t => {
         tex.update(t);
       });
-      this.companion.get("loader").register(tex.validPromise);
+      attr.companion.get("loader").register(tex.validPromise);
       return new TextureReference(tex);
     }
   }
   if (typeof val === "object") {
     if (val instanceof HTMLImageElement) {
-      const tex = new Texture2D(this.companion.get("gl"));
+      const tex = new Texture2D(attr.companion.get("gl"));
       if (val.complete && val.naturalWidth) {
         tex.update(val);
       } else {
@@ -80,14 +80,12 @@ function TextureConverter(this: Attribute, val: any): any {
       }
       return new TextureReference(tex);
     } else if (val instanceof HTMLCanvasElement) {
-      const tex = new Texture2D(this.companion.get("gl"));
+      const tex = new Texture2D(attr.companion.get("gl"));
       tex.update(val);
       return new TextureReference(tex);
     } else if (val instanceof HTMLVideoElement) {
-      return new TextureReference(fromVideoTexture(this.companion.get("gl"), val));
+      return new TextureReference(fromVideoTexture(attr.companion.get("gl"), val));
     }
   }
   return null;
 }
-
-export default TextureConverter;

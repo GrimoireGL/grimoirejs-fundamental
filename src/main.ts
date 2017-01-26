@@ -1,3 +1,7 @@
+import TimeComponent from "./Components/TimeComponent";
+import RenderHitArea from "./Components/RenderHitareaComponent";
+import PositionConverter from "./Converters/PositionConverter";
+import NodeConverter from "./Converters/NodeConverter";
 import DefaultMaterial from "./Material/DefaultMaterial";
 import GLExtRequestor from "./Resource/GLExtRequestor";
 import DefaultPrimitives from "./Geometry/DefaultPrimitives";
@@ -16,7 +20,6 @@ import LoopManagerComponent from "./Components/LoopManagerComponent";
 import MaterialComponent from "./Components/MaterialComponent";
 import MaterialContainerComponent from "./Components/MaterialContainerComponent";
 import MaterialImporterComponent from "./Components/MaterialImporterComponent";
-import MaterialManagerComponent from "./Components/MaterialManagerComponent";
 import MeshRendererComponent from "./Components/MeshRendererComponent";
 import MouseCameraControlComponent from "./Components/MouseCameraControlComponent";
 import RenderBufferComponent from "./Components/RenderBufferComponent";
@@ -29,14 +32,9 @@ import TextureBufferComponent from "./Components/TextureBufferComponent";
 import TextureComponent from "./Components/TextureComponent";
 import TransformComponent from "./Components/TransformComponent";
 import CanvasSizeConverter from "./Converters/CanvasSizeConverter";
-import ComponentConverter from "./Converters/ComponentConverter";
-import EnumConverter from "./Converters/EnumConverter";
 import GeometryConverter from "./Converters/GeometryConverter";
 import MaterialConverter from "./Converters/MaterialConverter";
 import TextureConverter from "./Converters/TextureConverter";
-import NumberArrayConverter from "./Converters/NumberArrayConverter";
-import NumberConverter from "./Converters/NumberConverter";
-import ObjectConverter from "./Converters/ObjectConverter";
 import Texture2DConverter from "./Converters/TextureConverter";
 import ViewportConverter from "./Converters/ViewportConverter";
 
@@ -54,7 +52,6 @@ export default () => {
     GrimoireInterface.registerComponent(_$ns("Material"), MaterialComponent);
     GrimoireInterface.registerComponent(_$ns("MaterialContainer"), MaterialContainerComponent);
     GrimoireInterface.registerComponent(_$ns("MaterialImporter"), MaterialImporterComponent);
-    GrimoireInterface.registerComponent(_$ns("MaterialManager"), MaterialManagerComponent);
     GrimoireInterface.registerComponent(_$ns("MeshRenderer"), MeshRendererComponent);
     GrimoireInterface.registerComponent(_$ns("MouseCameraControl"), MouseCameraControlComponent);
     GrimoireInterface.registerComponent(_$ns("RenderBuffer"), RenderBufferComponent);
@@ -66,33 +63,32 @@ export default () => {
     GrimoireInterface.registerComponent(_$ns("TextureBuffer"), TextureBufferComponent);
     GrimoireInterface.registerComponent(_$ns("Texture"), TextureComponent);
     GrimoireInterface.registerComponent(_$ns("Transform"), TransformComponent);
+    GrimoireInterface.registerComponent(_$ns("RenderHitArea"), RenderHitArea);
+    GrimoireInterface.registerComponent(_$ns("Time"), TimeComponent);
 
     GrimoireInterface.registerConverter(_$ns("CanvasSize"), CanvasSizeConverter);
-    GrimoireInterface.registerConverter(_$ns("Component"), ComponentConverter);
-    GrimoireInterface.registerConverter(_$ns("Enum"), EnumConverter);
     GrimoireInterface.registerConverter(_$ns("Geometry"), GeometryConverter);
     GrimoireInterface.registerConverter(_$ns("Material"), MaterialConverter);
     GrimoireInterface.registerConverter(_$ns("Texture"), TextureConverter);
-    GrimoireInterface.registerConverter(_$ns("NumberArray"), NumberArrayConverter);
-    GrimoireInterface.registerConverter(_$ns("Number"), NumberConverter);
-    GrimoireInterface.registerConverter(_$ns("Object"), ObjectConverter);
     GrimoireInterface.registerConverter(_$ns("Texture2D"), TextureConverter);
     GrimoireInterface.registerConverter(_$ns("Viewport"), ViewportConverter);
+    GrimoireInterface.registerConverter(_$ns("Node"), NodeConverter);
+    GrimoireInterface.registerConverter(PositionConverter);
 
-    GrimoireInterface.registerNode("goml", ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "MaterialManager", "RendererManager", "Fullscreen"]);
-    GrimoireInterface.registerNode("renderer", ["Renderer"]);
+    GrimoireInterface.registerNode("goml", ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "RendererManager", "Fullscreen"]);
     GrimoireInterface.registerNode("scene", ["Scene"]);
-    GrimoireInterface.registerNode("camera", ["Camera"], { position: "0,0,10" }, "object");
-    GrimoireInterface.registerNode("empty", []);
     GrimoireInterface.registerNode("object", ["Transform"]);
+    GrimoireInterface.registerNode("camera", ["Camera"], { position: "0,0,10" }, "object");
+    GrimoireInterface.registerNode("mesh", ["MaterialContainer", "MeshRenderer"], {}, "object");
+    GrimoireInterface.registerNode("renderer", ["Renderer"]);
+
     GrimoireInterface.registerNode("geometry", ["Geometry"]);
     GrimoireInterface.registerNode("texture", ["Texture"]);
-    GrimoireInterface.registerNode("mesh", ["MaterialContainer", "MeshRenderer"], {}, "object");
     GrimoireInterface.registerNode("material", ["Material"]);
     GrimoireInterface.registerNode("import-material", ["MaterialImporter"]);
     GrimoireInterface.registerNode("texture-buffer", ["TextureBuffer"]);
     GrimoireInterface.registerNode("render-buffer", ["RenderBuffer"]);
-    GrimoireInterface.registerNode("render-scene", ["MaterialContainer", "RenderScene"], {
+    GrimoireInterface.registerNode("render-scene", ["RenderScene", "RenderHitArea"], {
       material: null
     });
     GrimoireInterface.registerNode("render-quad", ["MaterialContainer", "RenderQuad"], {

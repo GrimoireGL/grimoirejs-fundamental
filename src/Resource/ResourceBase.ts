@@ -2,7 +2,11 @@ import gr from "grimoirejs";
 import IDObject from "grimoirejs/ref/Base/IDObject";
 
 
-abstract class ResourceBase extends IDObject {
+abstract class ResourceBase {
+  private static _maxIndex:number = 0;
+
+  public index:number;
+
   public destroyed: boolean = false;
 
   public validPromise: Promise<ResourceBase>;
@@ -29,7 +33,7 @@ abstract class ResourceBase extends IDObject {
     }
   }
   constructor(public gl: WebGLRenderingContext) {
-    super();
+    this.index = ResourceBase._maxIndex++;
     this.valid = false;
   }
 

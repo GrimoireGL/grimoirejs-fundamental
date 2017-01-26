@@ -20,6 +20,7 @@ export default class RenderQueueRegistry {
   public addRenderable(rendarable: IRenderable): void {
     this._renderables.push(rendarable);
     this._queues.forEach(q => q.add(rendarable));
+    rendarable.setRenderableIndex(this._renderables.length);
   }
 
   public removeRenderable(renderable: IRenderable): void {
@@ -28,6 +29,13 @@ export default class RenderQueueRegistry {
       return; // Could not find specified renderable
     }
     this._renderables.splice(index, 1);
+    this._renderables.forEach((r,i)=>{
+      r.setRenderableIndex(i + 1);
+    });
     this._queues.forEach(q => q.remove(renderable));
+  }
+
+  public getByIndex(index:number):IRenderable{
+    return this._renderables[index];
   }
 }

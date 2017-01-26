@@ -1,3 +1,6 @@
+import ManagedProgram from "../Resource/ManagedProgram";
+import ManagedShader from "../Resource/ManagedShader";
+import MaterialFactory from "./MaterialFactory";
 import Shader from "../Resource/Shader";
 import Geometry from "../Geometry/Geometry";
 import IVariableInfo from "./IVariableInfo";
@@ -25,11 +28,11 @@ export default class Pass {
    * [program description]
    * @type {Program}
    */
-  public program: Program;
+  public program: ManagedProgram;
 
-  public fs: Shader;
+  public fs: ManagedShader;
 
-  public vs: Shader;
+  public vs: ManagedShader;
 
   private _registers: ((proxy: UniformProxy, args: IMaterialArgument) => void)[];
 
@@ -50,23 +53,33 @@ export default class Pass {
     this._registers = registers.registerers;
     this._disposers = registers.disposers;
     this._gl = material.gl;
-    this.program = new Program(this._gl);
-    this.fs = new Shader(this._gl, WebGLRenderingContext.FRAGMENT_SHADER);
-    this.vs = new Shader(this._gl, WebGLRenderingContext.VERTEX_SHADER);
+    const factory = MaterialFactory.get(this._gl);
+    const macroRegister = factory.macro;
+    // register macro
     for (let key in passRecipe.macros) {
       const macro = passRecipe.macros[key];
       this._macro[macro.macroName] = macro.value;
-      this.material.addMacroObserver(key, {
-        converter: macro.type === "bool" ? "Boolean" : "Number",
-        default: macro.value
-      }, (value) => {
-        if (macro.type === "bool") {
-          this._macro[macro.macroName] = value ? "" : undefined;
-        } else {
-          this._macro[macro.macroName] = value;
-        }
-        this._updateProgram();
-      });
+      if (macro.target === "expose") {
+        this.material.addMacroObserver(key, {
+          converter: macro.type === "bool" ? "Boolean" : "Number",
+          default: macro.value
+        }, (value) => { // when changed the macro
+          if (macro.type === "bool") {
+            this._macro[macro.macroName] = value ? "" : undefined;
+          } else {
+            this._macro[macro.macroName] = value;
+          }
+          this._updateProgram();
+        });
+      } else if (macro.target === "refer") {
+        this._macro[macro.macroName] = macro.value;
+        macroRegister.watch(macro.macroName, (val, immediate) => {
+          this._macro[macro.macroName] = val;
+          if (!immediate) {
+            this._updateProgram();
+          }
+        }, true);
+      }
     }
     this._updateProgram();
     this._disables = Pass._glEnableTargets.concat();
@@ -149,9 +162,19 @@ export default class Pass {
   }
 
   private _updateProgram(): void {
-    this.fs.update(this._generateShaderCode("FS"));
-    this.vs.update(this._generateShaderCode("VS"));
-    this.program.update([this.vs, this.fs]);
+    let lFS = this.fs;
+    this.fs = ManagedShader.getShader(this._gl, WebGLRenderingContext.FRAGMENT_SHADER, this._generateShaderCode("FS"));
+    let lVS = this.vs;
+    this.vs = ManagedShader.getShader(this._gl, WebGLRenderingContext.VERTEX_SHADER, this._generateShaderCode("VS"));
+    if (lFS && lVS) {
+      lFS.release();
+      lVS.release();
+    }
+    let lP = this.program;
+    this.program = ManagedProgram.getProgram(this._gl, [this.vs, this.fs]);
+    if (lP) {
+      lP.release();
+    }
   }
 
   private _generateShaderCode(shaderType: string): string {

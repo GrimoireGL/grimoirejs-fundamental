@@ -88,7 +88,7 @@ export default class SortTransformUtility {
 
   public static parseMacros(source: string): { [key: string]: IMacro } {
     const result = {};
-    const regex = /@ExposeMacro\s*\(\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*\)/g;
+    let regex = /@ExposeMacro\s*\(\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*\)/g;
     let regexResult;
     while ((regexResult = regex.exec(source))) {
       if (!regexResult[1] || !regexResult[2] || !regexResult[3] || !regexResult[4]) {
@@ -113,7 +113,20 @@ export default class SortTransformUtility {
         name: regexResult[2],
         macroName: regexResult[3],
         type: regexResult[1],
-        value: value
+        value: value,
+        target:"expose"
+      };
+    }
+    regex = /@ReferMacro\s*\(\s*([a-zA-Z0-9_]+)\s*,\s*(.+)\s*\)/g;
+    while ((regexResult = regex.exec(source))) {
+      if (!regexResult[1] || !regexResult[2]) {
+        throw new Error(`Invalid parameter was passed on @ReferMacro preference on '${regexResult[0]}'`);
+      }
+      result[regexResult[1]] = <IMacro>{
+        name: regexResult[1],
+        macroName: regexResult[1],
+        value: regexResult[2],
+        target:"refer"
       };
     }
     return result;
@@ -125,7 +138,7 @@ export default class SortTransformUtility {
       functions: {
         blendColor: [0, 0, 0, 0],
         cullFace: [WebGLRenderingContext.BACK],
-        blendFuncSeparate: [WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA, WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE_MINUS_SRC_ALPHA],
+        blendFuncSeparate: [WebGLRenderingContext.ONE, WebGLRenderingContext.ZERO, WebGLRenderingContext.ONE, WebGLRenderingContext.ZERO],
         blendEquationSeparate: [WebGLRenderingContext.FUNC_ADD, WebGLRenderingContext.FUNC_ADD],
         lineWidth: [1],
         frontFace: [WebGLRenderingContext.CCW],
@@ -177,6 +190,7 @@ export default class SortTransformUtility {
       }
       if (c === "\n") {
         if (isLineComment) {
+          text += "\n";
           isLineComment = false;
           continue;
         } else if (isMultiLineComment) {

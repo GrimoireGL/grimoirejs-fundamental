@@ -58,7 +58,7 @@ export default {
   },
   BlendFunc: function(state: IState, args: string[]) {
     const config = asGLConstantArgs(args, 2);
-    state.functions.blendFuncSeparate = [config[0], config[1], config[0], config[1]];
+    state.functions.blendFuncSeparate = [config[0], config[1], config[0],config[1]];
   },
   BlendFuncSeparate: function(state: IState, args: string[]) {
     state.functions.blendFuncSeparate = asGLConstantArgs(args, 4);
@@ -100,7 +100,10 @@ export default {
     state.functions.scissor = asNumberArgs(args, 4);
     state.enable.push(WebGLRenderingContext.SCISSOR_TEST);
   },
-  ExposeMacro: function(state: IState, args: string[]) {
+  ExposeMacro: function() {
+    return;
+  },
+  ReferMacro:function(){
     return;
   }
 };

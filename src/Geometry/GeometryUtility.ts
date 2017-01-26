@@ -1,399 +1,327 @@
-import Vector3 from "grimoirejs-math/ref/Vector3";
 export default class GeometryUtility {
-  /**
-   * Convert triangles topology to lines. Basically uses for making wireframes.
-   * @param  {IterableIterator<number>} indices [description]
-   * @return {IterableIterator<number>}          [description]
-   */
-  public static *linesFromTriangles(indices: IterableIterator<number>): IterableIterator<number> {
+  public static linesFromTriangles(indices: number[]): number[] {
+    const ret: number[] = [];
     const ic: number[] = new Array(3);
     let i = 0;
     for (let index of indices) {
       ic[i % 3] = index;
       if (i % 3 === 2) {
         const a = ic[0], b = ic[1], c = ic[2];
-        yield* [a, b, b, c, c, a] as number[];
+        Array.prototype.push.apply(ret, [a, b, b, c, c, a]);
       }
       i++;
     }
+    return ret;
   }
-  /**
-   * Generator for ellipse positions
-   * @param  {Vector3}                  center [the center position of ellipse]
-   * @param  {Vector3}                  up     [up vector for ellipse]
-   * @param  {Vector3}                  right  [right vector for ellipse]
-   * @param  {number}                   divide [how many triangles should consists in the ellipse]
-   * @return {IterableIterator<number>}        [Generated iterator for position]
-   */
-  public static *ellipsePosition(center: Vector3, up: Vector3, right: Vector3, divide: number): IterableIterator<number> {
-    yield center.X; yield center.Y; yield center.Z;
-    const step = 2 * Math.PI / divide;
+  public static plane(center: number[], normal: number[], up: number[], right: number[], hdiv: number = 1, vdiv: number = 1): number[] {
+    const ret = new Array(8 * (hdiv + 1) * (vdiv + 1));
+    const sp = [center[0] - up[0] - right[0], center[1] - up[1] - right[1], center[2] - up[2] - right[2]];
+    const sr = [right[0] / hdiv * 2, right[1] / hdiv * 2, right[2] / hdiv * 2];
+    const su = [up[0] / vdiv * 2, up[1] / vdiv * 2, up[2] / vdiv * 2];
+    for (let v = 0; v < vdiv + 1; v++) {
+      for (let h = 0; h < hdiv + 1; h++) {
+        const fi = ((hdiv + 1) * v + h) * 8;
+        ret[fi + 0] = sp[0] + sr[0] * h + su[0] * v;
+        ret[fi + 1] = sp[1] + sr[1] * h + su[1] * v;
+        ret[fi + 2] = sp[2] + sr[2] * h + su[2] * v;
+
+        ret[fi + 3] = normal[0];
+        ret[fi + 4] = normal[1];
+        ret[fi + 5] = normal[2];
+
+        ret[fi + 6] = 1 / hdiv * h;
+        ret[fi + 7] = 1 - 1 / vdiv * v;
+      }
+    }
+    return ret;
+  }
+
+  public static cylinderPlane(center: number[], normal: number[], up: number[], right: number[], divide: number, order: number): number[] {
+    const ret = new Array(32);
+    const sp = [center[0] - up[0] - right[0], center[1] - up[1] - right[1], center[2] - up[2] - right[2]];
+    const sr = [right[0] * 2, right[1] * 2, right[2] * 2];
+    const su = [up[0] * 2, up[1] * 2, up[2] * 2];
+    for (let v = 0; v < 2; v++) {
+      for (let h = 0; h < 2; h++) {
+        const fi = (2 * v + h) * 8;
+        ret[fi + 0] = sp[0] + sr[0] * h + su[0] * v;
+        ret[fi + 1] = sp[1] + sr[1] * h + su[1] * v;
+        ret[fi + 2] = sp[2] + sr[2] * h + su[2] * v;
+
+        const l = Math.tan(Math.PI / divide) / Math.sin(Math.PI / divide);
+        if (h == 0) {
+          ret[fi + 3] = normal[0] - l * right[0];
+          ret[fi + 4] = normal[1] - l * right[1];
+          ret[fi + 5] = normal[2] - l * right[2];
+        } else {
+          ret[fi + 3] = normal[0] + l * right[0];
+          ret[fi + 4] = normal[1] + l * right[1];
+          ret[fi + 5] = normal[2] + l * right[2];
+        }
+
+
+        ret[fi + 6] = 1 / divide * (order + 1 + h);
+        ret[fi + 7] = v == 0 ? 1 : 0;
+      }
+    }
+    return ret;
+  }
+  public static triangle(center: number[], normal: number[], up: number[], right: number[]): number[] {
+    const ret = new Array(24);
+    const delta = 2 * Math.PI / 3;
+    for (let i = 0; i < 3; i++) {
+      const s = Math.sin(delta * i);
+      const c = Math.cos(delta * i);
+      ret[0 + 8 * i] = center[0] + c * up[0] + s * right[0];
+      ret[1 + 8 * i] = center[1] + c * up[1] + s * right[1];
+      ret[2 + 8 * i] = center[2] + c * up[2] + s * right[2];
+      ret[3 + 8 * i] = normal[0];
+      ret[4 + 8 * i] = normal[1];
+      ret[5 + 8 * i] = normal[2];
+      ret[6 + 8 * i] = 0.5 + (c * up[0] + s * right[0]) / 2;
+      ret[7 + 8 * i] = 0.5 + (c * up[1] + s * right[1]) / 2;
+    }
+    return ret;
+  }
+
+  public static coneTriangle(center: number[], normal: number[], up: number[], right: number[], divide: number, order: number): number[] {
+    const ret = new Array(24);
+    const delta = 2 * Math.PI / 3;
+    for (let i = 0; i < 3; i++) {
+      const s = Math.sin(delta * i);
+      const c = Math.cos(delta * i);
+      ret[0 + 8 * i] = center[0] + c * up[0] + s * right[0];
+      ret[1 + 8 * i] = center[1] + c * up[1] + s * right[1];
+      ret[2 + 8 * i] = center[2] + c * up[2] + s * right[2];
+
+      ret[3 + 8 * i] = normal[0];
+      ret[4 + 8 * i] = normal[1];
+      ret[5 + 8 * i] = normal[2];
+      const k = Math.pow(2, 0.5);
+      const l = Math.tan(Math.PI / divide) / Math.sin(Math.PI / divide) / Math.pow(3, 0.5) * 2;
+      if (i == 0) {
+        ret[3 + 8 * i] = normal[0];
+        ret[4 + 8 * i] = normal[1];
+        ret[5 + 8 * i] = normal[2];
+        ret[6 + 8 * i] = 0;
+        ret[7 + 8 * i] = 0;
+      } else if (i == 1) {
+        ret[3 + 8 * i] = normal[0] / k + l * right[0];
+        ret[4 + 8 * i] = normal[1] / k + l * right[1];
+        ret[5 + 8 * i] = normal[2] / k + l * right[2];
+        ret[6 + 8 * i] = Math.cos(-Math.PI / divide / 2 * (order + 1));
+        ret[7 + 8 * i] = Math.sin(-Math.PI / divide / 2 * (order + 1));
+      } else {
+        ret[3 + 8 * i] = normal[0] / k - l * right[0];
+        ret[4 + 8 * i] = normal[1] / k - l * right[1];
+        ret[5 + 8 * i] = normal[2] / k - l * right[2];
+        ret[6 + 8 * i] = Math.cos(-Math.PI / divide / 2 * (order));
+        ret[7 + 8 * i] = Math.sin(-Math.PI / divide / 2 * (order));
+      }
+    }
+    return ret;
+  }
+
+  public static triangleIndex(offset: number) {
+    const ret = new Array(3);
+    ret[0] = offset;
+    ret[1] = offset + 2;
+    ret[2] = offset + 1;
+    return ret;
+  }
+
+  public static planeIndex(offset: number = 0, hdiv: number = 0, vdiv: number = 0): number[] {
+    const ret = new Array(6 * hdiv * vdiv);
+    for (let v = 0; v < vdiv; v++) {
+      for (let h = 0; h < hdiv; h++) {
+        const fi = (hdiv * v + h) * 6;
+        const ld = offset + (hdiv + 1) * v + h;
+        const lu = offset + (hdiv + 1) * (v + 1) + h;
+        ret[fi + 0] = ld;
+        ret[fi + 1] = ld + 1;
+        ret[fi + 2] = lu;
+        ret[fi + 3] = lu;
+        ret[fi + 4] = ld + 1;
+        ret[fi + 5] = lu + 1;
+      }
+    }
+    return ret;
+  }
+
+  public static circle(center: number[], normal: number[], up: number[], right: number[], divide: number = 5): number[] {
+    const ret = new Array((3 + divide) * 6);
+    // center
+    ret[0] = center[0];
+    ret[1] = center[1];
+    ret[2] = center[2];
+
+    ret[3] = normal[0];
+    ret[4] = normal[1];
+    ret[5] = normal[2];
+
+    ret[6] = 0.5;
+    ret[7] = 0.5;
+    const delta = 2 * Math.PI / divide;
+    for (let v = 0; v < divide + 1; v++) {
+      const fi = 8 + v * 8;
+      const s = Math.sin(delta * v);
+      const c = Math.cos(delta * v);
+      ret[fi + 0] = center[0] + c * up[0] + s * right[0];
+      ret[fi + 1] = center[1] + c * up[1] + s * right[1];
+      ret[fi + 2] = center[2] + c * up[2] + s * right[2];
+
+      ret[fi + 3] = normal[0];
+      ret[fi + 4] = normal[1];
+      ret[fi + 5] = normal[2];
+
+      ret[fi + 6] = 0.5 + 0.5 * s;
+      ret[fi + 7] = 0.5 - 0.5 * c;
+    }
+    return ret;
+  }
+
+  public static circleIndex(offset: number, divide: number): number[] {
+    const ret = new Array(3 * divide);
     for (let i = 0; i < divide; i++) {
-      const theta = step * i;
-      const sin = Math.sin(Math.PI * 2 - theta);
-      const cos = Math.cos(Math.PI * 2 - theta);
-      yield center.X + cos * up.X + sin * right.X;
-      yield center.Y + cos * up.Y + sin * right.Y;
-      yield center.Z + cos * up.Z + sin * right.Z;
+      ret[3 * i + 0] = offset;
+      ret[3 * i + 1] = offset + (i + 2);
+      ret[3 * i + 2] = offset + (i + 1);
     }
+    return ret;
   }
+  public static capsule(center: number[], up: number[], right: number[], forward: number[], vdiv: number = 3, hdiv: number = 3): number[] {
+    const ret = new Array((vdiv * hdiv + 2) * 8);
+    //top(0)
+    ret[0] = center[0] + 2 * up[0];
+    ret[1] = center[1] + 2 * up[1];
+    ret[2] = center[2] + 2 * up[2];
 
+    ret[3] = up[0];
+    ret[4] = up[1];
+    ret[5] = up[2];
 
+    ret[6] = 0;
+    ret[7] = 0;
+    // bottom(1)
+    ret[8] = center[0] - 2 * up[0];
+    ret[9] = center[1] - 2 * up[1];
+    ret[10] = center[2] - 2 * up[2];
 
-  public static *trianglePosition(center: Vector3, up: Vector3, right: Vector3): IterableIterator<number> {
-    let p0 = center.addWith(up);
-    let p1 = center.subtractWith(up).addWith(right);
-    let p2 = center.subtractWith(up).subtractWith(right);
-    yield* p0.rawElements as number[];
-    yield* p1.rawElements as number[];
-    yield* p2.rawElements as number[];
-  }
+    ret[11] = -up[0];
+    ret[12] = -up[1];
+    ret[13] = -up[2];
 
-  public static *cubePosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3): IterableIterator<number> {
-    yield* GeometryUtility.quadPosition(center.subtractWith(forward), up, right); // 手前
-    yield* GeometryUtility.quadPosition(center.addWith(forward), up, right.negateThis()); // 奥
-    yield* GeometryUtility.quadPosition(center.addWith(up), forward, right); // 上
-    yield* GeometryUtility.quadPosition(center.addWith(right), forward, up.negateThis()); // 右
-    yield* GeometryUtility.quadPosition(center.subtractWith(up), forward, right.negateThis()); // 下
-    yield* GeometryUtility.quadPosition(center.subtractWith(right), forward, up); // 左
-  }
+    ret[14] = 0;
+    ret[15] = 1;
+    const vDelta = Math.PI / (vdiv + 1);
+    const hDelta = Math.PI * 2 / hdiv;
+    for (let v = 0; v < vdiv; v++) {
+      const vc = Math.cos((v + 1) * vDelta);
+      const vs = Math.sin((v + 1) * vDelta);
+      const phi = vDelta * v;
+      for (let h = 0; h < hdiv + 1; h++) {
+        const hc = Math.cos(h * hDelta);
+        const hs = Math.sin(h * hDelta);
+        const fi = 16 + (v * (hdiv + 1) + h) * 8;
+        ret[fi + 0] = center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs);
+        ret[fi + 1] = center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs);
+        ret[fi + 2] = center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs);
+        ret[fi + 3] = center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs);
+        ret[fi + 4] = center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs);
+        ret[fi + 5] = (center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs));
+        const theta = hDelta * h;
+        ret[fi + 6] = theta / Math.PI / 2;
+        ret[fi + 7] = phi / Math.PI;
 
-  public static *quadPosition(center: Vector3, up: Vector3, right: Vector3): IterableIterator<number> {
-    let p0 = center.subtractWith(right).addWith(up);
-    let p1 = center.addWith(right).addWith(up);
-    let p2 = center.addWith(right).subtractWith(up);
-    let p3 = center.subtractWith(right).subtractWith(up);
-    yield* p0.rawElements as number[];
-    yield* p1.rawElements as number[];
-    yield* p2.rawElements as number[];
-    yield* p3.rawElements as number[];
-  }
-  public static *planePosition(center: Vector3, up: Vector3, right: Vector3, divide): IterableIterator<number> {
-    let x = center.addWith(right).multiplyWith(2);
-    let y = center.subtractWith(up).multiplyWith(2);
-    for (let i = -divide / 2; i < divide / 2 + 1; i++) {//表
-      for (let j = -divide / 2; j < divide / 2 + 1; j++) {
-        yield* x.multiplyWith(j / divide).addWith(y.multiplyWith(i / divide)).rawElements as number[];
+        ret[fi + 0] = ret[fi + 0] > 0 ? ret[fi + 0] + up[0] : ret[fi + 0] - up[0];
+        ret[fi + 1] = ret[fi + 1] > 0 ? ret[fi + 1] + up[1] : ret[fi + 1] - up[1];
+        ret[fi + 2] = ret[fi + 2] > 0 ? ret[fi + 2] + up[2] : ret[fi + 2] - up[2];
       }
     }
-    for (let i = -divide / 2; i < divide / 2 + 1; i++) {//裏
-      for (let j = -divide / 2; j < divide / 2 + 1; j++) {
-        yield* x.multiplyWith(j / divide).addWith(y.multiplyWith(i / divide)).rawElements as number[];
+    return ret;
+  }
+
+  public static sphere(center: number[], up: number[], right: number[], forward: number[], vdiv: number = 3, hdiv: number = 3): number[] {
+    const ret = new Array((vdiv * hdiv + 2) * 8);
+    //top(0)
+    ret[0] = center[0] + up[0];
+    ret[1] = center[1] + up[1];
+    ret[2] = center[2] + up[2];
+
+    ret[3] = up[0];
+    ret[4] = up[1];
+    ret[5] = up[2];
+
+    ret[6] = 0;
+    ret[7] = 0;
+    // bottom(1)
+    ret[8] = center[0] - up[0];
+    ret[9] = center[1] - up[1];
+    ret[10] = center[2] - up[2];
+
+    ret[11] = -up[0];
+    ret[12] = -up[1];
+    ret[13] = -up[2];
+
+    ret[14] = 0;
+    ret[15] = 1;
+    const vDelta = Math.PI / (vdiv + 1);
+    const hDelta = Math.PI * 2 / hdiv;
+    for (let v = 0; v < vdiv; v++) {
+      const vc = Math.cos((v + 1) * vDelta);
+      const vs = Math.sin((v + 1) * vDelta);
+      const phi = vDelta * v;
+      for (let h = 0; h < hdiv + 1; h++) {
+        const hc = Math.cos(h * hDelta);
+        const hs = Math.sin(h * hDelta);
+        const fi = 16 + (v * (hdiv + 1) + h) * 8;
+        ret[fi + 0] = center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs);
+        ret[fi + 1] = center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs);
+        ret[fi + 2] = center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs);
+        ret[fi + 3] = center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs);
+        ret[fi + 4] = center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs);
+        ret[fi + 5] = (center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs));
+        const theta = hDelta * h;
+        ret[fi + 6] = theta / Math.PI / 2;
+        ret[fi + 7] = phi / Math.PI;
       }
     }
-  }
-
-  public static *cylinderPosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, divide: number): IterableIterator<number> {
-    yield* GeometryUtility.ellipsePosition(center.addWith(up), forward, right, divide);
-    yield* GeometryUtility.ellipsePosition(center.subtractWith(up), forward, Vector3.negate(right), divide);
-    const step = 2 * Math.PI / divide;
-    const d = Math.cos(step / 2);
-    const d2 = Math.sin(step / 2);
-    const temp = divide % 2 == 0 ? step / 2 : 0;
-    for (let i = 0; i < divide; i++) {
-      const theta = step / 2 + step * i;
-      const sin = Math.sin((Math.PI - step) / 2 - theta - temp);
-      const cos = Math.cos((Math.PI - step) / 2 - theta - temp);
-      const currentCenter = new Vector3(d * cos, center.Y, d * sin);
-      const currentRight = new Vector3(Math.cos(- step / 2 - theta - temp), center.Y, Math.sin(- step / 2 - theta - temp));
-      yield* GeometryUtility.quadPosition(currentCenter, up, Vector3.multiply(d2, currentRight));
-    }
-  }
-  public static *conePosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, divide: number): IterableIterator<number> {
-    yield* GeometryUtility.ellipsePosition(center.subtractWith(up), forward, Vector3.negate(right), divide);
-    const step = 2 * Math.PI / divide;
-    const d = Math.cos(step / 2) / 2;
-    const d2 = Math.sin(step / 2);
-    const temp = divide % 2 == 1 ? step / 2 : 0;
-    for (let i = 0; i < divide; i++) {
-      const theta = step * i;
-      const sin = Math.sin((Math.PI - step) / 2 - theta - temp);
-      const cos = Math.cos((Math.PI - step) / 2 - theta - temp);
-      const currentCenter = new Vector3(d * cos, center.Y, d * sin);
-      const currentRight = new Vector3(Math.cos(- step / 2 - theta - temp), center.Y, Math.sin(- step / 2 - theta - temp));
-      yield* GeometryUtility.trianglePosition(currentCenter, up.subtractWith(currentCenter), Vector3.multiply(d2, currentRight));
-    }
-  }
-  public static *spherePosition(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, rowDiv: number, circleDiv: number): IterableIterator<number> {
-    yield* center.addWith(up).rawElements as number[];
-    yield* center.subtractWith(up).rawElements as number[];
-    const ia = 2 * Math.PI / circleDiv;
-    const ja = Math.PI / (rowDiv + 1);
-    for (let j = 1; j <= rowDiv; j++) {
-      const phi = ja * j;
-      const sinPhi = Math.sin(phi);
-      const upVector = up.multiplyWith(Math.cos(phi));
-      for (let i = 0; i <= circleDiv; i++) {
-        const theta = ia * i;
-        yield* (right.multiplyWith(Math.cos(theta)).addWith(forward.multiplyWith(Math.sin(theta)))).multiplyWith(sinPhi).addWith(upVector).rawElements as number[];
-      }
-    }
-  }
-
-  public static *quadNormal(normal: Vector3): IterableIterator<number> {
-    yield* normal.rawElements as number[];
-    yield* normal.rawElements as number[];
-    yield* normal.rawElements as number[];
-    yield* normal.rawElements as number[];
-  }
-  public static *ellipseNormal(normal: Vector3, divide: number): IterableIterator<number> {
-    for (let i = 0; i < divide + 1; i++) {
-      yield* normal.rawElements as number[];
-    }
-  }
-  public static *triangleNormal(normal: Vector3): IterableIterator<number> {
-    yield* normal.rawElements as number[];
-    yield* normal.rawElements as number[];
-    yield* normal.rawElements as number[];
-  }
-  public static *cubeNormal(center: Vector3, up: Vector3, right: Vector3, forward: Vector3): IterableIterator<number> {
-    yield* GeometryUtility.quadNormal(forward.negateThis());
-    yield* GeometryUtility.quadNormal(forward);
-    yield* GeometryUtility.quadNormal(up);
-    yield* GeometryUtility.quadNormal(right);
-    yield* GeometryUtility.quadNormal(up.negateThis());
-    yield* GeometryUtility.quadNormal(right.negateThis());
-  }
-  public static *cylinderNormal(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, divide: number): IterableIterator<number> {
-    yield* GeometryUtility.ellipseNormal(up, divide);
-    yield* GeometryUtility.ellipseNormal(up.negateThis(), divide);
-    const step = 2 * Math.PI / divide;
-    let lastRight = new Vector3(Math.cos(- step / 2), center.Y, Math.sin(- step / 2));
-    for (let i = 0; i < divide; i++) {
-      const theta = step * (i + 1);
-      const sin = Math.sin(Math.PI / 2 - theta);
-      const cos = Math.cos(Math.PI / 2 - theta);
-      const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
-      yield* Vector3.cross(lastRight, up).rawElements as number[];
-      yield* Vector3.cross(currentRight, up).rawElements as number[];
-      yield* Vector3.cross(currentRight, up).rawElements as number[];
-      yield* Vector3.cross(lastRight, up).rawElements as number[];
-      lastRight = currentRight;
-    }
-  }
-  public static *coneNormal(center: Vector3, up: Vector3, right: Vector3, forward: Vector3, divide: number): IterableIterator<number> {
-    yield* GeometryUtility.ellipseNormal(up.negateThis(), divide);
-    const step = Math.PI / divide;
-    const d = Math.cos(step / 2) / 2;
-    let lastNormal = Vector3.cross(new Vector3(Math.cos(step / 2), center.Y, Math.sin(step / 2)), up.subtractWith(new Vector3(d * Math.cos((Math.PI + step) / 2), center.Y, d * Math.sin((Math.PI + step) / 2))));
-    for (let i = 0; i < divide * 2; i++) {
-      const theta = step * i;
-      const sin = Math.sin((Math.PI - step) / 2 - theta);
-      const cos = Math.cos((Math.PI - step) / 2 - theta);
-      const currentCenter = new Vector3(d * cos, center.Y, d * sin);
-      const currentRight = new Vector3(Math.cos(- step / 2 - theta), center.Y, Math.sin(- step / 2 - theta));
-      yield* Vector3.cross(currentRight, up.subtractWith(currentCenter)).rawElements as number[];
-      if (i % 2 == 1) {
-        yield* lastNormal.rawElements as number[];
-        lastNormal = Vector3.cross(currentRight, up.subtractWith(currentCenter));
-      }
-    }
-    yield* Vector3.cross(new Vector3(Math.cos(step / 2), center.Y, Math.sin(step / 2)), up.subtractWith(new Vector3(d * Math.cos((Math.PI + step) / 2), center.Y, d * Math.sin((Math.PI + step) / 2)))).rawElements as number[];
-  }
-  public static *planeNormal(normal: Vector3, divide: number): IterableIterator<number> {
-    const s = GeometryUtility.planeSize(divide) / 2;
-    for (let i = 0; i < s; i++) {//表
-      yield* normal.rawElements as number[];
-    }
-    for (let i = 0; i < s; i++) {//裏
-      yield* normal.negateThis().rawElements as number[];
-    }
-  }
-
-  public static *sphereNormal(up: Vector3, right: Vector3, forward: Vector3, rowDiv: number, circleDiv: number): IterableIterator<number> {
-    yield* GeometryUtility.spherePosition(Vector3.Zero, up, right, forward, rowDiv, circleDiv);
-  }
-
-  public static *sphereTexCoord(rowDiv: number, circleDiv: number): IterableIterator<number> {
-    yield* [0, 0, 0, 1];
-    const ia = 2 * Math.PI / circleDiv;
-    const ja = Math.PI / (rowDiv + 1);
-    for (let j = 1; j <= rowDiv; j++) {
-      const phi = ja * j;
-      const sinPhi = Math.sin(phi);
-      for (let i = 0; i <= circleDiv; i++) {
-        const theta = ia * i;
-        yield* [theta / Math.PI / 2, phi / Math.PI];
-      }
-    }
-  }
-  public static *quadTexCoord(): IterableIterator<number> {
-    yield* [0, 0];
-    yield* [1, 0];
-    yield* [1, 1];
-    yield* [0, 1];
-  }
-  public static *cubeTexCoord(): IterableIterator<number> {
-    for (let i = 0; i < 6; i++) {
-      yield* GeometryUtility.quadTexCoord();
-    }
-  }
-  public static *triangleTexCoord(): IterableIterator<number> {
-    yield* [0, 0];
-    yield* [1, 0];
-    yield* [0, 1];
-  }
-  public static *ellipseTexCoord(divide: number): IterableIterator<number> {
-    yield* [0.5, 0.5];
-    const step = 2 * Math.PI / divide;
-    for (let i = 0; i < divide; i++) {
-      const theta = step * i;
-      yield* [0.5 + Math.cos(theta + Math.PI) / 2, 0.5 + Math.sin(theta + Math.PI) / 2];
-    }
-  }
-  public static *planeTexCoord(divide: number): IterableIterator<number> {
-    for (let i = 0; i < divide + 1; i++) {//表
-      for (let j = 0; j < divide + 1; j++) {
-        yield* [j / divide, i / divide];
-      }
-    }
-    for (let i = 0; i < divide + 1; i++) {//裏
-      for (let j = 0; j < divide + 1; j++) {
-        yield* [j / divide, i / divide];
-      }
-    }
-  }
-  public static *cylinderTexCoord(divide: number): IterableIterator<number> {
-    yield* GeometryUtility.ellipseTexCoord(divide);
-    yield* GeometryUtility.ellipseTexCoord(divide);
-    const p = 1 / divide;
-    for (let j = 0; j < divide; j++) {
-      yield* [p * j, 0];
-      yield* [p * (j + 1), 0];
-      yield* [p * (j + 1), 1];
-      yield* [p * j, 1];
-    }
-  }
-  public static *coneTexCoord(divide: number): IterableIterator<number> {
-    yield* GeometryUtility.ellipseTexCoord(divide);
-
-    const step = Math.PI / 2 / divide;
-    for (let i = 0; i < divide; i++) {
-      const theta = -step * i;
-      yield* [0, 0];
-      yield* [Math.cos(theta - step), Math.sin(theta - step)];
-      yield* [Math.cos(theta), Math.sin(theta)]
-    }
+    return ret;
   }
 
 
+  public static sphereIndex(offset: number, vdiv: number = 3, hdiv: number = 3): number[] {
 
-
-  public static *triangleIndex(offset: number): IterableIterator<number> {
-    const o = offset;
-    yield* [o, o + 2, o + 1];
-  }
-
-  public static *quadIndex(offset: number): IterableIterator<number> {
-    const o = offset;
-    yield* [o, o + 2, o + 1, o, o + 3, o + 2];
-  }
-
-  public static *cubeIndex(offset: number): IterableIterator<number> {
-    const s = GeometryUtility.quadSize();
-    for (let i = 0; i < 6; i++) {
-      yield* GeometryUtility.quadIndex(offset + s * i);
-    }
-  }
-
-  public static *sphereIndex(offset: number, rowDiv: number, circleDiv: number): IterableIterator<number> {
-    const getIndex = (i: number, j: number) => offset + (circleDiv + 1) * j + 2 + i;
+    const ret: number[] = new Array(hdiv * vdiv * 6);
+    const getIndex = (i: number, j: number) => offset + (hdiv + 1) * j + 2 + i;
     const top = offset;
     const bottom = offset + 1;
     // upper side
-    for (let i = 0; i < circleDiv; i++) {
-      yield top;
-      yield getIndex(i, 0);
-      yield getIndex(i + 1, 0);
+    for (let i = 0; i < hdiv; i++) {
+      ret[3 * i + 0] = top;
+      ret[3 * i + 1] = getIndex(i + 1, 0);
+      ret[3 * i + 2] = getIndex(i, 0);
     }
+    const k = 3 * hdiv;
     // middle
-    for (let j = 0; j < rowDiv - 1; j++) {
-      for (let i = 0; i < circleDiv; i++) {
-        yield getIndex(i, j);
-        yield getIndex(i, j + 1);
-        yield getIndex(i + 1, j);
-        yield getIndex(i, j + 1);
-        yield getIndex(i + 1, j + 1);
-        yield getIndex(i + 1, j);
+    for (let j = 0; j < vdiv - 1; j++) {
+      for (let i = 0; i < hdiv; i++) {
+        ret[(hdiv * j + i) * 6 + k] = getIndex(i, j);
+        ret[(hdiv * j + i) * 6 + k + 1] = getIndex(i + 1, j);
+        ret[(hdiv * j + i) * 6 + k + 2] = getIndex(i, j + 1);
+        ret[(hdiv * j + i) * 6 + k + 3] = getIndex(i, j + 1);
+        ret[(hdiv * j + i) * 6 + k + 4] = getIndex(i + 1, j);
+        ret[(hdiv * j + i) * 6 + k + 5] = getIndex(i + 1, j + 1);
       }
     }
+    const l = hdiv * (vdiv - 1) * 6 + k;
+
     // lower side
-    for (let i = 0; i < circleDiv; i++) {
-      yield bottom;
-      yield getIndex(i + 1, rowDiv - 1);
-      yield getIndex(i, rowDiv - 1);
+    for (let i = 0; i < hdiv; i++) {
+      ret[3 * i + l + 0] = bottom;
+      ret[3 * i + l + 1] = getIndex(i, vdiv - 1);
+      ret[3 * i + l + 2] = getIndex(i + 1, vdiv - 1);
     }
-  }
-
-  public static *cylinderIndex(offset: number, divide: number): IterableIterator<number> {
-    const s = GeometryUtility.ellipseSize(divide);
-    const t = GeometryUtility.quadSize();
-    yield* GeometryUtility.ellipseIndex(offset, divide);
-    yield* GeometryUtility.ellipseIndex(offset + s, divide);
-    for (let i = 0; i < divide; i++) {
-      yield* GeometryUtility.quadIndex(offset + s * 2 + t * i);
-    }
-  }
-  public static *coneIndex(offset: number, divide: number): IterableIterator<number> {
-    const s = GeometryUtility.ellipseSize(divide);
-    const t = GeometryUtility.triangleSize();
-    yield* GeometryUtility.ellipseIndex(offset, divide);
-    for (let i = 0; i < divide; i++) {
-      yield* GeometryUtility.triangleIndex(offset + s + i * t);
-    }
-  }
-  public static *planeIndex(offset: number, divide: number): IterableIterator<number> {
-    let o = offset;
-    const s = (GeometryUtility.planeSize(divide) / 2);
-    for (let j = 0; j < divide; j++) {
-      for (let i = 0; i < divide; i++) {
-        o = offset + i + j * (divide + 1);
-        yield* [o, o + divide + 2, o + 1];
-        yield* [o, o + divide + 1, o + divide + 2];
-      }
-    }
-    for (let j = 0; j < divide; j++) {
-      for (let i = 0; i < divide; i++) {
-        o = offset + i + j * (divide + 1) + s;
-        yield* [o, o + 1, o + divide + 2];
-        yield* [o, o + divide + 2, o + divide + 1];
-      }
-    }
-  }
-  public static *ellipseIndex(offset: number, divide: number): IterableIterator<number> {
-    for (let i = 0; i < divide - 1; i++) {
-      yield* [offset, offset + 1 + i, offset + 2 + i];
-    }
-    yield* [offset, offset + divide, offset + 1];
-  }
-
-
-
-  public static quadSize(): number {
-    return 4;
-  }
-
-  public static triangleSize(): number {
-    return 3;
-  }
-
-  public static cubeSize(): number {
-    return 6 * GeometryUtility.quadSize();
-  }
-
-  public static sphereSize(rowDiv: number, circleDiv: number): number {
-    return 2 + rowDiv * (circleDiv + 1);
-  }
-  public static cylinderSize(divide: number): number {
-    return (GeometryUtility.ellipseSize(divide) * 2) + divide * GeometryUtility.quadSize();
-  }
-  public static coneSize(divide: number): number {
-    return GeometryUtility.ellipseSize(divide) + divide * GeometryUtility.triangleSize();
-  }
-  public static planeSize(divide: number): number {
-    return (divide + 1) * (divide + 1) * 2;
-  }
-  public static ellipseSize(divide: number): number {
-    return divide + 1;
+    return ret;
   }
 }

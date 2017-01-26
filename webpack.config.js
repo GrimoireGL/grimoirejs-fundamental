@@ -3,7 +3,8 @@ const webpack = require("webpack");
 const shell = require("webpack-shell-plugin");
 const argv = require("yargs").argv;
 const fs = require("fs");
-const fnPrefix = JSON.parse(fs.readFileSync(path.resolve(__dirname, "package.json"), "utf-8")).name.replace("grimoirejs","grimoire");
+const pkgJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, "package.json"), "utf-8"));
+const fnPrefix = pkgJson.name.replace("grimoirejs","grimoire");
 
 const getBuildTask = (fileName, plugins) => {
   return {
@@ -24,7 +25,8 @@ const getBuildTask = (fileName, plugins) => {
     resolve: {
       extensions: ['', '.ts', '.js']
     },
-    plugins: [new shell({
+    plugins: [
+      new shell({
       onBuildStart: "npm run generate-expose",
       onBuildEnd: "npm run generate-reference"
     })].concat(plugins),

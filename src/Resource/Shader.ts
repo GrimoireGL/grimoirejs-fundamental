@@ -1,5 +1,6 @@
 import ResourceBase from "./ResourceBase";
 export default class Shader extends ResourceBase {
+
   public shader: WebGLShader;
 
   constructor(gl: WebGLRenderingContext, public readonly type: number, public sourceCode?: string) {
@@ -14,7 +15,7 @@ export default class Shader extends ResourceBase {
     this.gl.shaderSource(this.shader, source);
     this.gl.compileShader(this.shader);
     if (!this.gl.getShaderParameter(this.shader, WebGLRenderingContext.COMPILE_STATUS)) {
-      throw new Error(`Compiling shader failed.\nSourceCode:\n${source}\n\nErrorCode:${this.gl.getShaderInfoLog(this.shader)}`);
+      throw new Error(`Compiling shader failed.\nSourceCode:\n${this._insertLineNumbers(source)}\n\nErrorCode:${this.gl.getShaderInfoLog(this.shader)}`);
     }
     this.sourceCode = source;
     this.valid = true;
@@ -23,5 +24,19 @@ export default class Shader extends ResourceBase {
   public destroy(): void {
     super.destroy();
     this.gl.deleteShader(this.shader);
+  }
+
+  private _insertLineNumbers(source:string):string{
+    source = "1:" + source;
+    let lN = 2;
+    for(let i = 0; i < source.length; i++){
+      const c = source.charAt(i);
+      if(c === '\n'){
+        source = source.substring(0,i + 1) +`${lN}:`+ source.substring(i + 1,source.length);
+        i++;
+        lN++;
+      }
+    }
+    return source;
   }
 }

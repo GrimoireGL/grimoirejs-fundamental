@@ -5,11 +5,19 @@ import Component from "grimoirejs/ref/Node/Component";
 import GrimoireInterface from "grimoirejs";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
+/**
+ * ジオメトリを管理するコンポーネント
+ *
+ * あまりユーザーが直接操作することはありません。
+ */
 export default class GeometryRegistoryComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
+    /**
+     * デフォルトで生成するジオメトリの種類
+     */
     defaultGeometry: {
       converter: "StringArray",
-      default: ["quad", "cube", "sphere"]
+      default: ["quad","cube","sphere"]
     }
   };
 

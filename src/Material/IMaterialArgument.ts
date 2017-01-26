@@ -1,3 +1,4 @@
+import IRenderable from "../SceneRenderer/IRenderable";
 import CameraComponent from "../Components/CameraComponent";
 import Rectangle from "grimoirejs-math/ref/Rectangle";
 import Texture2D from "../Resource/Texture2D";
@@ -14,8 +15,8 @@ interface IMaterialArgument {
   buffers: { [key: string]: Texture2D; };
   drawOffset: number;
   drawCount: number;
-  defaultTexture: Texture2D;
   technique: string;
+  renderable:IRenderable;
 }
 
 export default IMaterialArgument;
