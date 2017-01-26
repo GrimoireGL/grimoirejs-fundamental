@@ -72,6 +72,7 @@ export default class RendererComponent extends Component {
                 if (this._wasInside) { // if position of last mouse pointer was inside and now the pointer is out side of viewport but inside of canvas
                     this.node.emit("mouseleave");
                     this.node.broadcastMessage("mouseleave", this._toViewportMouseArgs(e));
+                    console.log("mouseleave");
                 }
                 this._wasInside = false; // Mark as last pointer was not inside of viewport
             }

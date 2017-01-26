@@ -1,3 +1,4 @@
+import RendererComponent from "./RendererComponent";
 import IRenderable from "../SceneRenderer/IRenderable";
 import MeshIndexCalculator from "../Util/MeshIndexCalculator";
 import ViewportMouseEvent from "../Objects/ViewportMouseEvent";
@@ -91,30 +92,30 @@ export default class RenderHitareaComponent extends Component {
         const index = MeshIndexCalculator.fromColor(this._readCache);
         if (index === 0) {
             if (this._lastRenderable instanceof Component) {
-                this._lastRenderable.node.emit("mouseleave",this._lastRenderable);
+                this._lastRenderable.node.emit("mouseleave", this._lastRenderable);
             }
             this._lastRenderable = null;
         } else {
             const r = args.camera.containedScene.queueRegistory.getByIndex(index - 1);
             if (this._lastRenderable !== r) {
                 if (this._lastRenderable instanceof Component) {
-                    this._lastRenderable.node.emit("mouseleave",this._lastRenderable);
+                    this._lastRenderable.node.emit("mouseleave", this._lastRenderable);
                 }
                 if (r instanceof Component) {
-                    r.node.emit("mouseenter",r);
+                    r.node.emit("mouseenter", r);
                 }
             } else {
                 if (r instanceof Component) {
                     if (this._mouseMoved) {
-                        r.node.emit("mousemove",r);
+                        r.node.emit("mousemove", r);
                     } else {
-                        r.node.emit("mouseon",r);
+                        r.node.emit("mouseon", r);
                     }
                 }
             }
             this._lastRenderable = r;
         }
-        this._gl.bindFramebuffer(this._gl.FRAMEBUFFER,null);
+        this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
     }
 
     public $mousemove(v: ViewportMouseEvent): void {
@@ -132,5 +133,9 @@ export default class RenderHitareaComponent extends Component {
         this._mouseInside = false;
         this._lastPosition = [v.viewportNormalizedX, 1.0 - v.viewportNormalizedY];
         this._mouseMoved = true;
+        if (this._lastRenderable instanceof Component) {
+            this._lastRenderable.node.emit("mouseleave", this._lastRenderable);
+        }
+        this._lastRenderable = null;
     }
 }

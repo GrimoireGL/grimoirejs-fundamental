@@ -86,7 +86,7 @@ export default () => {
     GrimoireInterface.registerNode("import-material", ["MaterialImporter"]);
     GrimoireInterface.registerNode("texture-buffer", ["TextureBuffer"]);
     GrimoireInterface.registerNode("render-buffer", ["RenderBuffer"]);
-    GrimoireInterface.registerNode("render-scene", ["RenderScene","RenderHitArea"], {
+    GrimoireInterface.registerNode("render-scene", ["RenderScene"], {
       material: null
     });
     GrimoireInterface.registerNode("render-quad", ["MaterialContainer", "RenderQuad"], {
