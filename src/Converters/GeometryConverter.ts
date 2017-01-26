@@ -8,5 +8,5 @@ export default function GeometryConverter(val: any, attr: Attribute): any {
   } else if (val instanceof Geometry) {
     return val;
   }
-  throw new Error(`Specified geometry "${val}" is not supported for converting into geometry.`)
+  throw new Error(`Specified geometry "${val}" is not supported for converting into geometry.`);
 }
