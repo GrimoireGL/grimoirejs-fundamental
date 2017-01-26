@@ -118,7 +118,10 @@ export default class TransformComponent extends Component {
 
   private _matrixTransformMode: boolean = false;
 
+  private _updatedTransform = false;
+
   public get globalPosition(): Vector3 {
+    this.updateTransform();
     return this._globalPosition;
   }
 
@@ -143,6 +146,7 @@ export default class TransformComponent extends Component {
   }
 
   public get globalScale(): Vector3 {
+    this.updateTransform();
     return this._globalScale;
   }
 
@@ -157,14 +161,17 @@ export default class TransformComponent extends Component {
   }
 
   public get forward(): Vector3 {
+    this.updateTransform();
     return this._forward;
   }
 
   public get up(): Vector3 {
+    this.updateTransform();
     return this._up;
   }
 
   public get right(): Vector3 {
+    this.updateTransform();
     return this._right;
   }
 
@@ -182,15 +189,18 @@ export default class TransformComponent extends Component {
     // register observers
     this.getAttributeRaw("position").watch((v) => {
       this._matrixTransformMode = false;
-      this.updateTransform(true);
+      // this.updateTransform(true);
+      this._notifyUpdateTransform();
     });
     this.getAttributeRaw("rotation").watch((v) => {
       this._matrixTransformMode = false;
-      this.updateTransform();
+      // this.updateTransform();
+      // this._notifyUpdateTransform();
     });
     this.getAttributeRaw("scale").watch((v) => {
       this._matrixTransformMode = false;
-      this.updateTransform(true);
+      // this.updateTransform(true);
+      this._notifyUpdateTransform();
     });
     this.getAttributeRaw("rawMatrix").watch((v) => {
       if (v !== null) {
@@ -201,7 +211,8 @@ export default class TransformComponent extends Component {
         // mat4.getScaling(this._localScale.rawElements, mat.rawElements);
         // mat4.getRotation(this._localRotation.rawElements, mat.rawElements);
         this.localTransform = mat;
-        this.updateGlobalTransform();
+        // this._updateGlobalTransform();
+        this._notifyUpdateTransform();
       }
     });
     // assign attribute values to field
@@ -223,6 +234,16 @@ export default class TransformComponent extends Component {
     }
   }
 
+  public updateTransform2(noDirectionalUpdate?: boolean): void {
+    if (!this._updatedTransform) {
+      return;
+    }
+    if (!this._matrixTransformMode) {
+      mat4.fromRotationTranslationScale(this.localTransform.rawElements, this.rotation.rawElements, this.position.rawElements, this.scale.rawElements);
+    }
+    this._updateGlobalTransform(noDirectionalUpdate);
+  }
+
   /**
    * update local transform and global transform.
    * This need to be called if you manually edit raw elements of scale,position or rotation to recalculate transform matricies.
@@ -231,12 +252,12 @@ export default class TransformComponent extends Component {
     if (!this._matrixTransformMode) {
       mat4.fromRotationTranslationScale(this.localTransform.rawElements, this.rotation.rawElements, this.position.rawElements, this.scale.rawElements);
     }
-    this.updateGlobalTransform(noDirectionalUpdate);
+    this._updateGlobalTransform(noDirectionalUpdate);
   }
   /**
    * Update global transoform.
    */
-  public updateGlobalTransform(noDirectionalUpdate?: boolean): void {
+  private _updateGlobalTransform(noDirectionalUpdate?: boolean): void {
     if (!this._parentTransform) {
       mat4.copy(this.globalTransform.rawElements, this.localTransform.rawElements);
     } else {
@@ -247,7 +268,7 @@ export default class TransformComponent extends Component {
     }
     this._updateGlobalProperty();
     this.node.emit("transformUpdated", this);
-    this._children.forEach((v) => v.updateGlobalTransform(noDirectionalUpdate));
+    // this._children.forEach((v) => v._updateGlobalTransform(noDirectionalUpdate));
   }
 
   private _updateDirections(): void {
@@ -266,4 +287,10 @@ export default class TransformComponent extends Component {
     }
   }
 
+  private _notifyUpdateTransform(): void {
+    if (!this._updatedTransform) {
+      this._updatedTransform = true;
+      this._children.forEach(c => c._notifyUpdateTransform());
+    }
+  }
 }
