@@ -20,7 +20,6 @@
     "./src/Components/AssetLoadingManagerComponent.ts",
     "./src/Components/CameraComponent.ts",
     "./src/Components/CanvasInitializerComponent.ts",
-    "./src/Components/ClickableMeshComponent.ts",
     "./src/Components/FullscreenComponent.ts",
     "./src/Components/GeometryComponent.ts",
     "./src/Components/GeometryRegistoryComponent.ts",

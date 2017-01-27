@@ -90,7 +90,7 @@ export default class RenderHitareaComponent extends Component {
         this._gl.flush();
         this._gl.readPixels(this._lastPosition[0] * this._bufferSize[0], this._lastPosition[1] * this._bufferSize[1], 1, 1, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._readCache);
         const index = MeshIndexCalculator.fromColor(this._readCache);
-        if (index === 0) {
+        if (index === 0) { // there was no object at pointer
             if (this._lastRenderable instanceof Component) {
                 this._lastRenderable.node.emit("mouseleave", this._lastRenderable);
             }
