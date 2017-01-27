@@ -15,7 +15,6 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
 /**
  * シーンを描画するカメラのコンポーネント
- *
  * このコンポーネントによって、透視射影や正方射影などの歪みを調整します。
  * また、このコンポーネントの付属するノードに属する`Transoform`によって、カメラの位置や向きが確定されます。
  */

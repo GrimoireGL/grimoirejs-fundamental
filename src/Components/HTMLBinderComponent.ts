@@ -11,7 +11,6 @@ import Matrix from "grimoirejs-math/ref/Matrix";
 
 /**
  * (Deprecated)DOM要素とTransformを同期させるためのコンポーネント
- *
  * このコンポーネントはfundamentalからは削除されます。(別のパッケージとして分離予定)
  */
 export default class HTMLBinderComponent extends Component {

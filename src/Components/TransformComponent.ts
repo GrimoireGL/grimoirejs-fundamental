@@ -10,7 +10,6 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 const {mat4, vec3, vec4} = GLM;
 /**
  * シーン中に存在する物体の変形を司るコンポーネント
- *
  * このコンポーネントによって物体の座標や回転量、拡大料などが定義されます。
  * シーン中の全ての物体は必ずこのコンポーネントを含まなければなりません。
  */
