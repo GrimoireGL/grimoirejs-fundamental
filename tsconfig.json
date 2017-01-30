@@ -83,7 +83,6 @@
     "./src/Messages/IResizeBufferMessage.ts",
     "./src/nodes.ts",
     "./src/Objects/CanvasSizeObject.ts",
-    "./src/Objects/RenderSceneArgument.ts",
     "./src/Objects/ViewportMouseEvent.ts",
     "./src/raw.d.ts",
     "./src/Resource/Buffer.ts",
