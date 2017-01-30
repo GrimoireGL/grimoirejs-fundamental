@@ -16,7 +16,6 @@ const {vec3} = GLM;
 
 /**
  * シーン中に存在するメッシュ一つあたりのレンダリングを司るコンポーネント
- *
  * このメッシュが、対象となるノードの`Transform`や描画に用いる`Camera`、マテリアルなどを考慮して実際のレンダリングを行います。
  */
 export default class MeshRenderer extends Component implements IRenderable {

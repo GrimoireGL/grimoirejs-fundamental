@@ -7,7 +7,6 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
 /**
  * ジオメトリを管理するコンポーネント
- *
  * あまりユーザーが直接操作することはありません。
  */
 export default class GeometryRegistoryComponent extends Component {

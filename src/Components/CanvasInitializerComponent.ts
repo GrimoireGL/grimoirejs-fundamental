@@ -15,7 +15,6 @@ enum ResizeMode {
 
 /**
  * キャンバスの初期化及び設定を司るコンポーネント
- *
  * このコンポーネントによって、適切な位置に`<canvas>`を初期化してWebGLコンテキストを初期化します。
  */
 class CanvasInitializerComponent extends Component {

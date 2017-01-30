@@ -10,7 +10,6 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 const {mat4, vec3, vec4} = GLM;
 /**
  * シーン中に存在する物体の変形を司るコンポーネント
- *
  * このコンポーネントによって物体の座標や回転量、拡大料などが定義されます。
  * シーン中の全ての物体は必ずこのコンポーネントを含まなければなりません。
  */
@@ -21,21 +20,21 @@ export default class TransformComponent extends Component {
      */
     position: {
       converter: "Vector3",
-      default: [0,0,0]
+      default: [0, 0, 0]
     },
     /**
      * この物体の回転量
      */
     rotation: {
       converter: "Rotation3",
-      default: [0,0,0,1]
+      default: [0, 0, 0, 1]
     },
     /**
      * この物体の拡大率
      */
     scale: {
       converter: "Vector3",
-      default: [1,1,1]
+      default: [1, 1, 1]
     },
     /**
      * 利用されません
@@ -72,6 +71,10 @@ export default class TransformComponent extends Component {
    */
   public globalTransform: Matrix = new Matrix();
 
+  public scale: Vector3;
+  public position: Vector3;
+  public rotation: Quaternion;
+
   /**
    * The children transform should be notified when this transform was updated.
    * @type {TransformComponent[]}
@@ -92,23 +95,6 @@ export default class TransformComponent extends Component {
   private _cachePVM: Matrix = new Matrix();
 
   private _cacheVM: Matrix = new Matrix();
-  /**
-   * Cache for position
-   * @type {Vector3}
-   */
-  private _localPosition: Vector3;
-
-  /**
-   * Cache for rotation
-   * @type {Quaternion}
-   */
-  private _localRotation: Quaternion;
-
-  /**
-   * Cache for scaling
-   * @type {Vector3}
-   */
-  private _localScale: Vector3;
 
   /**
    * Cache of forward direction of this object
@@ -131,50 +117,60 @@ export default class TransformComponent extends Component {
 
   private _matrixTransformMode: boolean = false;
 
+  private _updatedTransform = true;
+
   public get globalPosition(): Vector3 {
+    this.updateTransform2();
     return this._globalPosition;
   }
 
   public get localPosition(): Vector3 {
-    return this._localPosition;
+    // console.warn(" localPosition depracated");
+    return this.position;
   }
 
   public set localPosition(val: Vector3) {
-    this._localPosition = val;
-    this.setAttribute("position", val);
+    // console.warn(" localPosition depracated");
+    this.position = val;
   }
 
   public get localRotation(): Quaternion {
-    return this._localRotation;
+    // console.warn(" localRotation depracated");
+    return this.rotation;
   }
 
   public set localRotation(val: Quaternion) {
-    this._localRotation = val;
-    this.setAttribute("rotation", val);
+    // console.warn(" localRotation depracated");
+    this.rotation = val;
   }
 
   public get globalScale(): Vector3 {
+    this.updateTransform2();
     return this._globalScale;
   }
 
   public get localScale(): Vector3 {
-    return this._localScale;
+    // console.warn(" localScale depracated");
+    return this.scale;
   }
 
   public set localScale(val: Vector3) {
-    this._localScale = val;
-    this.setAttribute("scale", val);
+    // console.warn(" localScale depracated");
+    this.scale = val;
   }
 
   public get forward(): Vector3 {
+    this.updateTransform2();
     return this._forward;
   }
 
   public get up(): Vector3 {
+    this.updateTransform2();
     return this._up;
   }
 
   public get right(): Vector3 {
+    this.updateTransform2();
     return this._right;
   }
 
@@ -191,19 +187,19 @@ export default class TransformComponent extends Component {
   public $awake(): void {
     // register observers
     this.getAttributeRaw("position").watch((v) => {
-      this._localPosition = v;
       this._matrixTransformMode = false;
-      this.updateTransform(true);
+      // this.updateTransform(true);
+      this._notifyUpdateTransform();
     });
     this.getAttributeRaw("rotation").watch((v) => {
-      this._localRotation = v;
       this._matrixTransformMode = false;
-      this.updateTransform();
+      // this.updateTransform();
+      // this._notifyUpdateTransform();
     });
     this.getAttributeRaw("scale").watch((v) => {
-      this._localScale = v;
       this._matrixTransformMode = false;
-      this.updateTransform(true);
+      // this.updateTransform(true);
+      this._notifyUpdateTransform();
     });
     this.getAttributeRaw("rawMatrix").watch((v) => {
       if (v !== null) {
@@ -214,13 +210,12 @@ export default class TransformComponent extends Component {
         // mat4.getScaling(this._localScale.rawElements, mat.rawElements);
         // mat4.getRotation(this._localRotation.rawElements, mat.rawElements);
         this.localTransform = mat;
-        this.updateGlobalTransform();
+        // this._updateGlobalTransform();
+        this._notifyUpdateTransform();
       }
     });
     // assign attribute values to field
-    this._localPosition = this.getAttribute("position");
-    this._localRotation = this.getAttribute("rotation");
-    this._localScale = this.getAttribute("scale");
+    this.__bindAttributes();
   }
 
   public $mount(): void {
@@ -228,7 +223,7 @@ export default class TransformComponent extends Component {
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
     }
-    this.updateTransform();
+    this.updateTransform2();
   }
 
   public $unmount(): void {
@@ -238,20 +233,30 @@ export default class TransformComponent extends Component {
     }
   }
 
+  public updateTransform2(noDirectionalUpdate?: boolean): void {
+    if (!this._updatedTransform) {
+      return;
+    }
+    if (!this._matrixTransformMode) {
+      mat4.fromRotationTranslationScale(this.localTransform.rawElements, this.rotation.rawElements, this.position.rawElements, this.scale.rawElements);
+    }
+    this._updateGlobalTransform(noDirectionalUpdate);
+  }
+
   /**
    * update local transform and global transform.
    * This need to be called if you manually edit raw elements of scale,position or rotation to recalculate transform matricies.
    */
   public updateTransform(noDirectionalUpdate?: boolean): void {
-    if (!this._matrixTransformMode) {
-      mat4.fromRotationTranslationScale(this.localTransform.rawElements, this._localRotation.rawElements, this._localPosition.rawElements, this._localScale.rawElements);
-    }
-    this.updateGlobalTransform(noDirectionalUpdate);
+    // if (!this._matrixTransformMode) {
+    //   mat4.fromRotationTranslationScale(this.localTransform.rawElements, this.rotation.rawElements, this.position.rawElements, this.scale.rawElements);
+    // }
+    // this._updateGlobalTransform(noDirectionalUpdate);
   }
   /**
    * Update global transoform.
    */
-  public updateGlobalTransform(noDirectionalUpdate?: boolean): void {
+  private _updateGlobalTransform(noDirectionalUpdate?: boolean): void {
     if (!this._parentTransform) {
       mat4.copy(this.globalTransform.rawElements, this.localTransform.rawElements);
     } else {
@@ -262,7 +267,7 @@ export default class TransformComponent extends Component {
     }
     this._updateGlobalProperty();
     this.node.emit("transformUpdated", this);
-    this._children.forEach((v) => v.updateGlobalTransform(noDirectionalUpdate));
+    // this._children.forEach((v) => v._updateGlobalTransform(noDirectionalUpdate));
   }
 
   private _updateDirections(): void {
@@ -273,12 +278,18 @@ export default class TransformComponent extends Component {
 
   private _updateGlobalProperty(): void {
     if (!this._parentTransform) {
-      vec3.copy(this._globalPosition.rawElements, this._localPosition.rawElements);
-      vec3.copy(this._globalScale.rawElements, this._localScale.rawElements);
+      vec3.copy(this._globalPosition.rawElements, this.position.rawElements);
+      vec3.copy(this._globalScale.rawElements, this.scale.rawElements);
     } else {
-      vec3.transformMat4(this._globalPosition.rawElements, this._localPosition.rawElements, this._parentTransform.globalTransform.rawElements);
-      vec3.transformMat4(this._globalScale.rawElements, this._localScale.rawElements, this._parentTransform.globalTransform.rawElements); // TODO buggy
+      vec3.transformMat4(this._globalPosition.rawElements, this.position.rawElements, this._parentTransform.globalTransform.rawElements);
+      vec3.transformMat4(this._globalScale.rawElements, this.scale.rawElements, this._parentTransform.globalTransform.rawElements); // TODO buggy
     }
   }
 
+  private _notifyUpdateTransform(): void {
+    if (!this._updatedTransform) {
+      this._updatedTransform = true;
+      this._children.forEach(c => c._notifyUpdateTransform());
+    }
+  }
 }

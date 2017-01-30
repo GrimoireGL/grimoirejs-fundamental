@@ -1,5 +1,4 @@
 import gr from "grimoirejs";
-import RenderSceneArgument from "../Objects/RenderSceneArgument";
 import ResourceBase from "../Resource/ResourceBase";
 import AssetLoader from "../Asset/AssetLoader";
 import Material from "../Material/Material";
@@ -129,13 +128,14 @@ export default class RenderSceneComponent extends Component {
     }
     args.camera.updateContainedScene(args.loopIndex);
     args.camera.renderScene({
-      renderer:this,
+      renderer: this,
       camera: camera,
       buffers: args.buffers,
       layer: this.layer,
       viewport: args.viewport,
       loopIndex: args.loopIndex,
-      technique: this.technique
+      technique: this.technique,
+      sceneDescription: {}
     });
   }
 }

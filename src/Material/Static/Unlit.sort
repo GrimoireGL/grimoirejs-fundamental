@@ -35,3 +35,27 @@
   #endif
 }
 }
+
+@Technique hitarea{
+  @Disable(BLEND)
+  @Pass{
+    FS_PREC(mediump,float)
+
+    #ifdef VS
+      attribute vec3 position;
+      uniform mat4 _matPVM;
+
+      void main(){
+        gl_Position = _matPVM * vec4(position,1.0);
+      }
+    #endif
+
+    #ifdef FS
+      @MESH_INDEX
+      uniform vec4 meshIndex;
+      void main(){
+        gl_FragColor = meshIndex;
+      }
+    #endif
+  }
+}
