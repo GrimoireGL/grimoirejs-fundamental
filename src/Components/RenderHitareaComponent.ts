@@ -85,7 +85,8 @@ export default class RenderHitareaComponent extends Component {
       layer: this._sceneRenderer.layer,
       viewport: args.viewport,
       loopIndex: args.loopIndex,
-      technique: "hitarea"
+      technique: "hitarea",
+      sceneDescription: {}
     });
     this._gl.flush();
     this._gl.readPixels(this._lastPosition[0] * this._bufferSize[0], this._lastPosition[1] * this._bufferSize[1], 1, 1, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._readCache);

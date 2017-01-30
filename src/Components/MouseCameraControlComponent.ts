@@ -34,12 +34,12 @@ export default class MouseCameraControlComponent extends Component {
   };
 
   // propaty bound to
-  private _transform: TransformComponent;
   public rotateSpeed: number;
   public zoomSpeed: number;
   public moveSpeed: number;
   public center: Vector3;
   public distance: number;
+  private _transform: TransformComponent;
   private _updated: boolean = false;
 
   private _lastCenter: Vector3 = null;
@@ -84,16 +84,16 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   public $initialized() {
-    let look = Vector3.normalize(this.center.subtractWith(this._transform.localPosition));
+    let look = Vector3.normalize(this.center.subtractWith(this._transform.position));
     let g = Quaternion.fromToRotation(this._transform.forward, look).normalize();
-    this._transform.localRotation = g;
+    this._transform.rotation = g;
     this._initialRotation = g;
     this._initialDirection = Vector3.copy(this._transform.forward.negateThis()).normalized;
 
     if (this.distance !== null) {
-      this._transform.localPosition = this.center.addWith(this._initialDirection.multiplyWith(this.distance));
+      this._transform.position = this.center.addWith(this._initialDirection.multiplyWith(this.distance));
     } else {
-      this.distance = this._transform.localPosition.subtractWith(this.center).magnitude;
+      this.distance = this._transform.position.subtractWith(this.center).magnitude;
     }
   }
   public $update() {
@@ -108,9 +108,9 @@ export default class MouseCameraControlComponent extends Component {
 
       const rotationMat = Matrix.rotationQuaternion(rotation);
       const direction = Matrix.transformNormal(rotationMat, this._initialDirection);
-      this._transform.localPosition = this.center.addWith(this._d).addWith(Vector3.normalize(direction).multiplyWith(this.distance));
-      this._transform.localRotation = rotation;
-      this._transform.localRotation = Quaternion.multiply(rotation, this._initialRotation);
+      this._transform.position = this.center.addWith(this._d).addWith(Vector3.normalize(direction).multiplyWith(this.distance));
+      this._transform.rotation = rotation;
+      this._transform.rotation = Quaternion.multiply(rotation, this._initialRotation);
     }
   }
 
@@ -175,10 +175,10 @@ export default class MouseCameraControlComponent extends Component {
     if (!this.isActive) {
       return;
     }
-    let dir = Vector3.subtract(this._transform.localPosition, this.center).normalized;
+    let dir = Vector3.subtract(this._transform.position, this.center).normalized;
     let moveDist = m.deltaY * this.zoomSpeed * 0.05;
     this.distance = Math.max(1, this.distance + moveDist);
-    this._transform.localPosition = this.center.addWith(dir.multiplyWith(this.distance));
+    this._transform.position = this.center.addWith(dir.multiplyWith(this.distance));
     m.preventDefault();
   }
 }

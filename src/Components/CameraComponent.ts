@@ -6,7 +6,6 @@ import Matrix from "grimoirejs-math/ref/Matrix";
 import RenderQueue from "../SceneRenderer/RenderQueue";
 import IRenderArgument from "../SceneRenderer/IRenderArgument";
 import gr from "grimoirejs";
-import RenderSceneArgument from "../Objects/RenderSceneArgument";
 import TransformComponent from "./TransformComponent";
 import SceneComponent from "./SceneComponent";
 import GomlNode from "grimoirejs/ref/Node/GomlNode";
@@ -19,8 +18,6 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
  * また、このコンポーネントの付属するノードに属する`Transoform`によって、カメラの位置や向きが確定されます。
  */
 export default class CameraComponent extends Component {
-  private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
-  private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
 
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
@@ -89,9 +86,17 @@ export default class CameraComponent extends Component {
     }
   };
 
+  private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
+  private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
+
   public containedScene: SceneComponent;
 
   public transform: TransformComponent;
+
+  protected __viewMatrix: Matrix = new Matrix();
+  protected __projectionMatrix: Matrix = new Matrix();
+  protected __invProjectionMatrix: Matrix = new Matrix();
+  protected __projectionViewMatrix: Matrix = new Matrix();
 
   private _autoAspect: boolean;
 
@@ -102,10 +107,6 @@ export default class CameraComponent extends Component {
   private _eyeCache: Vector3 = Vector3.Zero;
   private _lookAtCache: Vector3 = Vector3.Zero;
   private _upCache: Vector3 = Vector3.Zero;
-  protected __viewMatrix: Matrix = new Matrix();
-  protected __projectionMatrix: Matrix = new Matrix();
-  protected __invProjectionMatrix: Matrix = new Matrix();
-  protected __projectionViewMatrix: Matrix = new Matrix();
   private _far: number;
   private _near: number;
   private _fovy: number;
@@ -172,14 +173,14 @@ export default class CameraComponent extends Component {
     return this._orthographic;
   }
 
-  public set AutoAspect(autoMode:boolean){
-    if(this._autoAspect !== autoMode){
+  public set AutoAspect(autoMode: boolean) {
+    if (this._autoAspect !== autoMode) {
       this._autoAspect = autoMode;
       this._recalculateProjection();
     }
   }
 
-  public get AutoAspect():boolean{
+  public get AutoAspect(): boolean {
     return this._autoAspect;
   }
 
@@ -244,22 +245,11 @@ export default class CameraComponent extends Component {
     }
   }
 
-  public renderScene(args: RenderSceneArgument): void {
-    args = args as IRenderArgument;
+  public renderScene(args: IRenderArgument): void {
     if (this.containedScene) {
       this._justifyAspect(args);
-      (args as IRenderArgument).sceneDescription = this.containedScene.sceneDescription;
-      this._renderQueue.renderAll(args as IRenderArgument, true, args.loopIndex);
-    }
-  }
-
-  private _justifyAspect(args: RenderSceneArgument): void {
-    if (this._autoAspect) {
-      const asp = args.viewport.Width / args.viewport.Height;
-      if (this._aspectCache !== asp) { // Detect changing viewport size
-        this.setAttribute("aspect", asp);
-        this._aspectCache = asp;
-      }
+      args.sceneDescription = this.containedScene.sceneDescription;
+      this._renderQueue.renderAll(args, true, args.loopIndex);
     }
   }
 
@@ -272,6 +262,17 @@ export default class CameraComponent extends Component {
     mat4.lookAt(this.__viewMatrix.rawElements, this._eyeCache.rawElements, this._lookAtCache.rawElements, this._upCache.rawElements);
     mat4.mul(this.__projectionViewMatrix.rawElements, this.__projectionMatrix.rawElements, this.__viewMatrix.rawElements);
   }
+
+  private _justifyAspect(args: IRenderArgument): void {
+    if (this._autoAspect) {
+      const asp = args.viewport.Width / args.viewport.Height;
+      if (this._aspectCache !== asp) { // Detect changing viewport size
+        this.setAttribute("aspect", asp);
+        this._aspectCache = asp;
+      }
+    }
+  }
+
 
   private _recalculateProjection(): void {
     if (!this._orthographic) {
