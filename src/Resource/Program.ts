@@ -47,9 +47,9 @@ export default class Program extends ResourceBase {
       // detach all attached shaders previously
       const preciousShaders = this.gl.getAttachedShaders(this.program);
       preciousShaders.forEach(s => this.gl.detachShader(this.program, s));
-      this._uniformLocations = {}; // reset location caches
-      this._attributeLocations = {};
     }
+    this._uniformLocations = {}; // reset location caches
+    this._attributeLocations = {};
     // attach all shader passed
     shaders.forEach(shader => {
       this.gl.attachShader(this.program, shader.shader);
@@ -78,6 +78,8 @@ export default class Program extends ResourceBase {
   public destroy(): void {
     super.destroy();
     this.gl.deleteProgram(this.program);
+    this._uniformLocations = {};
+    this._attributeLocations = {};
   }
 
   /**

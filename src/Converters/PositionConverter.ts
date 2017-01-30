@@ -6,7 +6,11 @@ import Component from "grimoirejs/ref/Node/Component";
 let _lastVal;
 let _node;
 
-
+/**
+ * 座標を取得するためのコンバーター
+ * Vector3コンバーターの受け取り売る値もしくは、任意のシーン中のノードへのクエリを受け取る。
+ * クエリを受け取った場合は、そのクエリの示す対象の物体の座標が用いられる。
+ */
 export default {
   name: "Position",
   lazy: true,
@@ -32,7 +36,7 @@ export default {
       attr.convertContext._node = Attribute.convert("Node", attr, val) as GomlNode;
       if (attr.convertContext._node) {
         attr.convertContext._lastVal = val;
-        return attr.convertContext._node.getAttribute("position");
+        return attr.convertContext._node.getAttribute("position"); // TODO should not use getAttribute on node
       }
     }
   }

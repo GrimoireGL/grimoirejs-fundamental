@@ -1,3 +1,4 @@
+import MeshIndexCalculator from "../../Util/MeshIndexCalculator";
 import Vector2 from "grimoirejs-math/ref/Vector2";
 import Material from "../Material";
 import Vector4 from "grimoirejs-math/ref/Vector4";
@@ -37,6 +38,11 @@ UniformResolverRegistry.add("CAMERA_POSITION",(valInfo: IVariableInfo) => (proxy
 
 UniformResolverRegistry.add("CAMERA_DIRECTION",(valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
   proxy.uniformVector3(valInfo.name, args.camera.transform.forward);
+});
+
+UniformResolverRegistry.add("MESH_INDEX",(valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
+  const index = args.renderable.index;
+  proxy.uniformVector4(valInfo.name,MeshIndexCalculator.fromIndex(index));
 });
 
 export default null;

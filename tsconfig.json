@@ -109,6 +109,7 @@
     "./src/Sort/SortTransformUtility.ts",
     "./src/Sort/TypeToConstant.ts",
     "./src/Util/HashCalculator.ts",
+    "./src/Util/MeshIndexCalculator.ts",
     "./src/Util/TextureSizeCalculator.ts"
   ],
   "exclude": [],
