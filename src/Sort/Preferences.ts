@@ -52,7 +52,7 @@ export default {
       throw new Error(`Unknown WebGL constant "${args[0]}" was specified on @Disable`);
     }
     const index = state.enable.indexOf(disableTarget);
-    if (index !== index) {
+    if (index !== -1) {
       state.enable.splice(index, 1);
     }
   },
