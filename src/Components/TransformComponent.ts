@@ -120,12 +120,12 @@ export default class TransformComponent extends Component {
    * @return {[type]} [description]
    */
   public get globalTransform(): Matrix {
-    this.updateTransform2();
+    this._updateTransform2();
     return this._globalTransform;
   }
 
   public get globalPosition(): Vector3 {
-    this.updateTransform2();
+    this._updateTransform2();
     return this._globalPosition;
   }
 
@@ -150,7 +150,7 @@ export default class TransformComponent extends Component {
   }
 
   public get globalScale(): Vector3 {
-    this.updateTransform2();
+    this._updateTransform2();
     return this._globalScale;
   }
 
@@ -165,17 +165,17 @@ export default class TransformComponent extends Component {
   }
 
   public get forward(): Vector3 {
-    this.updateTransform2();
+    this._updateTransform2();
     return this._forward;
   }
 
   public get up(): Vector3 {
-    this.updateTransform2();
+    this._updateTransform2();
     return this._up;
   }
 
   public get right(): Vector3 {
-    this.updateTransform2();
+    this._updateTransform2();
     return this._right;
   }
 
@@ -194,17 +194,17 @@ export default class TransformComponent extends Component {
     this.getAttributeRaw("position").watch((v) => {
       this._matrixTransformMode = false;
       // this.updateTransform(true);
-      this._notifyUpdateTransform();
+      this.notifyUpdateTransform();
     });
     this.getAttributeRaw("rotation").watch((v) => {
       this._matrixTransformMode = false;
       // this.updateTransform();
-      this._notifyUpdateTransform();
+      this.notifyUpdateTransform();
     });
     this.getAttributeRaw("scale").watch((v) => {
       this._matrixTransformMode = false;
       // this.updateTransform(true);
-      this._notifyUpdateTransform();
+      this.notifyUpdateTransform();
     });
     this.getAttributeRaw("rawMatrix").watch((v) => {
       if (v !== null) {
@@ -216,7 +216,7 @@ export default class TransformComponent extends Component {
         // mat4.getRotation(this._localRotation.rawElements, mat.rawElements);
         this.localTransform = mat;
         // this._updateGlobalTransform();
-        this._notifyUpdateTransform();
+        this.notifyUpdateTransform();
       }
     });
     // assign attribute values to field
@@ -228,7 +228,7 @@ export default class TransformComponent extends Component {
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
     }
-    this.updateTransform2();
+    this._updateTransform2();
   }
 
   public $unmount(): void {
@@ -238,7 +238,7 @@ export default class TransformComponent extends Component {
     }
   }
 
-  public updateTransform2(noDirectionalUpdate?: boolean): void {
+  private _updateTransform2(noDirectionalUpdate?: boolean): void {
     if (!this._updatedTransform) {
       return;
     }
@@ -292,10 +292,10 @@ export default class TransformComponent extends Component {
     }
   }
 
-  private _notifyUpdateTransform(): void {
+  public notifyUpdateTransform(): void {
     if (!this._updatedTransform) {
       this._updatedTransform = true;
-      this._children.forEach(c => c._notifyUpdateTransform());
+      this._children.forEach(c => c.notifyUpdateTransform());
     }
   }
 }
