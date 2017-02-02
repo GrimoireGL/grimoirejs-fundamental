@@ -65,12 +65,6 @@ export default class TransformComponent extends Component {
    */
   public localTransform: Matrix = new Matrix();
 
-  /**
-   * Global transform that consider parent transform and local transform
-   * @return {[type]} [description]
-   */
-  public globalTransform: Matrix = new Matrix();
-
   public scale: Vector3;
   public position: Vector3;
   public rotation: Quaternion;
@@ -118,6 +112,17 @@ export default class TransformComponent extends Component {
   private _matrixTransformMode: boolean = false;
 
   private _updatedTransform = true;
+
+  private _globalTransform: Matrix = new Matrix();
+
+  /**
+   * Global transform that consider parent transform and local transform
+   * @return {[type]} [description]
+   */
+  public get globalTransform(): Matrix {
+    this.updateTransform2();
+    return this._globalTransform;
+  }
 
   public get globalPosition(): Vector3 {
     this.updateTransform2();
@@ -194,7 +199,7 @@ export default class TransformComponent extends Component {
     this.getAttributeRaw("rotation").watch((v) => {
       this._matrixTransformMode = false;
       // this.updateTransform();
-      // this._notifyUpdateTransform();
+      this._notifyUpdateTransform();
     });
     this.getAttributeRaw("scale").watch((v) => {
       this._matrixTransformMode = false;
@@ -237,6 +242,7 @@ export default class TransformComponent extends Component {
     if (!this._updatedTransform) {
       return;
     }
+    this._updatedTransform = false;
     if (!this._matrixTransformMode) {
       mat4.fromRotationTranslationScale(this.localTransform.rawElements, this.rotation.rawElements, this.position.rawElements, this.scale.rawElements);
     }
@@ -258,9 +264,9 @@ export default class TransformComponent extends Component {
    */
   private _updateGlobalTransform(noDirectionalUpdate?: boolean): void {
     if (!this._parentTransform) {
-      mat4.copy(this.globalTransform.rawElements, this.localTransform.rawElements);
+      mat4.copy(this._globalTransform.rawElements, this.localTransform.rawElements);
     } else {
-      mat4.mul(this.globalTransform.rawElements, this._parentTransform.globalTransform.rawElements, this.localTransform.rawElements);
+      mat4.mul(this._globalTransform.rawElements, this._parentTransform.globalTransform.rawElements, this.localTransform.rawElements);
     }
     if (!noDirectionalUpdate) {
       this._updateDirections();
