@@ -126,8 +126,8 @@ export default class RenderSceneComponent extends Component {
       this._gl.clearDepth(this.clearDepth);
       this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
     }
-    args.camera.updateContainedScene(args.loopIndex);
-    args.camera.renderScene({
+    camera.updateContainedScene(args.loopIndex);
+    camera.renderScene({
       renderer: this,
       camera: camera,
       buffers: args.buffers,
