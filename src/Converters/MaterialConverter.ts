@@ -12,7 +12,6 @@ import Material from '../Material/Material';
  * `new(マテリアル)`名で指定した場合、そのコンポーネント自身がマテリアルの属性を管理することになるので注意が必要。
  */
 export default function MaterialConverter(val: any, attr: Attribute): any {
-  console.log(val);
   if (typeof val === "string") {
     const regex = /\s*new\s*\(\s*([a-zA-Z\d\-]+)\s*\)/;
     let regexResult: RegExpExecArray;
