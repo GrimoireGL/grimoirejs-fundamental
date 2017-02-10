@@ -52,18 +52,18 @@ class CanvasInitializerComponent extends Component {
      *
      * 描画結果をdataURLに変換する際などはこの属性がtrueでないと正常にレンダリング結果を取得できません。
      */
-    preserveDrawingBuffer:{
-      default:true,
-      converter:"Boolean"
+    preserveDrawingBuffer: {
+      default: true,
+      converter: "Boolean"
     },
     /**
      * GLコンテキストの初期化時に、MSAAによるアンチエイリアスを有効にするか指定します。
      *
      * この属性は、途中で動的に変更することができません。
      */
-    antialias:{
-      default:true,
-      converter:"Boolean"
+    antialias: {
+      default: true,
+      converter: "Boolean"
     }
   };
 
@@ -101,10 +101,10 @@ class CanvasInitializerComponent extends Component {
     this.getAttributeRaw("height").watch((v) => {
       this._resize();
     });
-    this.getAttributeRaw("antialias").watch((v)=>{
+    this.getAttributeRaw("antialias").watch((v) => {
       console.warn("Changing antialias attribute is not supported. This is only works when the canvas element created.");
     });
-    this.getAttributeRaw("preserveDrawingBuffer").watch((v)=>{
+    this.getAttributeRaw("preserveDrawingBuffer").watch((v) => {
       console.warn("Changing preserveDrawingBuffer attribute is not supported. This is only works when the canvas element created.");
     });
   }
@@ -235,12 +235,12 @@ class CanvasInitializerComponent extends Component {
 
   private _getContext(canvas: HTMLCanvasElement): WebGLRenderingContext {
     const contextConfig = {
-      antialias:this.getAttribute("antialias"),
-      preserveDrawingBuffer:this.getAttribute("preserveDrawingBuffer")
+      antialias: this.getAttribute("antialias"),
+      preserveDrawingBuffer: this.getAttribute("preserveDrawingBuffer")
     };
-    let context: WebGLRenderingContext = canvas.getContext("webgl",contextConfig) as WebGLRenderingContext;
+    let context: WebGLRenderingContext = canvas.getContext("webgl", contextConfig) as WebGLRenderingContext;
     if (!context) {
-      context = canvas.getContext("webgl-experimental",contextConfig) as WebGLRenderingContext;
+      context = canvas.getContext("experimental-webgl", contextConfig) as WebGLRenderingContext;
     }
     return context;
   }

@@ -3,9 +3,9 @@ import IDObject from "grimoirejs/ref/Base/IDObject";
 
 
 abstract class ResourceBase {
-  private static _maxIndex:number = 0;
+  private static _maxIndex: number = 0;
 
-  public index:number;
+  public index: number;
 
   public destroyed: boolean = false;
 
@@ -33,6 +33,9 @@ abstract class ResourceBase {
     }
   }
   constructor(public gl: WebGLRenderingContext) {
+    if (!gl) {
+      throw new Error("missing WebGLRenderingContext");
+    }
     this.index = ResourceBase._maxIndex++;
     this.valid = false;
   }
