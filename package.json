@@ -39,7 +39,8 @@
     "typescript": "^2.1.5",
     "webpack": "^2.2.1",
     "xmldom": "^0.1.27",
-    "yargs": "^6.5.0"
+    "yargs": "^6.5.0",
+    "grimoirejs":"latest"
   },
   "peerDependencies": {
     "grimoirejs-math": "latest",
