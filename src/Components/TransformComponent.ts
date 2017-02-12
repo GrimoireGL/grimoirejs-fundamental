@@ -65,12 +65,6 @@ export default class TransformComponent extends Component {
    */
   public localTransform: Matrix = new Matrix();
 
-  /**
-   * Global transform that consider parent transform and local transform
-   * @return {[type]} [description]
-   */
-  public globalTransform: Matrix = new Matrix();
-
   public scale: Vector3;
   public position: Vector3;
   public rotation: Quaternion;
@@ -119,58 +113,69 @@ export default class TransformComponent extends Component {
 
   private _updatedTransform = true;
 
+  private _globalTransform: Matrix = new Matrix();
+
+  /**
+   * Global transform that consider parent transform and local transform
+   * @return {[type]} [description]
+   */
+  public get globalTransform(): Matrix {
+    this._updateTransform();
+    return this._globalTransform;
+  }
+
   public get globalPosition(): Vector3 {
-    this.updateTransform2();
+    this._updateTransform();
     return this._globalPosition;
   }
 
   public get localPosition(): Vector3 {
-    // console.warn(" localPosition depracated");
+    console.warn(" localPosition depracated");
     return this.position;
   }
 
   public set localPosition(val: Vector3) {
-    // console.warn(" localPosition depracated");
+    console.warn(" localPosition depracated");
     this.position = val;
   }
 
   public get localRotation(): Quaternion {
-    // console.warn(" localRotation depracated");
+    console.warn(" localRotation depracated");
     return this.rotation;
   }
 
   public set localRotation(val: Quaternion) {
-    // console.warn(" localRotation depracated");
+    console.warn(" localRotation depracated");
     this.rotation = val;
   }
 
   public get globalScale(): Vector3 {
-    this.updateTransform2();
+    this._updateTransform();
     return this._globalScale;
   }
 
   public get localScale(): Vector3 {
-    // console.warn(" localScale depracated");
+    console.warn(" localScale depracated");
     return this.scale;
   }
 
   public set localScale(val: Vector3) {
-    // console.warn(" localScale depracated");
+    console.warn(" localScale depracated");
     this.scale = val;
   }
 
   public get forward(): Vector3 {
-    this.updateTransform2();
+    this._updateTransform();
     return this._forward;
   }
 
   public get up(): Vector3 {
-    this.updateTransform2();
+    this._updateTransform();
     return this._up;
   }
 
   public get right(): Vector3 {
-    this.updateTransform2();
+    this._updateTransform();
     return this._right;
   }
 
@@ -188,18 +193,15 @@ export default class TransformComponent extends Component {
     // register observers
     this.getAttributeRaw("position").watch((v) => {
       this._matrixTransformMode = false;
-      // this.updateTransform(true);
-      this._notifyUpdateTransform();
+      this.notifyUpdateTransform();
     });
     this.getAttributeRaw("rotation").watch((v) => {
       this._matrixTransformMode = false;
-      // this.updateTransform();
-      // this._notifyUpdateTransform();
+      this.notifyUpdateTransform();
     });
     this.getAttributeRaw("scale").watch((v) => {
       this._matrixTransformMode = false;
-      // this.updateTransform(true);
-      this._notifyUpdateTransform();
+      this.notifyUpdateTransform();
     });
     this.getAttributeRaw("rawMatrix").watch((v) => {
       if (v !== null) {
@@ -210,8 +212,7 @@ export default class TransformComponent extends Component {
         // mat4.getScaling(this._localScale.rawElements, mat.rawElements);
         // mat4.getRotation(this._localRotation.rawElements, mat.rawElements);
         this.localTransform = mat;
-        // this._updateGlobalTransform();
-        this._notifyUpdateTransform();
+        this.notifyUpdateTransform();
       }
     });
     // assign attribute values to field
@@ -223,7 +224,7 @@ export default class TransformComponent extends Component {
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
     }
-    this.updateTransform2();
+    this._updateTransform();
   }
 
   public $unmount(): void {
@@ -233,10 +234,19 @@ export default class TransformComponent extends Component {
     }
   }
 
-  public updateTransform2(noDirectionalUpdate?: boolean): void {
+
+  public notifyUpdateTransform(): void {
+    if (!this._updatedTransform) {
+      this._updatedTransform = true;
+      this._children.forEach(c => c.notifyUpdateTransform());
+    }
+  }
+
+  private _updateTransform(noDirectionalUpdate?: boolean): void {
     if (!this._updatedTransform) {
       return;
     }
+    this._updatedTransform = false;
     if (!this._matrixTransformMode) {
       mat4.fromRotationTranslationScale(this.localTransform.rawElements, this.rotation.rawElements, this.position.rawElements, this.scale.rawElements);
     }
@@ -244,30 +254,19 @@ export default class TransformComponent extends Component {
   }
 
   /**
-   * update local transform and global transform.
-   * This need to be called if you manually edit raw elements of scale,position or rotation to recalculate transform matricies.
-   */
-  public updateTransform(noDirectionalUpdate?: boolean): void {
-    // if (!this._matrixTransformMode) {
-    //   mat4.fromRotationTranslationScale(this.localTransform.rawElements, this.rotation.rawElements, this.position.rawElements, this.scale.rawElements);
-    // }
-    // this._updateGlobalTransform(noDirectionalUpdate);
-  }
-  /**
    * Update global transoform.
    */
   private _updateGlobalTransform(noDirectionalUpdate?: boolean): void {
     if (!this._parentTransform) {
-      mat4.copy(this.globalTransform.rawElements, this.localTransform.rawElements);
+      mat4.copy(this._globalTransform.rawElements, this.localTransform.rawElements);
     } else {
-      mat4.mul(this.globalTransform.rawElements, this._parentTransform.globalTransform.rawElements, this.localTransform.rawElements);
+      mat4.mul(this._globalTransform.rawElements, this._parentTransform.globalTransform.rawElements, this.localTransform.rawElements);
     }
     if (!noDirectionalUpdate) {
       this._updateDirections();
     }
     this._updateGlobalProperty();
     this.node.emit("transformUpdated", this);
-    // this._children.forEach((v) => v._updateGlobalTransform(noDirectionalUpdate));
   }
 
   private _updateDirections(): void {
@@ -286,10 +285,4 @@ export default class TransformComponent extends Component {
     }
   }
 
-  private _notifyUpdateTransform(): void {
-    if (!this._updatedTransform) {
-      this._updatedTransform = true;
-      this._children.forEach(c => c._notifyUpdateTransform());
-    }
-  }
 }

@@ -10,7 +10,7 @@ import Material from "./Material";
 import IPassRecipe from "./IPassRecipe";
 import IMaterialArgument from "./IMaterialArgument";
 import Program from "../Resource/Program";
-import header from "raw!./Static/header.glsl";
+import header from "raw-loader!./Static/header.glsl";
 
 export default class Pass {
 

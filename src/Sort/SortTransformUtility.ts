@@ -146,14 +146,14 @@ export default class SortTransformUtility {
         depthFunc: [WebGLRenderingContext.LESS]
       }
     };
-    const regex = /@([A-Za-z]+)\(([a-zA-Z_0-9,\.\-]*)\)/g;
+    const regex = /@([A-Za-z]+)\(([\sa-zA-Z_0-9,\.\-]*)\)/g;
     let regexResult;
     while ((regexResult = regex.exec(source))) {
       const prefParser = Preferences[regexResult[1]];
       if (!prefParser) {
         throw new Error(`Unknown pass preference ${regexResult[1]} was specified.`);
       }
-      prefParser(result, regexResult[2].split(","));
+      prefParser(result, regexResult[2].split(",").map(m=>m.trim()));
     }
     return result;
   }

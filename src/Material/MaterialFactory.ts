@@ -3,7 +3,7 @@ import DrawPriorty from "../SceneRenderer/DrawPriorty";
 import MacroRegistory from "./MacroRegistory";
 import TextFileResolver from "../Asset/TextFileResolver";
 import Material from "./Material";
-import ShaderHeader from "raw!./Static/header.glsl";
+import ShaderHeader from "raw-loader!./Static/header.glsl";
 /**
  * Manage materialGenerators for materials.
  * Materials can be instanciated with this instance.

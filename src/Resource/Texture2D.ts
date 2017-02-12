@@ -7,7 +7,7 @@ export type ImageUploadConfig = {
 };
 
 export default class Texture2D extends ResourceBase {
-  public static defaultTextures:Map<WebGLRenderingContext,Texture2D> = new Map<WebGLRenderingContext,Texture2D>();
+  public static defaultTextures: Map<WebGLRenderingContext, Texture2D> = new Map<WebGLRenderingContext, Texture2D>();
 
   /**
    * ミップマップの更新が必要なフィルタ
@@ -22,11 +22,11 @@ export default class Texture2D extends ResourceBase {
 
   public static _maxTextureSize: number;
 
-  public static generateDefaultTexture(gl:WebGLRenderingContext):void{
-    Texture2D.defaultTextures.set(gl,null); // for preventing called this method recursively by instanciating default texture
+  public static generateDefaultTexture(gl: WebGLRenderingContext): void {
+    Texture2D.defaultTextures.set(gl, null); // for preventing called this method recursively by instanciating default texture
     const texture = new Texture2D(gl);
     texture.update(0, 1, 1, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0]));
-    Texture2D.defaultTextures.set(gl,texture);
+    Texture2D.defaultTextures.set(gl, texture);
   }
 
   public readonly texture: WebGLTexture;

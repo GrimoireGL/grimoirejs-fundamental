@@ -75,7 +75,7 @@ export default class MaterialContainerComponent extends Component {
 
   private _drawOrder: string;
 
-  private _registeredAttributes:boolean;
+  private _registeredAttributes: boolean;
 
   public $mount(): void {
     this.getAttributeRaw("material").watch(this._onMaterialChanged.bind(this));
@@ -93,7 +93,7 @@ export default class MaterialContainerComponent extends Component {
       return; // When specified material is null
     }
     this.useMaterial = true;
-    if(this._registeredAttributes){
+    if (this._registeredAttributes) {
       this.__removeAttributes();
     }
     if (!this._materialComponent) { // the material must be instanciated by attribute.
@@ -127,7 +127,18 @@ export default class MaterialContainerComponent extends Component {
     this.material = material;
     for (let key in this.material.argumentDeclarations) {
       this.__addAtribute(key, this.material.argumentDeclarations[key]);
-      this.getAttributeRaw(key).boundTo(key, this.material.arguments);
+      try {
+        this.getAttributeRaw(key).watch(v => {
+          this.material.arguments[key] = v;
+        }, true);
+      } catch (e) {
+        // TODO more convinient error handling
+        this.node.emit("error-parse-material-args",e);
+        this.__removeAttributes();
+        this._registeredAttributes = false;
+        this.materialReady = false;
+        return;
+      }
     }
     for (let key in this.material.macroDeclarations) {
       this.__addAtribute(key, this.material.macroDeclarations[key]);

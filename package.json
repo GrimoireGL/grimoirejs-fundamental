@@ -1,10 +1,13 @@
 {
   "name": "grimoirejs-fundamental",
-  "version": "0.12.5",
+  "version": "0.0.0-development",
   "description": "Base components,converters and nodes for Web3D with Grimoire.js",
   "main": "./ref/index.js",
   "typings": "./ref/index.d.ts",
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GrimoireGL/grimoirejs-fundamental.git"
+  },
   "files": [
     "src",
     "ref",
@@ -25,37 +28,41 @@
     "babel-core": "^6.21.0",
     "babel-loader": "^6.2.10",
     "babel-preset-es2015": "^6.18.0",
-    "grimoirejs": "beta",
+    "condition-circle": "^1.5.0",
     "grimoirejs-cauldron": "^2.3.1-beta7",
     "grimoirejs-math": "^1.10.0",
     "raw-loader": "^0.5.1",
     "regenerator-runtime": "^0.10.1",
+    "semantic-release": "^6.3.2",
     "sinon": "^1.17.6",
     "ts-loader": "^2.0.0",
     "typescript": "^2.1.5",
-    "webpack": "^1.14.0",
-    "webpack-dev-server": "^1.16.2",
-    "webpack-shell-plugin": "^0.5.0",
+    "webpack": "^2.2.1",
     "xmldom": "^0.1.27",
-    "yargs": "^6.5.0"
+    "yargs": "^6.5.0",
+    "grimoirejs":"latest"
   },
   "peerDependencies": {
-    "grimoirejs": "latest",
-    "grimoirejs-math": "latest"
+    "grimoirejs-math": "latest",
+    "grimoirejs": "latest"
   },
   "scripts": {
     "start": "webpack --watch --progress",
     "test": "tsc --outDir ./lib && babel ./lib --presets es2015 --plugins transform-runtime --out-dir ./lib-es5 && babel ./test --presets es2015 --plugins transform-runtime --out-dir ./test-es5 && ava ./test-es5/**/*Test.js --verbose ",
     "bundle": "webpack --progress --watch",
-    "prepublish": "npm run build -- --prod&&npm test",
-    "build": "webpack --progress",
+    "prepublish": "npm run build -- --env.prod&&npm test",
+    "build": "npm run generate-expose && webpack --progress && npm run generate-reference",
     "generate-expose": "cauldron generate-exposure --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref",
-    "generate-reference": "cauldron generate-reference --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref"
+    "generate-reference": "cauldron generate-reference --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "license": "MIT",
   "babel": {
     "presets": [
       "es2015"
     ]
+  },
+  "release": {
+    "verifyConditions": "condition-circle"
   }
 }
