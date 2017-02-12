@@ -132,7 +132,7 @@ export default class MaterialContainerComponent extends Component {
           this.material.arguments[key] = v;
         }, true);
       } catch (e) {
-        // TODO more convenient error handling
+        // TODO more convinient error handling
         this.node.emit("error-parse-material-args",e);
         this.__removeAttributes();
         this._registeredAttributes = false;
