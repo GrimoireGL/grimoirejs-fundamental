@@ -34,15 +34,15 @@
     "grimoirejs-math": "^1.10.0",
     "raw-loader": "^0.5.1",
     "regenerator-runtime": "^0.10.1",
+    "semantic-release": "^6.3.2",
     "sinon": "^1.17.6",
     "ts-loader": "^2.0.0",
     "typescript": "^2.1.5",
-    "webpack": "^1.14.0",
+    "webpack": "^2.2.1",
     "webpack-dev-server": "^1.16.2",
     "webpack-shell-plugin": "^0.5.0",
     "xmldom": "^0.1.27",
-    "yargs": "^6.5.0",
-    "semantic-release": "^6.3.2"
+    "yargs": "^6.5.0"
   },
   "peerDependencies": {
     "grimoirejs": "latest",
@@ -52,7 +52,7 @@
     "start": "webpack --watch --progress",
     "test": "tsc --outDir ./lib && babel ./lib --presets es2015 --plugins transform-runtime --out-dir ./lib-es5 && babel ./test --presets es2015 --plugins transform-runtime --out-dir ./test-es5 && ava ./test-es5/**/*Test.js --verbose ",
     "bundle": "webpack --progress --watch",
-    "prepublish": "npm run build -- --prod&&npm test",
+    "prepublish": "npm run build -- --env.prod&&npm test",
     "build": "webpack --progress",
     "generate-expose": "cauldron generate-exposure --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref",
     "generate-reference": "cauldron generate-reference --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref",

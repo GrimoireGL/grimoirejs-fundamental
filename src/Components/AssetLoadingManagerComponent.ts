@@ -2,7 +2,7 @@ import gr from "grimoirejs";
 import AssetLoader from "../Asset/AssetLoader";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import DefaultLoaderChunk from "raw!../Asset/defaultLoader.html";
+import DefaultLoaderChunk from "raw-loader!../Asset/defaultLoader.html";
 
 /**
  * アセットの読み込みを司るコンポーネント。ローダーの表示などを司る。
