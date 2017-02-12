@@ -9,3 +9,5 @@ machine:
 test:
   override:
     - npm run build && npm test
+  post:
+    - npm run semantic-release
