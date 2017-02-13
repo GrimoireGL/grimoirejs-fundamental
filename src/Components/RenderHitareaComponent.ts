@@ -78,9 +78,10 @@ export default class RenderHitareaComponent extends Component {
     this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
     this._gl.clearDepth(1);
     this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
-    args.camera.renderScene({
+    const camera = this._sceneRenderer.camera || args.camera;
+    camera.renderScene({
       renderer: this._sceneRenderer, // TODO
-      camera: args.camera,
+      camera: camera,
       buffers: args.buffers,
       layer: this._sceneRenderer.layer,
       viewport: args.viewport,
@@ -97,7 +98,7 @@ export default class RenderHitareaComponent extends Component {
       }
       this._lastRenderable = null;
     } else {
-      const r = args.camera.containedScene.queueRegistory.getByIndex(index - 1);
+      const r = camera.containedScene.queueRegistory.getByIndex(index - 1);
       if (this._lastRenderable !== r) {
         if (this._lastRenderable instanceof Component) {
           this._lastRenderable.node.emit("mouseleave", this._lastRenderable);
