@@ -233,6 +233,7 @@ class CanvasInitializerComponent extends Component {
     this._resize(true);
   }
 
+
   private _getContext(canvas: HTMLCanvasElement): WebGLRenderingContext {
     const contextConfig = {
       antialias: this.getAttribute("antialias"),
