@@ -3,6 +3,10 @@ export class ImageResolver extends ExternalResourceResolver<HTMLImageElement> {
 
     public static defaultCORSConfig = "anonymous";
 
+    /**
+     * Cors config resolvers.
+     * If all of resolvers returns null, defaultCORSConfig will be used.
+     */
     public static corsResolvers: ((path: string) => string)[] = [];
 
     public resolve(path: string): Promise<HTMLImageElement> {
