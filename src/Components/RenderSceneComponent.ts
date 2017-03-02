@@ -50,16 +50,6 @@ export default class RenderSceneComponent extends Component {
     }
   };
 
-  private _gl: WebGLRenderingContext;
-
-  private _canvas: HTMLCanvasElement;
-
-  private _fbo: Framebuffer;
-
-  private _fboSize: { width: number, height: number };
-
-  // backing fields
-
   public layer: string;
 
   public clearColor: Color4;
@@ -74,6 +64,14 @@ export default class RenderSceneComponent extends Component {
 
   public technique: string;
 
+  private _gl: WebGLRenderingContext;
+
+  private _canvas: HTMLCanvasElement;
+
+  private _fbo: Framebuffer;
+
+  private _fboSize: { width: number, height: number };
+
   // messages
 
   public $awake(): void {
@@ -82,7 +80,7 @@ export default class RenderSceneComponent extends Component {
     this.getAttributeRaw("clearColorEnabled").boundTo("clearColorEnabled");
     this.getAttributeRaw("clearDepthEnabled").boundTo("clearDepthEnabled");
     this.getAttributeRaw("clearDepth").boundTo("clearDepth");
-    this.getAttributeRaw("camera").boundTo("camera");
+    this.getAttributeRaw("camera").boundTo("_camera");
     this.getAttributeRaw("technique").boundTo("technique");
   }
 

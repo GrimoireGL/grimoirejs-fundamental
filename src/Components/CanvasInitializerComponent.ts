@@ -240,7 +240,7 @@ class CanvasInitializerComponent extends Component {
     };
     let context: WebGLRenderingContext = canvas.getContext("webgl", contextConfig) as WebGLRenderingContext;
     if (!context) {
-      context = canvas.getContext("experimental-webgl", contextConfig) as WebGLRenderingContext;
+      context = canvas.getContext("webgl-experimental", contextConfig) as WebGLRenderingContext;
     }
     return context;
   }
