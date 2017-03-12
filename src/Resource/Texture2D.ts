@@ -1,4 +1,5 @@
 import ResourceBase from "./ResourceBase";
+import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 type ImageSource = HTMLCanvasElement | HTMLImageElement | ImageData | ArrayBufferView;
 
 export type ImageUploadConfig = {
@@ -161,11 +162,12 @@ export default class Texture2D extends ResourceBase {
   // There should be more effective way to resize texture
   private _justifyImage(img: HTMLImageElement): HTMLCanvasElement | HTMLImageElement {
     const w = img.naturalWidth, h = img.naturalHeight;
-    const size = Math.min(Math.pow(2, Math.log(Math.min(w, h)) / Math.LN2 | 0), Texture2D._maxTextureSize); // largest 2^n integer that does not exceed s
-    if (w !== h || w !== size) {
+    const size = TextureSizeCalculator.getPow2Size(w, h);
+    if (w !== size.width || h !== size.height) {
       const canv = document.createElement("canvas");
-      canv.height = canv.width = size;
-      canv.getContext("2d").drawImage(img, 0, 0, w, h, 0, 0, size, size);
+      canv.height = size.height;
+      canv.width = size.width;
+      canv.getContext("2d").drawImage(img, 0, 0, w, h, 0, 0, size.width, size.height);
       return canv;
     }
     return img;
@@ -174,20 +176,22 @@ export default class Texture2D extends ResourceBase {
   private _justifyCanvas(canvas: HTMLCanvasElement): HTMLCanvasElement {
     const w = canvas.width;
     const h = canvas.height;
-    const size = Math.pow(2, Math.log(Math.min(w, h)) / Math.LN2 | 0); // largest 2^n integer that does not exceed s
-    if (w !== h || w !== size) {
-      canvas.height = canvas.width = size * 2;
+    const size = TextureSizeCalculator.getPow2Size(w, h);
+    if (w !== size.width || h !== size.height) {
+      canvas.width = size.width;
+      canvas.height  = size.height;
     }
     return canvas;
   }
 
   private _justifyVideo(video: HTMLVideoElement): HTMLVideoElement | HTMLCanvasElement {
     const w = video.videoWidth, h = video.videoHeight;
-    const size = Math.pow(2, Math.log(Math.min(w, h)) / Math.LN2 | 0); // largest 2^n integer that does not exceed s
-    if (w !== h || w !== size) {
+    const size = TextureSizeCalculator.getPow2Size(w, h); // largest 2^n integer that does not exceed s
+    if (w !== size.width || h !== size.height) {
       const canv = document.createElement("canvas");
-      canv.height = canv.width = size;
-      canv.getContext("2d").drawImage(video, 0, 0, w, h, 0, 0, size, size);
+      canv.height = size.height;
+      canv.width = size.width;
+      canv.getContext("2d").drawImage(video, 0, 0, w, h, 0, 0, size.width, size.height);
       return canv;
     }
     return video;
