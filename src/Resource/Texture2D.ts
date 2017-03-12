@@ -21,7 +21,7 @@ export default class Texture2D extends ResourceBase {
     WebGLRenderingContext.NEAREST_MIPMAP_NEAREST
   ];
 
-  public static _maxTextureSize: number;
+  public static maxTextureSize: number;
 
   public static generateDefaultTexture(gl: WebGLRenderingContext): void {
     Texture2D.defaultTextures.set(gl, null); // for preventing called this method recursively by instanciating default texture
@@ -92,8 +92,8 @@ export default class Texture2D extends ResourceBase {
 
   constructor(gl: WebGLRenderingContext) {
     super(gl);
-    if (!Texture2D._maxTextureSize) {
-      Texture2D._maxTextureSize = gl.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE);
+    if (!Texture2D.maxTextureSize) {
+      Texture2D.maxTextureSize = gl.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE);
     }
     this.texture = gl.createTexture();
   }
