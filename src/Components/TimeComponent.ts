@@ -14,7 +14,7 @@ export default class TimeComponent extends Component {
       default: 0,
       converter: "Number"
     },
-    timeDelta: {
+    deltaTime: {
       default: 0,
       converter: "Number"
     }
@@ -34,8 +34,8 @@ export default class TimeComponent extends Component {
     const now = Date.now();
     const total = now - this._startTime;
 
-    this.setAttribute("time", now);
-    this.setAttribute("timeDelta", now - this._lastFrame);
+    this.setAttribute("time", total);
+    this.setAttribute("deltaTime", now - this._lastFrame);
 
     this._lastFrame = now;
   }
