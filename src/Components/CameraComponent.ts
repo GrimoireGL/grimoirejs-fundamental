@@ -112,7 +112,7 @@ export default class CameraComponent extends Component {
   private _fovy: number;
   private _orthoSize: number;
   private _aspect: number;
-  private _orthographic: boolean = false;
+  private _orthographic = false;
 
   public get ViewMatrix(): Matrix {
     return this.__viewMatrix;
