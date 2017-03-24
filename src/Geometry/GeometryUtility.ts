@@ -243,7 +243,7 @@ export default class GeometryUtility {
 
   public static sphere(center: number[], up: number[], right: number[], forward: number[], vdiv: number = 3, hdiv: number = 3): number[] {
     const ret = new Array((vdiv * hdiv + 2) * 8);
-    //top(0)
+    // top(0)
     ret[0] = center[0] + up[0];
     ret[1] = center[1] + up[1];
     ret[2] = center[2] + up[2];
@@ -252,7 +252,7 @@ export default class GeometryUtility {
     ret[4] = up[1];
     ret[5] = up[2];
 
-    ret[6] = 0;
+    ret[6] = Math.PI * 2;
     ret[7] = 0;
     // bottom(1)
     ret[8] = center[0] - up[0];
@@ -263,10 +263,10 @@ export default class GeometryUtility {
     ret[12] = -up[1];
     ret[13] = -up[2];
 
-    ret[14] = 0;
+    ret[14] = Math.PI * 2;
     ret[15] = 1;
-    const vDelta = Math.PI / (vdiv + 1);
-    const hDelta = Math.PI * 2 / hdiv;
+    const vDelta = Math.PI / (vdiv + 1); // vertical delta angle per one face
+    const hDelta = Math.PI * 2 / hdiv; // horizontal delta nagle per one face
     for (let v = 0; v < vdiv; v++) {
       const vc = Math.cos((v + 1) * vDelta);
       const vs = Math.sin((v + 1) * vDelta);
@@ -281,7 +281,7 @@ export default class GeometryUtility {
         ret[fi + 3] = center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs);
         ret[fi + 4] = center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs);
         ret[fi + 5] = (center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs));
-        const theta = hDelta * h;
+        const theta = hDelta * (hdiv - h);
         ret[fi + 6] = theta / Math.PI / 2;
         ret[fi + 7] = phi / Math.PI;
       }

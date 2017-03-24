@@ -76,7 +76,7 @@ export default () => {
     GrimoireInterface.registerConverter(PositionConverter);
 
     GrimoireInterface.registerNode("goml", ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "RendererManager", "Fullscreen"]);
-    GrimoireInterface.registerNode("scene", ["Scene"]);
+    GrimoireInterface.registerNode("scene", ["Scene","Time"]);
     GrimoireInterface.registerNode("object", ["Transform"]);
     GrimoireInterface.registerNode("camera", ["Camera"], { position: "0,0,10" }, "object");
     GrimoireInterface.registerNode("mesh", ["MaterialContainer", "MeshRenderer"], {}, "object");
