@@ -68,5 +68,7 @@ export default class AssetLoadingManagerComponent extends Component {
     }
     this.node.emit("asset-load-completed");
     this.tree("goml").setAttribute("loopEnabled", true);
+    const canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
+    canvas.classList.add("gr-resource-loaded-canvas");
   }
 }
