@@ -1,6 +1,6 @@
 @Pass{
   FS_PREC(mediump,float)
-  @ExposeMacro(int,TEST,test,3)
+  @ExposeMacro(int,test,TEST,3)
   #ifdef VS
   attribute vec3 position;
 
