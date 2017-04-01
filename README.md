@@ -1,5 +1,7 @@
 
 ## AssetLoadingManager コンポーネント
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/GrimoireGL/grimoirejs-fundamental.svg)](https://greenkeeper.io/)
 <!-- EDIT HERE(@Component)-->
 <!-- /EDIT HERE-->
 ### 属性
