@@ -1,0 +1,6 @@
+<goml>
+  <scene>
+    <camera/>
+    <mesh geometry="cube" color="yellow" texture="./uv.jpg" rotation="45d,45d,0"/>
+  </scene>
+</goml>
