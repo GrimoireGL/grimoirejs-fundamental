@@ -111,3 +111,5 @@ register
 lib-es5
 test-es5
 yarn.lock
+
+docs

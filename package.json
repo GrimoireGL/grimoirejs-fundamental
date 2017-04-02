@@ -43,6 +43,7 @@
     "semantic-release": "^6.3.2",
     "sinon": "^2.1.0",
     "ts-loader": "^2.0.3",
+    "typedoc": "git://github.com/GrimoireGL/typedoc#includeAll",
     "typescript": "^2.2.1",
     "webpack": "^2.3.1",
     "xmldom": "^0.1.27",
@@ -63,7 +64,8 @@
     "postbuild": "cauldron generate-reference --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "hs": "http-server",
-    "e2e-test": "nightwatch --env circleci"
+    "e2e-test": "nightwatch --env circleci",
+    "doc": "typedoc --out ./docs/ --options typedoc.json  ./tsconfig.json"
   },
   "license": "MIT",
   "babel": {
