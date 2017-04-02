@@ -26,4 +26,4 @@ test:
     - aws s3 cp $CIRCLE_ARTIFACTS/ s3://circleci-grimoire-e2e/ci/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BUILD_NUM --recursive
     - curl https://grimoire-e2e.herokuapp.com/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PREVIOUS_BUILD_NUM/$CIRCLE_BUILD_NUM
   post:
-    - npm run semantic-release || true
+    - (npm run semantic-release && curl https://preset-updater.herokuapp.com/?repo=preset-basic&repoURL=https://github.com/GrimoireGL/grimoirejs-preset-basic.git&buildNumber=$CIRCLE_BUILD_NUM&currentPkg=grimoirejs-fundamental)|| true
