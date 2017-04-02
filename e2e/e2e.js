@@ -16,6 +16,7 @@ for(let key of dirs){
         .url(`http://localhost:8080/e2e/${key}/index.html`)
         .pause(100)
         .resizeWindow(640,480)
+        .pause(100)
         .waitForElementPresent(`canvas.gr-resource-loaded-canvas`,5000)
         .pause(100)
         .saveScreenshot(dir + `/${key}.png`).end();
