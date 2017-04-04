@@ -30,10 +30,10 @@ export default class GeometryFactory {
     }
 
     public static extend(typeName: string, extender: (geometry: Geometry, attrs: { [attrKey: string]: any }) => void): void {
-      if(GeometryFactory.factoryExtentions[typeName] === void 0){
-        GeometryFactory.factoryExtentions[typeName] = [];
-      }
-      GeometryFactory.factoryExtentions[typeName].push(extender);
+        if (GeometryFactory.factoryExtentions[typeName] === void 0) {
+            GeometryFactory.factoryExtentions[typeName] = [];
+        }
+        GeometryFactory.factoryExtentions[typeName].push(extender);
     }
 
     constructor(public gl: WebGLRenderingContext) {
@@ -46,8 +46,8 @@ export default class GeometryFactory {
             throw new Error(`Can not instanciate unknown geometry type ${type}`);
         }
         const geometry = factoryDelegate(this.gl, args);
-        if(GeometryFactory.factoryExtentions[type] !== void 0){
-          GeometryFactory.factoryExtentions[type].forEach(v=>v(geometry,args));
+        if (GeometryFactory.factoryExtentions[type] !== void 0) {
+            GeometryFactory.factoryExtentions[type].forEach(v => v(geometry, args));
         }
         return geometry;
     }
