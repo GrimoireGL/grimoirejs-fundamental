@@ -79,12 +79,12 @@ export default class RenderQuadComponent extends Component {
     this.getAttributeRaw("technique").boundTo("_technique");
   }
 
-  public $mount(): void {
+  public async $mount(): Promise<void> {
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
     const gr = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
-    this._geom = gr.getGeometry("quad");
     this._materialContainer = this.node.getComponent(MaterialContainerComponent);
+    this._geom = await gr.getGeometry("quad");
   }
 
   public $bufferUpdated(args: IBufferUpdatedMessage): void {
@@ -101,7 +101,7 @@ export default class RenderQuadComponent extends Component {
   }
 
   public $render(args: IRenderRendererMessage): void {
-    if (!this._materialContainer.materialReady) {
+    if (!this._materialContainer.materialReady || !this._geom) {
       return;
     }
     // bound render target

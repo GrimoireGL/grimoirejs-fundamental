@@ -29,30 +29,36 @@ export default class GeometryFactory {
         GeometryFactory.factoryArgumentDeclarations[typeName] = argumentDeclarations;
     }
 
-    public static extend(typeName: string, extender: (geometry: Geometry, attrs: { [attrKey: string]: any }) => void): void {
-      if(GeometryFactory.factoryExtentions[typeName] === void 0){
-        GeometryFactory.factoryExtentions[typeName] = [];
-      }
-      GeometryFactory.factoryExtentions[typeName].push(extender);
+    public static extend(typeName: string, extender: (geometry: Geometry, attrs: { [attrKey: string]: any }) => Promise<void> | void): void {
+        if (GeometryFactory.factoryExtentions[typeName] === void 0) {
+            GeometryFactory.factoryExtentions[typeName] = [];
+        }
+        GeometryFactory.factoryExtentions[typeName].push(extender);
     }
 
     constructor(public gl: WebGLRenderingContext) {
 
     }
 
-    public instanciate(type: string, args: { [argName: string]: any }): Geometry {
+    public async instanciate(type: string, args: { [argName: string]: any }): Promise<Geometry> {
         const factoryDelegate = GeometryFactory.factoryDelegates[type];
         if (!factoryDelegate) {
             throw new Error(`Can not instanciate unknown geometry type ${type}`);
         }
-        const geometry = factoryDelegate(this.gl, args);
-        if(GeometryFactory.factoryExtentions[type] !== void 0){
-          GeometryFactory.factoryExtentions[type].forEach(v=>v(geometry,args));
+        const geometry = await factoryDelegate(this.gl, args);
+        if (GeometryFactory.factoryExtentions[type] !== void 0) {
+            const exts = GeometryFactory.factoryExtentions[type];
+            for (let i = 0; i < exts.length; i++) {
+                const p = exts[i](geometry, args);
+                if (p) {
+                    await p;
+                }
+            }
         }
         return geometry;
     }
 
-    public instanciateAsDefault(type: string): Geometry {
+    public instanciateAsDefault(type: string): Promise<Geometry> {
         const decl = GeometryFactory.factoryArgumentDeclarations[type];
         const args = {};
         for (let attr in decl) {
