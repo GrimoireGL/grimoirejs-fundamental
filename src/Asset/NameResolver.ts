@@ -20,7 +20,7 @@ export default class NameResolver<T> {
 
     /**
      * Obtain the named resource.
-     * @return {Promise<T>} [description]
+     * @return {Promise<T>} the resource
      */
     public get(name: string): Promise<T> {
         if (this._resolved[name] !== void 0) {
@@ -36,19 +36,23 @@ export default class NameResolver<T> {
      * @param  {Promise<T>} generator Promise to resolve the resource
      * @return {Promise<T>} The promise of resource
      */
-    public async register(name: string, generator: Promise<T>): Promise<T> {
-        try {
-            if (this._resolvers[name] !== void 0) {
-              throw new Error(`Dupelicated named resource '${name}' was registered.`);
+    public async register(name: string, generator: Promise<T> | T): Promise<T> {
+        if (this._isPromise(generator)) {
+            try {
+                if (this._resolvers[name] !== void 0) {
+                    throw new Error(`Dupelicated named resource '${name}' was registered.`);
+                }
+                this._resolvers[name] = generator;
+                const resolved = await generator;
+                this._resolvers[name] = void 0;
+                this._callHandlers(name, resolved);
+                this._resolved[name] = resolved;
+                return resolved;
+            } catch (e) {
+                throw new Error(`Unexpected error has occured during resolution of named resource '${name}'`);
             }
-            this._resolvers[name] = generator;
-            const resolved = await generator;
-            this._resolvers[name] = void 0;
-            this._callHandlers(name, resolved);
-            this._resolved[name] = resolved;
-            return resolved;
-        } catch (e) {
-            throw new Error(`Unexpected error has occured during resolution of named resource '${name}'`);
+        } else {
+            return this.register(name, Promise.resolve(generator));
         }
     }
 
@@ -79,5 +83,9 @@ export default class NameResolver<T> {
         }
         this._handlers[name].forEach(f => f(resolved));
         delete this._handlers[name];
+    }
+
+    private _isPromise(generator: Promise<T> | T): generator is Promise<T> {
+        return (typeof generator["then"] === "function");
     }
 }
