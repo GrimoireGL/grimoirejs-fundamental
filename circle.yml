@@ -19,6 +19,7 @@ dependencies:
 
   override:
     - yarn install
+
 test:
   override:
     - npm run build -- --env.prod && npm test
@@ -27,3 +28,10 @@ test:
     - curl https://grimoire-e2e.herokuapp.com/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PREVIOUS_BUILD_NUM/$CIRCLE_BUILD_NUM
   post:
     - sh release.sh
+
+deployment:
+  deploy:
+    branch: master
+    commands:
+      - npm run doc
+      - aws s3 cp ./docs/ s3://grimoire-api-document/$CIRCLE_PROJECT_REPONAME --recursive --acl public-read
