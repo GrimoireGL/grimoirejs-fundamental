@@ -17,7 +17,6 @@ export class VideoResolver {
 
     public resolve(path: string): Promise<HTMLVideoElement> {
         return new Promise<HTMLVideoElement>((resolve, reject) => {
-            console.log("load start");
             const video = document.createElement("video");
             video.crossOrigin = this._getCORSConfig(path);
             video.preload = "auto";
