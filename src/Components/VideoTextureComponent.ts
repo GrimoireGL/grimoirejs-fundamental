@@ -96,10 +96,12 @@ export default class VideoTextureComponent extends Component {
         if (this.currentTime !== this.video.currentTime) {
             this.currentTime = this.video.currentTime;
         }
-        this._textureComponent.texture.update(this.video, {
-            premultipliedAlpha: this.premultipliedAlpha,
-            flipY: this.flipY
-        });
+        if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
+            this._textureComponent.texture.update(this.video, {
+                premultipliedAlpha: this.premultipliedAlpha,
+                flipY: this.flipY
+            });
+        }
     }
 
     private async _loadTask(src: string): Promise<void> {
