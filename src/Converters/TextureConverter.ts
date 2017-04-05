@@ -20,7 +20,7 @@ function _parseQuery(query: string): {
     return {
       type: regexResult[1],
       param: regexResult[2]
-    }
+    };
   }
   return null;
 }
@@ -45,7 +45,7 @@ function fromVideoTexture(gl: WebGLRenderingContext, val: HTMLVideoElement): Tex
  * 渡すものが文字列である場合、4つの方法がある。
  * * `url`・・・指定したアドレスから画像を解決して取得する
  * * `backbuffer(バックバッファ名)`・・・名前付きバックバッファのリストから取得する
- * * `video(ビデオファイルへのURL)`・・・指定したアドレスからビデオを取得してテクスチャとして再生する(Buggy)
+ * * `video(ビデオファイルへのURL)`・・・指定したアドレスからビデオを取得してテクスチャとして再生する(deprecated)
  * * `query(<texture>へのクエリ)`・・・指定したクエリで`<texture>`を探索して利用する。
  * 渡すものがオブジェクトである場合、5つの方法がある。
  * * `Texture2D型`・・・そのまま利用される
@@ -65,6 +65,7 @@ export default function TextureConverter(val: any, attr: Attribute): any {
         case "backbuffer":
           return new TextureReference((buffers) => buffers[param]);
         case "video":
+          console.warn(`The syntax "video(URL)" is deprecated after version 0.16.0.\n You should use <video-texture> tag instead.`);
           return new TextureReference(fromVideoTexture(attr.companion.get("gl"), generateVideoTag(param)))
         case "query":
           const obtainedTag = attr.tree(param);

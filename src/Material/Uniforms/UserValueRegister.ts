@@ -59,12 +59,17 @@ basicRegister(gl.INT_VEC4, false, "Vector4", [0, 0, 0, 0], (proxy, name, value) 
 basicRegister(gl.FLOAT_VEC2, false, "Vector2", [0, 0], (proxy, name, value) => proxy.uniformVector2(name, value));
 basicRegister(gl.FLOAT_MAT4, true, "Object", [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], (proxy, name, value) => proxy.uniformMatrixArray(name, value));
 basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: TextureReference, args) => {
-    let texture;
-    if (value && (texture = value.get(args.buffers))) {
-        proxy.uniformTexture2D(name, texture);
-    } else {
-        proxy.uniformTexture2D(name, Texture2D.defaultTextures.get(proxy.program.gl));
+    let texture: Texture2D;
+    if (value) {
+        const fetched = value.get(args.buffers);
+        if (fetched.valid) {
+            texture = fetched;
+        }
     }
+    if (!texture) {
+        texture = Texture2D.defaultTextures.get(proxy.program.gl);
+    }
+    proxy.uniformTexture2D(name, texture);
 });
 
 _userValueRegisterers.single[gl.FLOAT_VEC3] = function(valInfo: IVariableInfo, material: Material) {

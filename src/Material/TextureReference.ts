@@ -10,7 +10,7 @@ class TextureReference {
   }
 
   public get(): Texture2D;
-  public get(buffers: { [key: string]: Texture2D });
+  public get(buffers: { [key: string]: Texture2D }): Texture2D;
   public get(buffers?: { [key: string]: Texture2D }): Texture2D {
     if (!this._isFunctionalProxy) {
       return this.rawResource as Texture2D;
