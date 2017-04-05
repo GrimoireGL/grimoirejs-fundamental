@@ -1,6 +1,7 @@
 <goml>
+  <image-texture src="./uv.jpg"/>
   <scene>
     <camera/>
-    <mesh geometry="cube" color="yellow" texture="./uv.jpg" rotation="45d,45d,0"/>
+    <mesh geometry="cube" color="yellow" texture="query(image-texture)" rotation="45d,45d,0"/>
   </scene>
 </goml>
