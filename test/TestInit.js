@@ -1,5 +1,8 @@
 const xmldom = require("xmldom");
 global.DOMParser = xmldom.DOMParser;
+global.document = {
+  createElement(){}
+}
 global.WebGLRenderingContext = {
   ACTIVE_ATTRIBUTES: 35721,
   ACTIVE_ATTRIBUTE_MAX_LENGTH: 35722,
