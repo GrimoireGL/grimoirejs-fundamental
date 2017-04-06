@@ -1,5 +1,5 @@
 <goml>
-  <video-texture src="./bunny.mp4" currentTime="10" playbackRate="0"/>
+  <video-texture src="./GBhxi.mp4" currentTime="10" playbackRate="1"/>
   <scene>
     <camera/>
     <mesh geometry="cube" color="yellow" texture="query(video-texture)" rotation="45d,45d,0"/>

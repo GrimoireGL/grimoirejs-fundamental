@@ -21,6 +21,7 @@ export default class Geometry {
    */
   public buffers:Buffer[] = [];
 
+
   public indices:{[geometryType:string]:IndexBufferInfo} = {};
 
   public accessors:{[semantics:string]:GeometryVertexBufferAccessor} = {};
