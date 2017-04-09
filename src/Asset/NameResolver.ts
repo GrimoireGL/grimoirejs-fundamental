@@ -2,6 +2,11 @@
  * Provide abstraction of resolving named resource such as Geometry, Materials.
  */
 export default class NameResolver<T> {
+    public static UNLOADED = 0;
+
+    public static RESOLVING = 1;
+
+    public static RESOLVED = 2;
 
     /**
      * Resolved items
@@ -27,6 +32,22 @@ export default class NameResolver<T> {
             return Promise.resolve(this._resolved[name]);
         } else {
             return this._waitForResolved(name);
+        }
+    }
+
+    /**
+     * Get status of specified resource.
+     * This method would return NameResolver.UNLOADED,NameResolver.RESOLVED or NameResolver.RESOLVING
+     * @param  {string} name resource name to check status
+     * @return {number}      status code
+     */
+    public getStatus(name: string): number {
+        if (this._resolvers[name] !== void 0) {
+            return NameResolver.RESOLVING;
+        } else if (this._resolved[name] !== void 0) {
+            return NameResolver.RESOLVED;
+        } else {
+            return NameResolver.UNLOADED;
         }
     }
 
