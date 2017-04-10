@@ -61,13 +61,16 @@ module.exports = (env)=>{
       plugins.push(new CopyPlugin(`./register/${fnPrefix}.js`,'./register/index.js'));
       plugins.push(new CopyPlugin(`./register/${fnPrefix}.js.map`,'./register/index.js.map'));
       skipIndex = true;
+      console.log('index.js would be copied from original.');
     }
     buildTasks.push(getBuildTask(`${fnPrefix}.js`, plugins,polyfills[0]));
   }
   if(!skipIndex && (isDefault || env.npm || env.prod)){
+    console.log('index.js would be generated separately');
     buildTasks.push(getBuildTask("index.js", [],polyfills[1]));
   }
   if (env.prod) {
+    console.log('Minified version would be generated also');
     buildTasks.push(getBuildTask(fnPrefix + ".min.js", [
       new webpack.optimize.UglifyJsPlugin({
         compress: {
