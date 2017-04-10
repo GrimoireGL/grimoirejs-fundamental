@@ -52,6 +52,7 @@ module.exports = (env)=>{
   let buildTasks = [];
   let isDefault = !env.browser && !env.npm && !env.prod;
   let skipIndex = false;
+  console.log(env.prod);
   if(env.browser || env.prod){
     const plugins = [];
     // if needs index also and it was not including core, index.js must be copied from fnPrefix.js
