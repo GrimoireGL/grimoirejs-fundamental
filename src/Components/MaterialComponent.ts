@@ -36,7 +36,14 @@ export default class MaterialComponent extends Component {
         this.material = await this.materialPromise;
         for (let key in this.material.argumentDeclarations) {
             this.__addAtribute(key, this.material.argumentDeclarations[key]);
+            let lastValue;
+            if (this.material.arguments[key] !== void 0) {
+                lastValue = this.material.arguments[key];
+            }
             this.getAttributeRaw(key).boundTo(key, this.material.arguments);
+            if (lastValue !== void 0) {
+                this.material.arguments[key] = lastValue;
+            }
         }
         for (let key in this.material.macroDeclarations) {
             this.__addAtribute(key, this.material.macroDeclarations[key]);
