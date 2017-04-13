@@ -78,7 +78,7 @@ export default class SortTransformUtility {
       if (!regexResult) { break; }
       let importContent: string;
       importContent = await SortTransformUtility.resolveImports(await ImportResolver.resolve(regexResult[1]));
-      if (!importContent) {
+      if (typeof importContent !== "string") {
         throw new Error(`Required shader chunk '${regexResult[1]}' was not found!!`);
       }
       uncommentedSource = uncommentedSource.replace(regexResult[0], `\n${importContent}\n`);

@@ -131,11 +131,6 @@ export default class MaterialContainerComponent extends Component {
             this.__addAtribute(key, this.material.argumentDeclarations[key]);
             try {
                 this.getAttributeRaw(key).boundTo(key, this.material.arguments);
-                this.getAttributeRaw(key).watch(a=>{
-                  if(key === "baseColorTexture"){
-                    debugger;
-                  }
-                });
                 if (lastArguments[key] !== void 0) {
                     this.setAttribute(key, lastArguments[key]);
                 }
