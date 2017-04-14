@@ -47,10 +47,10 @@ class LoopManagerComponent extends Component {
                 this._begin();
             }
         });
+        this._timer = new Timer();
         this.getAttributeRaw("fpsRestriction").watch((attr) => {
             this._timer.fpsRestriction = attr;
         }, true);
-        this._timer = new Timer();
         this._timer.internalUpdate();
     }
 
