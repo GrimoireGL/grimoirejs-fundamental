@@ -11,7 +11,7 @@ import SceneComponent from "./SceneComponent";
 import GomlNode from "grimoirejs/ref/Node/GomlNode";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-
+import Timer from "../Util/Timer";
 /**
  * シーンを描画するカメラのコンポーネント
  * このコンポーネントによって、透視射影や正方射影などの歪みを調整します。
@@ -239,9 +239,9 @@ export default class CameraComponent extends Component {
     this.containedScene = null;
   }
 
-  public updateContainedScene(loopIndex: number): void {
+  public updateContainedScene(timer:Timer): void {
     if (this.containedScene) {
-      this.containedScene.updateScene(loopIndex);
+      this.containedScene.updateScene(timer);
     }
   }
 
@@ -249,7 +249,7 @@ export default class CameraComponent extends Component {
     if (this.containedScene) {
       this._justifyAspect(args);
       args.sceneDescription = this.containedScene.sceneDescription;
-      this._renderQueue.renderAll(args, true, args.loopIndex);
+      this._renderQueue.renderAll(args, true, args.timer);
     }
   }
 

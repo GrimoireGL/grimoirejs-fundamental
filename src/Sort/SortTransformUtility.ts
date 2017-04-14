@@ -114,7 +114,7 @@ export default class SortTransformUtility {
         macroName: regexResult[3],
         type: regexResult[1],
         value: value,
-        target:"expose"
+        target: "expose"
       };
     }
     regex = /@ReferMacro\s*\(\s*([a-zA-Z0-9_]+)\s*,\s*(.+)\s*\)/g;

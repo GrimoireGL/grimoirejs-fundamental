@@ -1,6 +1,6 @@
 import IRenderArgument from "./IRenderArgument";
 import IRenderable from "./IRenderable";
-
+import Timer from "../Util/Timer";
 type RenderQueueElement = {
   rendarable: IRenderable;
   priortyCache: number;
@@ -33,13 +33,13 @@ export default class RenderQueue {
     }
   }
 
-  public renderAll(args: IRenderArgument, cameraMoved: boolean, frameNumber: number): void {
+  public renderAll(args: IRenderArgument, cameraMoved: boolean, timer: Timer): void {
     for (let i = 0; i < this._rendeables.length; i++) {
       this._rendeables[i].priortyCache = this._rendeables[i].rendarable.getRenderingPriorty(args.camera, cameraMoved, this._rendeables[i].priortyCache);
     }
     this._rendeables.sort((a, b) => a.priortyCache - b.priortyCache);
     this._rendeables.forEach((r) => {
       r.rendarable.render(args);
-    })
+    });
   }
 }
