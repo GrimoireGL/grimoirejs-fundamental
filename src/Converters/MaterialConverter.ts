@@ -2,7 +2,7 @@ import gr from "grimoirejs";
 import Attribute from "grimoirejs/ref/Node/Attribute";
 import MaterialFactory from "../Material/MaterialFactory";
 import MaterialComponent from "../Components/MaterialComponent";
-import Material from '../Material/Material';
+import Material from "../Material/Material";
 
 /**
  * マテリアルを指定するためのコンバーター

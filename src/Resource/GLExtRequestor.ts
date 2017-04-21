@@ -80,7 +80,7 @@ export default class GLExtRequestor {
     constructor(public gl: WebGLRenderingContext) {
         GLExtRequestor._glToRequestorMap.set(gl, this);
         this._resolveRequested();
-        GLExtRequestor._requestObserver.push(this._resolveExtensionSafely);
+        GLExtRequestor._requestObserver.push(this._resolveExtensionSafely.bind(this));
     }
 
     /**
