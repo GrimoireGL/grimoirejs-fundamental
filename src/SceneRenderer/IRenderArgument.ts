@@ -5,6 +5,7 @@ import Rectangle from "grimoirejs-math/ref/Rectangle";
 import Material from "../Material/Material";
 import Texture2D from "../Resource/Texture2D";
 import CameraComponent from "../Components/CameraComponent";
+import Timer from "../Util/Timer";
 /**
  * The message args of $render called by RendererComponent.
  */
@@ -21,7 +22,7 @@ interface IRenderArgument {
   material?: Material;
   materialArgs?: { [key: string]: any };
   sceneDescription: { [key: string]: any };
-  loopIndex: number;
+  timer: Timer;
   technique: string;
 }
 

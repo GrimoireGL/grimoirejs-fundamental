@@ -85,7 +85,7 @@ export default class RenderHitareaComponent extends Component {
       buffers: args.buffers,
       layer: this._sceneRenderer.layer,
       viewport: args.viewport,
-      loopIndex: args.loopIndex,
+      timer: args.timer,
       technique: "hitarea",
       sceneDescription: {}
     });

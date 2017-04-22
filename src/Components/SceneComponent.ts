@@ -2,6 +2,7 @@ import RenderQueueRegistry from "../SceneRenderer/RenderQueueRegistry";
 import gr from "grimoirejs";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Timer from "../Util/Timer";
 
 /**
  * 特定のシーン内に関連する処理を行うためのコンポーネント
@@ -36,12 +37,12 @@ export default class SceneComponent extends Component {
 
   /**
    * Notify update scene only when send update message is needed.
-   * @param {number} loopIndex [description]
+   * @param {Timer} timer [description]
    */
-  public updateScene(loopIndex: number): void {
-    if (this._lastUpdateIndex !== loopIndex) {
+  public updateScene(timer: Timer): void {
+    if (this._lastUpdateIndex !== timer.frameCount) {
       this.node.broadcastMessage("update", this.sceneDescription);
-      this._lastUpdateIndex = loopIndex;
+      this._lastUpdateIndex = timer.frameCount;
     }
   }
 }

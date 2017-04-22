@@ -7,6 +7,7 @@ interface IndexBufferInfo {
   type: number;
   count: number;
   byteSize: number;
+  instanceCount?: number; // experimental
 }
 
 export default IndexBufferInfo;

@@ -34,8 +34,6 @@ export default class Texture2D extends ResourceBase {
 
     public readonly texture: WebGLTexture;
 
-
-
     public get magFilter(): number {
         return this._magFilter;
     }

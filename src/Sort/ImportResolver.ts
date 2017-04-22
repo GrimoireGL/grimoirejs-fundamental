@@ -21,7 +21,7 @@ export class ImportResolver extends CacheResolver<string> {
   }
 
   private async _resolve(path: string): Promise<string> {
-    if (this.staticImports[path]) {
+    if (typeof this.staticImports[path] === "string") {
       return this.staticImports[path];
     } else {
       return await this._fromExternal(path);

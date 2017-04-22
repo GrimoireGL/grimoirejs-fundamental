@@ -1,4 +1,3 @@
-import gr from "grimoirejs";
 import EEObject from "grimoirejs/ref/Base/EEObject";
 /**
  * Provides managing all promise on initializing resources.
