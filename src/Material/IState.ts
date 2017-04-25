@@ -1,5 +1,6 @@
 interface IState {
-  enable: number[], // empty by default
+  enable: number[]; // empty by default
+  disable?: number[];
   functions: {
     blendColor?: number[],
     blendEquationSeparate?: number[],
@@ -13,7 +14,7 @@ interface IState {
     lineWidth?: number[],
     polygonOffset?: number[], // (factor, units)
     scissor?: number[] // (x, y, width, height)
-  }
+  };
 }
 
 export default IState;
