@@ -1,45 +1,31 @@
 import ManagedProgram from "../Resource/ManagedProgram";
 import ManagedShader from "../Resource/ManagedShader";
 import MaterialFactory from "./MaterialFactory";
-import Shader from "../Resource/Shader";
 import Geometry from "../Geometry/Geometry";
-import IVariableInfo from "./IVariableInfo";
 import UniformProxy from "../Resource/UniformProxy";
 import UniformResolverRegistry from "./UniformResolverRegistry";
 import Material from "./Material";
 import IPassRecipe from "./IPassRecipe";
 import IMaterialArgument from "./IMaterialArgument";
-import Program from "../Resource/Program";
 import GLStateConfigurator from "./GLStateConfigurator";
-import header from "raw-loader!./Static/header.glsl";
-
+import ShaderMixer from "./ShaderMixer";
+import UniformResolverContainer from "./UniformResolverContainer";
 export default class Pass {
-  /**
-   * [program description]
-   * @type {Program}
-   */
+
   public program: ManagedProgram;
 
   public fs: ManagedShader;
 
   public vs: ManagedShader;
 
-  private _registers: ((proxy: UniformProxy, args: IMaterialArgument) => void)[];
-
   private _macro: { [key: string]: any } = {};
 
-  private _disposers: (() => void)[];
+  private _uniformResolvers: UniformResolverContainer;
 
   private _gl: WebGLRenderingContext;
 
-  private _fsCode: string;
-
-  private _vsCode: string;
-
   constructor(public material: Material, public passRecipe: IPassRecipe) {
-    const registers = UniformResolverRegistry.generateRegisterers(material, passRecipe);
-    this._registers = registers.registerers;
-    this._disposers = registers.disposers;
+    this._uniformResolvers = UniformResolverRegistry.generateRegisterers(material, passRecipe);
     this._gl = material.gl;
     const factory = MaterialFactory.get(this._gl);
     const macroRegister = factory.macro;
@@ -76,9 +62,7 @@ export default class Pass {
 
   public draw(args: IMaterialArgument): void {
     this.program.use();
-    for (let i = 0; i < this._registers.length; i++) { // register uniforms
-      this._registers[i](this.program.uniforms, args);
-    }
+    this._uniformResolvers.resolve(this.program.uniforms, args);
     GLStateConfigurator.configureForPass(this._gl, this.passRecipe); // configure for gl states
     for (let key in this.passRecipe.attributes) {
       const attribute = this.passRecipe.attributes[key];
@@ -88,16 +72,14 @@ export default class Pass {
   }
 
   public dispose(): void {
-    for (let i = 0; i < this._disposers.length; i++) {
-      this._disposers[i]();
-    }
+    this._uniformResolvers.dispose();
   }
 
   private _updateProgram(): void {
     let lFS = this.fs;
-    this.fs = ManagedShader.getShader(this._gl, WebGLRenderingContext.FRAGMENT_SHADER, this._generateShaderCode("FS"));
+    this.fs = ManagedShader.getShader(this._gl, WebGLRenderingContext.FRAGMENT_SHADER, ShaderMixer.generate(WebGLRenderingContext.FRAGMENT_SHADER, this._macro, this.passRecipe.fragment));
     let lVS = this.vs;
-    this.vs = ManagedShader.getShader(this._gl, WebGLRenderingContext.VERTEX_SHADER, this._generateShaderCode("VS"));
+    this.vs = ManagedShader.getShader(this._gl, WebGLRenderingContext.VERTEX_SHADER, ShaderMixer.generate(WebGLRenderingContext.VERTEX_SHADER, this._macro, this.passRecipe.vertex));
     if (lFS && lVS) {
       lFS.release();
       lVS.release();
@@ -107,17 +89,5 @@ export default class Pass {
     if (lP) {
       lP.release();
     }
-  }
-
-  private _generateShaderCode(shaderType: string): string {
-    return `#define ${shaderType}\n${this._macroCode()}\n${header}/*BEGINNING OF USER CODE*/\n${shaderType === "VS" ? this.passRecipe.vertex : this.passRecipe.fragment}`;
-  }
-
-  private _macroCode(): string {
-    let macroCode = "";
-    for (let macroName in this._macro) {
-      macroCode += `#define ${macroName} ${this._macro[macroName]}\n`;
-    }
-    return macroCode;
   }
 }

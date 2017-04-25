@@ -16,7 +16,7 @@ interface IMaterialArgument {
   drawOffset: number;
   drawCount: number;
   technique: string;
-  renderable:IRenderable;
+  renderable: IRenderable;
 }
 
 export default IMaterialArgument;

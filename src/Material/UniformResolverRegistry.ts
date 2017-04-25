@@ -3,6 +3,7 @@ import IPassRecipe from "./IPassRecipe";
 import IMaterialArgument from "./IMaterialArgument";
 import Material from "./Material";
 import IVariableInfo from "./IVariableInfo";
+import UniformResolverContainer from "./UniformResolverContainer";
 
 export interface IUniformRegisterOnRegister {
   (proxy: UniformProxy, args: IMaterialArgument): void;
@@ -31,10 +32,7 @@ export class UniformResolverRegistry {
     this._generators[semantic.toUpperCase()] = generator;
   }
 
-  public generateRegisterers(material: Material, passInfo: IPassRecipe): {
-    registerers: IUniformRegisterOnRegister[],
-    disposers: IUniformRegisterOnDispose[]
-  } {
+  public generateRegisterers(material: Material, passInfo: IPassRecipe): UniformResolverContainer {
     const registerers: IUniformRegisterOnRegister[] = [], disposers: IUniformRegisterOnDispose[] = [];
     for (let key in passInfo.uniforms) {
       const valueInfo = passInfo.uniforms[key];
@@ -53,10 +51,7 @@ export class UniformResolverRegistry {
         }
       }
     }
-    return {
-      registerers: registerers,
-      disposers: disposers
-    };
+    return new UniformResolverContainer(registerers, disposers);
   }
 }
 
