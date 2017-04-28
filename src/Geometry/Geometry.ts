@@ -6,6 +6,7 @@ import IndexBufferInfo from "./IndexBufferInfo";
 import Buffer from "../Resource/Buffer";
 import GLExtRequestor from "../Resource/GLExtRequestor";
 import IGLInstancedArrayInterface from "../Resource/GLExt/IGLInstancedArrayInterface";
+import HashCalculator from "../Util/HashCalculator";
 export interface GeometryVertexBufferAccessor extends VertexBufferAccessor {
     bufferIndex: number;
 }
@@ -16,6 +17,15 @@ export default class Geometry {
 
     private static _lastGeometry: Map<WebGLRenderingContext, Geometry> = new Map<WebGLRenderingContext, Geometry>();
 
+    /**
+     * Hash calculator of accessors map.
+     * If this value was same with the other geometry, the 2 geometries have same accessors.
+     * 'Same' DOES NOT mean that these geometries have a buffers containing same elements.
+     * But, if there was a accessor named 'A' in one of them, the other one should exist.
+     */
+    public get accessorHash(): number {
+      return this._accessorHashCache;
+    }
     /**
      * Vertex buffer
      * @type {Buffer[]}
@@ -29,6 +39,8 @@ export default class Geometry {
     public aabb: AABB = new AABB([Vector3.Zero]);
 
     private instanciator: IGLInstancedArrayInterface;
+
+    private _accessorHashCache = 0;
 
     /**
      * bind a vertex buffer to specified attribute variable.
@@ -57,14 +69,14 @@ export default class Geometry {
         return true;
     }
 
-    public static drawWithCurrentVertexBuffer(geometry: Geometry, indexName: string, count: number = Number.MAX_VALUE, offset: number = 0): void {
+    public static drawWithCurrentVertexBuffer(geometry: Geometry, indexName: string, count: number = Number.MAX_VALUE, offset = 0): void {
         const targetIndex = geometry.indices[indexName];
         if (targetIndex === void 0) {
             throw new Error(`Specified index buffer "${indexName}" was not found on this geometry.All of the index buffer available on this geometry is "${Object.keys(geometry.indices)}"`);
         }
         targetIndex.index.bind();
         if (targetIndex.instanceCount > 0) {
-            geometry.instanciator.drawElementsInstancedANGLE(targetIndex.topology, Math.min(targetIndex.count, count), targetIndex.type, Math.min(offset * targetIndex.byteSize + targetIndex.byteOffset, targetIndex.byteOffset + (targetIndex.count - 1) * targetIndex.byteSize), targetIndex.instanceCount)
+            geometry.instanciator.drawElementsInstancedANGLE(targetIndex.topology, Math.min(targetIndex.count, count), targetIndex.type, Math.min(offset * targetIndex.byteSize + targetIndex.byteOffset, targetIndex.byteOffset + (targetIndex.count - 1) * targetIndex.byteSize), targetIndex.instanceCount);
         } else {
             targetIndex.index.gl.drawElements(targetIndex.topology, Math.min(targetIndex.count, count), targetIndex.type, Math.min(offset * targetIndex.byteSize + targetIndex.byteOffset, targetIndex.byteOffset + (targetIndex.count - 1) * targetIndex.byteSize));
         }
@@ -76,7 +88,7 @@ export default class Geometry {
     }
 
     public addAttributes(buffer: number[] | BufferSource, accessors: { [semantcis: string]: VertexBufferAccessor }, usage?: number): void;
-    public addAttributes(buffer: number[] | BufferSource | Buffer, accessors: { [semantics: string]: VertexBufferAccessor }): void
+    public addAttributes(buffer: number[] | BufferSource | Buffer, accessors: { [semantics: string]: VertexBufferAccessor }): void;
     public addAttributes(buffer: Buffer | number[] | BufferSource, accessors: { [semantics: string]: VertexBufferAccessor }, usage: number = WebGLRenderingContext.STATIC_DRAW): void {
         buffer = this._ensureToBeVertexBuffer(buffer, usage);
         let index = this.buffers.length;
@@ -98,6 +110,7 @@ export default class Geometry {
             }
             this.accessors[semantic] = accessor;
         }
+        this._recalculateAccsessorHash();
     }
 
     /**
@@ -111,7 +124,7 @@ export default class Geometry {
      */
     public addIndex(indexName: string, instanceCount: number, buffer: Buffer | number[] | BufferSource, topology?: number, offset?: number, count?: number, type?: number): void;
     public addIndex(indexName: string, buffer: Buffer | number[] | BufferSource, topology?: number, offset?: number, count?: number, type?: number): void;
-    public addIndex(indexName: string, bufferOrInstanceCount: Buffer | number[] | BufferSource | number, bufferOrTopology: Buffer | number[] | BufferSource | number, offsetOrTopology: number, countOrOffset: number = null, typeOrCount: number = 0, type?: number): void {
+    public addIndex(indexName: string, bufferOrInstanceCount: Buffer | number[] | BufferSource | number, bufferOrTopology: Buffer | number[] | BufferSource | number, offsetOrTopology: number, countOrOffset: number = null, typeOrCount = 0, type?: number): void {
         let buffer: Buffer | number[] | BufferSource;
         let topology: number;
         let offset: number;
@@ -263,5 +276,13 @@ export default class Geometry {
             default:
                 throw new Error(`Unsupported attribute variable type "${type}"`);
         }
+    }
+
+    private _recalculateAccsessorHash(): void {
+      let hashSource = "";
+      for (let key in this.accessors) {
+        hashSource += key + "|";
+      }
+      this._accessorHashCache = HashCalculator.calcHash(hashSource);
     }
 }

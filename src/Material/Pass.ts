@@ -10,13 +10,10 @@ import IMaterialArgument from "./IMaterialArgument";
 import GLStateConfigurator from "./GLStateConfigurator";
 import ShaderMixer from "./ShaderMixer";
 import UniformResolverContainer from "./UniformResolverContainer";
+import PassProgram from "./PassProgram";
 export default class Pass {
 
-  public program: ManagedProgram;
-
-  public fs: ManagedShader;
-
-  public vs: ManagedShader;
+  public program: PassProgram;
 
   private _macro: { [key: string]: any } = {};
 
@@ -43,51 +40,37 @@ export default class Pass {
           } else {
             this._macro[macro.macroName] = value;
           }
-          this._updateProgram();
+          this.program.macros = this._macro;
         });
       } else if (macro.target === "refer") {
         this._macro[macro.macroName] = macro.value;
         macroRegister.watch(macro.macroName, (val, immediate) => {
           this._macro[macro.macroName] = val;
           if (!immediate) {
-            this._updateProgram();
+            this.program.macros = this._macro;
           }
         }, true);
       }
     }
-    this._updateProgram();
+    this.program = new PassProgram(this._gl, passRecipe.vertex, passRecipe.fragment, this._macro);
   }
 
 
 
   public draw(args: IMaterialArgument): void {
-    this.program.use();
-    this._uniformResolvers.resolve(this.program.uniforms, args);
+    const p = this.program.getProgram(args.geometry);
+    p.use();
+    this._uniformResolvers.resolve(p.uniforms, args);
     GLStateConfigurator.configureForPass(this._gl, this.passRecipe); // configure for gl states
     for (let key in this.passRecipe.attributes) {
       const attribute = this.passRecipe.attributes[key];
-      Geometry.bindBufferToAttribute(args.geometry, this.program, key, attribute.semantic);
+      Geometry.bindBufferToAttribute(args.geometry, p, key, attribute.semantic);
     }
     Geometry.drawWithCurrentVertexBuffer(args.geometry, args.targetBuffer, args.drawCount, args.drawOffset);
   }
 
   public dispose(): void {
     this._uniformResolvers.dispose();
-  }
-
-  private _updateProgram(): void {
-    let lFS = this.fs;
-    this.fs = ManagedShader.getShader(this._gl, WebGLRenderingContext.FRAGMENT_SHADER, ShaderMixer.generate(WebGLRenderingContext.FRAGMENT_SHADER, this._macro, this.passRecipe.fragment));
-    let lVS = this.vs;
-    this.vs = ManagedShader.getShader(this._gl, WebGLRenderingContext.VERTEX_SHADER, ShaderMixer.generate(WebGLRenderingContext.VERTEX_SHADER, this._macro, this.passRecipe.vertex));
-    if (lFS && lVS) {
-      lFS.release();
-      lVS.release();
-    }
-    let lP = this.program;
-    this.program = ManagedProgram.getProgram(this._gl, [this.vs, this.fs]);
-    if (lP) {
-      lP.release();
-    }
+    this.program.dispose();
   }
 }
