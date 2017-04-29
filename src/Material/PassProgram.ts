@@ -62,8 +62,8 @@ export default class PassProgram {
   }
 
   private _constructProgram(geometry: Geometry): ManagedProgram {
-    const fs = ManagedShader.getShader(this._gl, WebGLRenderingContext.FRAGMENT_SHADER, ShaderMixer.generate(WebGLRenderingContext.FRAGMENT_SHADER, this._macros, this._fsSource));
-    const vs = ManagedShader.getShader(this._gl, WebGLRenderingContext.VERTEX_SHADER, ShaderMixer.generate(WebGLRenderingContext.VERTEX_SHADER, this._macros, this._vsSource));
+    const fs = ManagedShader.getShader(this._gl, WebGLRenderingContext.FRAGMENT_SHADER, ShaderMixer.generate(WebGLRenderingContext.FRAGMENT_SHADER, this._macros, this._fsSource,geometry));
+    const vs = ManagedShader.getShader(this._gl, WebGLRenderingContext.VERTEX_SHADER, ShaderMixer.generate(WebGLRenderingContext.VERTEX_SHADER, this._macros, this._vsSource,geometry));
     const program = ManagedProgram.getProgram(this._gl, [vs, fs]);
     this._shaders.push(fs);
     this._shaders.push(vs);
