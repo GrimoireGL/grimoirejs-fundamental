@@ -4,6 +4,6 @@ interface IVariableInfo {
   count: number;
   semantic: string;
   attributes: { [key: string]: any };
-};
+}
 
 export default IVariableInfo;

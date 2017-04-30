@@ -43,6 +43,17 @@ export default class Material {
         }
     }
 
+    public setArgument(variableName: string, newValue: any): void {
+      if (this.arguments[variableName] !== newValue) {
+        const o = this.arguments[variableName];
+        this.arguments[variableName] = newValue;
+        for (let key in this.techniques) {
+          const t = this.techniques[key];
+          t.passes.forEach(p => p.update(variableName, newValue, o));
+        }
+      }
+    }
+
     public addMacroObserver(key: string, macroDeclaration: IAttributeDeclaration, onChanged: (value: boolean | number) => void): void {
         if (!this._macroObserver[key]) {
             this._macroObserver[key] = [];

@@ -6,14 +6,14 @@ interface IPassRecipe {
   vertex: string;
   uniforms: {
     [key: string]: IVariableInfo;
-  },
+  };
   attributes: {
     [key: string]: IVariableInfo; // variable-name to semantic key
-  },
+  };
   macros: {
     [key: string]: IMacro;
-  },
-  states: IState
+  };
+  states: IState;
 }
 
 export default IPassRecipe;

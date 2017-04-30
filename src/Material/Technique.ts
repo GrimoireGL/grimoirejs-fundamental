@@ -9,9 +9,9 @@ export default class Technique {
   public passes: Pass[] = [];
 
   constructor(public material: Material, recipe: ITechniqueRecipe) {
-    if(recipe.drawOrder === "Auto"){ // TODO auto generate drawOrder calculated by material argument
+    if (recipe.drawOrder === "Auto") { // TODO auto generate drawOrder calculated by material argument
       this.drawOrder = "UseAlpha";
-    }else{
+    }else {
       this.drawOrder = recipe.drawOrder;
     }
     this.passes = recipe.passes.map(p => {

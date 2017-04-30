@@ -2,7 +2,7 @@ interface IMacro {
   name: string;
   macroName: string;
   type: string;
-  target:string;
+  target: string;
   value: number | boolean;
 }
 
