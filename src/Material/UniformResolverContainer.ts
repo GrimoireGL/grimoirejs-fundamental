@@ -1,6 +1,7 @@
-import {IUniformRegisterOnRegister, IUniformRegisterOnDispose} from "./UniformResolverRegistry";
+import {IUniformRegisterOnRegister, IUniformRegisterOnDispose, IUniformRegisterOnUpdate} from "./UniformResolverRegistry";
 import UniformProxy from "../Resource/UniformProxy";
 import IMaterialArgument from "./IMaterialArgument";
+import PassProgram from "./PassProgram";
 /**
  * Container of uniform registerers resolved by UniformResolverRegistry already.
  * @param  {IUniformRegisterOnRegister[]} publicregisterers [description]
@@ -8,7 +9,7 @@ import IMaterialArgument from "./IMaterialArgument";
  * @return {[type]}                                         [description]
  */
 export default class UniformResolverContainer {
-  constructor(public registerers: IUniformRegisterOnRegister[], public disposers: IUniformRegisterOnDispose[]) {
+  constructor(public registerers: IUniformRegisterOnRegister[], public disposers: IUniformRegisterOnDispose[], public updators: {[variableName: string]: IUniformRegisterOnUpdate}) {
 
   }
   /**
@@ -24,5 +25,15 @@ export default class UniformResolverContainer {
    */
   public dispose(): void {
     this.disposers.forEach(d => d());
+  }
+
+  /**
+   * Update specified variable
+   * @param {string} variableName [description]
+   */
+  public update(passProgram: PassProgram, variableName: string, newValue: any, oldValue: any): void {
+    if (this.updators[variableName]) {
+      this.updators[variableName](passProgram, newValue, oldValue);
+    }
   }
 }

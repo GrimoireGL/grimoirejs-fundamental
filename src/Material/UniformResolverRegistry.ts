@@ -4,6 +4,7 @@ import IMaterialArgument from "./IMaterialArgument";
 import Material from "./Material";
 import IVariableInfo from "./IVariableInfo";
 import UniformResolverContainer from "./UniformResolverContainer";
+import PassProgram from "./PassProgram";
 
 export interface IUniformRegisterOnRegister {
   (proxy: UniformProxy, args: IMaterialArgument): void;
@@ -13,11 +14,15 @@ export interface IUniformRegisterOnDispose {
   (): void;
 }
 
+export interface IUniformRegisterOnUpdate {
+  (passProgram: PassProgram, newValue: any, oldValue: any): void;
+}
 
 export interface IUniformRegisterer {
   (variableInfo: IVariableInfo, material: Material): IUniformRegisterOnRegister | {
     register: IUniformRegisterOnRegister,
-    dispose?: IUniformRegisterOnDispose
+    dispose?: IUniformRegisterOnDispose,
+    update?: IUniformRegisterOnUpdate
   };
 }
 
@@ -33,7 +38,7 @@ export class UniformResolverRegistry {
   }
 
   public generateRegisterers(material: Material, passInfo: IPassRecipe): UniformResolverContainer {
-    const registerers: IUniformRegisterOnRegister[] = [], disposers: IUniformRegisterOnDispose[] = [];
+    const registerers: IUniformRegisterOnRegister[] = [], disposers: IUniformRegisterOnDispose[] = [], updators: {[variableName: string]: IUniformRegisterOnUpdate} = {};
     for (let key in passInfo.uniforms) {
       const valueInfo = passInfo.uniforms[key];
       const semantic = valueInfo.semantic;
@@ -49,9 +54,12 @@ export class UniformResolverRegistry {
         if (registerer.dispose) {
           disposers.push(registerer.dispose);
         }
+        if (registerer.update) {
+          updators[key] = registerer.update;
+        }
       }
     }
-    return new UniformResolverContainer(registerers, disposers);
+    return new UniformResolverContainer(registerers, disposers, updators);
   }
 }
 

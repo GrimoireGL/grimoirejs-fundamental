@@ -41,9 +41,8 @@
   @{type:"color",default:"white"}
   uniform vec4 color;
 
+  @{flag:"USE_TEXTURE"}
   uniform sampler2D texture;
-  @HAS_TEXTURE{sampler:"texture"}
-  uniform bool _textureUsed;
 
   uniform float _time;
   void main(void)
@@ -52,11 +51,12 @@
     #ifdef ATTRIBUTE_COLOR_ENABLED
     baseColor *= vColor;
     #endif
-    if(_textureUsed){
+    #ifdef USE_TEXTURE
       gl_FragColor = baseColor * texture2D(texture,vTexCoord);
-    }else{
+    #endif
+    #ifndef USE_TEXTURE
       gl_FragColor = baseColor;
-   }
+    #endif
   }
   #endif
 }

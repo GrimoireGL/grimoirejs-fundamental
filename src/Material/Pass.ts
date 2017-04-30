@@ -69,6 +69,10 @@ export default class Pass {
     Geometry.drawWithCurrentVertexBuffer(args.geometry, args.targetBuffer, args.drawCount, args.drawOffset);
   }
 
+  public update(variableName: string, newValue: any, oldValue: any): void {
+    this._uniformResolvers.update(this.program, variableName, newValue, oldValue);
+  }
+
   public dispose(): void {
     this._uniformResolvers.dispose();
     this.program.dispose();

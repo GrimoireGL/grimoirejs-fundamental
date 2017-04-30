@@ -5,7 +5,8 @@ import IVariableInfo from "../IVariableInfo";
 import IMaterialArgument from "../IMaterialArgument";
 import UniformProxy from "../../Resource/UniformProxy";
 import UniformResolverRegistry from "../UniformResolverRegistry";
-
+import {IUniformRegisterOnUpdate} from "../UniformResolverRegistry";
+import PassProgram from "../PassProgram";
 !function () {
     const gl = WebGLRenderingContext;
     const _userValueRegisterers = {
@@ -29,7 +30,7 @@ import UniformResolverRegistry from "../UniformResolverRegistry";
         return register(valInfo, material);
     });
 
-    function basicRegister(type: number, isArray: boolean, converter: string, defaultValue: any, register: (proxy: UniformProxy, name: string, value, matArg: IMaterialArgument) => void) {
+    function basicRegister(type: number, isArray: boolean, converter: string, defaultValue: any, register: (proxy: UniformProxy, name: string, value, matArg: IMaterialArgument) => void, update?: (valInfo: IVariableInfo, passProgram: PassProgram, n: any,o : any) => void) {
         let registerTarget;
         if (isArray) {
             registerTarget = _userValueRegisterers.array;
@@ -47,6 +48,9 @@ import UniformResolverRegistry from "../UniformResolverRegistry";
                 },
                 dispose: () => {
                     material.deleteArgument(valInfo.name);
+                },
+                update: (p,n,o)=>{
+                  update(valInfo,p,n,o);
                 }
             };
         };
@@ -72,6 +76,24 @@ import UniformResolverRegistry from "../UniformResolverRegistry";
             texture = Texture2D.defaultTextures.get(proxy.program.gl);
         }
         proxy.uniformTexture2D(name, texture);
+    },(v,p,n,o)=>{
+      if(v.attributes["flag"]=== void 0)return;
+      let used = false;
+      if (n) {
+        if(n.isFunctionalProxy){
+          used = true;
+        }else{
+          const fetched = n.get({});
+          if (fetched.valid) {
+            used = true;
+          }else {
+            fetched.validPromise.then(()=>{
+              p.setMacro(v.attributes["flag"],true);
+            })
+          }
+        }
+      }
+      p.setMacro(v.attributes["flag"],used);
     });
 
 // vec3 or vec4 should consider the arguments are color or vector.

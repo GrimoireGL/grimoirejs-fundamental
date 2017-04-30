@@ -21,6 +21,9 @@ export default class ShaderMixer {
   private static _macroCode(macros: {[key: string]: string}): string {
     let macroCode = "";
     for (let macroName in macros) {
+      if (macros[macroName] === void 0) {
+        continue;
+      }
       macroCode += `#define ${macroName} ${macros[macroName]}\n`;
     }
     return macroCode;
