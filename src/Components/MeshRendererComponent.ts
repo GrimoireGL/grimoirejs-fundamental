@@ -142,7 +142,7 @@ export default class MeshRenderer extends Component implements IRenderable {
             technique: args.technique,
             renderable: this
         };
-        renderArgs.attributeValues = this._materialContainer.materialArgs;
+        renderArgs.attributeValues = this._materialContainer.materialArgs; //TODO should be deprecated
         this._materialContainer.material.draw(renderArgs);
         this.node.emit("render", args);
     }

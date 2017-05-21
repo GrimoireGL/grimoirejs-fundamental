@@ -203,18 +203,18 @@ export default class TransformComponent extends Component {
       this._matrixTransformMode = false;
       this.notifyUpdateTransform();
     });
-    this.getAttributeRaw("rawMatrix").watch((v) => {
-      if (v !== null) {
-        const mat = v as Matrix;
-        this._matrixTransformMode = true;
-        // TODO should be addded?
-        // mat4.getTranslation(this._localPosition.rawElements, mat.rawElements);
-        // mat4.getScaling(this._localScale.rawElements, mat.rawElements);
-        // mat4.getRotation(this._localRotation.rawElements, mat.rawElements);
-        this.localTransform = mat;
-        this.notifyUpdateTransform();
-      }
-    });
+    // this.getAttributeRaw("rawMatrix").watch((v) => {
+    //   if (v !== null) {
+    //     const mat = v as Matrix;
+    //     this._matrixTransformMode = true;
+    //     // TODO should be addded?
+    //     // mat4.getTranslation(this._localPosition.rawElements, mat.rawElements);
+    //     // mat4.getScaling(this._localScale.rawElements, mat.rawElements);
+    //     // mat4.getRotation(this._localRotation.rawElements, mat.rawElements);
+    //     this.localTransform = mat;
+    //     this.notifyUpdateTransform();
+    //   }
+    // });
     // assign attribute values to field
     this.__bindAttributes();
   }
@@ -240,6 +240,15 @@ export default class TransformComponent extends Component {
       this._updatedTransform = true;
       this._children.forEach(c => c.notifyUpdateTransform());
     }
+  }
+
+  public applyMatrix(mat: Matrix): void {
+    const scale = mat.getScaling();
+    this.setAttribute("scale", scale);
+    // TODO remove this line after gl-matrix issue was solved
+    mat = mat.multiplyWith(Matrix.scale(new Vector3(1 / scale.X, 1 / scale.Y, 1 / scale.Z)));
+    this.setAttribute("rotation", mat.getRotation());
+    this.setAttribute("position", mat.getTranslation());
   }
 
   private _updateTransform(noDirectionalUpdate?: boolean): void {
