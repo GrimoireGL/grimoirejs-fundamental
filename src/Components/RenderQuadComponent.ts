@@ -82,8 +82,8 @@ export default class RenderQuadComponent extends Component {
   public async $mount(): Promise<void> {
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
-    const gr = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
     this._materialContainer = this.node.getComponent(MaterialContainerComponent);
+    const gr = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
     this._geom = await gr.getGeometry("quad");
   }
 

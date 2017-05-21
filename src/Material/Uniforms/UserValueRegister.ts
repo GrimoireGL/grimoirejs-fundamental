@@ -7,7 +7,6 @@ import UniformProxy from "../../Resource/UniformProxy";
 import UniformResolverRegistry from "../UniformResolverRegistry";
 import { IUniformRegisterOnUpdate } from "../UniformResolverRegistry";
 import PassProgram from "../PassProgram";
-!function() {
   const gl = WebGLRenderingContext;
   const _userValueRegisterers = {
     array: {},
@@ -52,7 +51,7 @@ import PassProgram from "../PassProgram";
         dispose: () => {
           material.deleteArgument(valInfo.name);
         },
-        update:updator
+        update: updator
     };
     };
   }
@@ -138,5 +137,4 @@ import PassProgram from "../PassProgram";
       }
     };
   };
-}();
 export default null;
