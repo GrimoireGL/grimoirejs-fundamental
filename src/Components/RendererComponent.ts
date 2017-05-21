@@ -9,6 +9,7 @@ import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Rectangle from "grimoirejs-math/ref/Rectangle";
 import Timer from "../Util/Timer";
+import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 
 export default class RendererComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
@@ -115,9 +116,12 @@ export default class RendererComponent extends Component {
     if (this.node.children.length === 0) {
       this.node.addChildByName("render-scene", {});
     }
+    const pow2Size = TextureSizeCalculator.getPow2Size(this._viewportCache.Width, this._viewportCache.Height);
     this.node.broadcastMessage("resizeBuffer", <IResizeBufferMessage>{
       width: this._viewportCache.Width,
       height: this._viewportCache.Height,
+      pow2Width: pow2Size.width,
+      pow2Height: pow2Size.height,
       buffers: this._buffers,
       bufferSizes: this._bufferSizes
     });
