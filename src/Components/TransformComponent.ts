@@ -109,8 +109,6 @@ export default class TransformComponent extends Component {
 
   private _globalScale: Vector3 = new Vector3([1, 1, 1]);
 
-  private _matrixTransformMode: boolean = false;
-
   private _updatedTransform = true;
 
   private _globalTransform: Matrix = new Matrix();
@@ -129,39 +127,9 @@ export default class TransformComponent extends Component {
     return this._globalPosition;
   }
 
-  public get localPosition(): Vector3 {
-    console.warn(" localPosition depracated");
-    return this.position;
-  }
-
-  public set localPosition(val: Vector3) {
-    console.warn(" localPosition depracated");
-    this.position = val;
-  }
-
-  public get localRotation(): Quaternion {
-    console.warn(" localRotation depracated");
-    return this.rotation;
-  }
-
-  public set localRotation(val: Quaternion) {
-    console.warn(" localRotation depracated");
-    this.rotation = val;
-  }
-
   public get globalScale(): Vector3 {
     this._updateTransform();
     return this._globalScale;
-  }
-
-  public get localScale(): Vector3 {
-    console.warn(" localScale depracated");
-    return this.scale;
-  }
-
-  public set localScale(val: Vector3) {
-    console.warn(" localScale depracated");
-    this.scale = val;
   }
 
   public get forward(): Vector3 {
@@ -192,29 +160,14 @@ export default class TransformComponent extends Component {
   public $awake(): void {
     // register observers
     this.getAttributeRaw("position").watch((v) => {
-      this._matrixTransformMode = false;
       this.notifyUpdateTransform();
     });
     this.getAttributeRaw("rotation").watch((v) => {
-      this._matrixTransformMode = false;
       this.notifyUpdateTransform();
     });
     this.getAttributeRaw("scale").watch((v) => {
-      this._matrixTransformMode = false;
       this.notifyUpdateTransform();
     });
-    // this.getAttributeRaw("rawMatrix").watch((v) => {
-    //   if (v !== null) {
-    //     const mat = v as Matrix;
-    //     this._matrixTransformMode = true;
-    //     // TODO should be addded?
-    //     // mat4.getTranslation(this._localPosition.rawElements, mat.rawElements);
-    //     // mat4.getScaling(this._localScale.rawElements, mat.rawElements);
-    //     // mat4.getRotation(this._localRotation.rawElements, mat.rawElements);
-    //     this.localTransform = mat;
-    //     this.notifyUpdateTransform();
-    //   }
-    // });
     // assign attribute values to field
     this.__bindAttributes();
   }
@@ -256,9 +209,7 @@ export default class TransformComponent extends Component {
       return;
     }
     this._updatedTransform = false;
-    if (!this._matrixTransformMode) {
-      mat4.fromRotationTranslationScale(this.localTransform.rawElements, this.rotation.rawElements, this.position.rawElements, this.scale.rawElements);
-    }
+    mat4.fromRotationTranslationScale(this.localTransform.rawElements, this.rotation.rawElements, this.position.rawElements, this.scale.rawElements);
     this._updateGlobalTransform(noDirectionalUpdate);
   }
 
