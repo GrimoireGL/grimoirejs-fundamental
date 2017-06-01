@@ -4,12 +4,6 @@ import DefaultMacro from "./DefaultMacro";
  */
 export default class MacroRegistory {
 
-  constructor() {
-    for (let key in DefaultMacro) {
-      this.setValue(key, DefaultMacro[key]);
-    }
-  }
-
   /**
    * The map of macro.
    */
@@ -18,7 +12,14 @@ export default class MacroRegistory {
   /**
    * Handlers functions for changing macro.
    */
-  private _observers: {[macroName:string]:((value:string,isImmediateCall:boolean)=>void)[]} = {};
+  private _observers: {[macroName: string]: ((value: string, isImmediateCall: boolean) => void)[]} = {};
+
+
+  constructor() {
+    for (let key in DefaultMacro) {
+      this.setValue(key, DefaultMacro[key]);
+    }
+  }
 
   /**
    * Set the value of macros.
@@ -26,15 +27,15 @@ export default class MacroRegistory {
    * @param {string =   null}        val [description]
    */
   public setValue(key: string, val: string = null): void {
-    if(val === null){
+    if (val === null) {
       val = "";
     }
     if (this._macro[key] !== val) {
       this._macro[key] = val;
-      if(!this._observers[key]){
+      if (!this._observers[key]) {
         this._observers[key] = [];
       }
-      this._notifyMacroChanged(key,val);
+      this._notifyMacroChanged(key, val);
     }
   }
 
@@ -45,27 +46,27 @@ export default class MacroRegistory {
    */
   public getValue(key: string): string {
     const macro = this._macro[key];
-    if(macro === null){
+    if (macro === null) {
       return "";
-    }else{
+    }else {
       return macro;
     }
   }
 
-  public watch(macroName:string,handler: (value:string,isImmediateCall:boolean) => void,immediate:boolean = false): void {
+  public watch(macroName: string, handler: (value: string, isImmediateCall: boolean) => void, immediate = false): void {
     let observers = this._observers[macroName];
-    if(!observers){
+    if (!observers) {
       observers = this._observers[macroName] = [];
     }
     observers.push(handler);
-    if(immediate && this._macro[macroName] !== void 0){
-      handler(this._macro[macroName],true);
+    if (immediate && this._macro[macroName] !== void 0) {
+      handler(this._macro[macroName], true);
     }
   }
 
-  public unwatch(macroName:string,handler: (value:string,isImmediateCall:boolean) => void): boolean {
+  public unwatch(macroName: string, handler: (value: string, isImmediateCall: boolean) => void): boolean {
     const observers = this._observers[macroName];
-    if(!observers){
+    if (!observers) {
       return false;
     }
     for (let i = 0; i < observers.length; i++) {
@@ -76,9 +77,9 @@ export default class MacroRegistory {
     }
   }
 
-  private _notifyMacroChanged(key:string,value:string): void {
+  private _notifyMacroChanged(key: string, value: string): void {
     for (let i = 0; i < this._observers[key].length; i++) {
-      this._observers[key][i](value,false);
+      this._observers[key][i](value, false);
     }
   }
 }

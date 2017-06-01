@@ -130,7 +130,9 @@ export default class MaterialContainerComponent extends Component {
         for (let key in this.material.argumentDeclarations) {
             this.__addAtribute(key, this.material.argumentDeclarations[key]);
             try {
-                this.getAttributeRaw(key).boundTo(key, this.material.arguments);
+                this.getAttributeRaw(key).watch((n) => {
+                  this.material.setArgument(key, n);
+                }, true);
                 if (lastArguments[key] !== void 0) {
                     this.setAttribute(key, lastArguments[key]);
                 }

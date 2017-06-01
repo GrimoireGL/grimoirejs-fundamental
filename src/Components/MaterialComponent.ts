@@ -40,9 +40,11 @@ export default class MaterialComponent extends Component {
             if (this.material.arguments[key] !== void 0) {
                 lastValue = this.material.arguments[key];
             }
-            this.getAttributeRaw(key).boundTo(key, this.material.arguments);
+            this.getAttributeRaw(key).watch((n) => {
+              this.material.setArgument(key, n);
+            }, true);
             if (lastValue !== void 0) {
-                this.material.arguments[key] = lastValue;
+                this.material.setArgument(key, lastValue);
             }
         }
         for (let key in this.material.macroDeclarations) {

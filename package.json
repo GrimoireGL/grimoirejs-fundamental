@@ -32,7 +32,7 @@
     "grimoirejs": "beta",
     "grimoirejs-cauldron": "beta",
     "grimoirejs-math": "beta",
-    "http-server": "^0.9.0",
+    "http-server": "^0.10.0",
     "nightwatch": "^0.9.14",
     "raw-loader": "^0.5.1",
     "regenerator-runtime": "^0.10.3",
@@ -40,11 +40,11 @@
     "semantic-release": "^6.3.2",
     "sinon": "^2.1.0",
     "ts-loader": "^2.0.3",
-    "typedoc": "^0.5.10",
+    "typedoc": "^0.7.0",
     "typescript": "^2.2.2",
     "webpack": "^2.4.1",
     "xmldom": "^0.1.27",
-    "yargs": "^7.1.0"
+    "yargs": "^8.0.1"
   },
   "peerDependencies": {
     "grimoirejs": "latest",

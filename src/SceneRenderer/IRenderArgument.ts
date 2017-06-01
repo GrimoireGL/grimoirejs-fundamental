@@ -14,7 +14,7 @@ interface IRenderArgument {
    * Reference to CameraComponent used for rendering in this time.
    * @type {CameraComponent}
    */
-  renderer: RenderSceneComponent;
+  renderer: Component;
   camera: CameraComponent;
   buffers: { [key: string]: Texture2D };
   layer: string;

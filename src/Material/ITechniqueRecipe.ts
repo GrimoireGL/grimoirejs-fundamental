@@ -3,4 +3,5 @@ interface ITechniqueRecipe {
   passes: IPassRecipe[];
   drawOrder: string;
 }
+
 export default ITechniqueRecipe;
