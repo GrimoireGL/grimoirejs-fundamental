@@ -109,7 +109,7 @@ export default class TransformComponent extends Component {
 
   private _globalScale: Vector3 = new Vector3([1, 1, 1]);
 
-  private _matrixTransformMode: boolean = false;
+  private _matrixTransformMode = false;
 
   private _updatedTransform = true;
 

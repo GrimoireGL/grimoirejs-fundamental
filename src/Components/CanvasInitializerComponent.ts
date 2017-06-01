@@ -1,5 +1,5 @@
 import MaterialFactory from "../Material/MaterialFactory";
-import gr from "grimoirejs/ref/GrimoireInterface";
+import gr from "grimoirejs/ref/Interface/GrimoireInterface";
 import Texture2D from "../Resource/Texture2D";
 import CanvasSizeObject from "../Objects/CanvasSizeObject";
 import GLExtRequestor from "../Resource/GLExtRequestor";
@@ -243,7 +243,7 @@ class CanvasInitializerComponent extends Component {
     if (!context) {
       context = canvas.getContext("experimental-webgl", contextConfig) as WebGLRenderingContext;
     }
-    if(!context){
+    if (!context) {
       throw new Error("Failed to initializing WebGL context. Make sure your browser supporting WebGL.")
     }
     return context;

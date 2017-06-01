@@ -1,11 +1,9 @@
 const path = require("path");
 const webpack = require("webpack");
-const argv = require("yargs").argv;
 const fs = require("fs");
 const fnPrefix = JSON.parse(fs.readFileSync(path.resolve(__dirname, "package.json"), "utf-8")).name.replace("grimoirejs", "grimoire");
 
 const getBuildTask = (fileName, plugins, needPolyfill) => {
-
   return {
     cache: true,
     entry: needPolyfill ? ['babel-polyfill', path.resolve(__dirname, "src/index.ts")] : path.resolve(__dirname, "src/index.ts"),
@@ -29,7 +27,7 @@ const getBuildTask = (fileName, plugins, needPolyfill) => {
   }
 };
 
-module.exports = (env)=>{
+module.exports = (env) => {
   env = env || {};
   const buildTasks = [getBuildTask(fnPrefix + ".js", [])]
 

@@ -16,7 +16,7 @@ export default class GeometryRegistoryComponent extends Component {
      */
     defaultGeometry: {
       converter: "StringArray",
-      default: ["quad","cube","sphere"]
+      default: ["quad", "cube", "sphere"]
     }
   };
 
@@ -27,7 +27,7 @@ export default class GeometryRegistoryComponent extends Component {
   public $awake(): void {
     this._factory = new GeometryFactory(this.companion.get("gl"));
     this.companion.set(this.name, this);
-    this.companion.set(GrimoireInterface.ns(this.name.ns)("GeometryFactory"), this._factory);
+    this.companion.set(this.name.ns.for("GeometryFactory"), this._factory);
     for (let geometry of this.getAttribute("defaultGeometry") as string[]) {
       this.addGeometry(geometry, this._factory.instanciateAsDefault(geometry));
     }
