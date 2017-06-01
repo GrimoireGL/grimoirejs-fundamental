@@ -82,6 +82,3 @@ module.exports = (env) => {
   }
   return buildTasks;
 };
-
-return buildTasks;
-};
