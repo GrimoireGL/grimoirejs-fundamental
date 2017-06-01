@@ -5,6 +5,7 @@ import Preferences from "./Preferences";
 import TypeToConstant from "./TypeToConstant";
 import NameSemanticPair from "./NameSemanticsPair";
 import ImportResolver from "./ImportResolver";
+import CommentRemover from "./CommentRemover";
 
 export default class SortTransformUtility {
   /**
@@ -78,7 +79,7 @@ export default class SortTransformUtility {
       if (!regexResult) { break; }
       let importContent: string;
       importContent = await SortTransformUtility.resolveImports(await ImportResolver.resolve(regexResult[1]));
-      if (!importContent) {
+      if (typeof importContent !== "string") {
         throw new Error(`Required shader chunk '${regexResult[1]}' was not found!!`);
       }
       uncommentedSource = uncommentedSource.replace(regexResult[0], `\n${importContent}\n`);
@@ -114,7 +115,7 @@ export default class SortTransformUtility {
         macroName: regexResult[3],
         type: regexResult[1],
         value: value,
-        target:"expose"
+        target: "expose"
       };
     }
     regex = /@ReferMacro\s*\(\s*([a-zA-Z0-9_]+)\s*,\s*(.+)\s*\)/g;
@@ -126,7 +127,7 @@ export default class SortTransformUtility {
         name: regexResult[1],
         macroName: regexResult[1],
         value: regexResult[2],
-        target:"refer"
+        target: "refer"
       };
     }
     return result;
@@ -153,7 +154,7 @@ export default class SortTransformUtility {
       if (!prefParser) {
         throw new Error(`Unknown pass preference ${regexResult[1]} was specified.`);
       }
-      prefParser(result, regexResult[2].split(",").map(m=>m.trim()));
+      prefParser(result, regexResult[2].split(",").map(m => m.trim()));
     }
     return result;
   }
@@ -165,43 +166,7 @@ export default class SortTransformUtility {
   }
 
   public static removeComment(source: string): string {
-    let text: string = "";
-    let isLineComment = false;
-    let isMultiLineComment = false;
-    for (let i = 0; i < source.length; i++) {
-      const c = source.charAt(i);
-      if (c === "/") {
-        if (i + 1 < source.length) {
-          if (source.charAt(i + 1) === "/" && !isMultiLineComment) {
-            isLineComment = true;
-            i++;
-            continue;
-          } else if (source.charAt(i + 1) === "*" && !isLineComment) {
-            isMultiLineComment = true;
-            i++;
-            continue;
-          }
-        }
-      }
-      if (c === "*" && isMultiLineComment && (i + 1 < source.length) && source.charAt(i + 1) === "/") {
-        isMultiLineComment = false;
-        i++;
-        continue;
-      }
-      if (c === "\n") {
-        if (isLineComment) {
-          text += "\n";
-          isLineComment = false;
-          continue;
-        } else if (isMultiLineComment) {
-          text += "\n"; // for keeping line break
-        }
-      }
-      if (!isLineComment && !isMultiLineComment) {
-        text += c;
-      }
-    }
-    return text;
+    return CommentRemover.remove(source);
   }
 
   public static obtainNextSection(source: string, begin: string, end: string, offset: number): string {

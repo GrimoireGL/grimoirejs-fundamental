@@ -111,3 +111,6 @@ register
 lib-es5
 test-es5
 yarn.lock
+screens
+docs
+.vscode

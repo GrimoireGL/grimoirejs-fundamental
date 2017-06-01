@@ -5,7 +5,7 @@ general:
 machine:
   timezone: Asia/Tokyo
   node:
-    version: 6.5.0
+    version: 7.8.0
   post:
     - curl -o- -L https://yarnpkg.com/install.sh | bash
     - sudo pip install awscli
@@ -19,11 +19,19 @@ dependencies:
 
   override:
     - yarn install
+
 test:
   override:
-    - npm run build && npm test
+    - npm run build -- --env.prod && npm test
     - npm run hs & npm run e2e-test
-    - aws s3 cp $CIRCLE_ARTIFACTS/ s3://circleci-grimoire-e2e/ci/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BUILD_NUM --recursive
-    - curl https://grimoire-e2e.herokuapp.com/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PREVIOUS_BUILD_NUM/$CIRCLE_BUILD_NUM
+    - aws s3 cp $CIRCLE_ARTIFACTS/ s3://circleci-grimoire-e2e/ci/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BUILD_NUM --recursive --acl public-read
+    - curl https://grimoire-e2e.herokuapp.com/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PREVIOUS_BUILD_NUM/$CIRCLE_BUILD_NUM?pr=$CI_PULL_REQUEST
   post:
-    - npm run semantic-release || true
+    - sh release.sh
+
+deployment:
+  deploy:
+    branch: master
+    commands:
+      - npm run doc
+      - aws s3 cp ./docs/ s3://api.grimoire.gl/$CIRCLE_PROJECT_REPONAME --recursive --acl public-read

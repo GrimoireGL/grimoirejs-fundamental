@@ -13,7 +13,13 @@ const exportModule = {};
 for(let key of dirs){
   exportModule[key] = (client)=>{
     client
-        .url(`http://localhost:8080/e2e/${key}/index.html`).saveScreenshot(dir + `/${key}.png`).end();
+        .url(`http://localhost:8080/e2e/${key}/index.html`)
+        .pause(100)
+        .resizeWindow(640,480)
+        .pause(100)
+        .waitForElementPresent(`canvas.gr-resource-loaded-canvas`,5000)
+        .pause(100)
+        .saveScreenshot(dir + `/${key}.png`).end();
   };
 }
 module.exports = exportModule;

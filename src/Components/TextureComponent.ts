@@ -5,10 +5,6 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import ImageResolver from "../Asset/ImageResolver";
 export default class TextureComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
-    src: {
-      converter: "String",
-      default: null
-    },
     minFilter: {
       converter: "Enum",
       default: "LINEAR",
@@ -52,7 +48,6 @@ export default class TextureComponent extends Component {
   public texture: Texture2D;
 
   public $mount(): void {
-    const src = this.getAttribute("src");
     this.texture = new Texture2D(this.companion.get("gl"));
     this.texture.magFilter = this.getAttribute("magFilter");
     this.texture.minFilter = this.getAttribute("minFilter");
@@ -62,13 +57,5 @@ export default class TextureComponent extends Component {
     this.getAttributeRaw("minFilter").watch(v => this.texture.minFilter = v);
     this.getAttributeRaw("wrapS").watch(v => this.texture.wrapS = v);
     this.getAttributeRaw("wrapT").watch(v => this.texture.wrapT = v);
-    if (src) {
-      this._loadTask(src);
-    }
-  }
-
-  private async _loadTask(src: string): Promise<void> {
-    const img = await ImageResolver.resolve(src);
-    this.texture.update(img);
   }
 }

@@ -35,9 +35,7 @@ test('asValidJSON works correctly', (t) => {
 });
 
 test('parse case1.sort correctly', async(t) => {
-  const input = fs.readFileSync("./test/Sort/TestShaders/case1.sort", "utf-8");
-  const result = await Parser.parse(input);
-  // console.log(result.default.passes[0].attributes);
-  // console.log(result.default.passes[0].uniforms);
-  // console.log(result.default.passes[0].states);
+  const input = fs.readFileSync("./test/Sort/TestShaders/case2.sort", "utf-8");
+  await Parser.parse(input);
+  t.notThrows(()=>Parser.parse(input));
 });

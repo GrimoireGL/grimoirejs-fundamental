@@ -4,6 +4,7 @@ import Geometry from "../Geometry/Geometry";
 import Component from "grimoirejs/ref/Node/Component";
 import GrimoireInterface from "grimoirejs";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import NameResolver from "../Asset/NameResolver";
 
 /**
  * ジオメトリを管理するコンポーネント
@@ -20,30 +21,24 @@ export default class GeometryRegistoryComponent extends Component {
     }
   };
 
-  private _geometries: { [key: string]: Geometry } = {};
-
   private _factory: GeometryFactory;
+
+  private _geometryResolver: NameResolver<Geometry> = new NameResolver<Geometry>();
 
   public $awake(): void {
     this._factory = new GeometryFactory(this.companion.get("gl"));
     this.companion.set(this.name, this);
-    this.companion.set(this.name.ns.for("GeometryFactory"), this._factory);
+    this.companion.set(GrimoireInterface.ns(this.name.ns)("GeometryFactory"), this._factory);
     for (let geometry of this.getAttribute("defaultGeometry") as string[]) {
       this.addGeometry(geometry, this._factory.instanciateAsDefault(geometry));
     }
   }
 
-  public addGeometry(name: string, geometry: Geometry): void {
-    this._geometries[name] = geometry;
+  public addGeometry(name: string, geometry: Promise<Geometry> | Geometry): void {
+    this._geometryResolver.register(name, geometry);
   }
 
-  public removeGeometry(name: string): void {
-    if (this._geometries[name]) {
-      delete this._geometries[name];
-    }
-  }
-
-  public getGeometry(name: string): Geometry {
-    return this._geometries[name];
+  public getGeometry(name: string): Promise<Geometry> {
+    return this._geometryResolver.get(name);
   }
 }

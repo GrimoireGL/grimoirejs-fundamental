@@ -1,0 +1,23 @@
+@Pass{
+    FS_PREC(mediump,float)
+    @Disable(CULL_FACE)
+    varying vec4 vColor;
+
+#ifdef VS
+    @POSITION
+    attribute vec3 position;
+    @COLOR
+    attribute vec4 color;
+    uniform mat4 _matPVM;
+    void main(){
+        vColor = color;
+        gl_Position = _matPVM * vec4(position, 1.0);
+    }
+#endif
+
+#ifdef FS
+    void main(){
+        gl_FragColor = vec4(vColor);
+    }
+#endif
+}

@@ -3,7 +3,7 @@ import AssetLoader from "../Asset/AssetLoader";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import DefaultLoaderChunk from "raw-loader!../Asset/defaultLoader.html";
-
+import MaterialFactory from "../Material/MaterialFactory";
 /**
  * アセットの読み込みを司るコンポーネント。ローダーの表示などを司る。
  */
@@ -48,7 +48,7 @@ export default class AssetLoadingManagerComponent extends Component {
   }
 
   public $awake(): void {
-    this.companion.set(this.name.ns.for("loader"), this.loader);
+    this.companion.set(gr.ns(this.name.ns)("loader"), this.loader);
     this.loader.register(new Promise((resolve) => { this._documentResolver = resolve; }));
     const canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
     if (!this.getAttribute("enableLoader")) {
@@ -61,6 +61,7 @@ export default class AssetLoadingManagerComponent extends Component {
     this._loaderElement = loaderContainer;
   }
 
+
   private async _autoStart(): Promise<void> {
     await this.loader.promise;
     if (this._loaderElement) {
@@ -68,5 +69,7 @@ export default class AssetLoadingManagerComponent extends Component {
     }
     this.node.emit("asset-load-completed");
     this.tree("goml").setAttribute("loopEnabled", true);
+    const canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
+    canvas.classList.add("gr-resource-loaded-canvas");
   }
 }

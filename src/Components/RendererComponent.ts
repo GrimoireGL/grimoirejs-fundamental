@@ -8,6 +8,7 @@ import CameraComponent from "./CameraComponent";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Rectangle from "grimoirejs-math/ref/Rectangle";
+import Timer from "../Util/Timer";
 
 export default class RendererComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
@@ -126,13 +127,13 @@ export default class RendererComponent extends Component {
     });
   }
 
-  public $renderViewport(args: { loopIndex: number }): void {
+  public $renderViewport(args: { timer: Timer }): void {
     this.node.broadcastMessage("render", <IRenderRendererMessage>{
       camera: this.camera,
       viewport: this._viewportCache,
       bufferSizes: this._bufferSizes,
       buffers: this._buffers,
-      loopIndex: args.loopIndex
+      timer: args.timer
     });
   }
 
