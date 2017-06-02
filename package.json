@@ -30,7 +30,7 @@
     "condition-circle": "^1.5.0",
     "geckodriver": "^1.6.0",
     "grimoirejs": "^0.15.0",
-    "grimoirejs-cauldron": "^2.3.1-beta7",
+    "grimoirejs-cauldron": "2.3.3",
     "grimoirejs-math": "^1.12.1",
     "http-server": "^0.10.0",
     "nightwatch": "^0.9.14",
