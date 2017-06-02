@@ -62,7 +62,7 @@ export default class Geometry {
         }
         const buffer = geometry.buffers[accessors.bufferIndex];
         buffer.bind();
-        program.gl.vertexAttribPointer(index, accessors.size, accessors.type, false, accessors.stride, accessors.offset);
+        program.gl.vertexAttribPointer(index, accessors.size, accessors.type, accessors.normalized, accessors.stride, accessors.offset);
         if (accessors.instancingDivisor > 0) {
             geometry.instanciator.vertexAttribDivisorANGLE(index, accessors.instancingDivisor);
         }
@@ -107,6 +107,9 @@ export default class Geometry {
             }
             if (accessor.offset === void 0) {
                 accessor.offset = 0;
+            }
+            if (accessor.normalized === void 0) {
+                accessor.normalized = false;
             }
             this.accessors[semantic] = accessor;
         }
@@ -272,7 +275,12 @@ export default class Geometry {
     private _attribTypeToByteSize(type: number): number {
         switch (type) {
             case WebGLRenderingContext.FLOAT:
+            case WebGLRenderingContext.UNSIGNED_INT:
                 return 4;
+            case WebGLRenderingContext.UNSIGNED_SHORT:
+                return 2;
+            case WebGLRenderingContext.UNSIGNED_BYTE:
+                return 1;
             default:
                 throw new Error(`Unsupported attribute variable type "${type}"`);
         }
