@@ -5,8 +5,8 @@ import Program from "../Resource/Program";
 import IndexBufferInfo from "./IndexBufferInfo";
 import Buffer from "../Resource/Buffer"
 
-export interface GeometryVertexBufferAccessor extends VertexBufferAccessor{
-  bufferIndex:number;
+export interface GeometryVertexBufferAccessor extends VertexBufferAccessor {
+  bufferIndex: number;
 }
 /**
  * The geometry class for managing buffer resource
@@ -19,39 +19,41 @@ export default class Geometry {
    * Vertex buffer
    * @type {Buffer[]}
    */
-  public buffers:Buffer[] = [];
+  public buffers: Buffer[] = [];
 
 
-  public indices:{[geometryType:string]:IndexBufferInfo} = {};
+  public indices: { [geometryType: string]: IndexBufferInfo } = {};
 
-  public accessors:{[semantics:string]:GeometryVertexBufferAccessor} = {};
+  public accessors: { [semantics: string]: GeometryVertexBufferAccessor } = {};
 
-  public aabb:AABB = new AABB([Vector3.Zero]);
+  public aabb: AABB = new AABB([Vector3.Zero]);
 
-  constructor(public gl:WebGLRenderingContext) {
+  constructor(public gl: WebGLRenderingContext) {
   }
 
-  public addAttributes(buffer:number[]|BufferSource,accessors:{[semantcis:string]:VertexBufferAccessor},usage?:number):void;
-  public addAttributes(buffer:number[]|BufferSource|Buffer,accessors:{[semantics:string]:VertexBufferAccessor}):void
-  public addAttributes(buffer:Buffer|number[]|BufferSource,accessors:{[semantics:string]:VertexBufferAccessor},usage:number = WebGLRenderingContext.STATIC_DRAW):void
-  {
-    buffer = this._ensureToBeVertexBuffer(buffer,usage);
+  public addAttributes(buffer: number[] | BufferSource, accessors: { [semantcis: string]: VertexBufferAccessor }, usage?: number): void;
+  public addAttributes(buffer: number[] | BufferSource | Buffer, accessors: { [semantics: string]: VertexBufferAccessor }): void
+  public addAttributes(buffer: Buffer | number[] | BufferSource, accessors: { [semantics: string]: VertexBufferAccessor }, usage: number = WebGLRenderingContext.STATIC_DRAW): void {
+    buffer = this._ensureToBeVertexBuffer(buffer, usage);
     let index = this.buffers.length;
     this.buffers.push(buffer);
-    for(let semantic in accessors){
+    for (let semantic in accessors) {
       const accessor = accessors[semantic] as GeometryVertexBufferAccessor;
       accessor.bufferIndex = index;
-      if(accessor.size === void 0){
+      if (accessor.size === void 0) {
         throw new Error(`Accessor specified with the semantics "${semantic}" is not containing size as paranmeter.`);
       }
-      if(accessor.type === void 0){
+      if (accessor.type === void 0) {
         accessor.type = WebGLRenderingContext.FLOAT;
       }
-      if(accessor.stride === void 0){
+      if (accessor.stride === void 0) {
         accessor.stride = accessor.size * this._attribTypeToByteSize(accessor.type);
       }
-      if(accessor.offset === void 0){
+      if (accessor.offset === void 0) {
         accessor.offset = 0;
+      }
+      if (accessor.normalized === void 0) {
+        accessor.normalized = false;
       }
       this.accessors[semantic] = accessor;
     }
@@ -66,25 +68,25 @@ export default class Geometry {
    * @param {number                    =         null}                            count    [description]
    * @param {number                    =         0}                               type     [description]
    */
-  public addIndex(indexName:string,buffer:Buffer|number[]|BufferSource,topology:number = WebGLRenderingContext.TRIANGLES,offset:number = 0,count:number = null,type:number = 0):void{
-    if(!count){
-      if((buffer instanceof Buffer || buffer instanceof ArrayBuffer || buffer instanceof DataView)){
+  public addIndex(indexName: string, buffer: Buffer | number[] | BufferSource, topology: number = WebGLRenderingContext.TRIANGLES, offset: number = 0, count: number = null, type: number = 0): void {
+    if (!count) {
+      if ((buffer instanceof Buffer || buffer instanceof ArrayBuffer || buffer instanceof DataView)) {
         throw new Error("The argument 'count' is necessary if you specified buffer with an instance of Buffer or ArrayBuffer");
-      }else{
+      } else {
         count = buffer["length"];
       }
     }
-    if(type === 0){
+    if (type === 0) {
       type = this._indexTypeFromCount(count);
     }
-    buffer = this._ensureToBeIndexBuffer(buffer,type);
+    buffer = this._ensureToBeIndexBuffer(buffer, type);
     this.indices[indexName] = {
-      byteOffset:offset,
-      byteSize:this._indexTypeToByteSize(type),
-      type:type,
-      topology:topology,
-      count:count,
-      index:buffer
+      byteOffset: offset,
+      byteSize: this._indexTypeToByteSize(type),
+      type: type,
+      topology: topology,
+      count: count,
+      index: buffer
     };
   }
 
@@ -114,7 +116,7 @@ export default class Geometry {
     }
     const buffer = geometry.buffers[accessors.bufferIndex];
     buffer.bind();
-    program.gl.vertexAttribPointer(index, accessors.size, accessors.type, false, accessors.stride, accessors.offset);
+    program.gl.vertexAttribPointer(index, accessors.size, accessors.type, accessors.normalized, accessors.stride, accessors.offset);
     return true;
   }
 
@@ -133,13 +135,13 @@ export default class Geometry {
    * @param  {Buffer|BufferSource|number[]} buffer [description]
    * @return {Buffer}                              [description]
    */
-  private _ensureToBeVertexBuffer(buffer:Buffer|BufferSource|number[],usage:number):Buffer{
-    if(!(buffer instanceof Buffer)){
-      let bufferSource  = buffer;
-      if(Array.isArray(bufferSource)){
-         bufferSource = new Float32Array(bufferSource);
+  private _ensureToBeVertexBuffer(buffer: Buffer | BufferSource | number[], usage: number): Buffer {
+    if (!(buffer instanceof Buffer)) {
+      let bufferSource = buffer;
+      if (Array.isArray(bufferSource)) {
+        bufferSource = new Float32Array(bufferSource);
       }
-      buffer = new Buffer(this.gl,WebGLRenderingContext.ARRAY_BUFFER,usage);
+      buffer = new Buffer(this.gl, WebGLRenderingContext.ARRAY_BUFFER, usage);
       buffer.update(bufferSource);
     }
     return buffer;
@@ -150,36 +152,36 @@ export default class Geometry {
    * @param  {Buffer|BufferSource|number[]} buffer [description]
    * @return {Buffer}                              [description]
    */
-  private _ensureToBeIndexBuffer(buffer:Buffer|BufferSource|number[],type:number):Buffer{
-    if(!(buffer instanceof Buffer)){
-      let bufferSource  = buffer;
-      if(Array.isArray(bufferSource)){
-         bufferSource = new (this._indexTypeToArrayConstructor(type))(bufferSource);
+  private _ensureToBeIndexBuffer(buffer: Buffer | BufferSource | number[], type: number): Buffer {
+    if (!(buffer instanceof Buffer)) {
+      let bufferSource = buffer;
+      if (Array.isArray(bufferSource)) {
+        bufferSource = new (this._indexTypeToArrayConstructor(type))(bufferSource);
       }
-      buffer = new Buffer(this.gl,WebGLRenderingContext.ELEMENT_ARRAY_BUFFER,WebGLRenderingContext.STATIC_DRAW);
+      buffer = new Buffer(this.gl, WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, WebGLRenderingContext.STATIC_DRAW);
       buffer.update(bufferSource);
-    }else{
-      if(buffer.target !== WebGLRenderingContext.ELEMENT_ARRAY_BUFFER){
+    } else {
+      if (buffer.target !== WebGLRenderingContext.ELEMENT_ARRAY_BUFFER) {
         throw new Error("The usage of buffer specified as index buffer is not ELEMENT_ARRAY_BUFFER");
       }
     }
     return buffer;
   }
 
-  private _indexTypeFromCount(count:number):number{
-    if(count < 256){
+  private _indexTypeFromCount(count: number): number {
+    if (count < 256) {
       return WebGLRenderingContext.UNSIGNED_BYTE;
-    }else if(count < 65536){
+    } else if (count < 65536) {
       return WebGLRenderingContext.UNSIGNED_SHORT;
-    }else if(count < 4294967296){
+    } else if (count < 4294967296) {
       return WebGLRenderingContext.UNSIGNED_INT;
-    }else{
+    } else {
       throw new Error("Index count exceeds 4,294,967,296. WebGL can not handle such a big index buffer");
     }
   }
 
-  private _indexTypeToArrayConstructor(type:number):(new(arr:number[])=>ArrayBufferView){
-    switch(type){
+  private _indexTypeToArrayConstructor(type: number): (new (arr: number[]) => ArrayBufferView) {
+    switch (type) {
       case WebGLRenderingContext.UNSIGNED_BYTE:
         return Uint8Array;
       case WebGLRenderingContext.UNSIGNED_SHORT:
@@ -191,8 +193,8 @@ export default class Geometry {
     }
   }
 
-  private _indexTypeToByteSize(type:number):number{
-    switch(type){
+  private _indexTypeToByteSize(type: number): number {
+    switch (type) {
       case WebGLRenderingContext.UNSIGNED_BYTE:
         return 1;
       case WebGLRenderingContext.UNSIGNED_SHORT:
@@ -204,10 +206,15 @@ export default class Geometry {
     }
   }
 
-  private _attribTypeToByteSize(type:number):number{
-    switch(type){
+  private _attribTypeToByteSize(type: number): number {
+    switch (type) {
       case WebGLRenderingContext.FLOAT:
+      case WebGLRenderingContext.UNSIGNED_INT:
         return 4;
+      case WebGLRenderingContext.UNSIGNED_SHORT:
+        return 2;
+      case WebGLRenderingContext.UNSIGNED_BYTE:
+        return 1;
       default:
         throw new Error(`Unsupported attribute variable type "${type}"`);
     }

@@ -3,6 +3,7 @@ interface VertexBufferAccessor {
   offset?: number;
   stride?: number;
   type?: number;
+  normalized?: boolean;
 }
 
 export default VertexBufferAccessor;
