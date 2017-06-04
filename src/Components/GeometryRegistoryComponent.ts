@@ -11,34 +11,34 @@ import NameResolver from "../Asset/NameResolver";
  * あまりユーザーが直接操作することはありません。
  */
 export default class GeometryRegistoryComponent extends Component {
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
-        /**
-         * デフォルトで生成するジオメトリの種類
-         */
-        defaultGeometry: {
-            converter: "StringArray",
-            default: ["quad", "cube", "sphere"]
-        }
-    };
-
-    private _factory: GeometryFactory;
-
-    private _geometryResolver: NameResolver<Geometry> = new NameResolver<Geometry>();
-
-    public $awake(): void {
-        this._factory = new GeometryFactory(this.companion.get("gl"));
-        this.companion.set(this.name, this);
-        this.companion.set(GrimoireInterface.ns(this.name.ns)("GeometryFactory"), this._factory);
-        for (let geometry of this.getAttribute("defaultGeometry") as string[]) {
-            this.addGeometry(geometry, this._factory.instanciateAsDefault(geometry));
-        }
+  public static attributes: { [key: string]: IAttributeDeclaration } = {
+    /**
+     * デフォルトで生成するジオメトリの種類
+     */
+    defaultGeometry: {
+      converter: "StringArray",
+      default: ["quad", "cube", "sphere"]
     }
+  };
 
-    public addGeometry(name: string, geometry: Promise<Geometry> | Geometry): void {
-        this._geometryResolver.register(name, geometry);
-    }
+  private _factory: GeometryFactory;
 
-    public getGeometry(name: string): Promise<Geometry> {
-        return this._geometryResolver.get(name);
+  private _geometryResolver: NameResolver<Geometry> = new NameResolver<Geometry>();
+
+  public $awake(): void {
+    this._factory = new GeometryFactory(this.companion.get("gl"));
+    this.companion.set(this.name, this);
+    this.companion.set(this.name.ns.for("GeometryFactory"), this._factory);
+    for (let geometry of this.getAttribute("defaultGeometry") as string[]) {
+      this.addGeometry(geometry, this._factory.instanciateAsDefault(geometry));
     }
+  }
+
+  public addGeometry(name: string, geometry: Promise<Geometry> | Geometry): void {
+    this._geometryResolver.register(name, geometry);
+  }
+
+  public getGeometry(name: string): Promise<Geometry> {
+    return this._geometryResolver.get(name);
+  }
 }
