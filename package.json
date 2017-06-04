@@ -40,6 +40,7 @@
     "semantic-release": "^6.3.2",
     "sinon": "^2.3.2",
     "ts-loader": "^2.1.0",
+    "tslint": "^5.4.2",
     "typedoc": "^0.7.0",
     "typescript": "^2.3.4",
     "webpack": "^2.6.1",
@@ -53,6 +54,7 @@
   "scripts": {
     "start": "webpack --watch --progress",
     "test": "tsc --outDir ./lib && babel ./lib --presets es2015 --plugins transform-runtime --out-dir ./lib-es5 && babel ./test --presets es2015 --plugins transform-runtime --out-dir ./test-es5 && ava ./test-es5/**/*Test.js --verbose ",
+    "lint": "tslint -c tslint.json ./src/**/*.ts",
     "bundle": "webpack --progress --watch",
     "build": "webpack --progress",
     "generate-expose": "cauldron generate-exposure --src ./src --dest ./src/index.ts --ts --main ./src/main.ts --dts ./ref",
