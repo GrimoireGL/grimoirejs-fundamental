@@ -29,7 +29,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "condition-circle": "^1.5.0",
     "geckodriver": "^1.6.0",
-    "grimoirejs": "^0.15.0",
+    "grimoirejs": "^0.16.0",
     "grimoirejs-cauldron": "2.3.3",
     "grimoirejs-math": "^1.12.1",
     "http-server": "^0.10.0",
