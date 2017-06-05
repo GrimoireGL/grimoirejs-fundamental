@@ -1,4 +1,5 @@
 import CacheResolver from "../Asset/CacheResolver";
+
 export class ImportResolver extends CacheResolver<string> {
   public staticImports: { [key: string]: string } = {};
 
@@ -15,7 +16,7 @@ export class ImportResolver extends CacheResolver<string> {
     });
   }
   public resolve(path: string): Promise<string> {
-    return super.resolve(path, (abs) => {
+    return super.resolve(path, () => {
       return this._resolve(path);
     });
   }
@@ -32,7 +33,7 @@ export class ImportResolver extends CacheResolver<string> {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open("GET", path);
-      xhr.onload = (v) => {
+      xhr.onload = () => {
         resolve(xhr.responseText);
       };
       xhr.onerror = (e) => {

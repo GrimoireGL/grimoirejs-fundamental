@@ -1,6 +1,7 @@
 import IRenderArgument from "./IRenderArgument";
 import IRenderable from "./IRenderable";
 import Timer from "../Util/Timer";
+
 type RenderQueueElement = {
   rendarable: IRenderable;
   priortyCache: number;
@@ -8,10 +9,6 @@ type RenderQueueElement = {
 
 export default class RenderQueue {
   private _rendeables: RenderQueueElement[] = [];
-
-  constructor() {
-
-  }
 
   public add(rendarable: IRenderable): void {
     this._rendeables.push({

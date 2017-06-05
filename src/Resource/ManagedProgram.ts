@@ -1,6 +1,7 @@
 import Shader from "./Shader";
 import HashCalculator from "../Util/HashCalculator";
 import Program from "./Program";
+
 export default class ManagedProgram extends Program {
   private static _managedPrograms: Map<WebGLRenderingContext, { [hash: number]: ManagedProgram }> = new Map<WebGLRenderingContext, { [hash: number]: ManagedProgram }>();
 
@@ -23,7 +24,7 @@ export default class ManagedProgram extends Program {
     return programs[hash];
   }
 
-  private _referenceCount: number = 0;
+  private _referenceCount = 0;
 
   constructor(gl: WebGLRenderingContext, public hash: number) {
     super(gl);

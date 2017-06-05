@@ -17,7 +17,7 @@ enum ResizeMode {
  * キャンバスの初期化及び設定を司るコンポーネント
  * このコンポーネントによって、適切な位置に`<canvas>`を初期化してWebGLコンテキストを初期化します。
  */
-class CanvasInitializerComponent extends Component {
+export default class CanvasInitializerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * キャンバスタグの横幅を指定します。
@@ -95,16 +95,16 @@ class CanvasInitializerComponent extends Component {
       throw new Error("goml script should have body as ancesotor to instanciate canvas element in the location");
     }
     // apply sizes on changed
-    this.getAttributeRaw("width").watch((v) => {
+    this.getAttributeRaw("width").watch(() => {
       this._resize();
     });
-    this.getAttributeRaw("height").watch((v) => {
+    this.getAttributeRaw("height").watch(() => {
       this._resize();
     });
-    this.getAttributeRaw("antialias").watch((v) => {
+    this.getAttributeRaw("antialias").watch(() => {
       console.warn("Changing antialias attribute is not supported. This is only works when the canvas element created.");
     });
-    this.getAttributeRaw("preserveDrawingBuffer").watch((v) => {
+    this.getAttributeRaw("preserveDrawingBuffer").watch(() => {
       console.warn("Changing preserveDrawingBuffer attribute is not supported. This is only works when the canvas element created.");
     });
   }
@@ -129,7 +129,6 @@ class CanvasInitializerComponent extends Component {
   }
 
   private _resize(supressBroadcast?: boolean): void {
-    const canvas = this.companion.get("canvasElement");
     const widthRaw = this.getAttribute("width") as CanvasSizeObject;
     const heightRaw = this.getAttribute("height") as CanvasSizeObject;
     this._widthMode = this._asResizeMode(widthRaw);
@@ -258,21 +257,19 @@ class CanvasInitializerComponent extends Component {
     if (!tag.parentElement) {
       return false;
     }
-    if (tag.parentNode.nodeName === "BODY") {
+    if (tag.parentNode!.nodeName === "BODY") {
       return true;
     }
     return this._isContainedInBody(tag.parentElement);
   }
 
   private _autoFixForBody(scriptTag: Element): void {
-    if (scriptTag.parentElement.nodeName === "BODY") {
+    if (scriptTag.parentElement!.nodeName === "BODY") {
       const boudningBox = document.body.getBoundingClientRect();
       if (boudningBox.height === 0) {
         document.body.style.height = "100%";
-        document.body.parentElement.style.height = "100%";
+        document.body.parentElement!.style.height = "100%";
       }
     }
   }
 }
-
-export default CanvasInitializerComponent;

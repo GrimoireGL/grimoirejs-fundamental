@@ -108,7 +108,7 @@ export default {
    * このノードは`out`に指定されたテクスチャ(デフォルトではキャンバス自身)に対して、シーンの内容を描画します。
    */
   "render-scene": {
-    components: ["RenderScene","RenderHitArea"],
+    components: ["RenderScene", "RenderHitArea"],
     default: {
       material: null
     }

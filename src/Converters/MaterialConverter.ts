@@ -14,15 +14,15 @@ import Material from "../Material/Material";
 export default function MaterialConverter(val: any, attr: Attribute): any {
   if (typeof val === "string") {
     const regex = /\s*new\s*\(\s*([a-zA-Z\d\-]+)\s*\)/;
-    let regexResult: RegExpExecArray;
+    let regexResult: RegExpExecArray |null;
     if (regexResult = regex.exec(val)) { // new material should be instanciated for this material
-      attr.component[attr.declaration["componentBoundTo"]] = null;
-      return (attr.companion.get("MaterialFactory") as MaterialFactory).instanciate(regexResult[1]);
+      (attr.component as any)[attr.declaration["componentBoundTo"]] = null;
+      return (attr.companion!.get("MaterialFactory") as MaterialFactory).instanciate(regexResult[1]);
     } else {
-      const node = attr.tree(val).first();
+      const node = attr.tree!(val).first();
       if (node) {
         const mc = node.getComponent(MaterialComponent);
-        attr.component[attr.declaration["componentBoundTo"]] = mc;
+        (attr.component as any)[attr.declaration["componentBoundTo"]] = mc;
         return mc.materialPromise;
       } else {
         console.warn(`There was no matching material component filtered by '${val}'`);
@@ -30,7 +30,7 @@ export default function MaterialConverter(val: any, attr: Attribute): any {
       }
     }
   } else if (val instanceof Material) {
-    attr.component[attr.declaration["componentBoundTo"]] = null;
+    (attr.component as any)[attr.declaration["componentBoundTo"]] = null;
     return Promise.resolve(val);
   }
   return null; // TODO ??

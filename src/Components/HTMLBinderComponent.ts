@@ -1,9 +1,6 @@
 import RenderSceneComponent from "./RenderSceneComponent";
 import IRenderArgument from "../SceneRenderer/IRenderArgument";
-import gr from "grimoirejs";
 import TransformComponent from "./TransformComponent";
-import GomlNode from "grimoirejs/ref/Node/GomlNode";
-import CameraComponent from "./CameraComponent";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Vector4 from "grimoirejs-math/ref/Vector4";
@@ -27,8 +24,6 @@ export default class HTMLBinderComponent extends Component {
 
   private _targetRenderer: RenderSceneComponent;
 
-  private _htmlQuery: string;
-
   private _rendererQuery: string;
 
   private _queriedElement: HTMLElement;
@@ -41,7 +36,7 @@ export default class HTMLBinderComponent extends Component {
 
   private _styleCache: { [key: string]: any };
 
-  private _isFirstCall: boolean = true;
+  private _isFirstCall = true;
 
   public $awake(): void {
     this._canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
@@ -96,7 +91,7 @@ export default class HTMLBinderComponent extends Component {
    * Restore default position of queried html
    */
   private _restoreDefault(): void {
-    this._canvasContainer.removeChild(this._queriedElement)
+    this._canvasContainer.removeChild(this._queriedElement);
     this._parentCache.appendChild(this._queriedElement);
     const s = this._queriedElement.style;
     const c = this._styleCache;
@@ -119,7 +114,7 @@ export default class HTMLBinderComponent extends Component {
         return true;
       } else {
         this._targetRenderer = n.getComponent(RenderSceneComponent);
-        if(this._targetRenderer){
+        if (this._targetRenderer) {
           returned = true;
         }
       }
@@ -127,7 +122,7 @@ export default class HTMLBinderComponent extends Component {
   }
 
   private _onQueryChanged(query: string): void {
-    let queried: NodeListOf<Element>;
+    let queried: NodeListOf<Element> | undefined = void 0;
     if (query && query !== "") { // when query is not empty
       queried = document.querySelectorAll(query);
     }
@@ -135,8 +130,8 @@ export default class HTMLBinderComponent extends Component {
       this._restoreDefault();
     }
     if (!queried || queried.length === 0) { // If new queried object is empty
-      this._queriedElement = undefined;
-      this._parentCache = undefined;
+      this._queriedElement = void 0;
+      this._parentCache = void 0;
     } else { // If there was object to track
       this._queriedElement = queried.item(0) as HTMLElement;
       const s = this._queriedElement.style;

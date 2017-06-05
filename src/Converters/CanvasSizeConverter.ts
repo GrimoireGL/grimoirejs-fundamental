@@ -1,5 +1,3 @@
-import gr from "grimoirejs";
-import Attribute from "grimoirejs/ref/Node/Attribute";
 import CanvasSizeObject from "../Objects/CanvasSizeObject";
 /**
  * キャンバスのサイズ用のコンバーター

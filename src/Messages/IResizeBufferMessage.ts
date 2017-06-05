@@ -1,5 +1,6 @@
 import RenderBuffer from "../Resource/RenderBuffer";
 import Texture2D from "../Resource/Texture2D";
+
 interface IResizeBufferMessage {
   width: number;
   height: number;

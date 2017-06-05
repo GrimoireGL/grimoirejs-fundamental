@@ -39,8 +39,7 @@ export default class DefaultPrimitives {
   }
 
   private static _registerQuad(): void {
-    GeometryFactory.addType("quad", {
-    }, (gl, attrs) => {
+    GeometryFactory.addType("quad", {}, gl => {
       const geometry = new Geometry(gl);
       geometry.addAttributes(GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], 1, 1), primitiveLayout);
       geometry.addIndex("default", GeometryUtility.planeIndex(0, 1, 1));
@@ -50,7 +49,7 @@ export default class DefaultPrimitives {
   }
   private static _registerTriangle(): void {
     GeometryFactory.addType("triangle", {
-    }, (gl, attrs) => {
+    }, gl => {
       const geometry = new Geometry(gl);
       geometry.addAttributes(GeometryUtility.triangle([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]), primitiveLayout);
       geometry.addIndex("default", GeometryUtility.triangleIndex(0));
@@ -67,7 +66,7 @@ export default class DefaultPrimitives {
     }, (gl, attrs) => {
       const div = attrs["divide"];
       const geometry = new Geometry(gl);
-      const theta = div % 2 != 0 ? Math.PI / div : 0;
+      const theta = div % 2 !== 0 ? Math.PI / div : 0;
       const vertices = [].concat.apply([], [
         GeometryUtility.circle([0, -0.5, 0], [0, -1, 0], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div),
       ]);
@@ -109,7 +108,7 @@ export default class DefaultPrimitives {
     }, (gl, attrs) => {
       const div = attrs["divide"];
       const geometry = new Geometry(gl);
-      const theta = div % 2 != 0 ? Math.PI / div : 0;
+      const theta = div % 2 !== 0 ? Math.PI / div : 0;
       const vertices = [].concat.apply([], [
         GeometryUtility.circle([0, 1, 0], [0, 1, 0], [0, 0, -1], [1, 0, 0], div),
         GeometryUtility.circle([0, -1, 0], [0, -1, 0], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div)
@@ -203,7 +202,7 @@ export default class DefaultPrimitives {
       }
     }, (gl, attrs) => {
       const dH = attrs["divide"];
-      const dV = attrs["divide"] % 2 == 1 ? attrs["divide"] + 1 : attrs["divide"];
+      const dV = attrs["divide"] % 2 === 1 ? attrs["divide"] + 1 : attrs["divide"];
 
       const geometry = new Geometry(gl);
       geometry.addAttributes(GeometryUtility.capsule([0, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, -1], dV, dH), primitiveLayout);

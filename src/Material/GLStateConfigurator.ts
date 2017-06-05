@@ -1,16 +1,16 @@
 import IPassRecipe from "./IPassRecipe";
 import IState from "./IState";
 export default class GLStateConfigurator {
-  private static _glEnableTargets: number[]
-  = [WebGLRenderingContext.CULL_FACE,
-  WebGLRenderingContext.DEPTH_TEST,
-  WebGLRenderingContext.STENCIL_TEST,
-  WebGLRenderingContext.BLEND,
-  WebGLRenderingContext.SCISSOR_TEST,
-  WebGLRenderingContext.DITHER,
-  WebGLRenderingContext.POLYGON_OFFSET_FILL,
-  WebGLRenderingContext.SAMPLE_ALPHA_TO_COVERAGE,
-  WebGLRenderingContext.SAMPLE_COVERAGE];
+  private static _glEnableTargets: number[] = [
+    WebGLRenderingContext.CULL_FACE,
+    WebGLRenderingContext.DEPTH_TEST,
+    WebGLRenderingContext.STENCIL_TEST,
+    WebGLRenderingContext.BLEND,
+    WebGLRenderingContext.SCISSOR_TEST,
+    WebGLRenderingContext.DITHER,
+    WebGLRenderingContext.POLYGON_OFFSET_FILL,
+    WebGLRenderingContext.SAMPLE_ALPHA_TO_COVERAGE,
+    WebGLRenderingContext.SAMPLE_COVERAGE];
 
   /**
    * Configure gl state based on pass recipe

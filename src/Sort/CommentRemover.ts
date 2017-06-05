@@ -16,7 +16,7 @@ export default class CommentRemover {
 
   private _afterSlush = false;
 
-  private get _isInComment(): boolean{
+  private get _isInComment(): boolean {
     return this._status === CommentParsingStatus.MultilineComment || this._status === CommentParsingStatus.SinglelineComment;
   }
 
@@ -58,7 +58,7 @@ export default class CommentRemover {
     return text;
   }
 
-  private _defaultParsing(current: string, next): void {
+  private _defaultParsing(current: string, next: string): void {
     if (current === "'") {
       this._status = CommentParsingStatus.SingleQuotationString;
     }
@@ -83,19 +83,4 @@ export default class CommentRemover {
       return;
     }
   }
-
-  private _checkEndString(last: string, current: string): void {
-    if (this._afterSlush) {
-      return;
-    }
-    if (current === "'" && this._status === CommentParsingStatus.SingleQuotationString) {
-      this._status = CommentParsingStatus.Default;
-      return;
-    }
-    if (current === '"' && this._status === CommentParsingStatus.DoubleQuatationString) {
-      this._status = CommentParsingStatus.Default;
-      return;
-    }
-  }
-
 }

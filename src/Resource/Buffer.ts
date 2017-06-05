@@ -1,4 +1,5 @@
 import ResourceBase from "./ResourceBase";
+
 export default class Buffer extends ResourceBase {
   public readonly buffer: WebGLBuffer;
 

@@ -12,30 +12,30 @@ const mat3Cache = new Float32Array(9);
 export default class UniformProxy {
   private _gl: WebGLRenderingContext;
 
-  private _currentTextureRegister: number = 0;
+  private _currentTextureRegister = 0;
   constructor(public program: Program) {
     this._gl = program.gl;
   }
 
   public uniformBool(variableName: string, val: boolean): void {
-    this._pass(variableName, (l) => this._gl.uniform1i(l, val ? 1 : 0));
+    this._pass(variableName, l => this._gl.uniform1i(l, val ? 1 : 0));
   }
 
   public uniformMatrix(variableName: string, mat: Matrix): void {
-    this._pass(variableName, (l) =>{
-      this._gl.uniformMatrix4fv(l, false, mat.rawElements as number[])
+    this._pass(variableName, l => {
+      this._gl.uniformMatrix4fv(l, false, mat.rawElements as number[]);
     });
   }
 
   public uniformMatrix3(variableName: string, mat: Matrix): void {
-    this._pass(variableName, (l) =>{
+    this._pass(variableName, l => {
       const r = mat.rawElements;
-      for(let i = 0; i < 3; i++){
+      for (let i = 0; i < 3; i++) {
         mat3Cache[3 * i + 0] = r[4 * i + 0];
         mat3Cache[3 * i + 1] = r[4 * i + 1];
         mat3Cache[3 * i + 2] = r[4 * i + 2];
       }
-      this._gl.uniformMatrix3fv(l, false,mat3Cache);
+      this._gl.uniformMatrix3fv(l, false, mat3Cache);
     });
   }
 
@@ -79,7 +79,7 @@ export default class UniformProxy {
   }
 
 
-  public uniformVector2Array(variableName: string, val: number[]|Float32Array): void {
+  public uniformVector2Array(variableName: string, val: number[] | Float32Array): void {
     this._pass(variableName, (l) => this._gl.uniform2fv(l, val));
   }
 
@@ -95,7 +95,7 @@ export default class UniformProxy {
     );
   }
 
-  public uniformVector3Array(variableName: string, val: number[]|Float32Array): void {
+  public uniformVector3Array(variableName: string, val: number[] | Float32Array): void {
     this._pass(variableName, (l) => this._gl.uniform3fv(l, val));
   }
 
@@ -117,7 +117,7 @@ export default class UniformProxy {
     );
   }
 
-  public uniformVector4Array(variableName: string, val: number[]|Float32Array): void {
+  public uniformVector4Array(variableName: string, val: number[] | Float32Array): void {
     this._pass(variableName, (l) => this._gl.uniform4fv(l, val));
   }
 

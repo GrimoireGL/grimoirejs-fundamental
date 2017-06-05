@@ -1,8 +1,6 @@
-import gr from "grimoirejs";
 import GeometryFactory from "../Geometry/GeometryFactory";
 import Geometry from "../Geometry/Geometry";
 import Component from "grimoirejs/ref/Node/Component";
-import GrimoireInterface from "grimoirejs";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import NameResolver from "../Asset/NameResolver";
 

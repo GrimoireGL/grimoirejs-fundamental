@@ -1,4 +1,3 @@
-import gr from "grimoirejs";
 import Attribute from "grimoirejs/ref/Node/Attribute";
 import Geometry from "../Geometry/Geometry";
 import GeometryRegistory from "../Components/GeometryRegistoryComponent";
@@ -9,7 +8,7 @@ import GeometryRegistory from "../Components/GeometryRegistoryComponent";
  */
 export default function GeometryConverter(val: any, attr: Attribute): any {
   if (typeof val === "string") {
-    const registory =  attr.companion.get("GeometryRegistory") as GeometryRegistory;
+    const registory = attr.companion!.get("GeometryRegistory") as GeometryRegistory;
     return registory.getGeometry(val);
   } else if (val instanceof Geometry) {
     return Promise.resolve(val);
