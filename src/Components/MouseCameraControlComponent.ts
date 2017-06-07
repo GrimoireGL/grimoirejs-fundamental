@@ -50,6 +50,7 @@ export default class MouseCameraControlComponent extends Component {
   private _initialRotation: Quaternion;
 
   private _xsum: number = 0;
+
   private _ysum: number = 0;
 
   private _d: Vector3 = Vector3.Zero;
@@ -97,7 +98,7 @@ export default class MouseCameraControlComponent extends Component {
     }
   }
   public $update() {
-    if (this._updated || !this._lastCenter || !this.center.equalWith(this._lastCenter)) {
+    if (this.isActive && this._updated || !this._lastCenter || !this.center.equalWith(this._lastCenter)) {
       this._updated = false;
       this._lastCenter = this.center;
 
