@@ -35,13 +35,6 @@ export default class TransformComponent extends Component {
     scale: {
       converter: "Vector3",
       default: [1, 1, 1]
-    },
-    /**
-     * 利用されません
-     */
-    rawMatrix: {
-      converter: "Object", // TODO should implement Matrix converter
-      default: null
     }
   };
   /**
@@ -115,6 +108,8 @@ export default class TransformComponent extends Component {
 
   private _globalTransform: Matrix = new Matrix();
 
+  private _globalTransformInverse: Matrix;
+
   /**
    * Global transform that consider parent transform and local transform
    * @return {[type]} [description]
@@ -122,6 +117,14 @@ export default class TransformComponent extends Component {
   public get globalTransform(): Matrix {
     this._updateTransform();
     return this._globalTransform;
+  }
+
+  public get globalTransformInverse(): Matrix {
+    if (!this._globalTransformInverse) {
+      this._globalTransformInverse = new Matrix();
+    }
+    this._updateTransform();
+    return this._globalTransformInverse;
   }
 
   public get globalPosition(): Vector3 {
@@ -223,6 +226,9 @@ export default class TransformComponent extends Component {
       mat4.copy(this._globalTransform.rawElements, this.localTransform.rawElements);
     } else {
       mat4.mul(this._globalTransform.rawElements, this._parentTransform.globalTransform.rawElements, this.localTransform.rawElements);
+    }
+    if (this._globalTransformInverse) { // Once globalTransformInverse was requested from the other class, this will be updated after that frame
+      mat4.invert(this._globalTransformInverse.rawElements, this._globalTransform.rawElements);
     }
     if (!noDirectionalUpdate) {
       this._updateDirections();

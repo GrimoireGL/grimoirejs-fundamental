@@ -1,11 +1,12 @@
 import MaterialFactory from "../Material/MaterialFactory";
-import gr from "grimoirejs/ref/Interface/GrimoireInterface";
+import Namespace from "grimoirejs/ref/Base/Namespace";
 import Texture2D from "../Resource/Texture2D";
+import gr from "grimoirejs/ref/Interface/GrimoireInterface";
 import CanvasSizeObject from "../Objects/CanvasSizeObject";
 import GLExtRequestor from "../Resource/GLExtRequestor";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-const ns = gr.ns("HTTP://GRIMOIRE.GL/NS/DEFAULT");
+const ns = Namespace.define("grimoirejs-fundamental");
 
 enum ResizeMode {
   Aspect,
@@ -120,10 +121,10 @@ class CanvasInitializerComponent extends Component {
     window.addEventListener("resize", () => this._onWindowResize());
     this._configureCanvas(this.canvas, scriptTag as HTMLScriptElement);
     const gl = this._getContext(this.canvas);
-    this.companion.set(ns("gl"), gl);
-    this.companion.set(ns("canvasElement"), this.canvas);
-    this.companion.set(ns("MaterialFactory"), new MaterialFactory(gl));
-    this.companion.set(ns("GLExtRequestor"), new GLExtRequestor(gl));
+    this.companion.set(ns.for("gl"), gl);
+    this.companion.set(ns.for("canvasElement"), this.canvas);
+    this.companion.set(ns.for("MaterialFactory"), new MaterialFactory(gl));
+    this.companion.set(ns.for("GLExtRequestor"), new GLExtRequestor(gl));
     Texture2D.generateDefaultTexture(gl);
     return this.canvas;
   }
@@ -228,7 +229,7 @@ class CanvasInitializerComponent extends Component {
     if (this.getAttribute("containerClass")) {
       this._canvasContainer.className = this.getAttribute("containerClass");
     }
-    this.companion.set(ns("canvasContainer"), this._canvasContainer);
+    this.companion.set(ns.for("canvasContainer"), this._canvasContainer);
     scriptTag.parentElement.insertBefore(this._canvasContainer, scriptTag.nextSibling);
     this._resize(true);
   }
@@ -244,7 +245,7 @@ class CanvasInitializerComponent extends Component {
       context = canvas.getContext("experimental-webgl", contextConfig) as WebGLRenderingContext;
     }
     if (!context) {
-      throw new Error("Failed to initializing WebGL context. Make sure your browser supporting WebGL.")
+      throw new Error("Failed to initializing WebGL context. Make sure your browser supporting WebGL.");
     }
     return context;
   }
