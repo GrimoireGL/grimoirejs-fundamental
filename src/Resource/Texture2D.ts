@@ -140,7 +140,7 @@ export default class Texture2D extends ResourceBase {
             if (pixels === void 0) {
                 pixels = null;
             }
-            this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, level, format, width, height, border, format, type, pixels);
+            this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, level, format, Math.max(1, width), Math.max(1, height), border, format, type, pixels);
         }
         this._ensureMipmap();
         this.valid = true;
