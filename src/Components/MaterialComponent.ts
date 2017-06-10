@@ -35,7 +35,7 @@ export default class MaterialComponent extends Component {
     private async _registerAttributes(): Promise<void> {
         this.material = await this.materialPromise;
         for (let key in this.material.argumentDeclarations) {
-            this.__addAtribute(key, this.material.argumentDeclarations[key]);
+            this.__addAttribute(key, this.material.argumentDeclarations[key]);
             let lastValue;
             if (this.material.arguments[key] !== void 0) {
                 lastValue = this.material.arguments[key];
@@ -48,7 +48,7 @@ export default class MaterialComponent extends Component {
             }
         }
         for (let key in this.material.macroDeclarations) {
-            this.__addAtribute(key, this.material.macroDeclarations[key]);
+            this.__addAttribute(key, this.material.macroDeclarations[key]);
             this.getAttributeRaw(key).watch((v) => {
                 this.material.setMacroValue(key, v);
             }, true);

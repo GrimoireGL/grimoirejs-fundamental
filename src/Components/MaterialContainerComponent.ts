@@ -128,7 +128,7 @@ export default class MaterialContainerComponent extends Component {
         const lastArguments = material.arguments;
         material.arguments = {};
         for (let key in this.material.argumentDeclarations) {
-            this.__addAtribute(key, this.material.argumentDeclarations[key]);
+            this.__addAttribute(key, this.material.argumentDeclarations[key]);
             try {
                 this.getAttributeRaw(key).watch((n) => {
                   this.material.setArgument(key, n);
@@ -146,7 +146,7 @@ export default class MaterialContainerComponent extends Component {
             }
         }
         for (let key in this.material.macroDeclarations) {
-            this.__addAtribute(key, this.material.macroDeclarations[key]);
+            this.__addAttribute(key, this.material.macroDeclarations[key]);
             this.getAttributeRaw(key).watch((v) => {
                 this.material.setMacroValue(key, v);
             }, true);
