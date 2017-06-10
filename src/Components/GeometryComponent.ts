@@ -43,7 +43,7 @@ export default class GeometryComponent extends Component {
             const attrs = GeometryFactory.factoryArgumentDeclarations[type];
             const geometryArgument = {};
             for (let key in attrs) {
-                this.__addAtribute(key, attrs[key]);
+                this.__addAttribute(key, attrs[key]);
                 geometryArgument[key] = this.getAttribute(key);
             }
             const generator = gf.instanciate(type, geometryArgument);
