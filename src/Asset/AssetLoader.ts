@@ -1,4 +1,10 @@
 import EEObject from "grimoirejs/ref/Base/EEObject";
+import Component from "grimoirejs/ref/Node/Component";
+type AssetLoadingInfoTuple = {
+  promise: Promise<any>,
+  component: Component
+};
+
 /**
  * Provides managing all promise on initializing resources.
  */
@@ -37,21 +43,19 @@ class AssetLoader extends EEObject {
   /**
    * Register an promise to be waited until finished.
    */
-  public register<T>(promise: Promise<T>): Promise<T> {
+  public async register<T>(promise: Promise<T>, component: Component): Promise<T> {
     this.registerCount++;
-    return new Promise<T>((resolve, reject) => {
-      (async function() {
-        try {
-          resolve(await promise);
-          this.loadCount++;
-        } catch (e) {
-          reject(e);
-          this.errorCount++;
-        }
-        this.completeCount++;
-        this._checkLoadCompleted();
-      }).bind(this)();
-    });
+    let result: T = null;
+    try {
+      result = await promise;
+      this.loadCount++;
+    } catch (e) {
+      console.error(`Failed to resolve asset loading promise.\n\nLoading fired by: ${component.name.fqn}\nAttached node:${component.node.name.fqn}\n${e}`);
+      this.errorCount++;
+    }
+    this.completeCount++;
+    this._checkLoadCompleted();
+    return result;
   }
 
   /**

@@ -4,17 +4,17 @@ import gr from "grimoirejs";
 import ResourceBase from "../Resource/ResourceBase";
 import MaterialComponent from "./MaterialComponent";
 import Material from "../Material/Material";
-import AssetLoader from "../Asset/AssetLoader";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import GrimoireInterface from "grimoirejs";
+import Behaviour from "./Behaviour";
 
 /**
  * マテリアルとマテリアルへの属性を管理するためのコンポーネント
  * このコンポーネントは将来的に`MeshRenderer`と統合されます。
  * 指定されたマテリアルの初期化の管理や、マテリアルによって動的に追加される属性の管理を行います、
  */
-export default class MaterialContainerComponent extends Component {
+export default class MaterialContainerComponent extends Behaviour {
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         /**
          * 対象のマテリアル
@@ -79,7 +79,7 @@ export default class MaterialContainerComponent extends Component {
 
     public $mount(): void {
         this.getAttributeRaw("material").watch(this._onMaterialChanged.bind(this));
-        (this.companion.get("loader") as AssetLoader).register(this._onMaterialChanged());
+        this.__registerAssetLoading(this._onMaterialChanged());
         this.getAttributeRaw("drawOrder").boundTo("_drawOrder");
     }
 
@@ -97,9 +97,9 @@ export default class MaterialContainerComponent extends Component {
             this.__removeAttributes();
         }
         if (!this._materialComponent) { // the material must be instanciated by attribute.
-            this._prepareInternalMaterial(materialPromise);
+            await this._prepareInternalMaterial(materialPromise);
         } else {
-            this._prepareExternalMaterial(materialPromise);
+            await this._prepareExternalMaterial(materialPromise);
         }
     }
 
@@ -108,8 +108,6 @@ export default class MaterialContainerComponent extends Component {
      * @return {Promise<void>} [description]
      */
     private async _prepareExternalMaterial(materialPromise: Promise<Material>): Promise<void> {
-        const loader = this.companion.get("loader") as AssetLoader;
-        loader.register(materialPromise);
         const material = await materialPromise; // waiting for material load completion
         this.material = material;
         this.materialArgs = this._materialComponent.materialArgs;
@@ -118,8 +116,6 @@ export default class MaterialContainerComponent extends Component {
 
     private async _prepareInternalMaterial(materialPromise: Promise<Material>): Promise<void> {
         // obtain promise of instanciating material
-        const loader = this.companion.get("loader") as AssetLoader;
-        loader.register(materialPromise);
         if (!materialPromise) {
             return;
         }

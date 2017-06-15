@@ -18,7 +18,9 @@
     "grimoirejs",
     "shading"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "@types/node": "^7.0.31"
+  },
   "devDependencies": {
     "ava": "^0.19.1",
     "babel-cli": "^6.24.1",
