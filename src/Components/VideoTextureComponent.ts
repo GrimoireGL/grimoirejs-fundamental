@@ -3,8 +3,8 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import TextureComponent from "./TextureComponent";
 import VideoResolver from "../Asset/VideoResolver";
 import LoopManager from "./LoopManagerComponent";
-import Behaviour from "./Behaviour";
-export default class VideoTextureComponent extends Behaviour {
+import BasicComponent from "./BasicComponent";
+export default class VideoTextureComponent extends BasicComponent {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     src: {
       converter: "String",

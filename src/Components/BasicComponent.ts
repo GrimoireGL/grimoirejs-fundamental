@@ -80,7 +80,7 @@ class CoroutineRegistry {
   }
 }
 
-export default class Behaviour extends Component {
+export default class BasicComponent extends Component {
   private _loopManagerBackingStore: LoopManager;
 
   private _assetLoadingManagerBackingStore: AssetLoadingManager;
