@@ -1,4 +1,3 @@
-import TimeComponent from "./Components/TimeComponent";
 import RenderHitArea from "./Components/RenderHitareaComponent";
 import PositionConverter from "./Converters/PositionConverter";
 import NodeConverter from "./Converters/NodeConverter";
@@ -63,7 +62,6 @@ export default () => {
         GrimoireInterface.registerComponent("Texture", TextureComponent);
         GrimoireInterface.registerComponent("Transform", TransformComponent);
         GrimoireInterface.registerComponent("RenderHitArea", RenderHitArea);
-        GrimoireInterface.registerComponent("Time", TimeComponent);
         GrimoireInterface.registerComponent("ImageTexture", ImageTextureComponent);
         GrimoireInterface.registerComponent("VideoTexture", VideoTextureComponent);
 
@@ -77,7 +75,7 @@ export default () => {
         GrimoireInterface.registerConverter(PositionConverter);
 
         GrimoireInterface.registerNode("goml", ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "RendererManager", "Fullscreen"]);
-        GrimoireInterface.registerNode("scene", ["Scene", "Time"]);
+        GrimoireInterface.registerNode("scene", ["Scene"]);
         GrimoireInterface.registerNode("object", ["Transform"]);
         GrimoireInterface.registerNode("camera", ["Camera"], { position: "0,0,10" }, "object");
         GrimoireInterface.registerNode("mesh", ["MaterialContainer", "MeshRenderer"], {}, "object");
