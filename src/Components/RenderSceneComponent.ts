@@ -113,7 +113,7 @@ export default class RenderSceneComponent extends Component {
       this._gl.viewport(0, 0, this._fboSize.width, this._fboSize.height);
     } else {
       this._gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
-      this._gl.viewport(args.viewport.Left, this._canvas.height - args.viewport.Bottom, args.viewport.Width, args.viewport.Height);
+      args.viewport.configure(this._gl);
     }
     // clear buffer if needed
     if (this._fbo && this.clearColorEnabled) {

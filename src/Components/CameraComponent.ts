@@ -239,6 +239,28 @@ export default class CameraComponent extends Component {
         this.containedScene = null;
     }
 
+    /**
+     * Convert global position of transoform to viewport relative position.
+     * @param  {TransformComponent} transform The transform to convert position
+     * @return {Vector3}                      Viewport relative position
+     */
+    public getViewportRelativePosition(transform: TransformComponent): Vector3;
+    /**
+     * Convert specified world position to viewport relative position.
+     * @param  {Vector3} worldPos [description]
+     * @return {Vector3}          [description]
+     */
+    public getViewportRelativePosition(worldPos: Vector3): Vector3;
+    public getViewportRelativePosition(input: Vector3 | TransformComponent): Vector3 {
+      let inputVector;
+      if (input instanceof TransformComponent) {
+        inputVector = input.globalPosition;
+      }else {
+        inputVector = input;
+      }
+      return Matrix.transformPoint(this.ProjectionViewMatrix, inputVector);
+    }
+
     public updateContainedScene(timer: Timer): void {
         if (this.containedScene) {
             this.containedScene.updateScene(timer);

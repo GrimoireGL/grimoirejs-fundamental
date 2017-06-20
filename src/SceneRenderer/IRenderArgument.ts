@@ -6,6 +6,7 @@ import Material from "../Material/Material";
 import Texture2D from "../Resource/Texture2D";
 import CameraComponent from "../Components/CameraComponent";
 import Timer from "../Util/Timer";
+import Viewport from "../Resource/Viewport";
 /**
  * The message args of $render called by RendererComponent.
  */
@@ -18,7 +19,7 @@ interface IRenderArgument {
   camera: CameraComponent;
   buffers: { [key: string]: Texture2D };
   layer: string;
-  viewport: Rectangle;
+  viewport: Viewport;
   material?: Material;
   materialArgs?: { [key: string]: any };
   sceneDescription: { [key: string]: any };

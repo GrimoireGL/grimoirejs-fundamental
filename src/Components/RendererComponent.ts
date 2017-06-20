@@ -10,7 +10,7 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Rectangle from "grimoirejs-math/ref/Rectangle";
 import Timer from "../Util/Timer";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
-
+import Viewport from "../Resource/Viewport";
 export default class RendererComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     camera: {
@@ -34,9 +34,9 @@ export default class RendererComponent extends Component {
 
   private _canvas: HTMLCanvasElement;
 
-  private _viewportSizeGenerator: (canvas: HTMLCanvasElement) => Rectangle;
+  private _viewportSizeGenerator: (canvas: HTMLCanvasElement) => Viewport;
 
-  private _viewportCache: Rectangle;
+  private _viewportCache: Viewport;
 
   private _buffers: { [key: string]: Texture2D } = {};
 

@@ -5,9 +5,10 @@ import Texture2D from "../Resource/Texture2D";
 import CameraComponent from "../Components/CameraComponent";
 import Rectangle from "grimoirejs-math/ref/Rectangle";
 import Timer from "../Util/Timer";
+import Viewport from "../Resource/Viewport";
 interface IRendnerRendererMessage {
   camera: CameraComponent;
-  viewport: Rectangle;
+  viewport: Viewport;
   buffers: { [key: string]: Texture2D };
   bufferSizes: { [bufferName: string]: { width: number, height: number } };
   material?: Material;

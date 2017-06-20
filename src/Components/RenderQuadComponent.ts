@@ -9,7 +9,6 @@ import Framebuffer from "../Resource/FrameBuffer";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Color4 from "grimoirejs-math/ref/Color4";
-
 export default class RenderQuadComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     out: {
@@ -110,7 +109,7 @@ export default class RenderQuadComponent extends Component {
       this._gl.viewport(0, 0, this._fboSize.width, this._fboSize.height);
     } else {
       this._gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
-      this._gl.viewport(args.viewport.Left, this._canvas.height - args.viewport.Bottom, args.viewport.Width, args.viewport.Height);
+      args.viewport.configure(this._gl);
     }
     // clear buffer if needed
     if (this._fbo && this._clearColorEnabled) {
@@ -130,7 +129,8 @@ export default class RenderQuadComponent extends Component {
       transform: null,
       buffers: args.buffers,
       viewport: args.viewport,
-      technique: this._technique
+      technique: this._technique,
+      sceneDescription: {}
     };
     renderArgs.attributeValues = this._materialContainer.materialArgs;
     // do render
