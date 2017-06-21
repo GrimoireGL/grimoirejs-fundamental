@@ -9,7 +9,7 @@ import Framebuffer from "../Resource/FrameBuffer";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Color4 from "grimoirejs-math/ref/Color4";
-
+import Viewport from "../Resource/Viewport";
 export default class RenderQuadComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     out: {
@@ -54,7 +54,7 @@ export default class RenderQuadComponent extends Component {
 
   private _fbo: Framebuffer;
 
-  private _fboSize: { width: number, height: number; };
+  private _fboViewport: Viewport;
 
   private _geom: Geometry;
 
@@ -92,7 +92,7 @@ export default class RenderQuadComponent extends Component {
     if (out !== "default") {
       this._fbo = new Framebuffer(this.companion.get("gl"));
       this._fbo.update(args.buffers[out]);
-      this._fboSize = args.bufferSizes[out];
+      this._fboViewport = args.bufferViewports[out];
     }
     const depthBuffer = this.getAttribute("depthBuffer");
     if (depthBuffer && this._fbo) {
@@ -107,10 +107,10 @@ export default class RenderQuadComponent extends Component {
     // bound render target
     if (this._fbo) {
       this._fbo.bind();
-      this._gl.viewport(0, 0, this._fboSize.width, this._fboSize.height);
+      this._fboViewport.configure(this._gl);
     } else {
       this._gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
-      this._gl.viewport(args.viewport.Left, this._canvas.height - args.viewport.Bottom, args.viewport.Width, args.viewport.Height);
+      args.viewport.configure(this._gl);
     }
     // clear buffer if needed
     if (this._fbo && this._clearColorEnabled) {
@@ -130,7 +130,8 @@ export default class RenderQuadComponent extends Component {
       transform: null,
       buffers: args.buffers,
       viewport: args.viewport,
-      technique: this._technique
+      technique: this._technique,
+      sceneDescription: {}
     };
     renderArgs.attributeValues = this._materialContainer.materialArgs;
     // do render
