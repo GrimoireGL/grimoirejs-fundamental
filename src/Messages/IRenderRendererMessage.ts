@@ -10,7 +10,7 @@ interface IRendnerRendererMessage {
   camera: CameraComponent;
   viewport: Viewport;
   buffers: { [key: string]: Texture2D };
-  bufferSizes: { [bufferName: string]: { width: number, height: number } };
+  bufferViewports: { [bufferName: string]: Viewport};
   material?: Material;
   materialArgs?: { [key: string]: Material; };
   timer: Timer;

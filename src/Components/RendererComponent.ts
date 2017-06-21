@@ -40,8 +40,8 @@ export default class RendererComponent extends Component {
 
   private _buffers: { [key: string]: Texture2D } = {};
 
-  private _bufferSizes: {
-    [bufferName: string]: { width: number, height: number }
+  private _bufferViewports: {
+    [bufferName: string]: Viewport
   } = {};
 
   private _mouseLeaveHandler: (e: MouseEvent) => void;
@@ -59,9 +59,69 @@ export default class RendererComponent extends Component {
       this._viewportSizeGenerator = v;
       this.$resizeCanvas();
     });
+    // viewport converter returns a delegate to generate viewport size
     this._viewportSizeGenerator = this.getAttribute("viewport");
+    this._initializeMouseHandlers();
+  }
+
+  public $mount(): void {
+    this._gl = this.companion.get("gl") as WebGLRenderingContext;
+    this._canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
+    this.getAttributeRaw("handleMouse").watch(a => {
+      if (a) {
+        this._enableMouseHandling();
+      } else {
+        this._disableMouseHandling();
+      }
+    }, true);
+    if (this.node.children.length === 0) { // complement render stage
+      this.node.addChildByName("render-scene", {});
+    }
+    this.$resizeCanvas();
+  }
+
+  public $unmount(): void {
+    this._disableMouseHandling();
+  }
+
+  public $treeInitialized(): void {
+    // This should be called after mounting all of tree nodes in children
+    this.$resizeCanvas();
+  }
+
+  public $resizeCanvas(): void {
+    this._viewportCache = this._viewportSizeGenerator(this._canvas);
+    const pow2Size = TextureSizeCalculator.getPow2Size(this._viewportCache.Width, this._viewportCache.Height);
+    this.node.broadcastMessage("resizeBuffer", <IResizeBufferMessage>{
+      width: this._viewportCache.Width,
+      height: this._viewportCache.Height,
+      pow2Width: pow2Size.width,
+      pow2Height: pow2Size.height,
+      buffers: this._buffers,
+      bufferViewports: this._bufferViewports
+    });
+    this.node.broadcastMessage("bufferUpdated", <IBufferUpdatedMessage>{
+      buffers: this._buffers,
+      bufferViewports: this._bufferViewports
+    });
+  }
+
+  public $renderViewport(args: { timer: Timer }): void {
+    this.node.broadcastMessage("render", <IRenderRendererMessage>{
+      camera: this.camera,
+      viewport: this._viewportCache,
+      bufferViewports: this._bufferViewports,
+      buffers: this._buffers,
+      timer: args.timer
+    });
+  }
+
+  private _initializeMouseHandlers() {
     // initializing mouse handlers
     this._mouseMoveHandler = (e: MouseEvent) => {
+      if (!this.isActive) {
+        return;
+      }
       if (this._isViewportInside(e)) {
         if (!this._wasInside) { // If the last mouse pointer was inside of canvas but not inside of viewport
           this.node.emit("mouseenter");
@@ -79,6 +139,9 @@ export default class RendererComponent extends Component {
       }
     };
     this._mouseEnterHandler = (e: MouseEvent) => {
+      if (!this.isActive) {
+        return;
+      }
       if (this._isViewportInside(e)) { // If mouse entered and inside of viewport
         this.node.emit("mouseenter");
         this.node.broadcastMessage("mouseenter", this._toViewportMouseArgs(e));
@@ -86,59 +149,15 @@ export default class RendererComponent extends Component {
       }
     };
     this._mouseLeaveHandler = (e: MouseEvent) => {
+      if (!this.isActive) {
+        return;
+      }
       if (this._wasInside) { // If mouse left canvas area and last mouse position was on viewport area
         this.node.emit("mouseleave");
         this.node.broadcastMessage("mouseleave", this._toViewportMouseArgs(e));
       }
       this._wasInside = false;
     };
-  }
-
-  public $mount(): void {
-    this._gl = this.companion.get("gl") as WebGLRenderingContext;
-    this._canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
-    this.getAttributeRaw("handleMouse").watch(a => {
-      if (a) {
-        this._enableMouseHandling();
-      } else {
-        this._disableMouseHandling();
-      }
-    }, true);
-  }
-
-  public $treeInitialized(): void {
-    // This should be called after mounting all of tree nodes in children
-    this.$resizeCanvas();
-  }
-
-  public $resizeCanvas(): void {
-    this._viewportCache = this._viewportSizeGenerator(this._canvas);
-    if (this.node.children.length === 0) {
-      this.node.addChildByName("render-scene", {});
-    }
-    const pow2Size = TextureSizeCalculator.getPow2Size(this._viewportCache.Width, this._viewportCache.Height);
-    this.node.broadcastMessage("resizeBuffer", <IResizeBufferMessage>{
-      width: this._viewportCache.Width,
-      height: this._viewportCache.Height,
-      pow2Width: pow2Size.width,
-      pow2Height: pow2Size.height,
-      buffers: this._buffers,
-      bufferSizes: this._bufferSizes
-    });
-    this.node.broadcastMessage("bufferUpdated", <IBufferUpdatedMessage>{
-      buffers: this._buffers,
-      bufferSizes: this._bufferSizes
-    });
-  }
-
-  public $renderViewport(args: { timer: Timer }): void {
-    this.node.broadcastMessage("render", <IRenderRendererMessage>{
-      camera: this.camera,
-      viewport: this._viewportCache,
-      bufferSizes: this._bufferSizes,
-      buffers: this._buffers,
-      timer: args.timer
-    });
   }
 
   private _enableMouseHandling(): void {

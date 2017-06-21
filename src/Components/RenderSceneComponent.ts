@@ -9,6 +9,7 @@ import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import Framebuffer from "../Resource/FrameBuffer";
 import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
 import CameraComponent from "./CameraComponent";
+import Viewport from "../Resource/Viewport";
 export default class RenderSceneComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     layer: {
@@ -70,7 +71,7 @@ export default class RenderSceneComponent extends Component {
 
   private _fbo: Framebuffer;
 
-  private _fboSize: { width: number, height: number };
+  private _fboViewport: Viewport;
 
   // messages
 
@@ -95,7 +96,7 @@ export default class RenderSceneComponent extends Component {
     if (out !== "default") {
       this._fbo = new Framebuffer(this.companion.get("gl"));
       this._fbo.update(args.buffers[out]);
-      this._fboSize = args.bufferSizes[out];
+      this._fboViewport = args.bufferViewports[out];
     }
     const depthBuffer = this.getAttribute("depthBuffer");
     if (depthBuffer && this._fbo) {
@@ -110,7 +111,7 @@ export default class RenderSceneComponent extends Component {
     }
     if (this._fbo) {
       this._fbo.bind();
-      this._gl.viewport(0, 0, this._fboSize.width, this._fboSize.height);
+      this._fboViewport.configure(this._gl);
     } else {
       this._gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
       args.viewport.configure(this._gl);
