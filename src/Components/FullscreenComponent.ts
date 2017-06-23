@@ -48,7 +48,17 @@ export default class FullscreenComponent extends Component {
 
   private _switchFullscreen(): void {
     if (this._fullscreen) {
-      this.requestFullscreen(this.getAttribute("fullscreenTarget") || this.companion.get("canvasContainer"));
+      const target = this.getAttribute("fullscreenTarget");
+      if (target) {
+        const queriedTarget = document.querySelectorAll(target);
+        if (queriedTarget[0]) {
+          this.requestFullscreen(queriedTarget[0]);
+        } else {
+          console.warn("Specified fullscreenTarget was not found on HTML dom tree");
+        }
+      } else {
+        this.requestFullscreen(this.companion.get("canvasContainer"));
+      }
     } else {
       this.exitFullscreen();
     }
@@ -56,28 +66,28 @@ export default class FullscreenComponent extends Component {
 
   private requestFullscreen(target: Element): void {
     if (target.webkitRequestFullscreen) {
-      target.webkitRequestFullscreen(); //Chrome15+, Safari5.1+, Opera15+
+      target.webkitRequestFullscreen(); // Chrome15+, Safari5.1+, Opera15+
     } else if (target["mozRequestFullScreen"]) {
-      target["mozRequestFullScreen"](); //FF10+
+      target["mozRequestFullScreen"](); // FF10+
     } else if (target["msRequestFullscreen"]) {
-      target["msRequestFullscreen"](); //IE11+
+      target["msRequestFullscreen"](); // IE11+
     } else if (target.requestFullscreen) {
       target.requestFullscreen(); // HTML5 Fullscreen API仕様
     } else {
-      console.error('ご利用のブラウザはフルスクリーン操作に対応していません');
+      console.error("ご利用のブラウザはフルスクリーン操作に対応していません");
       return;
     }
   }
   /*フルスクリーン終了用ファンクション*/
   private exitFullscreen(): void {
     if (document.webkitCancelFullScreen) {
-      document.webkitCancelFullScreen(); //Chrome15+, Safari5.1+, Opera15+
+      document.webkitCancelFullScreen(); // Chrome15+, Safari5.1+, Opera15+
     } else if (document["mozCancelFullScreen"]) {
-      document["mozCancelFullScreen"](); //FF10+
+      document["mozCancelFullScreen"](); // FF10+
     } else if (document["msExitFullscreen"]) {
-      document["msExitFullscreen"](); //IE11+
+      document["msExitFullscreen"](); // IE11+
     } else if (document["cancelFullScreen"]) {
-      document["cancelFullScreen"](); //Gecko:FullScreenAPI仕様
+      document["cancelFullScreen"](); // Gecko:FullScreenAPI仕様
     } else if (document.exitFullscreen) {
       document.exitFullscreen(); // HTML5 Fullscreen API仕様
     }
