@@ -11,13 +11,13 @@ export default class Material {
 
     /**
      * Material arguments.
-     * Thease are mainly created by USER_VALUE semantics.
+     * These are mainly created by USER_VALUE semantics.
      */
     public argumentDeclarations: { [key: string]: IAttributeDeclaration } = {};
 
     /**
      * Values of materila arguments.
-     * Thease values would be passed to GPU for rendering.
+     * These values would be passed to GPU for rendering.
      */
     public arguments: { [key: string]: any } = {};
 

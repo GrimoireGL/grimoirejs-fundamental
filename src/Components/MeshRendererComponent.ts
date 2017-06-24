@@ -131,7 +131,6 @@ export default class MeshRenderer extends Component implements IRenderable {
         const renderArgs = <IMaterialArgument>{
             targetBuffer: this.targetBuffer,
             geometry: this.geometryInstance,
-            attributeValues: null,
             camera: args.camera,
             transform: this._transformComponent,
             buffers: args.buffers,
@@ -142,7 +141,6 @@ export default class MeshRenderer extends Component implements IRenderable {
             technique: args.technique,
             renderable: this
         };
-        renderArgs.attributeValues = this._materialContainer.materialArgs; //TODO should be deprecated
         this._materialContainer.material.draw(renderArgs);
         this.node.emit("render", args);
     }

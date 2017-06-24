@@ -8,13 +8,14 @@ import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import GrimoireInterface from "grimoirejs";
 import BasicComponent from "./BasicComponent";
+import MaterialContainerBase from "./MaterialContainerBase";
 
 /**
  * マテリアルとマテリアルへの属性を管理するためのコンポーネント
  * このコンポーネントは将来的に`MeshRenderer`と統合されます。
  * 指定されたマテリアルの初期化の管理や、マテリアルによって動的に追加される属性の管理を行います、
  */
-export default class MaterialContainerComponent extends BasicComponent {
+export default class MaterialContainerComponent extends MaterialContainerBase {
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         /**
          * 対象のマテリアル
@@ -121,32 +122,7 @@ export default class MaterialContainerComponent extends BasicComponent {
         }
         const material = await materialPromise; // waiting for material load completion
         this.material = material;
-        const lastArguments = material.arguments;
-        material.arguments = {};
-        for (let key in this.material.argumentDeclarations) {
-            this.__addAttribute(key, this.material.argumentDeclarations[key]);
-            try {
-                this.getAttributeRaw(key).watch((n) => {
-                  this.material.setArgument(key, n);
-                }, true);
-                if (lastArguments[key] !== void 0) {
-                    this.setAttribute(key, lastArguments[key]);
-                }
-            } catch (e) {
-                // TODO more convinient error handling
-                this.node.emit("error-parse-material-args", e);
-                this.__removeAttributes();
-                this._registeredAttributes = false;
-                this.materialReady = false;
-                return;
-            }
-        }
-        for (let key in this.material.macroDeclarations) {
-            this.__addAttribute(key, this.material.macroDeclarations[key]);
-            this.getAttributeRaw(key).watch((v) => {
-                this.material.setMacroValue(key, v);
-            }, true);
-        }
+        this.__exposeMaterialParameters(this.material);
         this._registeredAttributes = true;
         this.materialReady = true;
     }
