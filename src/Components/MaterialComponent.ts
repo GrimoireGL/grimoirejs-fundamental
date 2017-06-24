@@ -4,9 +4,9 @@ import Material from "../Material/Material";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import ResourceBase from "../Resource/ResourceBase";
+import MaterialContainerBase from "./MaterialContainerBase";
 
-
-export default class MaterialComponent extends Component {
+export default class MaterialComponent extends MaterialContainerBase {
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         type: {
             converter: "String",
@@ -34,25 +34,7 @@ export default class MaterialComponent extends Component {
 
     private async _registerAttributes(): Promise<void> {
         this.material = await this.materialPromise;
-        for (let key in this.material.argumentDeclarations) {
-            this.__addAttribute(key, this.material.argumentDeclarations[key]);
-            let lastValue;
-            if (this.material.arguments[key] !== void 0) {
-                lastValue = this.material.arguments[key];
-            }
-            this.getAttributeRaw(key).watch((n) => {
-              this.material.setArgument(key, n);
-            }, true);
-            if (lastValue !== void 0) {
-                this.material.setArgument(key, lastValue);
-            }
-        }
-        for (let key in this.material.macroDeclarations) {
-            this.__addAttribute(key, this.material.macroDeclarations[key]);
-            this.getAttributeRaw(key).watch((v) => {
-                this.material.setMacroValue(key, v);
-            }, true);
-        }
+        this.__exposeMaterialParameters(this.material);
         this.ready = true;
     }
 }
