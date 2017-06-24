@@ -125,7 +125,6 @@ export default class RenderQuadComponent extends Component {
     const renderArgs = <IMaterialArgument>{
       targetBuffer: this._targetBuffer,
       geometry: this._geom,
-      attributeValues: {},
       camera: null,
       transform: null,
       buffers: args.buffers,
@@ -133,7 +132,6 @@ export default class RenderQuadComponent extends Component {
       technique: this._technique,
       sceneDescription: {}
     };
-    renderArgs.attributeValues = this._materialContainer.materialArgs;
     // do render
     this._materialContainer.material.draw(renderArgs);
     this._gl.flush();

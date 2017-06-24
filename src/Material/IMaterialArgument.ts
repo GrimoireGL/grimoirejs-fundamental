@@ -7,7 +7,6 @@ import Geometry from "../Geometry/Geometry";
 interface IMaterialArgument {
   targetBuffer: string;
   geometry: Geometry;
-  attributeValues: { [key: string]: any };
   sceneDescription: { [key: string]: any };
   camera: CameraComponent;
   viewport: Rectangle;
