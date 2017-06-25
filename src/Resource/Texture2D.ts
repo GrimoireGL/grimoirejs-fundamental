@@ -113,8 +113,6 @@ export default class Texture2D extends ResourceBase {
     return this._drawerContext;
   }
 
-  public keepTextureDataOnEditingPixels: boolean = false;
-
   private _texParameterChanged: boolean = true;
 
   private _drawerContext: CanvasRenderingContext2D;

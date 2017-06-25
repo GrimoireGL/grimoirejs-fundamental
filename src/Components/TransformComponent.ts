@@ -121,9 +121,10 @@ export default class TransformComponent extends Component {
 
   public get globalTransformInverse(): Matrix {
     if (!this._globalTransformInverse) {
-      this._globalTransformInverse = new Matrix();
+      this._globalTransformInverse = Matrix.inverse(this.globalTransform);
+    }else {
+      this._updateTransform();
     }
-    this._updateTransform();
     return this._globalTransformInverse;
   }
 
@@ -201,10 +202,7 @@ export default class TransformComponent extends Component {
   }
 
   public applyMatrix(mat: Matrix): void {
-    const scale = mat.getScaling();
-    this.setAttribute("scale", scale);
-    // TODO remove this line after gl-matrix issue was solved
-    mat = mat.multiplyWith(Matrix.scale(new Vector3(1 / scale.X, 1 / scale.Y, 1 / scale.Z)));
+    this.setAttribute("scale",  mat.getScaling());
     this.setAttribute("rotation", mat.getRotation());
     this.setAttribute("position", mat.getTranslation());
   }
