@@ -1,7 +1,7 @@
 import IMaterialArgument from "./IMaterialArgument";
 import Material from "./Material";
 import Pass from "./Pass";
-import ITechniqueRecipe from "./ITechniqueRecipe";
+import ITechniqueRecipe from "./Schema/ITechniqueRecipe";
 /**
  * Technique provides an abstraction of drawing with multiple shaders.
  * Technique represents a draw technique like (basic drawing, normal drawing,low quality drawing and so on)

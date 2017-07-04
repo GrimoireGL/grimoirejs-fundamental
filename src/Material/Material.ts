@@ -1,5 +1,5 @@
 import MaterialFactory from "./MaterialFactory";
-import ITechniqueRecipe from "./ITechniqueRecipe";
+import ITechniqueRecipe from "./Schema/ITechniqueRecipe";
 import Technique from "./Technique";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import IMaterialArgument from "./IMaterialArgument";

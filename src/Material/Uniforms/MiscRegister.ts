@@ -4,7 +4,7 @@ import Material from "../Material";
 import Vector4 from "grimoirejs-math/ref/Vector4";
 import IMaterialArgument from "../IMaterialArgument";
 import UniformProxy from "../../Resource/UniformProxy";
-import IVariableInfo from "../IVariableInfo";
+import IVariableInfo from "../Schema/IVariableInfo";
 import UniformResolverRegistry from "../UniformResolverRegistry";
 import Pass from "../Pass";
 

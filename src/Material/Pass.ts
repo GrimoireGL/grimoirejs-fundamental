@@ -5,7 +5,7 @@ import Geometry from "../Geometry/Geometry";
 import UniformProxy from "../Resource/UniformProxy";
 import UniformResolverRegistry from "./UniformResolverRegistry";
 import Material from "./Material";
-import IPassRecipe from "./IPassRecipe";
+import IPassRecipe from "./Schema/IPassRecipe";
 import IMaterialArgument from "./IMaterialArgument";
 import GLStateConfigurator from "./GLStateConfigurator";
 import ShaderMixer from "./ShaderMixer";

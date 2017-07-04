@@ -1,5 +1,5 @@
-import IPassRecipe from "./IPassRecipe";
-import IState from "./IState";
+import IPassRecipe from "./Schema/IPassRecipe";
+import IState from "./Schema/IState";
 export default class GLStateConfigurator {
   private static _glEnableTargets: number[]
   = [WebGLRenderingContext.CULL_FACE,
