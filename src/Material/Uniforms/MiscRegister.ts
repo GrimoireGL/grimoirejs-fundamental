@@ -27,6 +27,7 @@ UniformResolverRegistry.add("HAS_TEXTURE", (valInfo: IVariableInfo, pass: Pass) 
   if (!sampler) {
     throw new Error(`The variable having HAS_TEXTURE as semantics must have sampler attribute`);
   }
+  console.warn(`HAS_TEXTURE is deprecated now. Use flag attribute on sampler2D variables to register macro values`);
   return (proxy: UniformProxy, args: IMaterialArgument) => {
     const hasTexture = !!pass.arguments[sampler] && !!pass.arguments[sampler].get(args.buffers);
     proxy.uniformBool(valInfo.name, hasTexture);
