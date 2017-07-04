@@ -50,9 +50,6 @@ function basicRegister(type: number, isArray: boolean, converter: string, defaul
       register: (proxy: UniformProxy, args: IMaterialArgument) => {
         register(proxy, valInfo.name, pass.arguments[valInfo.name], args);
       },
-      dispose: () => {
-        pass.deleteArgument(valInfo.name);
-      },
       update: updator
     };
   };
@@ -113,9 +110,6 @@ _userValueRegisterers.single[gl.FLOAT_VEC3] = function(valInfo: IVariableInfo, p
       proxy.uniformColor3(valInfo.name, pass.arguments[valInfo.name]);
     } : (proxy: UniformProxy, args: IMaterialArgument) => {
       proxy.uniformVector3(valInfo.name, pass.arguments[valInfo.name]);
-    },
-    dispose: () => {
-      pass.deleteArgument(valInfo.name);
     }
   };
 };
@@ -133,9 +127,6 @@ _userValueRegisterers.single[gl.FLOAT_VEC4] = function(valInfo: IVariableInfo, p
       proxy.uniformColor4(valInfo.name, pass.arguments[valInfo.name]);
     } : (proxy: UniformProxy, args: IMaterialArgument) => {
       proxy.uniformVector4(valInfo.name, pass.arguments[valInfo.name]);
-    },
-    dispose: () => {
-      pass.deleteArgument(valInfo.name);
     }
   };
 };

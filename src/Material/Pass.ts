@@ -32,9 +32,13 @@ export default class Pass {
 
   private _macro: { [key: string]: any } = {};
 
+  private _macroHandlers: { [key: string]: (value: any) => void } = {};
+
   private _uniformResolvers: UniformResolverContainer;
 
   private _gl: WebGLRenderingContext;
+
+  private _argumentInitialized: boolean;
 
   constructor(public technique: Technique, public passRecipe: IPassRecipe) {
     this._uniformResolvers = UniformResolverRegistry.generateRegisterers(this, passRecipe);
@@ -46,16 +50,17 @@ export default class Pass {
       const macro = passRecipe.macros[key];
       this._macro[macro.macroName] = macro.value;
       if (macro.target === "expose") {
-        this.material.addMacroObserver(key, {
-          converter: macro.type === "bool" ? "Boolean" : "Number",
-          default: macro.value
-        }, (value) => { // when changed the macro
+        this._macroHandlers[key] = (value) => { // when changed the macro
           if (macro.type === "bool") {
             this._macro[macro.macroName] = value ? "" : undefined;
           } else {
             this._macro[macro.macroName] = value;
           }
           this.program.macros = this._macro;
+        };
+        this.addArgument(key, {
+          converter: macro.type === "bool" ? "Boolean" : "Number",
+          default: macro.value
         });
       } else if (macro.target === "refer") {
         this._macro[macro.macroName] = macro.value;
@@ -70,8 +75,6 @@ export default class Pass {
     this.program = new PassProgram(this._gl, passRecipe.vertex, passRecipe.fragment, this._macro);
   }
 
-
-
   public draw(args: IMaterialArgument): void {
     const p = this.program.getProgram(args.geometry);
     p.use();
@@ -84,16 +87,23 @@ export default class Pass {
     Geometry.drawWithCurrentVertexBuffer(args.geometry, args.targetBuffer, args.drawCount, args.drawOffset);
   }
 
+  /**
+   * Append an argument as pass variable.
+   * This is mainly used for resolving uniform stages.
+   */
   public addArgument(name: string, val: IAttributeDeclaration): void {
+    if (this._argumentInitialized) {
+      throw new Error(`setArgument cant be called for initialized pass`);
+    }
     this.argumentDeclarations[name] = val;
   }
 
-  public deleteArgument(name: string): void {
-    delete this.argumentDeclarations[name];
-  }
-
   public setArgument(variableName: string, newValue: any, oldValue: any): void {
-    this._uniformResolvers.update(this.program, variableName, newValue, oldValue);
+    if (this._macroHandlers[variableName]) { // if the value was macro
+      this._macroHandlers[variableName](newValue);
+    } else {
+      this._uniformResolvers.update(this.program, variableName, newValue, oldValue);
+    }
     this.arguments[variableName] = newValue;
   }
 

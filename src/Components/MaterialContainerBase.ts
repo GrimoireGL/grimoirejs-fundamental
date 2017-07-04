@@ -19,22 +19,21 @@ export default class MaterialContainerBase extends BasicComponent {
         const passNamespace = Namespace.define(`${techniqueName}.pass${passIndex}`);
         for (let argumentKey in pass.argumentDeclarations) {
           const argumentFQN = passNamespace.for(argumentKey).fqn;
+          // Register pass variable as a attribute of this tag.
+          // Pass variables are registered with nested namespaces as following syntax.
+          // ${techniqueName}.pass${passIndex}.${variableName}
+          // EX) hitarea.pass0.enabled
           this.__addAttribute(argumentFQN, pass.argumentDeclarations[argumentKey]);
           try {
-              this.getAttributeRaw(argumentFQN).watch((n, o) => {
-                pass.setArgument(argumentKey, n, o);
-              }, true);
+            // Register handlers to update pass variables when tag variable was changed
+            this.getAttributeRaw(argumentFQN).watch((n, o) => {
+              pass.setArgument(argumentKey, n, o);
+            }, true);
           } catch (e) {
-              throw new Error(`Parsing variable failed`);
+            throw new Error(`Parsing variable failed`);
           }
         }
       }
-    }
-    for (let key in material.macroDeclarations) {
-        this.__addAttribute(key, material.macroDeclarations[key]);
-        this.getAttributeRaw(key).watch((v) => {
-            material.setMacroValue(key, v);
-        }, true);
     }
   }
 }
