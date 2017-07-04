@@ -88,6 +88,7 @@ basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: Textur
       } else {
         fetched.validPromise.then(() => {
           p.setMacro(v.attributes["flag"], true);
+          used = true;
         });
       }
     }

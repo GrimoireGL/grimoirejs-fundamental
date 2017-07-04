@@ -25,6 +25,9 @@ export default class MaterialContainerBase extends BasicComponent {
           // EX) hitarea.pass0.enabled
           this.__addAttribute(argumentFQN, pass.argumentDeclarations[argumentKey]);
           try {
+            if (typeof pass.arguments[argumentKey] !== "undefined") {
+              this.setAttribute(argumentFQN, pass.arguments[argumentKey]);
+            }
             // Register handlers to update pass variables when tag variable was changed
             this.getAttributeRaw(argumentFQN).watch((n, o) => {
               pass.setArgument(argumentKey, n, o);

@@ -47,8 +47,6 @@ export default class Pass {
    */
   public arguments: { [key: string]: any } = {};
 
-  private _macro: { [key: string]: any } = {};
-
   private _macroHandlers: { [key: string]: (value: any) => void } = {};
 
   private _uniformResolvers: UniformResolverContainer;
@@ -64,35 +62,33 @@ export default class Pass {
     this._gl = this.material.gl;
     const factory = MaterialFactory.get(this._gl);
     const macroRegister = factory.macro;
+    this._dynamicStateResolver = GLStateConfigurator.getDynamicStateResolver(this);
+    this.program = new PassProgram(this._gl, passRecipe.vertex, passRecipe.fragment);
     // register macro
     for (let key in passRecipe.macros) {
       const macro = passRecipe.macros[key];
-      this._macro[macro.macroName] = macro.value;
+      this.program.setMacro(macro.macroName, macro.value + "");
       if (macro.target === "expose") {
         this._macroHandlers[key] = (value) => { // when changed the macro
+          let assignValue;
           if (macro.type === "bool") {
-            this._macro[macro.macroName] = value ? "" : undefined;
+            assignValue = value ? "" : undefined;
           } else {
-            this._macro[macro.macroName] = value;
+            assignValue = value;
           }
-          this.program.macros = this._macro;
+          this.program.setMacro(macro.macroName, assignValue);
         };
         this.addArgument(key, {
           converter: macro.type === "bool" ? "Boolean" : "Number",
           default: macro.value
         });
       } else if (macro.target === "refer") {
-        this._macro[macro.macroName] = macro.value;
+        this.program.setMacro(macro.macroName, macro.value + "");
         macroRegister.watch(macro.macroName, (val, immediate) => {
-          this._macro[macro.macroName] = val;
-          if (!immediate) {
-            this.program.macros = this._macro;
-          }
+            this.program.setMacro(macro.macroName, val);
         }, true);
       }
     }
-    this._dynamicStateResolver = GLStateConfigurator.getDynamicStateResolver(this);
-    this.program = new PassProgram(this._gl, passRecipe.vertex, passRecipe.fragment, this._macro);
   }
   /**
    * Execute single drawcall with specified arguments.
