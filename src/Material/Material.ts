@@ -30,7 +30,17 @@ export default class Material {
      */
     public clone(): Material {
         const cloned = new Material(this.gl, this.techniqueRecipes);
-        throw new Error("Non implemented"); // TODO
-        // return cloned;
+        for (let techniqueKey in this.techniques) {
+          const technique = this.techniques[techniqueKey];
+          const destTechnique = cloned.techniques[techniqueKey];
+          for (let passIndex in technique.passes) {
+            const pass = technique.passes[passIndex];
+            const destPass = destTechnique.passes[passIndex];
+            for (let argument in pass.arguments) {
+              destPass[argument] = pass[argument];
+            }
+          }
+        }
+        return cloned;
     }
 }
