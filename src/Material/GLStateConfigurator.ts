@@ -1,5 +1,9 @@
 import IPassRecipe from "./Schema/IPassRecipe";
 import IState from "./Schema/IState";
+import IDynamicStateResolver from "./Schema/IDynamicStateResolver";
+import IMaterialArgument from "./IMaterialArgument";
+import Pass from "./Pass";
+import DefaultDynamicStateResolver from "./DefaultDynamicStateResolvers";
 export default class GLStateConfigurator {
   private static _glEnableTargets: number[]
   = [WebGLRenderingContext.CULL_FACE,
@@ -11,6 +15,29 @@ export default class GLStateConfigurator {
   WebGLRenderingContext.POLYGON_OFFSET_FILL,
   WebGLRenderingContext.SAMPLE_ALPHA_TO_COVERAGE,
   WebGLRenderingContext.SAMPLE_COVERAGE];
+
+  private static _dynamicStateResolvers: { [key: string]: IDynamicStateResolver } = {...DefaultDynamicStateResolver};
+
+  public static registerDynamicStateResolver(key: string, resolver: IDynamicStateResolver): void {
+    GLStateConfigurator._dynamicStateResolvers[key] = resolver;
+  }
+
+  public static getDynamicStateResolver(pass: Pass): (gl: WebGLRenderingContext, mat: IMaterialArgument) => void {
+    if (pass.passRecipe.states.dynamicState) {
+      const dynamicStates = pass.passRecipe.states.dynamicState;
+      const functions = [] as ((gl: WebGLRenderingContext, mat: IMaterialArgument) => void)[];
+      for (let i = 0; i < dynamicStates.length; i++) {
+        const ds = dynamicStates[i];
+        const resolverGenerator = GLStateConfigurator._dynamicStateResolvers[ds.stateResolver];
+        if (!resolverGenerator) {
+          throw new Error(`Unknown dynamic state resolver '${ds.stateResolver}' was required`);
+        }
+        functions.push(resolverGenerator(ds.args, pass));
+      }
+      return (gl: WebGLRenderingContext, mat: IMaterialArgument) => functions.forEach(f => f(gl, mat));
+    }
+    return () => void 0;
+  }
 
   /**
    * Configure gl state based on pass recipe

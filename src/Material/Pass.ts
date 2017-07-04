@@ -53,6 +53,8 @@ export default class Pass {
 
   private _uniformResolvers: UniformResolverContainer;
 
+  private _dynamicStateResolver: (gl: WebGLRenderingContext, mat: IMaterialArgument) => void;
+
   private _gl: WebGLRenderingContext;
 
   private _argumentInitialized: boolean;
@@ -89,6 +91,7 @@ export default class Pass {
         }, true);
       }
     }
+    this._dynamicStateResolver = GLStateConfigurator.getDynamicStateResolver(this);
     this.program = new PassProgram(this._gl, passRecipe.vertex, passRecipe.fragment, this._macro);
   }
   /**
@@ -100,6 +103,7 @@ export default class Pass {
     p.use();
     this._uniformResolvers.resolve(p.uniforms, args);
     GLStateConfigurator.configureForPass(this._gl, this.passRecipe); // configure for gl states
+    this._dynamicStateResolver(this._gl, args);
     for (let key in this.passRecipe.attributes) {
       const attribute = this.passRecipe.attributes[key];
       Geometry.bindBufferToAttribute(args.geometry, p, key, attribute.semantic);

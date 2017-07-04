@@ -1,6 +1,6 @@
 interface IDynamicState {
     stateResolver: string;
-    args: (number | string)[];
+    args: string[];
 }
 
 export default IDynamicState;
