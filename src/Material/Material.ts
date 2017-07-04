@@ -10,18 +10,6 @@ import Pass from "./Pass";
 export default class Material {
 
     /**
-     * Material arguments.
-     * These are mainly created by USER_VALUE semantics.
-     */
-    public argumentDeclarations: { [key: string]: IAttributeDeclaration } = {};
-
-    /**
-     * Values of materila arguments.
-     * These values would be passed to GPU for rendering.
-     */
-    public arguments: { [key: string]: any } = {};
-
-    /**
      * Dynamic macro declarations.
      */
     public macroDeclarations: { [key: string]: IAttributeDeclaration } = {};
@@ -43,16 +31,16 @@ export default class Material {
         }
     }
 
-    public setArgument(variableName: string, newValue: any): void {
-      if (this.arguments[variableName] !== newValue) {
-        const o = this.arguments[variableName];
-        this.arguments[variableName] = newValue;
-        for (let key in this.techniques) {
-          const t = this.techniques[key];
-          t.passes.forEach(p => p.update(variableName, newValue, o));
-        }
-      }
-    }
+    // public setArgument(variableName: string, newValue: any): void {
+    //   if (this.arguments[variableName] !== newValue) {
+    //     const o = this.arguments[variableName];
+    //     this.arguments[variableName] = newValue;
+    //     for (let key in this.techniques) {
+    //       const t = this.techniques[key];
+    //       t.passes.forEach(p => p.update(variableName, newValue, o));
+    //     }
+    //   }
+    // }
 
     public addMacroObserver(key: string, macroDeclaration: IAttributeDeclaration, onChanged: (value: boolean | number) => void): void {
         if (!this._macroObserver[key]) {
@@ -68,23 +56,13 @@ export default class Material {
         }
     }
 
-    public addArgument(key: string, argumentDeclaration: IAttributeDeclaration): void {
-        this.argumentDeclarations[key] = argumentDeclaration;
-    }
-
-    public deleteArgument(key: string): void {
-        delete this.argumentDeclarations[key];
-    }
-
     /**
      * Clone this material to new instance.
      * @return {Material} new material instance
      */
     public clone(): Material {
         const cloned = new Material(this.gl, this.techniqueRecipes);
-        for (let key in this.arguments) {
-            cloned.arguments[key] = this.arguments[key];
-        }
-        return cloned;
+        throw new Error("Non implemented");
+        // return cloned;
     }
 }

@@ -11,9 +11,24 @@ import GLStateConfigurator from "./GLStateConfigurator";
 import ShaderMixer from "./ShaderMixer";
 import UniformResolverContainer from "./UniformResolverContainer";
 import PassProgram from "./PassProgram";
+import Technique from "./Technique";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+
 export default class Pass {
 
   public program: PassProgram;
+
+  public get material(): Material {
+    return this.technique.material;
+  }
+
+  public argumentDeclarations: { [key: string]: IAttributeDeclaration } = {};
+
+  /**
+   * Values of materila arguments.
+   * These values would be passed to GPU for rendering.
+   */
+  public arguments: { [key: string]: any } = {};
 
   private _macro: { [key: string]: any } = {};
 
@@ -21,9 +36,9 @@ export default class Pass {
 
   private _gl: WebGLRenderingContext;
 
-  constructor(public material: Material, public passRecipe: IPassRecipe) {
-    this._uniformResolvers = UniformResolverRegistry.generateRegisterers(material, passRecipe);
-    this._gl = material.gl;
+  constructor(public technique: Technique, public passRecipe: IPassRecipe) {
+    this._uniformResolvers = UniformResolverRegistry.generateRegisterers(this, passRecipe);
+    this._gl = this.material.gl;
     const factory = MaterialFactory.get(this._gl);
     const macroRegister = factory.macro;
     // register macro
@@ -69,8 +84,17 @@ export default class Pass {
     Geometry.drawWithCurrentVertexBuffer(args.geometry, args.targetBuffer, args.drawCount, args.drawOffset);
   }
 
-  public update(variableName: string, newValue: any, oldValue: any): void {
+  public addArgument(name: string, val: IAttributeDeclaration): void {
+    this.argumentDeclarations[name] = val;
+  }
+
+  public deleteArgument(name: string): void {
+    delete this.argumentDeclarations[name];
+  }
+
+  public setArgument(variableName: string, newValue: any, oldValue: any): void {
     this._uniformResolvers.update(this.program, variableName, newValue, oldValue);
+    this.arguments[variableName] = newValue;
   }
 
   public dispose(): void {
