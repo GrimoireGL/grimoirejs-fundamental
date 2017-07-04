@@ -180,6 +180,7 @@ export default class RendererComponent extends Component {
   private _isViewportInside(e: MouseEvent): boolean {
     const rc = this._getRelativePosition(e);
     const n = this._viewportCache.toLocalNormalized(rc[0], rc[1]);
+    console.log(rc, n);
     return n[0] >= 0 && n[0] <= 1 && n[1] >= 0 && n[1] <= 1;
   }
 

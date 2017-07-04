@@ -100,7 +100,7 @@ export default class MeshRenderer extends Component implements IRenderable {
         }
         vec3.add(this._priortyCalcCache, camera.transform.globalPosition.rawElements, this.geometryInstance.aabb.Center.rawElements);
         vec3.sub(this._priortyCalcCache, this._priortyCalcCache, this._transformComponent.globalPosition.rawElements);
-        return this._materialContainer.getDrawPriorty(vec3.sqrLen(this._priortyCalcCache),technique); // Obtains distance between camera and center of aabb
+        return this._materialContainer.getDrawPriorty(vec3.sqrLen(this._priortyCalcCache), technique); // Obtains distance between camera and center of aabb
     }
 
     public $awake(): void {
