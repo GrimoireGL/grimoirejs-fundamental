@@ -99,11 +99,13 @@ export default class Pass {
    * @param {IMaterialArgument} args [description]
    */
   public draw(args: IMaterialArgument): void {
+    // configure programs and gl states
     const p = this.program.getProgram(args.geometry);
     p.use();
     this._uniformResolvers.resolve(p.uniforms, args);
     GLStateConfigurator.configureForPass(this._gl, this.passRecipe); // configure for gl states
     this._dynamicStateResolver(this._gl, args);
+    // draw actually
     for (let key in this.passRecipe.attributes) {
       const attribute = this.passRecipe.attributes[key];
       Geometry.bindBufferToAttribute(args.geometry, p, key, attribute.semantic);

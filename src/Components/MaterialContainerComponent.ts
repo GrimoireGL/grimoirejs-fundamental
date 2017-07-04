@@ -53,22 +53,22 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
 
   private static _defaultMaterial = "unlit";
 
-  public getDrawPriorty(depth: number): number {
+  public getDrawPriorty(depth: number,technique: string): number {
     if (!this.materialReady && !this.isActive) { // If material was not ready
       return Number.MAX_VALUE;
     }
     let orderCriteria;
     if (this._drawOrder === "Auto") {
-      if (this.material.techniques["default"].drawOrder === "Auto") {
+      if (this.material.techniques[technique].drawOrder === "Auto") {
         orderCriteria = DrawPriorty[this._transparent ? "UseAlpha" : "NoAlpha"];
       } else {
-        orderCriteria = DrawPriorty[this.material.techniques["default"].drawOrder];
+        orderCriteria = DrawPriorty[this.material.techniques[technique].drawOrder];
       }
     } else {
       orderCriteria = DrawPriorty[this._drawOrder];
     }
     if (orderCriteria === void 0) {
-      throw new Error(`Specified drawing order "${this.material.techniques["default"].drawOrder}" is not defined`);
+      throw new Error(`Specified drawing order "${this.material.techniques[technique].drawOrder}" is not defined`);
     }
     if (orderCriteria.descending) {
       return (1.0 - depth / 10000) * orderCriteria.priorty;
