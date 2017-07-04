@@ -88,7 +88,8 @@ export default class RenderHitareaComponent extends Component {
       viewport: args.viewport,
       timer: args.timer,
       technique: "hitarea",
-      sceneDescription: {}
+      sceneDescription: {},
+      sortingTechnique: "default"
     });
     this._gl.flush();
     this._gl.readPixels(this._lastPosition[0] * this._bufferViewport.Width, this._lastPosition[1] * this._bufferViewport.Height, 1, 1, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._readCache);

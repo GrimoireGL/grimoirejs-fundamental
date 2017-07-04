@@ -25,6 +25,7 @@ interface IRenderArgument {
   sceneDescription: { [key: string]: any };
   timer: Timer;
   technique: string;
+  sortingTechnique?: string;
 }
 
 export default IRenderArgument;

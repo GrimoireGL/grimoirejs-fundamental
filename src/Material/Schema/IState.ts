@@ -1,3 +1,4 @@
+import IDynamicState from "./IDynamicState";
 interface IState {
   enable: number[]; // empty by default
   disable?: number[];
@@ -15,6 +16,7 @@ interface IState {
     polygonOffset?: number[], // (factor, units)
     scissor?: number[] // (x, y, width, height)
   };
+  dynamicState?: IDynamicState[];
 }
 
 export default IState;

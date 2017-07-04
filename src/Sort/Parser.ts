@@ -1,7 +1,7 @@
 import HashCalculator from "../Util/HashCalculator";
-import IPassRecipe from "../Material/IPassRecipe";
+import IPassRecipe from "../Material/Schema/IPassRecipe";
 import SortTransformUtility from "./SortTransformUtility";
-import ITechniqueRecipe from "../Material/ITechniqueRecipe";
+import ITechniqueRecipe from "../Material/Schema/ITechniqueRecipe";
 class SortParser {
   /**
    * Cache to prevent double loading

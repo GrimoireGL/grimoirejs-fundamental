@@ -271,7 +271,7 @@ export default class CameraComponent extends Component {
         if (this.containedScene) {
             this._justifyAspect(args);
             args.sceneDescription = this.containedScene.sceneDescription;
-            this._renderQueue.renderAll(args, true, args.timer);
+            this._renderQueue.renderAll(args);
         }
     }
 

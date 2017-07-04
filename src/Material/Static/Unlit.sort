@@ -1,5 +1,6 @@
 @Technique default{
 @Pass{
+  @DynamicState(dynamic-cull)
   @BlendFunc(SRC_ALPHA,ONE_MINUS_SRC_ALPHA)
   FS_PREC(mediump,float)
   #ifdef ATTRIBUTE_COLOR_ENABLED
