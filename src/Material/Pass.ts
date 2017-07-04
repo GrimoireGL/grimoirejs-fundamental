@@ -13,15 +13,32 @@ import UniformResolverContainer from "./UniformResolverContainer";
 import PassProgram from "./PassProgram";
 import Technique from "./Technique";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-
+/**
+ * Pass provides single draw call for a geometry.
+ * Containing arguments of uniform variables and gl state configruations for each drawing call.
+ * @return {Material} [description]
+ */
 export default class Pass {
-
+  /**
+   * Pass program instance. This is not actual WebGLProgram instance.
+   * Pass will determine which WebGLProgram should be used by considering which geometry was used in actual drawing timing.
+   * @return {Material} [description]
+   */
   public program: PassProgram;
 
+  /**
+   * Get related material
+   */
   public get material(): Material {
     return this.technique.material;
   }
 
+  /**
+   * Declaration of argument attributes.
+   * @param  {Technique}   publictechnique  [description]
+   * @param  {IPassRecipe} publicpassRecipe [description]
+   * @return {[type]}                       [description]
+   */
   public argumentDeclarations: { [key: string]: IAttributeDeclaration } = {};
 
   /**
@@ -74,7 +91,10 @@ export default class Pass {
     }
     this.program = new PassProgram(this._gl, passRecipe.vertex, passRecipe.fragment, this._macro);
   }
-
+  /**
+   * Execute single drawcall with specified arguments.
+   * @param {IMaterialArgument} args [description]
+   */
   public draw(args: IMaterialArgument): void {
     const p = this.program.getProgram(args.geometry);
     p.use();
@@ -97,7 +117,9 @@ export default class Pass {
     }
     this.argumentDeclarations[name] = val;
   }
-
+  /**
+   * Update argument of specified value.
+   */
   public setArgument(variableName: string, newValue: any, oldValue: any): void {
     if (this._macroHandlers[variableName]) { // if the value was macro
       this._macroHandlers[variableName](newValue);
@@ -106,7 +128,9 @@ export default class Pass {
     }
     this.arguments[variableName] = newValue;
   }
-
+  /**
+   * Destroy pass to release resources.
+   */
   public dispose(): void {
     this._uniformResolvers.dispose();
     this.program.dispose();
