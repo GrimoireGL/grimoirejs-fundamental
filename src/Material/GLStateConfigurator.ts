@@ -3,7 +3,7 @@ import IState from "./Schema/IState";
 import IDynamicStateResolver from "./Schema/IDynamicStateResolver";
 import IMaterialArgument from "./IMaterialArgument";
 import Pass from "./Pass";
-import DefaultDynamicStateResolver from "./DefaultDynamicStateResolvers";
+import DefaultDynamicStateResolver from "./Defaults/DefaultDynamicStateResolvers";
 export default class GLStateConfigurator {
   private static _glEnableTargets: number[]
   = [WebGLRenderingContext.CULL_FACE,

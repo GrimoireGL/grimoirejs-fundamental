@@ -1,4 +1,4 @@
-import header from "raw-loader!./Static/header.glsl";
+import header from "raw-loader!../Shaders/header.glsl";
 import Geometry from "../Geometry/Geometry";
 export default class ShaderMixer {
   /**

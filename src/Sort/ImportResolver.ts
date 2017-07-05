@@ -1,6 +1,7 @@
 import CacheResolver from "../Asset/CacheResolver";
+import DefaultStaticImport from "../Material/Defaults/DefaultStaticImport";
 export class ImportResolver extends CacheResolver<string> {
-  public staticImports: { [key: string]: string } = {};
+  public staticImports: { [key: string]: string } = {...DefaultStaticImport};
 
   private static _toAbsolute(href: string): string {
     const link = document.createElement("a");

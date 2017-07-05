@@ -1,5 +1,5 @@
-import IDynamicStateResolver from "./Schema/IDynamicStateResolver";
-import Pass from "./Pass";
+import IDynamicStateResolver from "../Schema/IDynamicStateResolver";
+import Pass from "../Pass";
 export default {
     "dynamic-cull": (args: string[], pass: Pass) => {
         const attributeName = args[1] || "cull";
