@@ -72,6 +72,10 @@ export default class RenderHitareaComponent extends Component {
     if (!this._mouseInside) {
       return;
     }
+    const camera = this._sceneRenderer.camera || args.camera;
+    if (!camera) {
+      return;
+    }
     this.hitareaFBO.bind();
     this._bufferViewport.configure(this._gl);
     // clear buffer if needed
@@ -79,7 +83,6 @@ export default class RenderHitareaComponent extends Component {
     this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
     this._gl.clearDepth(1);
     this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
-    const camera = this._sceneRenderer.camera || args.camera;
     camera.renderScene({
       renderer: this._sceneRenderer, // TODO
       camera: camera,
