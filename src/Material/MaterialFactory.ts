@@ -4,7 +4,7 @@ import MacroRegistory from "./MacroRegistory";
 import TextFileResolver from "../Asset/TextFileResolver";
 import Material from "./Material";
 import NameResolver from "../Asset/NameResolver";
-import ShaderHeader from "raw-loader!./Static/header.glsl";
+import ShaderHeader from "raw-loader!../Shaders/header.glsl";
 /**
  * Manage materialGenerators for materials.
  * Materials can be instanciated with this instance.

@@ -1,7 +1,7 @@
 import RenderHitArea from "./Components/RenderHitareaComponent";
 import PositionConverter from "./Converters/PositionConverter";
 import NodeConverter from "./Converters/NodeConverter";
-import DefaultMaterial from "./Material/DefaultMaterial";
+import DefaultMaterial from "./Material/Defaults/DefaultMaterial";
 import GLExtRequestor from "./Resource/GLExtRequestor";
 import DefaultPrimitives from "./Geometry/DefaultPrimitives";
 
