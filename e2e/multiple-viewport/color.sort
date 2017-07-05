@@ -1,6 +1,6 @@
 @Pass{
     FS_PREC(mediump,float)
-    @Disable(CULL_FACE)
+    @DynamicState(dynamic-cull,none)
     varying vec4 vColor;
 
 #ifdef VS
