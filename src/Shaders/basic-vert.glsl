@@ -40,7 +40,7 @@
     gl_Position = _matPVM * vec4(position,1.0);
     vPosition = (_matM * vec4(position,1.0)).xyz;
     #ifdef ATTRIBUTE_NORMAL_ENABLED
-    vNormal = (_matM * vec4(normal,1)).xyz;
+    vNormal = (_matM * vec4(normal,0.)).xyz;
     #endif
     #ifdef ATTRIBUTE_TEXCOORD_ENABLED
     vTexCoord = texCoord;
