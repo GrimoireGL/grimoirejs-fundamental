@@ -7,6 +7,9 @@
 
  varying vec2 vTexCoord;
  varying vec3 vPosition;
+ #ifdef ATTRIBUTE_NORMAL_ENABLED
+ varying vec3 vNormal;
+ #endif
 #ifdef VS
   @POSITION
   attribute vec3 position;
@@ -15,6 +18,12 @@
   @TEXCOORD
   attribute vec2 texCoord;
   #endif
+
+  #ifdef ATTRIBUTE_NORMAL_ENABLED
+  @NORMAL
+  attribute vec3 normal;
+  #endif
+
   @MODELVIEWPROJECTION
   uniform mat4 _matPVM;
 
@@ -30,6 +39,9 @@
   {
     gl_Position = _matPVM * vec4(position,1.0);
     vPosition = (_matM * vec4(position,1.0)).xyz;
+    #ifdef ATTRIBUTE_NORMAL_ENABLED
+    vNormal = (_matM * vec4(normal,1)).xyz;
+    #endif
     #ifdef ATTRIBUTE_TEXCOORD_ENABLED
     vTexCoord = texCoord;
     #endif
