@@ -86,6 +86,9 @@ export default {
   DepthRange: function(state: IState, args: string[]) {
     state.functions.depthRange = asNumberArgs(args, 2);
   },
+  DepthMask: function(state: IState, args: string[]) {
+    state.functions.depthMask = asBooleanArgs(args, 1);
+  },
   FrontFace: function(state: IState, args: string[]) {
     state.functions.frontFace = asGLConstantArgs(args, 1);
   },
