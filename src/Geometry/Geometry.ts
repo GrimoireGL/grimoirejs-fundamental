@@ -90,9 +90,8 @@ export default class Geometry {
     public addAttributes(buffer: number[] | BufferSource, accessors: { [semantcis: string]: VertexBufferAccessor }, usage?: number): void;
     public addAttributes(buffer: number[] | BufferSource | Buffer, accessors: { [semantics: string]: VertexBufferAccessor }): void;
     public addAttributes(buffer: Buffer | number[] | BufferSource, accessors: { [semantics: string]: VertexBufferAccessor }, usage: number = WebGLRenderingContext.STATIC_DRAW): void {
-        buffer = this._ensureToBeVertexBuffer(buffer, usage);
         let index = this.buffers.length;
-        this.buffers.push(buffer);
+        let keepBuffer = false;
         for (let semantic in accessors) {
             const accessor = accessors[semantic] as GeometryVertexBufferAccessor;
             accessor.bufferIndex = index;
@@ -111,8 +110,15 @@ export default class Geometry {
             if (accessor.normalized === void 0) {
                 accessor.normalized = false;
             }
+            if (accessor.keepOnBuffer === void 0) {
+              // If target semantic was named 'POSITION', default option for keeping buffer is true.
+              accessor.keepOnBuffer = semantic === "POSITION";
+            }
+            keepBuffer = keepBuffer || !!accessor.keepOnBuffer;
             this.accessors[semantic] = accessor;
         }
+        buffer = this._ensureToBeVertexBuffer(buffer, usage, keepBuffer);
+        this.buffers.push(buffer);
         this._recalculateAccsessorHash();
     }
 
@@ -201,13 +207,14 @@ export default class Geometry {
      * @param  {Buffer|BufferSource|number[]} buffer [description]
      * @return {Buffer}                              [description]
      */
-    private _ensureToBeVertexBuffer(buffer: Buffer | BufferSource | number[], usage: number): Buffer {
+    private _ensureToBeVertexBuffer(buffer: Buffer | BufferSource | number[], usage: number, keepBuffer: boolean): Buffer {
         if (!(buffer instanceof Buffer)) {
             let bufferSource = buffer;
             if (Array.isArray(bufferSource)) {
                 bufferSource = new Float32Array(bufferSource);
             }
             buffer = new Buffer(this.gl, WebGLRenderingContext.ARRAY_BUFFER, usage);
+            buffer.keepSource = keepBuffer;
             buffer.update(bufferSource);
         }
         return buffer;
