@@ -15,6 +15,12 @@ interface IState {
     lineWidth?: number[],
     polygonOffset?: number[], // (factor, units)
     scissor?: number[] // (x, y, width, height)
+    // stencilFunc?: number[], // TODO Support stencil stuff in future
+    // stencilFuncSeparate?: number[],
+    // stencilMask?: number[],
+    // stencilMaskSeparate?: number[],
+    // stencilOp?: number[],
+    // stencilOpSeparate?: number[],
   };
   dynamicState?: IDynamicState[];
 }
