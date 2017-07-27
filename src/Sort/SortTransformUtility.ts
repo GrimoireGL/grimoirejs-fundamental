@@ -6,7 +6,6 @@ import TypeToConstant from "./TypeToConstant";
 import NameSemanticPair from "./NameSemanticsPair";
 import ImportResolver from "./ImportResolver";
 import CommentRemover from "./CommentRemover";
-import {Nullable} from "grimoirejs/ref/base/Types";
 
 export default class SortTransformUtility {
   /**
@@ -18,9 +17,9 @@ export default class SortTransformUtility {
     if (uncommentedSource.indexOf("@Technique") === -1) {
       return { default: uncommentedSource };
     } else {
-      const result: { [key: string]: any } = {};
+      const result = {};
       const regex = /@Technique\s+([a-zA-Z0-9_]+)/g;
-      let regexResult: RegExpExecArray |null;
+      let regexResult: RegExpExecArray;
       while (regexResult = regex.exec(uncommentedSource)) {
         const techniqueName = regexResult[1];
         if (result[techniqueName] !== void 0) {
@@ -44,7 +43,7 @@ export default class SortTransformUtility {
     } else {
       const result = [];
       const regex = /@Pass/g;
-      let regexResult: RegExpExecArray |null;
+      let regexResult: RegExpExecArray;
       while (regexResult = regex.exec(uncommentedSource)) {
         result.push(SortTransformUtility.obtainNextSection(uncommentedSource, "{", "}", regexResult.index + regexResult.length));
       }
@@ -57,7 +56,7 @@ export default class SortTransformUtility {
    * @param  {string} uncommentedTechniqueSource [description]
    * @return {string}                            [description]
    */
-  public static fetchDrawOrder(uncommentedTechniqueSource: string): Nullable<string> {
+  public static fetchDrawOrder(uncommentedTechniqueSource: string): string {
     const regexResult = /@DrawOrder\s*\((\w+)\)/g.exec(uncommentedTechniqueSource);
     if (regexResult) {
       const firstPassIndex = uncommentedTechniqueSource.indexOf("@Pass");
@@ -203,8 +202,8 @@ export default class SortTransformUtility {
   public static parseVariables(source: string, variableType: string): { [key: string]: IVariableInfo } {
     const result = {};
     const regex = SortTransformUtility.generateVariableFetchRegex(variableType);
-    let regexResult: RegExpExecArray |null;
-    while (regexResult = regex.exec(source)) {
+    let regexResult: RegExpExecArray;
+    while ((regexResult = regex.exec(source))) {
       let name = regexResult[5];
       let type = TypeToConstant[regexResult[4]];
       let precision = regexResult[3];
