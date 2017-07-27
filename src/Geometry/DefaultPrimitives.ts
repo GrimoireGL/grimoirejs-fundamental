@@ -188,7 +188,7 @@ export default class DefaultPrimitives {
       const dH = attrs["divHorizontal"];
       const dV = attrs["divVertical"];
       const geometry = new Geometry(gl);
-      geometry.addAttributes(GeometryUtility.sphere([0, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, -1], dV, dH), primitiveLayout);
+      geometry.addAttributes(GeometryUtility.sphere([0, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], dV, dH), primitiveLayout);
       geometry.addIndex("default", GeometryUtility.sphereIndex(0, dV, dH));
       geometry.addIndex("wireframe", GeometryUtility.linesFromTriangles(GeometryUtility.sphereIndex(0, dV, dH)), WebGLRenderingContext.LINES);
       return geometry;
@@ -205,7 +205,7 @@ export default class DefaultPrimitives {
       const dV = attrs["divide"] % 2 === 1 ? attrs["divide"] + 1 : attrs["divide"];
 
       const geometry = new Geometry(gl);
-      geometry.addAttributes(GeometryUtility.capsule([0, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, -1], dV, dH), primitiveLayout);
+      geometry.addAttributes(GeometryUtility.capsule([0, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], dV, dH), primitiveLayout);
       geometry.addIndex("default", GeometryUtility.sphereIndex(0, dV, dH));
       geometry.addIndex("wireframe", GeometryUtility.linesFromTriangles(GeometryUtility.sphereIndex(0, dV, dH)), WebGLRenderingContext.LINES);
       return geometry;
