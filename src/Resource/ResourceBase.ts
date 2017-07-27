@@ -1,5 +1,8 @@
+import gr from "grimoirejs";
+import IDObject from "grimoirejs/ref/Base/IDObject";
 
-export default abstract class ResourceBase {
+
+abstract class ResourceBase {
   private static _maxIndex = 0;
 
   public index: number;
@@ -41,3 +44,5 @@ export default abstract class ResourceBase {
     this.destroyed = true;
   }
 }
+
+export default ResourceBase;

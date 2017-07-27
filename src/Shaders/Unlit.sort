@@ -1,0 +1,45 @@
+@Technique default{
+@Pass{
+  @DynamicState(dynamic-cull)
+  @BlendFunc(SRC_ALPHA,ONE_MINUS_SRC_ALPHA)
+  FS_PREC(mediump,float)
+  @import "basic-vert"
+  #ifdef FS
+  @{type:"color",default:"white"}
+  uniform vec4 color;
+
+  @{flag:"USE_TEXTURE"}
+  uniform sampler2D texture;
+
+  uniform float _time;
+  void main(void)
+  {
+    vec4 baseColor = color;
+    #ifdef ATTRIBUTE_COLOR_ENABLED
+    baseColor *= vColor;
+    #endif
+    #ifdef USE_TEXTURE
+      gl_FragColor = baseColor * texture2D(texture,vTexCoord);
+    #endif
+    #ifndef USE_TEXTURE
+      gl_FragColor = baseColor;
+    #endif
+  }
+  #endif
+}
+}
+
+@Technique hitarea{
+  @Disable(BLEND)
+  @Pass{
+    FS_PREC(mediump,float)
+    @import "basic-vert"
+    #ifdef FS
+      @MESH_INDEX
+      uniform vec4 meshIndex;
+      void main(){
+        gl_FragColor = meshIndex;
+      }
+    #endif
+  }
+}

@@ -1,9 +1,8 @@
 import HashCalculator from "../Util/HashCalculator";
-import IPassRecipe from "../Material/IPassRecipe";
+import IPassRecipe from "../Material/Schema/IPassRecipe";
 import SortTransformUtility from "./SortTransformUtility";
-import ITechniqueRecipe from "../Material/ITechniqueRecipe";
-
-export default class SortParser {
+import ITechniqueRecipe from "../Material/Schema/ITechniqueRecipe";
+class SortParser {
   /**
    * Cache to prevent double loading
    */
@@ -12,7 +11,7 @@ export default class SortParser {
   public static parse(source: string): Promise<{ [key: string]: ITechniqueRecipe }> {
     const sourceHash = HashCalculator.calcHash(source);
     if (SortParser._parsedCache[sourceHash] !== void 0) { // When specified source was loaded already
-      return new Promise(resolve => {
+      return new Promise((resolve, reject) => {
         resolve(SortParser._parsedCache[sourceHash]);
       });
     } else {
@@ -69,3 +68,5 @@ export default class SortParser {
     };
   }
 }
+
+export default SortParser;

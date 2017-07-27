@@ -1,7 +1,7 @@
 import CacheResolver from "../Asset/CacheResolver";
-
+import DefaultStaticImport from "../Material/Defaults/DefaultStaticImport";
 export class ImportResolver extends CacheResolver<string> {
-  public staticImports: { [key: string]: string } = {};
+  public staticImports: { [key: string]: string } = {...DefaultStaticImport};
 
   private static _toAbsolute(href: string): string {
     const link = document.createElement("a");
@@ -16,7 +16,7 @@ export class ImportResolver extends CacheResolver<string> {
     });
   }
   public resolve(path: string): Promise<string> {
-    return super.resolve(path, () => {
+    return super.resolve(path, (abs) => {
       return this._resolve(path);
     });
   }
@@ -33,7 +33,7 @@ export class ImportResolver extends CacheResolver<string> {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open("GET", path);
-      xhr.onload = () => {
+      xhr.onload = (v) => {
         resolve(xhr.responseText);
       };
       xhr.onerror = (e) => {

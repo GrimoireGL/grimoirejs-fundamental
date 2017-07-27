@@ -1,29 +1,34 @@
 import EEObject from "grimoirejs/ref/Base/EEObject";
+import Component from "grimoirejs/ref/Node/Component";
+type AssetLoadingInfoTuple = {
+  promise: Promise<any>,
+  component: Component
+};
 
 /**
  * Provides managing all promise on initializing resources.
  */
-export default class AssetLoader extends EEObject {
+class AssetLoader extends EEObject {
   /**
    * Promise count registered.
    * @type {number}
    */
-  public registerCount = 0;
+  public registerCount: number = 0;
   /**
    * Promise count finished successfully.
    * @type {number}
    */
-  public loadCount = 0;
+  public loadCount: number = 0;
   /**
    * Promise count completed(success and errored)
    * @type {number}
    */
-  public completeCount = 0;
+  public completeCount: number = 0;
   /**
    * Promise count errored
    * @type {number}
    */
-  public errorCount = 0;
+  public errorCount: number = 0;
   /**
    * Main promise to provide tasks for waiting for all resource loading.
    * @type {Promise<void>}
@@ -38,22 +43,19 @@ export default class AssetLoader extends EEObject {
   /**
    * Register an promise to be waited until finished.
    */
-  public register<T>(promise: Promise<T>): Promise<T> {
+  public async register<T>(promise: Promise<T>, component: Component): Promise<T> {
     this.registerCount++;
-    const self = this;
-    return new Promise<T>((resolve, reject) => {
-      (async function() {
-        try {
-          resolve(await promise);
-          self.loadCount++;
-        } catch (e) {
-          reject(e);
-          self.errorCount++;
-        }
-        self.completeCount++;
-        self._checkLoadCompleted();
-      })();
-    });
+    let result: T = null;
+    try {
+      result = await promise;
+      this.loadCount++;
+    } catch (e) {
+      console.error(`Failed to resolve asset loading promise.\n\nLoading fired by: ${component.name.fqn}\nAttached node:${component.node.name.fqn}\n${e}`);
+      this.errorCount++;
+    }
+    this.completeCount++;
+    this._checkLoadCompleted();
+    return result;
   }
 
   /**
@@ -66,3 +68,4 @@ export default class AssetLoader extends EEObject {
     }
   }
 }
+export default AssetLoader;

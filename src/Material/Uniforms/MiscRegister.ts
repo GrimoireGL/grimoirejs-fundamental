@@ -4,8 +4,9 @@ import Material from "../Material";
 import Vector4 from "grimoirejs-math/ref/Vector4";
 import IMaterialArgument from "../IMaterialArgument";
 import UniformProxy from "../../Resource/UniformProxy";
-import IVariableInfo from "../IVariableInfo";
+import IVariableInfo from "../Schema/IVariableInfo";
 import UniformResolverRegistry from "../UniformResolverRegistry";
+import Pass from "../Pass";
 
 UniformResolverRegistry.add("VIEWPORT", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
   const vp = args.viewport;
@@ -21,28 +22,29 @@ UniformResolverRegistry.add("TIME", (valInfo: IVariableInfo) => (proxy: UniformP
   proxy.uniformFloat(valInfo.name, Date.now() % 1.0e7);
 });
 
-UniformResolverRegistry.add("HAS_TEXTURE", (valInfo: IVariableInfo, material: Material) => {
+UniformResolverRegistry.add("HAS_TEXTURE", (valInfo: IVariableInfo, pass: Pass) => {
   const sampler = valInfo.attributes["sampler"];
   if (!sampler) {
     throw new Error(`The variable having HAS_TEXTURE as semantics must have sampler attribute`);
   }
+  console.warn(`HAS_TEXTURE is deprecated now. Use flag attribute on sampler2D variables to register macro values`);
   return (proxy: UniformProxy, args: IMaterialArgument) => {
-    const hasTexture = !!material.arguments[sampler] && !!material.arguments[sampler].get(args.buffers);
+    const hasTexture = !!pass.arguments[sampler] && !!pass.arguments[sampler].get(args.buffers);
     proxy.uniformBool(valInfo.name, hasTexture);
   };
 });
 
-UniformResolverRegistry.add("CAMERA_POSITION",(valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
+UniformResolverRegistry.add("CAMERA_POSITION", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
   proxy.uniformVector3(valInfo.name, args.camera.transform.globalPosition);
 });
 
-UniformResolverRegistry.add("CAMERA_DIRECTION",(valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
+UniformResolverRegistry.add("CAMERA_DIRECTION", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
   proxy.uniformVector3(valInfo.name, args.camera.transform.forward);
 });
 
-UniformResolverRegistry.add("MESH_INDEX",(valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
+UniformResolverRegistry.add("MESH_INDEX", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
   const index = args.renderable.index;
-  proxy.uniformVector4(valInfo.name,MeshIndexCalculator.fromIndex(index));
+  proxy.uniformVector4(valInfo.name, MeshIndexCalculator.fromIndex(index));
 });
 
 export default null;

@@ -1,18 +1,22 @@
 import ResourceBase from "./ResourceBase";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
+type ImageSource = HTMLVideoElement | HTMLCanvasElement | HTMLImageElement | ImageData;
 
 export type ImageUploadConfig = {
   flipY?: boolean,
   premultipliedAlpha?: boolean
 };
 
+type ResizeResult = {
+  result: ImageSource,
+  width: number,
+  height: number
+};
+
 export default class Texture2D extends ResourceBase {
   public static defaultTextures: Map<WebGLRenderingContext, Texture2D> = new Map<WebGLRenderingContext, Texture2D>();
 
-  public static maxTextureSize: number;
   private static _resizerCanvas: HTMLCanvasElement = document.createElement("canvas");
-
-
 
   /**
    * ミップマップの更新が必要なフィルタ
@@ -25,18 +29,7 @@ export default class Texture2D extends ResourceBase {
     WebGLRenderingContext.NEAREST_MIPMAP_NEAREST
   ];
 
-  public readonly texture: WebGLTexture;
-
-
-  private _texParameterChanged = true;
-
-  private _magFilter: number = WebGLRenderingContext.LINEAR;
-
-  private _minFilter: number = WebGLRenderingContext.LINEAR;
-
-  private _wrapS: number = WebGLRenderingContext.REPEAT;
-
-  private _wrapT: number = WebGLRenderingContext.REPEAT;
+  public static maxTextureSize: number;
 
   public static generateDefaultTexture(gl: WebGLRenderingContext): void {
     Texture2D.defaultTextures.set(gl, null); // for preventing called this method recursively by instanciating default texture
@@ -45,6 +38,7 @@ export default class Texture2D extends ResourceBase {
     Texture2D.defaultTextures.set(gl, texture);
   }
 
+  public readonly texture: WebGLTexture;
 
   public get magFilter(): number {
     return this._magFilter;
@@ -92,6 +86,52 @@ export default class Texture2D extends ResourceBase {
     }
   }
 
+  /**
+   * Width of this texture
+   * @return {number} [description]
+   */
+  public get width(): number {
+    return this._width;
+  }
+
+  /**
+   * Height of this texture
+   * @return {number} [description]
+   */
+  public get height(): number {
+    return this._height;
+  }
+
+  public get drawerContext(): CanvasRenderingContext2D {
+    if (!this._drawerContext) {
+      const c = document.createElement("canvas");
+      c.width = this._width;
+      c.height = this.height;
+      this._drawerContext = c.getContext("2d");
+      this._updateDrawingContextWithCurrent();
+    }
+    return this._drawerContext;
+  }
+
+  private _texParameterChanged: boolean = true;
+
+  private _drawerContext: CanvasRenderingContext2D;
+
+  private _magFilter: number = WebGLRenderingContext.LINEAR;
+
+  private _minFilter: number = WebGLRenderingContext.LINEAR;
+
+  private _wrapS: number = WebGLRenderingContext.REPEAT;
+
+  private _wrapT: number = WebGLRenderingContext.REPEAT;
+
+  private _format: number = WebGLRenderingContext.UNSIGNED_BYTE;
+
+  private _width: number;
+
+  private _height: number;
+
+  private _type: number;
 
   constructor(gl: WebGLRenderingContext) {
     super(gl);
@@ -132,21 +172,54 @@ export default class Texture2D extends ResourceBase {
     this.gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, uploadConfig.flipY ? 1 : 0);
     this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, uploadConfig.premultipliedAlpha ? 1 : 0);
     if (height === void 0) { // something image was specified
-      if (image instanceof HTMLImageElement) {
-        this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._justifyImage(image));
-      } else if (image instanceof HTMLCanvasElement) {
-        this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._justifyCanvas(image));
-      } else if (image instanceof HTMLVideoElement) {
-        this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._justifyVideo(image));
-      }
+      const resizedResource = this._justifyResource(image);
+      this._width = resizedResource.width;
+      this._height = resizedResource.height;
+      this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, resizedResource.result);
+      this._type = WebGLRenderingContext.UNSIGNED_BYTE;
+      this._format = WebGLRenderingContext.RGBA;
     } else {
       if (pixels === void 0) {
         pixels = null;
       }
-      this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, level, format, width, height, border, format, type, pixels);
+      if (width === 0 || height === 0) { // Edge browser cannot accept a texture with 0 size
+        this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, level, WebGLRenderingContext.RGBA, 1, 1, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0]));
+        this._type = WebGLRenderingContext.UNSIGNED_BYTE;
+        this._width = 1;
+        this._height = 1;
+        this._format = WebGLRenderingContext.RGBA;
+      } else {
+        this._width = width;
+        this._height = height;
+        this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, level, format, width, height, border, format, type, pixels);
+        this._format = format;
+        this._type = type;
+      }
     }
     this._ensureMipmap();
     this.valid = true;
+  }
+
+  public getRawPixels(): Uint8Array {
+    if (this._type === WebGLRenderingContext.UNSIGNED_BYTE && this._format === WebGLRenderingContext.RGBA) {
+      const buffer = new Uint8Array(this.width * this.height * 4);
+      const frame = this.gl.createFramebuffer();
+      this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, frame);
+      this.gl.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, WebGLRenderingContext.TEXTURE_2D, this.texture, 0);
+      if (this.gl.checkFramebufferStatus(WebGLRenderingContext.FRAMEBUFFER) === WebGLRenderingContext.FRAMEBUFFER_COMPLETE) {
+        this.gl.readPixels(0, 0, this.width, this.height, this._format, this._type, buffer);
+      }
+      this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
+      return buffer;
+    } else {
+      throw new Error("Unsupported");
+    }
+  }
+
+  public applyDraw(): void {
+    if (this._drawerContext) {
+      this.update(this._drawerContext.canvas);
+    }
   }
 
   public register(registerNumber: number): void {
@@ -162,8 +235,20 @@ export default class Texture2D extends ResourceBase {
     this.gl.deleteTexture(this.texture);
   }
 
+  private _justifyResource(image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): ResizeResult {
+    if (image instanceof HTMLImageElement) {
+      return this._justifyImage(image);
+    } else if (image instanceof HTMLCanvasElement) {
+      return this._justifyCanvas(image);
+    } else if (image instanceof HTMLVideoElement) {
+      return this._justifyVideo(image);
+    } else {
+      throw new Error("Unsupported resource type");
+    }
+  }
+
   // There should be more effective way to resize texture
-  private _justifyImage(img: HTMLImageElement): HTMLCanvasElement | HTMLImageElement {
+  private _justifyImage(img: HTMLImageElement): ResizeResult {
     const w = img.naturalWidth, h = img.naturalHeight;
     const size = TextureSizeCalculator.getPow2Size(w, h);
     if (w !== size.width || h !== size.height) {
@@ -171,23 +256,40 @@ export default class Texture2D extends ResourceBase {
       canv.height = size.height;
       canv.width = size.width;
       canv.getContext("2d").drawImage(img, 0, 0, w, h, 0, 0, size.width, size.height);
-      return canv;
+      return {
+        result: canv,
+        height: canv.height,
+        width: canv.width
+      };
     }
-    return img;
+    return {
+      result: img,
+      width: w,
+      height: h
+    };
   }
 
-  private _justifyCanvas(canvas: HTMLCanvasElement): HTMLCanvasElement {
+  private _justifyCanvas(canvas: HTMLCanvasElement): ResizeResult {
     const w = canvas.width;
     const h = canvas.height;
     const size = TextureSizeCalculator.getPow2Size(w, h);
     if (w !== size.width || h !== size.height) {
       canvas.width = size.width;
       canvas.height = size.height;
+      return {
+        result: canvas,
+        width: canvas.width,
+        height: canvas.height
+      };
     }
-    return canvas;
+    return {
+      result: canvas,
+      width: canvas.width,
+      height: canvas.height
+    };
   }
 
-  private _justifyVideo(video: HTMLVideoElement): HTMLVideoElement | HTMLCanvasElement {
+  private _justifyVideo(video: HTMLVideoElement): ResizeResult {
     const w = video.videoWidth, h = video.videoHeight;
     const size = TextureSizeCalculator.getPow2Size(w, h); // largest 2^n integer that does not exceed s
     if (w !== size.width || h !== size.height) {
@@ -195,9 +297,17 @@ export default class Texture2D extends ResourceBase {
       canv.height = size.height;
       canv.width = size.width;
       canv.getContext("2d").drawImage(video, 0, 0, w, h, 0, 0, size.width, size.height);
-      return canv;
+      return {
+        result: canv,
+        width: w,
+        height: h
+      };
     }
-    return video;
+    return {
+      result: video,
+      width: w,
+      height: h
+    };
   }
 
   private _updateTexParameter(): void {
@@ -213,5 +323,14 @@ export default class Texture2D extends ResourceBase {
       this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.texture);
       this.gl.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
     }
+  }
+
+  private _updateDrawingContextWithCurrent(): void {
+    const imageData = this.drawerContext.createImageData(this.width, this.height);
+    const buffer = this.getRawPixels();
+    for (let i = 0; i < buffer.length; i++) {
+      imageData.data[i] = buffer[i];
+    }
+    this.drawerContext.putImageData(imageData, 0, 0);
   }
 }

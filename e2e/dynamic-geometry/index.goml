@@ -1,5 +1,4 @@
 <goml>
-  <import-material typeName="mat1" src="color.sort"/>
   <geometry type="custom" name="custom"/>
   <scene>
     <camera position="0,1.5,-1">

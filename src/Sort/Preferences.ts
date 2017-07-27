@@ -1,4 +1,4 @@
-import IState from "../Material/IState";
+import IState from "../Material/Schema/IState";
 
 function asGLConstantArgs(args: string[], length: number): number[] {
   if (args.length !== length) {
@@ -58,7 +58,7 @@ export default {
   },
   BlendFunc: function(state: IState, args: string[]) {
     const config = asGLConstantArgs(args, 2);
-    state.functions.blendFuncSeparate = [config[0], config[1], config[0],config[1]];
+    state.functions.blendFuncSeparate = [config[0], config[1], config[0], config[1]];
   },
   BlendFuncSeparate: function(state: IState, args: string[]) {
     state.functions.blendFuncSeparate = asGLConstantArgs(args, 4);
@@ -86,6 +86,9 @@ export default {
   DepthRange: function(state: IState, args: string[]) {
     state.functions.depthRange = asNumberArgs(args, 2);
   },
+  DepthMask: function(state: IState, args: string[]) {
+    state.functions.depthMask = asBooleanArgs(args, 1);
+  },
   FrontFace: function(state: IState, args: string[]) {
     state.functions.frontFace = asGLConstantArgs(args, 1);
   },
@@ -103,7 +106,19 @@ export default {
   ExposeMacro: function() {
     return;
   },
-  ReferMacro:function(){
+  ReferMacro: function() {
+    return;
+  },
+  DynamicState: function(state: IState, args: string[]) {
+    if (!args.length) {
+      throw new Error("DynamicState require at least 1 argument for specifying state resolver");
+    }
+    const resolver = args[0];
+    args.splice(0, 1);
+    state.dynamicState.push({
+      stateResolver: resolver,
+      args: args
+    });
     return;
   }
 };

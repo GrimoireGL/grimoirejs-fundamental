@@ -11,6 +11,7 @@ import IResizeBufferMessage from "../Messages/IResizeBufferMessage";
 import RenderSceneComponent from "./RenderSceneComponent";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Component from "grimoirejs/ref/Node/Component";
+import Viewport from "../Resource/Viewport";
 export default class RenderHitareaComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
 
@@ -28,7 +29,7 @@ export default class RenderHitareaComponent extends Component {
 
   private _readCache: Uint8Array = new Uint8Array(4);
 
-  private _bufferSize: number[];
+  private _bufferViewport: Viewport;
 
   private _lastRenderable: IRenderable;
 
@@ -57,7 +58,7 @@ export default class RenderHitareaComponent extends Component {
 
   public $resizeBuffer(args: IResizeBufferMessage): void {
     const size = TextureSizeCalculator.getPow2Size(args.width, args.height);
-    this._bufferSize = [size.width, size.height];
+    this._bufferViewport = new Viewport(0, 0, size.width, size.height);
     this.hitareaTexture.update(0, size.width, size.height, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE);
     this.hitareaRenderbuffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, size.width, size.height);
     if (!this.hitareaFBO) {
@@ -71,14 +72,17 @@ export default class RenderHitareaComponent extends Component {
     if (!this._mouseInside) {
       return;
     }
+    const camera = this._sceneRenderer.camera || args.camera;
+    if (!camera) {
+      return;
+    }
     this.hitareaFBO.bind();
-    this._gl.viewport(0, 0, this._bufferSize[0], this._bufferSize[1]);
+    this._bufferViewport.configure(this._gl);
     // clear buffer if needed
     this._gl.clearColor(0, 0, 0, 0);
     this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
     this._gl.clearDepth(1);
     this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
-    const camera = this._sceneRenderer.camera || args.camera;
     camera.renderScene({
       renderer: this._sceneRenderer, // TODO
       camera: camera,
@@ -87,10 +91,11 @@ export default class RenderHitareaComponent extends Component {
       viewport: args.viewport,
       timer: args.timer,
       technique: "hitarea",
-      sceneDescription: {}
+      sceneDescription: {},
+      sortingTechnique: "default"
     });
     this._gl.flush();
-    this._gl.readPixels(this._lastPosition[0] * this._bufferSize[0], this._lastPosition[1] * this._bufferSize[1], 1, 1, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._readCache);
+    this._gl.readPixels(this._lastPosition[0] * this._bufferViewport.Width, this._lastPosition[1] * this._bufferViewport.Height, 1, 1, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._readCache);
     const index = MeshIndexCalculator.fromColor(this._readCache);
     if (index === 0) { // there was no object at pointer
       if (this._lastRenderable instanceof Component) {

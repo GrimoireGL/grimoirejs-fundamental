@@ -1,0 +1,24 @@
+<goml>
+  <renderer viewport="0%,20%,80%,80%">
+  </renderer>
+  <renderer viewport="90%,0%,10%,10%">
+  </renderer>
+  <renderer viewport="0%,0%,10%,10%">
+  </renderer>
+  <renderer viewport="0%,90%,10%,10%">
+  </renderer>
+  <renderer viewport="90%,90%,10%,10%">
+  </renderer>
+  <renderer viewport="auto">
+  </renderer>
+  <import-material typeName="mat1" src="color.sort"/>
+  <geometry type="custom" name="custom"/>
+  <scene>
+    <camera position="5(0,1.5,-1)">
+      <camera.components>
+        <MouseCameraControl/>
+      </camera.components>
+    </camera>
+    <mesh geometry="custom" material="new(mat1)"/>
+  </scene>
+</goml>

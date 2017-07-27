@@ -1,6 +1,6 @@
-import IMacro from "../Material/IMacro";
-import IVariableInfo from "../Material/IVariableInfo";
-import IState from "../Material/IState";
+import IMacro from "../Material/Schema/IMacro";
+import IVariableInfo from "../Material/Schema/IVariableInfo";
+import IState from "../Material/Schema/IState";
 import Preferences from "./Preferences";
 import TypeToConstant from "./TypeToConstant";
 import NameSemanticPair from "./NameSemanticsPair";
@@ -146,7 +146,8 @@ export default class SortTransformUtility {
         frontFace: [WebGLRenderingContext.CCW],
         depthRange: [0, 1],
         depthFunc: [WebGLRenderingContext.LESS]
-      }
+      },
+      dynamicState: []
     };
     const regex = /@([A-Za-z]+)\(([\sa-zA-Z_0-9,\.\-]*)\)/g;
     let regexResult;

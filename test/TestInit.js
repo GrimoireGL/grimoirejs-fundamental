@@ -1,4 +1,12 @@
 const xmldom = require("xmldom");
+var Module = module.constructor;
+var require0 = Module.prototype.require;
+Module.prototype.require = function(str){
+  if(str.indexOf("raw-loader!") >= 0){
+    return "MOCKEDSTRING";
+  }
+  return require0.call(this,str);
+}
 global.DOMParser = xmldom.DOMParser;
 global.document = {
   createElement(){}

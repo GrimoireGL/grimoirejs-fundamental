@@ -1,8 +1,10 @@
+import gr from "grimoirejs";
+import Viewport from "../Resource/Viewport";
 import Rectangle from "grimoirejs-math/ref/Rectangle";
-
+import Attribute from "grimoirejs/ref/Node/Attribute";
 function _toPixel(parentSize: number, rep: string): number {
   let regex = /(\d+)\s*%/;
-  let regexResult: RegExpExecArray |null;
+  let regexResult: RegExpExecArray;
   if ((regexResult = regex.exec(rep))) {
     const percentage = Number.parseFloat(regexResult[1]);
     return Math.floor(parentSize * percentage * 0.01);
@@ -18,17 +20,19 @@ function _toPixel(parentSize: number, rep: string): number {
  */
 export default function ViewportConverter(val: any): any {
   if (val instanceof Rectangle) {
-    return () => val;
-  }
-  if (typeof val === "string") {
+    const vp = new Viewport(val.Left,val.Bottom,val.Width,val.Height);
+    return () => vp;
+  }else if(val instanceof Viewport){
+    return ()=>val;
+  }else if (typeof val === "string") {
     if (val === "auto") {
-      return (canvas: HTMLCanvasElement) => new Rectangle(0, 0, canvas.width, canvas.height);
+      return (canvas: HTMLCanvasElement) => new Viewport(0, 0, canvas.width, canvas.height);
     } else {
       const sizes = val.split(",");
       if (sizes.length !== 4) {
         throw new Error("Invalid viewport size was specified.");
       } else {
-        return (canvas: HTMLCanvasElement) => new Rectangle(_toPixel(canvas.width, sizes[0]), _toPixel(canvas.height, sizes[1]), _toPixel(canvas.width, sizes[2]), _toPixel(canvas.height, sizes[3]));
+        return (canvas: HTMLCanvasElement) => new Viewport(_toPixel(canvas.width, sizes[0]), _toPixel(canvas.height, sizes[1]), _toPixel(canvas.width, sizes[2]), _toPixel(canvas.height, sizes[3]));
       }
     }
   }

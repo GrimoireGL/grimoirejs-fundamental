@@ -1,10 +1,12 @@
 import UniformProxy from "../Resource/UniformProxy";
-import IPassRecipe from "./IPassRecipe";
+import IPassRecipe from "./Schema/IPassRecipe";
 import IMaterialArgument from "./IMaterialArgument";
 import Material from "./Material";
-import IVariableInfo from "./IVariableInfo";
+import IVariableInfo from "./Schema/IVariableInfo";
 import UniformResolverContainer from "./UniformResolverContainer";
 import PassProgram from "./PassProgram";
+import Pass from "./Pass";
+import Technique from "./Technique";
 
 export interface IUniformRegisterOnRegister {
   (proxy: UniformProxy, args: IMaterialArgument): void;
@@ -19,7 +21,7 @@ export interface IUniformRegisterOnUpdate {
 }
 
 export interface IUniformRegisterer {
-  (variableInfo: IVariableInfo, material: Material): IUniformRegisterOnRegister | {
+  (variableInfo: IVariableInfo, pass: Pass, technique: Technique, material: Material): IUniformRegisterOnRegister | {
     register: IUniformRegisterOnRegister,
     dispose?: IUniformRegisterOnDispose,
     update?: IUniformRegisterOnUpdate
@@ -37,8 +39,8 @@ export class UniformResolverRegistry {
     this._generators[semantic.toUpperCase()] = generator;
   }
 
-  public generateRegisterers(material: Material, passInfo: IPassRecipe): UniformResolverContainer {
-    const registerers: IUniformRegisterOnRegister[] = [], disposers: IUniformRegisterOnDispose[] = [], updators: {[variableName: string]: IUniformRegisterOnUpdate} = {};
+  public generateRegisterers(pass: Pass, passInfo: IPassRecipe): UniformResolverContainer {
+    const registerers: IUniformRegisterOnRegister[] = [], disposers: IUniformRegisterOnDispose[] = [], updators: { [variableName: string]: IUniformRegisterOnUpdate } = {};
     for (let key in passInfo.uniforms) {
       const valueInfo = passInfo.uniforms[key];
       const semantic = valueInfo.semantic;
@@ -46,7 +48,7 @@ export class UniformResolverRegistry {
       if (!registeredGenerator) {
         throw new Error(`There was no suitable registerer for specified semantic ${semantic}`);
       }
-      const registerer = registeredGenerator(valueInfo, material);
+      const registerer = registeredGenerator(valueInfo, pass, pass.technique, pass.material);
       if (typeof registerer === "function") {
         registerers.push(registerer);
       } else {

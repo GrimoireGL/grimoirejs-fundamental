@@ -1,4 +1,4 @@
-export default class HashCalculator {
+class HashCalculator {
   public static calcHash(source: string): number {
     let hash = 0;
     if (source.length === 0) {
@@ -12,3 +12,6 @@ export default class HashCalculator {
     return hash;
   }
 }
+
+
+export default HashCalculator;

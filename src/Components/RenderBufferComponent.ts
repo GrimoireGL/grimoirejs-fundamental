@@ -4,7 +4,7 @@ import RenderBuffer from "../Resource/RenderBuffer";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
-
+import Viewport from "../Resource/Viewport";
 export default class RenderBufferComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
@@ -31,7 +31,7 @@ export default class RenderBufferComponent extends Component {
     }
     const newSize = TextureSizeCalculator.getPow2Size(arg.width, arg.height);
     this.buffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, newSize.width, newSize.height);
-    arg.bufferSizes[name] = { width: newSize.width, height: newSize.height };
+    arg.bufferViewports[name] = new Viewport(0, 0, newSize.width, newSize.height);
     arg.buffers[name] = this.buffer;
   }
 }

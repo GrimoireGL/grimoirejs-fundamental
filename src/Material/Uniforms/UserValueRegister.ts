@@ -1,19 +1,21 @@
 import Texture2D from "../../Resource/Texture2D";
 import TextureReference from "../TextureReference";
 import Material from "../Material";
-import IVariableInfo from "../IVariableInfo";
+import IVariableInfo from "../Schema/IVariableInfo";
 import IMaterialArgument from "../IMaterialArgument";
 import UniformProxy from "../../Resource/UniformProxy";
 import UniformResolverRegistry from "../UniformResolverRegistry";
+import { IUniformRegisterOnUpdate } from "../UniformResolverRegistry";
 import PassProgram from "../PassProgram";
-
+import Pass from "../Pass";
+import Technique from "../Technique";
 const gl = WebGLRenderingContext;
-const _userValueRegisterers: { array: { [key: number]: any }, single: { [key: number]: any } } = {
+const _userValueRegisterers = {
   array: {},
   single: {}
 };
 
-UniformResolverRegistry.add("USER_VALUE", (valInfo: IVariableInfo, material: Material) => {
+UniformResolverRegistry.add("USER_VALUE", (valInfo: IVariableInfo, pass: Pass, technique: Technique, material: Material) => {
   let register;
   if (valInfo.count) {
     register = _userValueRegisterers.array[valInfo.type];
@@ -26,7 +28,7 @@ UniformResolverRegistry.add("USER_VALUE", (valInfo: IVariableInfo, material: Mat
       throw new Error(`No user_value registerer was registered for ${valInfo.type}`);
     }
   }
-  return register(valInfo, material);
+  return register(valInfo, pass);
 });
 
 function basicRegister(type: number, isArray: boolean, converter: string, defaultValue: any, register: (proxy: UniformProxy, name: string, value, matArg: IMaterialArgument) => void, update?: (valInfo: IVariableInfo, passProgram: PassProgram, n: any, o: any) => void) {
@@ -36,8 +38,8 @@ function basicRegister(type: number, isArray: boolean, converter: string, defaul
   } else {
     registerTarget = _userValueRegisterers.single;
   }
-  registerTarget[type] = function(valInfo: IVariableInfo, material: Material) {
-    material.addArgument(valInfo.name, {
+  registerTarget[type] = function(valInfo: IVariableInfo, pass: Pass) {
+    pass.addArgument(valInfo.name, {
       converter: converter,
       default: valInfo.attributes["default"] ? valInfo.attributes["default"] : defaultValue
     });
@@ -46,10 +48,7 @@ function basicRegister(type: number, isArray: boolean, converter: string, defaul
     } : undefined;
     return {
       register: (proxy: UniformProxy, args: IMaterialArgument) => {
-        register(proxy, valInfo.name, material.arguments[valInfo.name], args);
-      },
-      dispose: () => {
-        material.deleteArgument(valInfo.name);
+        register(proxy, valInfo.name, pass.arguments[valInfo.name], args);
       },
       update: updator
     };
@@ -65,7 +64,7 @@ basicRegister(gl.INT_VEC4, false, "Vector4", [0, 0, 0, 0], (proxy, name, value) 
 basicRegister(gl.FLOAT_VEC2, false, "Vector2", [0, 0], (proxy, name, value) => proxy.uniformVector2(name, value));
 basicRegister(gl.FLOAT_MAT4, true, "Object", [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], (proxy, name, value) => proxy.uniformMatrixArray(name, value));
 basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: TextureReference, args) => {
-  let texture: Texture2D |null= null;
+  let texture: Texture2D;
   if (value) {
     const fetched = value.get(args.buffers);
     if (fetched.valid) {
@@ -73,7 +72,7 @@ basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: Textur
     }
   }
   if (!texture) {
-    texture = Texture2D.defaultTextures.get(proxy.program.gl)!;
+    texture = Texture2D.defaultTextures.get(proxy.program.gl);
   }
   proxy.uniformTexture2D(name, texture);
 }, (v, p, n, o) => {
@@ -89,7 +88,8 @@ basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: Textur
       } else {
         fetched.validPromise.then(() => {
           p.setMacro(v.attributes["flag"], true);
-        })
+          used = true;
+        });
       }
     }
   }
@@ -98,42 +98,36 @@ basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: Textur
 
 // vec3 or vec4 should consider the arguments are color or vector.
 
-_userValueRegisterers.single[gl.FLOAT_VEC3] = function(valInfo: IVariableInfo, material: Material) {
+_userValueRegisterers.single[gl.FLOAT_VEC3] = function(valInfo: IVariableInfo, pass: Pass) {
   const isColor = valInfo.attributes["type"] === "color";
   const attrDefault = valInfo.attributes["default"];
   const defaultValue = attrDefault ? attrDefault : (isColor ? [1, 1, 1] : [0, 0, 0]);
-  material.addArgument(valInfo.name, {
+  pass.addArgument(valInfo.name, {
     converter: isColor ? "Color3" : "Vector3",
     default: defaultValue
   });
   return {
     register: isColor ? (proxy: UniformProxy, args: IMaterialArgument) => {
-      proxy.uniformColor3(valInfo.name, material.arguments[valInfo.name]);
+      proxy.uniformColor3(valInfo.name, pass.arguments[valInfo.name]);
     } : (proxy: UniformProxy, args: IMaterialArgument) => {
-      proxy.uniformVector3(valInfo.name, material.arguments[valInfo.name]);
-    },
-    dispose: () => {
-      material.deleteArgument(valInfo.name);
+      proxy.uniformVector3(valInfo.name, pass.arguments[valInfo.name]);
     }
   };
 };
 
-_userValueRegisterers.single[gl.FLOAT_VEC4] = function(valInfo: IVariableInfo, material: Material) {
+_userValueRegisterers.single[gl.FLOAT_VEC4] = function(valInfo: IVariableInfo, pass: Pass) {
   const isColor = valInfo.attributes["type"] === "color";
   const attrDefault = valInfo.attributes["default"];
   const defaultValue = attrDefault ? attrDefault : (isColor ? [1, 1, 1, 1] : [0, 0, 0, 0]);
-  material.addArgument(valInfo.name, {
+  pass.addArgument(valInfo.name, {
     converter: isColor ? "Color4" : "Vector4",
     default: defaultValue
   });
   return {
     register: isColor ? (proxy: UniformProxy, args: IMaterialArgument) => {
-      proxy.uniformColor4(valInfo.name, material.arguments[valInfo.name]);
+      proxy.uniformColor4(valInfo.name, pass.arguments[valInfo.name]);
     } : (proxy: UniformProxy, args: IMaterialArgument) => {
-      proxy.uniformVector4(valInfo.name, material.arguments[valInfo.name]);
-    },
-    dispose: () => {
-      material.deleteArgument(valInfo.name);
+      proxy.uniformVector4(valInfo.name, pass.arguments[valInfo.name]);
     }
   };
 };

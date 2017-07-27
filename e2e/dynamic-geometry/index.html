@@ -2,9 +2,35 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <script src="https://unpkg.com/grimoirejs@beta/register/grimoire.js" charset="utf-8"></script>
-    <script src="https://unpkg.com/grimoirejs-math@beta/register/grimoire-math.js" charset="utf-8"></script>
+    <script src="https://unpkg.com/grimoirejs/register/grimoire.js" charset="utf-8"></script>
+    <script src="https://unpkg.com/grimoirejs-math/register/grimoire-math.js" charset="utf-8"></script>
     <script src="../../register/grimoire-fundamental.js" charset="utf-8"></script>
+    <script type="text/sort" typeName="mat1">
+    <![CDATA[
+    @Pass{
+        FS_PREC(mediump,float)
+        @Disable(CULL_FACE)
+        varying vec4 vColor;
+
+    #ifdef VS
+        @POSITION
+        attribute vec3 position;
+        @COLOR
+        attribute vec4 color;
+        uniform mat4 _matPVM;
+        void main(){
+            vColor = color;
+            gl_Position = _matPVM * vec4(position, 1.0);
+        }
+    #endif
+
+    #ifdef FS
+        void main(){
+            gl_FragColor = vec4(vColor);
+        }
+    #endif
+  }]]>
+    </script>
   </head>
   <body>
     <script src="./index.goml" type="text/goml" charset="utf-8"></script>

@@ -9,6 +9,10 @@ import ShaderMixer from "./ShaderMixer";
  */
 export default class PassProgram {
 
+  /**
+   * macros registered dynamically of this programs
+   * @return {[type]} [description]
+   */
   public get macros(): {[key: string]: any} {
     return this._macros;
   }
@@ -17,7 +21,10 @@ export default class PassProgram {
     this._macros = val;
     this.dispose();
   }
-
+  /**
+   * Original fragment shader code
+   * @return {string} [description]
+   */
   public get fragmentShader(): string {
     return this._fsSource;
   }
@@ -25,7 +32,11 @@ export default class PassProgram {
   public get vertexShader(): string {
     return this._vsSource;
   }
-
+  /**
+   * Original vertex shader code
+   * @param  {string} source [description]
+   * @return {[type]}        [description]
+   */
   public set fragmentShader(source: string){
     this._fsSource = source;
     this.dispose();
@@ -43,7 +54,11 @@ export default class PassProgram {
   constructor(private _gl: WebGLRenderingContext, private _vsSource: string, private _fsSource: string, private _macros: {[key: string]: any} = {}) {
 
   }
-
+  /**
+   * Fetch a program instance with specified geometry
+   * @param  {Geometry}       geometry [description]
+   * @return {ManagedProgram}          [description]
+   */
   public getProgram(geometry: Geometry): ManagedProgram {
     if (this._programs[geometry.accessorHash]) {
       return this._programs[geometry.accessorHash];
@@ -52,6 +67,11 @@ export default class PassProgram {
     }
   }
 
+  /**
+   * Update programs with specified macro value.
+   * @param {string}         macroName [description]
+   * @param {string|boolean} value     [description]
+   */
   public setMacro(macroName: string, value?: string|boolean): void {
     if (this._macros[macroName] !== value) {
       if (typeof value === "boolean") {
@@ -63,6 +83,9 @@ export default class PassProgram {
     }
   }
 
+  /**
+   * Destroy instance to relase resources.
+   */
   public dispose(): void {
     for (let key in this._programs) {
       this._programs[key].release();

@@ -1,5 +1,5 @@
 import Matrix from "grimoirejs-math/ref/Matrix";
-import IVariableInfo from "../IVariableInfo";
+import IVariableInfo from "../Schema/IVariableInfo";
 import IMaterialArgument from "../IMaterialArgument";
 import UniformProxy from "../../Resource/UniformProxy";
 import UniformResolverRegistry from "../UniformResolverRegistry";

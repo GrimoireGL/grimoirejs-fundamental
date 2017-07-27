@@ -4,6 +4,7 @@ import Texture2D from "../Resource/Texture2D";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
+import Viewport from "../Resource/Viewport";
 export default class TextureBufferComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
@@ -60,7 +61,7 @@ export default class TextureBufferComponent extends Component {
     const type = this.getAttribute("type");
     const newSize = TextureSizeCalculator.getPow2Size(arg.width, arg.height);
     this.buffer.update(0, newSize.width, newSize.height, 0, format, type, null);
-    arg.bufferSizes[bufferName] = { width: newSize.width, height: newSize.height };
+    arg.bufferViewports[bufferName] = new Viewport(0, 0, newSize.width, newSize.height);
     arg.buffers[bufferName] = this.buffer;
   }
 }
