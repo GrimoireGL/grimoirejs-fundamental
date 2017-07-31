@@ -2,6 +2,7 @@ import {IUniformRegisterOnRegister, IUniformRegisterOnDispose, IUniformRegisterO
 import UniformProxy from "../Resource/UniformProxy";
 import IMaterialArgument from "./IMaterialArgument";
 import PassProgram from "./PassProgram";
+
 /**
  * Container of uniform registerers resolved by UniformResolverRegistry already.
  * @param  {IUniformRegisterOnRegister[]} publicregisterers [description]
@@ -9,7 +10,7 @@ import PassProgram from "./PassProgram";
  * @return {[type]}                                         [description]
  */
 export default class UniformResolverContainer {
-  constructor(public registerers: IUniformRegisterOnRegister[], public disposers: IUniformRegisterOnDispose[], public updators: {[variableName: string]: IUniformRegisterOnUpdate}) {
+  constructor(public registerers: IUniformRegisterOnRegister[], public disposers: IUniformRegisterOnDispose[], public updators: { [variableName: string]: IUniformRegisterOnUpdate }) {
 
   }
   /**

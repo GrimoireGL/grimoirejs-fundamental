@@ -1,4 +1,5 @@
 import ResourceBase from "./ResourceBase";
+
 export default class RenderBuffer extends ResourceBase {
   public readonly renderBuffer: WebGLRenderbuffer;
   constructor(gl: WebGLRenderingContext) {

@@ -2,7 +2,7 @@ if (!WebGLRenderingContext.ONE) {
   throw new Error("WebGLRenderingContext constant can not be retrived!");
 }
 const gl = WebGLRenderingContext;
-const result = {
+export default {
   vec2: gl.FLOAT_VEC2,
   vec3: gl.FLOAT_VEC3,
   vec4: gl.FLOAT_VEC4,
@@ -21,5 +21,3 @@ const result = {
   mat3: gl.FLOAT_MAT3,
   mat2: gl.FLOAT_MAT2
 };
-
-export default result;

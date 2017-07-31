@@ -1,5 +1,6 @@
 import HashCalculator from "../Util/HashCalculator";
 import Shader from "./Shader";
+
 /**
  * Provides abstraction of shader instance.
  * If specified shader source was instanced already, delegate actual instance.

@@ -1,91 +1,84 @@
 export default class Timer {
-    private _time: number;
 
-    private _lastRealTime: number;
+  public timeScale = 1;
+  public fpsRestriction = 60;
+  private _time: number;
+  private _lastRealTime: number;
+  private _unrestrictedLastRealTime: number;
+  private _accumlatedSkipFrame = 0;
+  private _deltaTime: number;
+  private _frameCount = 0;
+  private _lastFPS: number;
 
-    private _unrestrictedLastRealTime: number;
+  public get deltaTime() {
+    return this._deltaTime;
+  }
 
-    private _accumlatedSkipFrame:number = 0;
+  public get time() {
+    return this._time;
+  }
 
-    private _deltaTime: number;
+  public get timeInSecound() {
+    return this._time / 1000;
+  }
 
-    private _frameCount: number = 0;
+  public get frameCount() {
+    return this._frameCount;
+  }
 
-    private _lastFPS: number;
+  public get FPS() {
+    return this._lastFPS ? this._lastFPS.toFixed(2) : Number.NaN;
+  }
 
-    public timeScale: number = 1;
-
-    public fpsRestriction: number = 60;
-
-    public get deltaTime() {
-        return this._deltaTime;
+  /**
+   * Do not call this method manually.
+   * This method is only use for internal procedure in framework.
+   * @return {[type]} [description]
+   */
+  public internalUpdate(): boolean {
+    this._frameCount++;
+    const time = Date.now();
+    if (this._shouldUpdate(time)) {
+      this._updateTimer(time);
+      return true;
+    } else {
+      return false;
     }
+  }
 
-    public get time() {
-        return this._time;
+  private _shouldUpdate(time: number): boolean {
+    if (this._time === void 0) {
+      this._unrestrictedLastRealTime = time;
+      return true; // first frame
+    } else {
+      const realDelta = time - this._unrestrictedLastRealTime;
+      const idealDelta = 1000 / this.fpsRestriction;
+      this._unrestrictedLastRealTime = time;
+      if (Math.abs(idealDelta - realDelta * 2.0 - this._accumlatedSkipFrame) < Math.abs(idealDelta - realDelta - this._accumlatedSkipFrame)) {
+        this._accumlatedSkipFrame += realDelta;
+        return false;
+      } else {
+        this._accumlatedSkipFrame = 0;
+        return true;
+      }
     }
+  }
 
-    public get timeInSecound() {
-        return this._time / 1000;
+  private _updateTimer(time: number): void {
+    if (this._lastRealTime === undefined) {
+      this._time = 0;
+      this._deltaTime = 0;
+    } else {
+      this._deltaTime = time - this._lastRealTime;
+      this._time += this.timeScale * this._deltaTime;
     }
-
-    public get frameCount() {
-        return this._frameCount;
+    this._lastRealTime = time;
+    if (this._lastFPS === undefined) {
+      if (this.deltaTime !== 0) {
+        this._lastFPS = 1000 / this.deltaTime;
+      }
+    } else {
+      this._lastFPS = (this._lastFPS + (1000 / this.deltaTime)) / 2;
     }
-
-    public get FPS() {
-        return this._lastFPS ? this._lastFPS.toFixed(2) : Number.NaN;
-    }
-
-    /**
-     * Do not call this method manually.
-     * This method is only use for internal procedure in framework.
-     * @return {[type]} [description]
-     */
-    public internalUpdate(): boolean {
-        this._frameCount++;
-        const time = Date.now();
-        if (this._shouldUpdate(time)) {
-            this._updateTimer(time);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private _shouldUpdate(time: number): boolean {
-        if (this._time === void 0) {
-            this._unrestrictedLastRealTime = time;
-            return true; // first frame
-        } else {
-            const realDelta = time - this._unrestrictedLastRealTime;
-            const idealDelta = 1000 / this.fpsRestriction;
-            this._unrestrictedLastRealTime = time;
-            if (Math.abs(idealDelta - realDelta * 2.0 - this._accumlatedSkipFrame) < Math.abs(idealDelta - realDelta - this._accumlatedSkipFrame)) {
-              this._accumlatedSkipFrame += realDelta;
-              return false;
-            }else {
-              this._accumlatedSkipFrame = 0;
-              return true;
-            }
-        }
-    }
-
-    private _updateTimer(time: number): void {
-        if (this._lastRealTime === undefined) {
-            this._time = 0;
-            this._deltaTime = 0;
-        } else {
-            this._deltaTime = time - this._lastRealTime;
-            this._time += this.timeScale * this._deltaTime;
-        }
-        this._lastRealTime = time;
-        if (this._lastFPS === undefined) {
-            if (this.deltaTime !== 0) {
-                this._lastFPS = 1000 / this.deltaTime;
-            }
-        } else {
-            this._lastFPS = (this._lastFPS + (1000 / this.deltaTime)) / 2;
-        }
-    }
+  }
 }

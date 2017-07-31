@@ -1,8 +1,8 @@
 import IRenderable from "./IRenderable";
 import RenderQueue from "./RenderQueue";
+
 export default class RenderQueueRegistry {
   private _queues: RenderQueue[] = [];
-
   private _renderables: IRenderable[] = [];
 
   public registerQueue(queue: RenderQueue): void {
@@ -29,13 +29,13 @@ export default class RenderQueueRegistry {
       return; // Could not find specified renderable
     }
     this._renderables.splice(index, 1);
-    this._renderables.forEach((r,i)=>{
+    this._renderables.forEach((r, i) => {
       r.setRenderableIndex(i + 1);
     });
     this._queues.forEach(q => q.remove(renderable));
   }
 
-  public getByIndex(index:number):IRenderable{
+  public getByIndex(index: number): IRenderable {
     return this._renderables[index];
   }
 }

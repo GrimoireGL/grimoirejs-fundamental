@@ -13,7 +13,7 @@ export default class GeometryUtility {
     }
     return ret;
   }
-  public static plane(center: number[], normal: number[], up: number[], right: number[], hdiv: number = 1, vdiv: number = 1): number[] {
+  public static plane(center: number[], normal: number[], up: number[], right: number[], hdiv = 1, vdiv = 1): number[] {
     const ret = new Array(8 * (hdiv + 1) * (vdiv + 1));
     const sp = [center[0] - up[0] - right[0], center[1] - up[1] - right[1], center[2] - up[2] - right[2]];
     const sr = [right[0] / hdiv * 2, right[1] / hdiv * 2, right[2] / hdiv * 2];
@@ -49,7 +49,7 @@ export default class GeometryUtility {
         ret[fi + 2] = sp[2] + sr[2] * h + su[2] * v;
 
         const l = Math.tan(Math.PI / divide) / Math.sin(Math.PI / divide);
-        if (h == 0) {
+        if (h === 0) {
           ret[fi + 3] = normal[0] - l * right[0];
           ret[fi + 4] = normal[1] - l * right[1];
           ret[fi + 5] = normal[2] - l * right[2];
@@ -61,7 +61,7 @@ export default class GeometryUtility {
 
 
         ret[fi + 6] = 1 / divide * (order + 1 + h);
-        ret[fi + 7] = v == 0 ? 1 : 0;
+        ret[fi + 7] = v === 0 ? 1 : 0;
       }
     }
     return ret;
@@ -99,13 +99,13 @@ export default class GeometryUtility {
       ret[5 + 8 * i] = normal[2];
       const k = Math.pow(2, 0.5);
       const l = Math.tan(Math.PI / divide) / Math.sin(Math.PI / divide) / Math.pow(3, 0.5) * 2;
-      if (i == 0) {
+      if (i === 0) {
         ret[3 + 8 * i] = normal[0];
         ret[4 + 8 * i] = normal[1];
         ret[5 + 8 * i] = normal[2];
         ret[6 + 8 * i] = 0;
         ret[7 + 8 * i] = 0;
-      } else if (i == 1) {
+      } else if (i === 1) {
         ret[3 + 8 * i] = normal[0] / k + l * right[0];
         ret[4 + 8 * i] = normal[1] / k + l * right[1];
         ret[5 + 8 * i] = normal[2] / k + l * right[2];
@@ -130,7 +130,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static planeIndex(offset: number = 0, hdiv: number = 0, vdiv: number = 0): number[] {
+  public static planeIndex(offset = 0, hdiv = 0, vdiv = 0): number[] {
     const ret = new Array(6 * hdiv * vdiv);
     for (let v = 0; v < vdiv; v++) {
       for (let h = 0; h < hdiv; h++) {
@@ -148,7 +148,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static circle(center: number[], normal: number[], up: number[], right: number[], divide: number = 5): number[] {
+  public static circle(center: number[], normal: number[], up: number[], right: number[], divide = 5): number[] {
     const ret = new Array((3 + divide) * 6);
     // center
     ret[0] = center[0];
@@ -189,9 +189,9 @@ export default class GeometryUtility {
     }
     return ret;
   }
-  public static capsule(center: number[], up: number[], right: number[], forward: number[], vdiv: number = 3, hdiv: number = 3): number[] {
+  public static capsule(center: number[], up: number[], right: number[], forward: number[], vdiv = 3, hdiv = 3): number[] {
     const ret = new Array((vdiv * hdiv + 2) * 8);
-    //top(0)
+    // top(0)
     ret[0] = center[0] + 2 * up[0];
     ret[1] = center[1] + 2 * up[1];
     ret[2] = center[2] + 2 * up[2];
@@ -241,7 +241,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static sphere(center: number[], up: number[], right: number[], forward: number[], vdiv: number = 3, hdiv: number = 3): number[] {
+  public static sphere(center: number[], up: number[], right: number[], forward: number[], vdiv = 3, hdiv = 3): number[] {
     const ret = new Array((vdiv * hdiv + 2) * 8);
     // top(0)
     ret[0] = center[0] + up[0];
@@ -290,7 +290,7 @@ export default class GeometryUtility {
   }
 
 
-  public static sphereIndex(offset: number, vdiv: number = 3, hdiv: number = 3): number[] {
+  public static sphereIndex(offset: number, vdiv = 3, hdiv = 3): number[] {
 
     const ret: number[] = new Array(hdiv * vdiv * 6);
     const getIndex = (i: number, j: number) => offset + (hdiv + 1) * j + 2 + i;

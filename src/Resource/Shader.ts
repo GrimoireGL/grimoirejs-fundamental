@@ -26,13 +26,13 @@ export default class Shader extends ResourceBase {
     this.gl.deleteShader(this.shader);
   }
 
-  private _insertLineNumbers(source:string):string{
+  private _insertLineNumbers(source: string): string {
     source = "1:" + source;
     let lN = 2;
-    for(let i = 0; i < source.length; i++){
+    for (let i = 0; i < source.length; i++) {
       const c = source.charAt(i);
-      if(c === '\n'){
-        source = source.substring(0,i + 1) +`${lN}:`+ source.substring(i + 1,source.length);
+      if (c === '\n') {
+        source = source.substring(0, i + 1) + `${lN}:` + source.substring(i + 1, source.length);
         i++;
         lN++;
       }
