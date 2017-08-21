@@ -1,0 +1,1 @@
+**See [Contributing.md of Grimoire.js](https://github.com/GrimoireGL/GrimoireJS/blob/master/CONTRIBUTING.md)**
