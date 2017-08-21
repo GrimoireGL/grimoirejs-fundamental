@@ -11,6 +11,7 @@ global.DOMParser = xmldom.DOMParser;
 global.document = {
   createElement(){}
 }
+
 global.WebGLRenderingContext = {
   ACTIVE_ATTRIBUTES: 35721,
   ACTIVE_ATTRIBUTE_MAX_LENGTH: 35722,
@@ -315,7 +316,8 @@ global.WebGLRenderingContext = {
   ZERO: 0
 };
 global.window = {
-  addEventListener:function(){}
+  addEventListener:function(){},
+  postMessage: ()=>{}
 };
 require("regenerator-runtime/runtime");
 require("grimoirejs/register");
