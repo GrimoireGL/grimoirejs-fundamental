@@ -63,7 +63,7 @@
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "hs": "http-server",
     "e2e-test": "find ./node_modules/selenium-server-standalone-jar/jar/ -name selenium-server-standalone*.jar -exec mv {} ./node_modules/selenium-server-standalone-jar/jar/selenium.jar \\; && nightwatch --env circleci",
-    "doc": "typedoc --out ./docs/ --options typedoc.json  ./tsconfig.json"
+    "doc": "node ./doc-timestamp.js && typedoc --out ./docs/ --options typedoc.json  ./tsconfig.json"
   },
   "license": "MIT",
   "babel": {

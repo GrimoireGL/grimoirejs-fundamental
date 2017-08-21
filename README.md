@@ -16,3 +16,11 @@ This plugin require these library already loaded on loading timing of this plugi
 MIT license
 (All packages provided by us are MIT licence!)
 
+
+## API document
+
+See [here](https://api.grimoire.gl/grimoirejs-fundamental).
+
+This document is automatically generated. 
+
+<!--DOCUMENT STAMP-->
