@@ -13,7 +13,7 @@ export default class GeometryUtility {
     }
     return ret;
   }
-  public static plane(center: number[], normal: number[], up: number[], right: number[], hdiv = 1, vdiv = 1): number[] {
+  public static plane(center: number[], normal: number[], up: number[], right: number[], hdiv: number = 1, vdiv: number = 1): number[] {
     const ret = new Array(8 * (hdiv + 1) * (vdiv + 1));
     const sp = [center[0] - up[0] - right[0], center[1] - up[1] - right[1], center[2] - up[2] - right[2]];
     const sr = [right[0] / hdiv * 2, right[1] / hdiv * 2, right[2] / hdiv * 2];
@@ -49,7 +49,7 @@ export default class GeometryUtility {
         ret[fi + 2] = sp[2] + sr[2] * h + su[2] * v;
 
         const l = Math.tan(Math.PI / divide) / Math.sin(Math.PI / divide);
-        if (h === 0) {
+        if (h == 0) {
           ret[fi + 3] = normal[0] - l * right[0];
           ret[fi + 4] = normal[1] - l * right[1];
           ret[fi + 5] = normal[2] - l * right[2];
@@ -61,7 +61,7 @@ export default class GeometryUtility {
 
 
         ret[fi + 6] = 1 / divide * (order + 1 + h);
-        ret[fi + 7] = v === 0 ? 1 : 0;
+        ret[fi + 7] = v == 0 ? 1 : 0;
       }
     }
     return ret;
@@ -99,13 +99,13 @@ export default class GeometryUtility {
       ret[5 + 8 * i] = normal[2];
       const k = Math.pow(2, 0.5);
       const l = Math.tan(Math.PI / divide) / Math.sin(Math.PI / divide) / Math.pow(3, 0.5) * 2;
-      if (i === 0) {
+      if (i == 0) {
         ret[3 + 8 * i] = normal[0];
         ret[4 + 8 * i] = normal[1];
         ret[5 + 8 * i] = normal[2];
         ret[6 + 8 * i] = 0;
         ret[7 + 8 * i] = 0;
-      } else if (i === 1) {
+      } else if (i == 1) {
         ret[3 + 8 * i] = normal[0] / k + l * right[0];
         ret[4 + 8 * i] = normal[1] / k + l * right[1];
         ret[5 + 8 * i] = normal[2] / k + l * right[2];
@@ -130,7 +130,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static planeIndex(offset = 0, hdiv = 0, vdiv = 0): number[] {
+  public static planeIndex(offset: number = 0, hdiv: number = 0, vdiv: number = 0): number[] {
     const ret = new Array(6 * hdiv * vdiv);
     for (let v = 0; v < vdiv; v++) {
       for (let h = 0; h < hdiv; h++) {
@@ -148,7 +148,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static circle(center: number[], normal: number[], up: number[], right: number[], divide = 5): number[] {
+  public static circle(center: number[], normal: number[], up: number[], right: number[], divide: number = 5): number[] {
     const ret = new Array((3 + divide) * 6);
     // center
     ret[0] = center[0];
@@ -189,138 +189,78 @@ export default class GeometryUtility {
     }
     return ret;
   }
-  public static capsule(center: number[], up: number[], right: number[], forward: number[], vdiv = 3, hdiv = 3): number[] {
-    const ret = new Array((vdiv * hdiv + 2) * 8);
-    // top(0)
-    ret[0] = center[0] + 2 * up[0];
-    ret[1] = center[1] + 2 * up[1];
-    ret[2] = center[2] + 2 * up[2];
-
-    ret[3] = up[0];
-    ret[4] = up[1];
-    ret[5] = up[2];
-
-    ret[6] = 0;
-    ret[7] = 0;
-    // bottom(1)
-    ret[8] = center[0] - 2 * up[0];
-    ret[9] = center[1] - 2 * up[1];
-    ret[10] = center[2] - 2 * up[2];
-
-    ret[11] = -up[0];
-    ret[12] = -up[1];
-    ret[13] = -up[2];
-
-    ret[14] = 0;
-    ret[15] = 1;
-    const vDelta = Math.PI / (vdiv + 1);
-    const hDelta = Math.PI * 2 / hdiv;
-    for (let v = 0; v < vdiv; v++) {
-      const vc = Math.cos((v + 1) * vDelta);
-      const vs = Math.sin((v + 1) * vDelta);
-      const phi = vDelta * v;
-      for (let h = 0; h < hdiv + 1; h++) {
-        const hc = Math.cos(h * hDelta);
-        const hs = Math.sin(h * hDelta);
-        const fi = 16 + (v * (hdiv + 1) + h) * 8;
-        ret[fi + 0] = center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs);
-        ret[fi + 1] = center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs);
-        ret[fi + 2] = center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs);
-        ret[fi + 3] = center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs);
-        ret[fi + 4] = center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs);
-        ret[fi + 5] = (center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs));
-        const theta = hDelta * h;
-        ret[fi + 6] = theta / Math.PI / 2;
-        ret[fi + 7] = phi / Math.PI;
-
-        ret[fi + 0] = ret[fi + 0] > 0 ? ret[fi + 0] + up[0] : ret[fi + 0] - up[0];
-        ret[fi + 1] = ret[fi + 1] > 0 ? ret[fi + 1] + up[1] : ret[fi + 1] - up[1];
-        ret[fi + 2] = ret[fi + 2] > 0 ? ret[fi + 2] + up[2] : ret[fi + 2] - up[2];
+  public static capsule(center: number[], up: number[], right: number[], forward: number[], vdiv: number = 3, hdiv: number = 3): number[] {
+    const ret = new Array(vdiv * hdiv * 8);
+    for (let i = 0; i < vdiv; i++) {
+      for (let j = 0; j < hdiv; j++) {
+        ret[8 * (vdiv * i + j) + 0] = center[0]
+          + 0.5 * Math.sin(Math.PI * i / (vdiv - 1)) * (right[0] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
+            + forward[0] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
+          - 0.5 * up[0] * Math.cos(Math.PI * i / (vdiv - 1))
+        ret[8 * (vdiv * i + j) + 1] = center[1]
+          + 0.5 * Math.sin(Math.PI * i / (vdiv - 1)) * (right[1] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
+            + forward[1] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
+          - 0.5 * up[1] * Math.cos(Math.PI * i / (vdiv - 1))
+        ret[8 * (vdiv * i + j) + 2] = center[2]
+          + 0.5 * Math.sin(Math.PI * i / (vdiv - 1)) * (right[2] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
+            + forward[2] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
+          - 0.5 * up[2] * Math.cos(Math.PI * i / (vdiv - 1))
+        const d = Math.pow(
+          ret[8 * (vdiv * i + j) + 0] * ret[8 * (vdiv * i + j) + 0] +
+          ret[8 * (vdiv * i + j) + 1] * ret[8 * (vdiv * i + j) + 1] +
+          ret[8 * (vdiv * i + j) + 2] * ret[8 * (vdiv * i + j) + 2], 0.5)
+        ret[8 * (vdiv * i + j) + 3] = ret[8 * (vdiv * i + j) + 0] / d
+        ret[8 * (vdiv * i + j) + 4] = ret[8 * (vdiv * i + j) + 1] / d
+        ret[8 * (vdiv * i + j) + 5] = ret[8 * (vdiv * i + j) + 2] / d
+        ret[8 * (vdiv * i + j) + 6] = 1 - j / (hdiv - 1)
+        ret[8 * (vdiv * i + j) + 7] = 1 - i / (vdiv - 1)
       }
     }
     return ret;
   }
 
-  public static sphere(center: number[], up: number[], right: number[], forward: number[], vdiv = 3, hdiv = 3): number[] {
-    const ret = new Array((vdiv * hdiv + 2) * 8);
-    // top(0)
-    ret[0] = center[0] + up[0];
-    ret[1] = center[1] + up[1];
-    ret[2] = center[2] + up[2];
-
-    ret[3] = up[0];
-    ret[4] = up[1];
-    ret[5] = up[2];
-
-    ret[6] = Math.PI * 2;
-    ret[7] = 0;
-    // bottom(1)
-    ret[8] = center[0] - up[0];
-    ret[9] = center[1] - up[1];
-    ret[10] = center[2] - up[2];
-
-    ret[11] = -up[0];
-    ret[12] = -up[1];
-    ret[13] = -up[2];
-
-    ret[14] = Math.PI * 2;
-    ret[15] = 1;
-    const vDelta = Math.PI / (vdiv + 1); // vertical delta angle per one face
-    const hDelta = Math.PI * 2 / hdiv; // horizontal delta nagle per one face
-    for (let v = 0; v < vdiv; v++) {
-      const vc = Math.cos((v + 1) * vDelta);
-      const vs = Math.sin((v + 1) * vDelta);
-      const phi = vDelta * v;
-      for (let h = 0; h < hdiv + 1; h++) {
-        const hc = Math.cos(h * hDelta);
-        const hs = Math.sin(h * hDelta);
-        const fi = 16 + (v * (hdiv + 1) + h) * 8;
-        ret[fi + 0] = center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs);
-        ret[fi + 1] = center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs);
-        ret[fi + 2] = center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs);
-        ret[fi + 3] = center[0] + vc * up[0] + vs * (forward[0] * hc + right[0] * hs);
-        ret[fi + 4] = center[1] + vc * up[1] + vs * (forward[1] * hc + right[1] * hs);
-        ret[fi + 5] = (center[2] + vc * up[2] + vs * (forward[2] * hc + right[2] * hs));
-        const theta = hDelta * (hdiv - h);
-        ret[fi + 6] = theta / Math.PI / 2;
-        ret[fi + 7] = phi / Math.PI;
+  public static sphere(center: number[], up: number[], right: number[], forward: number[], vdiv: number, hdiv: number): number[] {
+    const ret = new Array(vdiv * hdiv * 8);
+    for (let i = 0; i < vdiv; i++) {
+      for (let j = 0; j < hdiv; j++) {
+        ret[8 * (vdiv * i + j) + 0] = center[0]
+          + 0.5 * Math.sin(Math.PI * i / (vdiv - 1)) * (right[0] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
+            + forward[0] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
+          - 0.5 * up[0] * Math.cos(Math.PI * i / (vdiv - 1))
+        ret[8 * (vdiv * i + j) + 1] = center[1]
+          + 0.5 * Math.sin(Math.PI * i / (vdiv - 1)) * (right[1] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
+            + forward[1] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
+          - 0.5 * up[1] * Math.cos(Math.PI * i / (vdiv - 1))
+        ret[8 * (vdiv * i + j) + 2] = center[2]
+          + 0.5 * Math.sin(Math.PI * i / (vdiv - 1)) * (right[2] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
+            + forward[2] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
+          - 0.5 * up[2] * Math.cos(Math.PI * i / (vdiv - 1))
+        const d = Math.pow(
+          ret[8 * (vdiv * i + j) + 0] * ret[8 * (vdiv * i + j) + 0] +
+          ret[8 * (vdiv * i + j) + 1] * ret[8 * (vdiv * i + j) + 1] +
+          ret[8 * (vdiv * i + j) + 2] * ret[8 * (vdiv * i + j) + 2], 0.5)
+        ret[8 * (vdiv * i + j) + 3] = ret[8 * (vdiv * i + j) + 0] / d
+        ret[8 * (vdiv * i + j) + 4] = ret[8 * (vdiv * i + j) + 1] / d
+        ret[8 * (vdiv * i + j) + 5] = ret[8 * (vdiv * i + j) + 2] / d
+        ret[8 * (vdiv * i + j) + 6] = 1 - j / (hdiv - 1)
+        ret[8 * (vdiv * i + j) + 7] = 1 - i / (vdiv - 1)
       }
     }
     return ret;
   }
 
 
-  public static sphereIndex(offset: number, vdiv = 3, hdiv = 3): number[] {
-
+  public static sphereIndex(offset: number, vdiv: number, hdiv: number): number[] {
     const ret: number[] = new Array(hdiv * vdiv * 6);
-    const getIndex = (i: number, j: number) => offset + (hdiv + 1) * j + 2 + i;
-    const top = offset;
-    const bottom = offset + 1;
-    // upper side
-    for (let i = 0; i < hdiv; i++) {
-      ret[3 * i + 0] = top;
-      ret[3 * i + 1] = getIndex(i + 1, 0);
-      ret[3 * i + 2] = getIndex(i, 0);
-    }
-    const k = 3 * hdiv;
-    // middle
-    for (let j = 0; j < vdiv - 1; j++) {
-      for (let i = 0; i < hdiv; i++) {
-        ret[(hdiv * j + i) * 6 + k] = getIndex(i, j);
-        ret[(hdiv * j + i) * 6 + k + 1] = getIndex(i + 1, j);
-        ret[(hdiv * j + i) * 6 + k + 2] = getIndex(i, j + 1);
-        ret[(hdiv * j + i) * 6 + k + 3] = getIndex(i, j + 1);
-        ret[(hdiv * j + i) * 6 + k + 4] = getIndex(i + 1, j);
-        ret[(hdiv * j + i) * 6 + k + 5] = getIndex(i + 1, j + 1);
+    for (let i = 0; i < vdiv - 1; i++) {
+      for (let j = 0; j < hdiv - 1; j++) {
+        ret[6 * (vdiv * j + i) + 0] = vdiv * i + j
+        ret[6 * (vdiv * j + i) + 1] = vdiv * (i + 1) + j
+        ret[6 * (vdiv * j + i) + 2] = vdiv * i + j + 1
+        ret[6 * (vdiv * j + i) + 3] = vdiv * i + j + 1
+        ret[6 * (vdiv * j + i) + 4] = vdiv * (i + 1) + j
+        ret[6 * (vdiv * j + i) + 5] = vdiv * (i + 1) + j + 1
       }
-    }
-    const l = hdiv * (vdiv - 1) * 6 + k;
-
-    // lower side
-    for (let i = 0; i < hdiv; i++) {
-      ret[3 * i + l + 0] = bottom;
-      ret[3 * i + l + 1] = getIndex(i, vdiv - 1);
-      ret[3 * i + l + 2] = getIndex(i + 1, vdiv - 1);
     }
     return ret;
   }
