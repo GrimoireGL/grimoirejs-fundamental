@@ -224,17 +224,17 @@ export default class GeometryUtility {
     for (let i = 0; i < vdiv; i++) {
       for (let j = 0; j < hdiv; j++) {
         ret[8 * (vdiv * i + j) + 0] = center[0]
-          + 0.5 * Math.sin(Math.PI * i / (vdiv - 1)) * (right[0] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
+          + Math.sin(Math.PI * i / (vdiv - 1)) * (right[0] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[0] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          - 0.5 * up[0] * Math.cos(Math.PI * i / (vdiv - 1))
+          -  up[0] * Math.cos(Math.PI * i / (vdiv - 1))
         ret[8 * (vdiv * i + j) + 1] = center[1]
-          + 0.5 * Math.sin(Math.PI * i / (vdiv - 1)) * (right[1] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
+          +  Math.sin(Math.PI * i / (vdiv - 1)) * (right[1] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[1] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          - 0.5 * up[1] * Math.cos(Math.PI * i / (vdiv - 1))
+          -  up[1] * Math.cos(Math.PI * i / (vdiv - 1))
         ret[8 * (vdiv * i + j) + 2] = center[2]
-          + 0.5 * Math.sin(Math.PI * i / (vdiv - 1)) * (right[2] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
+          +  Math.sin(Math.PI * i / (vdiv - 1)) * (right[2] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[2] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          - 0.5 * up[2] * Math.cos(Math.PI * i / (vdiv - 1))
+          -  up[2] * Math.cos(Math.PI * i / (vdiv - 1))
         const d = Math.pow(
           ret[8 * (vdiv * i + j) + 0] * ret[8 * (vdiv * i + j) + 0] +
           ret[8 * (vdiv * i + j) + 1] * ret[8 * (vdiv * i + j) + 1] +
