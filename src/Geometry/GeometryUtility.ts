@@ -13,7 +13,7 @@ export default class GeometryUtility {
     }
     return ret;
   }
-  public static plane(center: number[], normal: number[], up: number[], right: number[], hdiv: number = 1, vdiv: number = 1): number[] {
+  public static plane(center: number[], normal: number[], up: number[], right: number[], hdiv: number = 1, vdiv: number = 1, reverse = false): number[] {
     const ret = new Array(8 * (hdiv + 1) * (vdiv + 1));
     const sp = [center[0] - up[0] - right[0], center[1] - up[1] - right[1], center[2] - up[2] - right[2]];
     const sr = [right[0] / hdiv * 2, right[1] / hdiv * 2, right[2] / hdiv * 2];
@@ -29,7 +29,7 @@ export default class GeometryUtility {
         ret[fi + 4] = normal[1];
         ret[fi + 5] = normal[2];
 
-        ret[fi + 6] = 1 / hdiv * h;
+        ret[fi + 6] = reverse ? 1 / hdiv * h : 1 - 1 / hdiv * h;
         ret[fi + 7] = 1 - 1 / vdiv * v;
       }
     }
@@ -226,15 +226,15 @@ export default class GeometryUtility {
         ret[8 * (vdiv * i + j) + 0] = center[0]
           + Math.sin(Math.PI * i / (vdiv - 1)) * (right[0] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[0] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          -  up[0] * Math.cos(Math.PI * i / (vdiv - 1))
+          - up[0] * Math.cos(Math.PI * i / (vdiv - 1))
         ret[8 * (vdiv * i + j) + 1] = center[1]
-          +  Math.sin(Math.PI * i / (vdiv - 1)) * (right[1] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
+          + Math.sin(Math.PI * i / (vdiv - 1)) * (right[1] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[1] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          -  up[1] * Math.cos(Math.PI * i / (vdiv - 1))
+          - up[1] * Math.cos(Math.PI * i / (vdiv - 1))
         ret[8 * (vdiv * i + j) + 2] = center[2]
-          +  Math.sin(Math.PI * i / (vdiv - 1)) * (right[2] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
+          + Math.sin(Math.PI * i / (vdiv - 1)) * (right[2] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[2] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          -  up[2] * Math.cos(Math.PI * i / (vdiv - 1))
+          - up[2] * Math.cos(Math.PI * i / (vdiv - 1))
         const d = Math.pow(
           ret[8 * (vdiv * i + j) + 0] * ret[8 * (vdiv * i + j) + 0] +
           ret[8 * (vdiv * i + j) + 1] * ret[8 * (vdiv * i + j) + 1] +
