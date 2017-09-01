@@ -238,7 +238,7 @@ export default class DefaultPrimitives {
       const vdiv = attrs["divide"];
       const geometry = new Geometry(gl);
       const vertices = [].concat.apply([], [
-        GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], hdiv, vdiv), GeometryUtility.plane([0, 0, 0], [0, 0, -1], [0, 1, 0], [-1, 0, 0], hdiv, vdiv)
+        GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], hdiv, vdiv), GeometryUtility.plane([0, 0, 0], [0, 0, -1], [0, 1, 0], [-1, 0, 0], hdiv, vdiv,true)
       ]);
       geometry.addAttributes(vertices, primitiveLayout);
       const indices = [].concat.apply([], [
