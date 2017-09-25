@@ -1,9 +1,10 @@
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import TextureComponent from "./TextureComponent";
-import ImageResolver from "../Asset/ImageResolver";
+import TextureContainer from "./TextureContainer";
+import ImageResolver from "../../Asset/ImageResolver";
+import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
 
-export default class ImageTextureComponent extends Component {
+export default class ImageTextureUpdator extends TextureUpdatorComponentBase {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     src: {
       converter: "String",
@@ -25,11 +26,8 @@ export default class ImageTextureComponent extends Component {
 
   public src: string;
 
-  private _textureComponent: TextureComponent;
-
   public $mount() {
     this.__bindAttributes();
-    this._textureComponent = this.node.getComponent(TextureComponent);
     this.getAttributeRaw("src").watch((v: string) => {
       if (v !== null) {
         this._loadTask(v);
@@ -39,7 +37,7 @@ export default class ImageTextureComponent extends Component {
 
   private async _loadTask(src: string): Promise<void> {
     const image = await ImageResolver.resolve(src);
-    this._textureComponent.texture.update(image, {
+    this.__texture.update(image, {
       premultipliedAlpha: this.premultipliedAlpha,
       flipY: this.flipY
     });

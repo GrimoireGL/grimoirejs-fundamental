@@ -12,7 +12,6 @@ import CanvasInitializerComponent from "./Components/CanvasInitializerComponent"
 import FullscreenComponent from "./Components/FullscreenComponent";
 import GeometryComponent from "./Components/GeometryComponent";
 import GeometryRegistoryComponent from "./Components/GeometryRegistoryComponent";
-import HTMLBinderComponent from "./Components/HTMLBinderComponent";
 import LoopManagerComponent from "./Components/LoopManagerComponent";
 import MaterialComponent from "./Components/MaterialComponent";
 import MaterialContainerComponent from "./Components/MaterialContainerComponent";
@@ -26,7 +25,7 @@ import RenderQuadComponent from "./Components/RenderQuadComponent";
 import RenderSceneComponent from "./Components/RenderSceneComponent";
 import SceneComponent from "./Components/SceneComponent";
 import TextureBufferComponent from "./Components/TextureBufferComponent";
-import TextureComponent from "./Components/TextureComponent";
+import TextureContainer from "./Components/Texture/TextureContainer";
 import TransformComponent from "./Components/TransformComponent";
 import CanvasSizeConverter from "./Converters/CanvasSizeConverter";
 import GeometryConverter from "./Converters/GeometryConverter";
@@ -34,8 +33,8 @@ import MaterialConverter from "./Converters/MaterialConverter";
 import TextureConverter from "./Converters/TextureConverter";
 import Texture2DConverter from "./Converters/TextureConverter";
 import ViewportConverter from "./Converters/ViewportConverter";
-import ImageTextureComponent from "./Components/ImageTextureComponent";
-import VideoTextureComponent from "./Components/VideoTextureComponent";
+import ImageTextureUpdator from "./Components/Texture/ImageTextureUpdator";
+import VideoTextureUpdator from "./Components/Texture/VideoTextureUpdator";
 
 export default () => {
     GrimoireInterface.register(async () => {
@@ -45,7 +44,6 @@ export default () => {
         GrimoireInterface.registerComponent("Fullscreen", FullscreenComponent);
         GrimoireInterface.registerComponent("Geometry", GeometryComponent);
         GrimoireInterface.registerComponent("GeometryRegistory", GeometryRegistoryComponent);
-        GrimoireInterface.registerComponent("HTMLBinder", HTMLBinderComponent);
         GrimoireInterface.registerComponent("LoopManager", LoopManagerComponent);
         GrimoireInterface.registerComponent("Material", MaterialComponent);
         GrimoireInterface.registerComponent("MaterialContainer", MaterialContainerComponent);
@@ -59,11 +57,11 @@ export default () => {
         GrimoireInterface.registerComponent("RenderScene", RenderSceneComponent);
         GrimoireInterface.registerComponent("Scene", SceneComponent);
         GrimoireInterface.registerComponent("TextureBuffer", TextureBufferComponent);
-        GrimoireInterface.registerComponent("Texture", TextureComponent);
+        GrimoireInterface.registerComponent("TextureContainer", TextureContainer);
         GrimoireInterface.registerComponent("Transform", TransformComponent);
         GrimoireInterface.registerComponent("RenderHitArea", RenderHitArea);
-        GrimoireInterface.registerComponent("ImageTexture", ImageTextureComponent);
-        GrimoireInterface.registerComponent("VideoTexture", VideoTextureComponent);
+        GrimoireInterface.registerComponent("ImageTextureUpdator", ImageTextureUpdator);
+        GrimoireInterface.registerComponent("VideoTextureUpdator", VideoTextureUpdator);
 
         GrimoireInterface.registerConverter("CanvasSize", CanvasSizeConverter);
         GrimoireInterface.registerConverter("Geometry", GeometryConverter);
@@ -81,9 +79,9 @@ export default () => {
         GrimoireInterface.registerNode("mesh", ["MaterialContainer", "MeshRenderer"], {}, "object");
         GrimoireInterface.registerNode("renderer", ["Renderer"]);
         GrimoireInterface.registerNode("geometry", ["Geometry"]);
-        GrimoireInterface.registerNode("texture", ["Texture"]);
-        GrimoireInterface.registerNode("image-texture", ["ImageTexture"], {}, "texture");
-        GrimoireInterface.registerNode("video-texture", ["VideoTexture"], {}, "texture");
+        GrimoireInterface.registerNode("texture", ["TextureContainer"]);
+        GrimoireInterface.registerNode("image-texture", ["ImageTextureUpdator"], {}, "texture");
+        GrimoireInterface.registerNode("video-texture", ["VideoTextureUpdator"], {}, "texture");
         GrimoireInterface.registerNode("material", ["Material"]);
         GrimoireInterface.registerNode("import-material", ["MaterialImporter"]);
         GrimoireInterface.registerNode("texture-buffer", ["TextureBuffer"]);

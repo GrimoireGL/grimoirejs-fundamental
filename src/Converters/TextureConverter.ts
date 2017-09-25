@@ -1,4 +1,4 @@
-import TextureComponent from "../Components/TextureComponent";
+import TextureContainer from "../Components/Texture/TextureContainer";
 import TextureReference from "../Material/TextureReference";
 import Attribute from "grimoirejs/ref/Node/Attribute";
 import Texture2D from "../Resource/Texture2D";
@@ -70,7 +70,7 @@ export default function TextureConverter(val: any, attr: Attribute): any {
           return new TextureReference(fromVideoTexture(attr.companion!.get("gl"), generateVideoTag(param)));
         case "query":
           const obtainedTag = attr.tree!(param);
-          const texture = obtainedTag.first()!.getComponent(TextureComponent);
+          const texture = obtainedTag.first()!.getComponent(TextureContainer);
           return new TextureReference(() => texture.texture);
       }
     } else {

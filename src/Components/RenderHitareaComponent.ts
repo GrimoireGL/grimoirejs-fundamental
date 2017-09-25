@@ -12,6 +12,7 @@ import RenderSceneComponent from "./RenderSceneComponent";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Component from "grimoirejs/ref/Node/Component";
 import Viewport from "../Resource/Viewport";
+import CameraComponent from "./CameraComponent";
 export default class RenderHitareaComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
 
@@ -83,6 +84,7 @@ export default class RenderHitareaComponent extends Component {
     this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
     this._gl.clearDepth(1);
     this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
+    // draw for mesh indices
     camera.renderScene({
       renderer: this._sceneRenderer, // TODO
       camera: camera,
@@ -95,8 +97,40 @@ export default class RenderHitareaComponent extends Component {
       sortingTechnique: "default"
     });
     this._gl.flush();
+    // pick pointer pixel
     this._gl.readPixels(this._lastPosition[0] * this._bufferViewport.Width, this._lastPosition[1] * this._bufferViewport.Height, 1, 1, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._readCache);
-    const index = MeshIndexCalculator.fromColor(this._readCache);
+    this._updateCurrentIndex(MeshIndexCalculator.fromColor(this._readCache),camera);
+    // reset bound frame buffer
+    this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
+  }
+
+  public $mousemove(v: ViewportMouseEvent): void {
+    this._lastPosition = [v.viewportNormalizedX, 1.0 - v.viewportNormalizedY];
+    this._mouseMoved = true;
+  }
+
+  public $mouseenter(v: ViewportMouseEvent): void {
+    this._mouseInside = true;
+    this._lastPosition = [v.viewportNormalizedX, 1.0 - v.viewportNormalizedY];
+    this._mouseMoved = true;
+  }
+
+  public $mouseleave(v: ViewportMouseEvent): void {
+    this._mouseInside = false;
+    this._lastPosition = [v.viewportNormalizedX, 1.0 - v.viewportNormalizedY];
+    this._mouseMoved = true;
+    if (this._lastRenderable instanceof Component) {
+      this._lastRenderable.node.emit("mouseleave", this._lastRenderable);
+    }
+    this._lastRenderable = null;
+  }
+
+  /**
+   * Update current mesh index. Emit events if need.
+   * @param index 
+   * @param camera 
+   */
+  private _updateCurrentIndex(index:number,camera:CameraComponent):void{
     if (index === 0) { // there was no object at pointer
       if (this._lastRenderable instanceof Component) {
         this._lastRenderable.node.emit("mouseleave", this._lastRenderable);
@@ -122,27 +156,5 @@ export default class RenderHitareaComponent extends Component {
       }
       this._lastRenderable = r;
     }
-    this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
-  }
-
-  public $mousemove(v: ViewportMouseEvent): void {
-    this._lastPosition = [v.viewportNormalizedX, 1.0 - v.viewportNormalizedY];
-    this._mouseMoved = true;
-  }
-
-  public $mouseenter(v: ViewportMouseEvent): void {
-    this._mouseInside = true;
-    this._lastPosition = [v.viewportNormalizedX, 1.0 - v.viewportNormalizedY];
-    this._mouseMoved = true;
-  }
-
-  public $mouseleave(v: ViewportMouseEvent): void {
-    this._mouseInside = false;
-    this._lastPosition = [v.viewportNormalizedX, 1.0 - v.viewportNormalizedY];
-    this._mouseMoved = true;
-    if (this._lastRenderable instanceof Component) {
-      this._lastRenderable.node.emit("mouseleave", this._lastRenderable);
-    }
-    this._lastRenderable = null;
   }
 }
