@@ -22,12 +22,12 @@ export default class OffscreenRenderTarget implements IRenderingTarget{
         }
     }
 
-
     public bind(): void {
         this.fbo.bind();
     }
 
     public readonly fbo: FrameBuffer;
+
     public get texture(): Texture2D {
         return this.textures[0];
     }

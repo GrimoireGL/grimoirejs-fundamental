@@ -7,7 +7,7 @@ export default class DefaultRenderingTarget implements IRenderingTarget {
     public bind(): void {
         this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
     }
-    public clear(flag: number, color: number[], depth: number): void {
+    public clear(flag: number, color: number[]|null = [0,0,0,0], depth: number|null = 1): void {
         this.bind();
         let clearTarget = 0;
         if (color !== null){

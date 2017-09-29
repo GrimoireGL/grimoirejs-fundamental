@@ -6,6 +6,7 @@ import CanvasSizeObject from "../Objects/CanvasSizeObject";
 import GLExtRequestor from "../Resource/GLExtRequestor";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import WebGLRenderingContextWithId from "../Resource/WebGLRenderingContextWithId";
 const ns = Namespace.define("grimoirejs-fundamental");
 
 enum ResizeMode {
@@ -234,7 +235,7 @@ export default class CanvasInitializerComponent extends Component {
   }
 
 
-  private _getContext(canvas: HTMLCanvasElement): WebGLRenderingContext {
+  private _getContext(canvas: HTMLCanvasElement): WebGLRenderingContextWithId {
     const contextConfig = {
       antialias: this.getAttribute("antialias"),
       preserveDrawingBuffer: this.getAttribute("preserveDrawingBuffer")
@@ -246,7 +247,16 @@ export default class CanvasInitializerComponent extends Component {
     if (!context) {
       throw new Error("Failed to initializing WebGL context. Make sure your browser supporting WebGL.");
     }
-    return context;
+    return this._applyContextId(context);
+  }
+
+  /**
+   * Insert __id__property to be identify rendering contexts
+   */
+  private _applyContextId(context:WebGLRenderingContext):WebGLRenderingContextWithId{
+    const contextWithId = context as WebGLRenderingContextWithId;
+    contextWithId.__id__ = Math.random().toString(36).slice(-6); // Generating random string
+    return contextWithId;
   }
 
   /**

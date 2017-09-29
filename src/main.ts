@@ -35,7 +35,6 @@ import Texture2DConverter from "./Converters/TextureConverter";
 import ViewportConverter from "./Converters/ViewportConverter";
 import ImageTextureUpdator from "./Components/Texture/ImageTextureUpdator";
 import VideoTextureUpdator from "./Components/Texture/VideoTextureUpdator";
-import RenderingTargetRegistry from "./Components/RenderingTarget/RenderingTargetRegistry";
 
 export default () => {
     GrimoireInterface.register(async () => {
@@ -63,7 +62,6 @@ export default () => {
         GrimoireInterface.registerComponent("RenderHitArea", RenderHitArea);
         GrimoireInterface.registerComponent("ImageTextureUpdator", ImageTextureUpdator);
         GrimoireInterface.registerComponent("VideoTextureUpdator", VideoTextureUpdator);
-        GrimoireInterface.registerComponent("RenderingTargetRegistry", RenderingTargetRegistry);
 
         GrimoireInterface.registerConverter("CanvasSize", CanvasSizeConverter);
         GrimoireInterface.registerConverter("Geometry", GeometryConverter);

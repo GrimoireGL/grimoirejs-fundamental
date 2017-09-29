@@ -1,11 +1,17 @@
 import MaterialFactory from "../Material/MaterialFactory";
+import GLRelatedRegistryBase from "./GLRelatedRegistryBase";
 interface ExtensionRequest {
   extensionName: string;
   isNecessary: boolean;
 }
 
-export default class GLExtRequestor {
+export default class GLExtRequestor extends GLRelatedRegistryBase {
 
+  public static registryName = "GLExtensionRequestor";
+
+  public static get(gl: WebGLRenderingContext): GLExtRequestor {
+    return this.__get(gl,GLExtRequestor);
+  }
   /**
    * Some of extensions needed to override resolving extensions by this.
    */
@@ -19,20 +25,9 @@ export default class GLExtRequestor {
    */
   private static _requestedExtensions: ExtensionRequest[] = [];
 
-  private static _glToRequestorMap: Map<WebGLRenderingContext, GLExtRequestor> = new Map<WebGLRenderingContext, GLExtRequestor>();
-
   public extensions: { [key: string]: any } = {};
 
   private _readyExtensions: { [key: string]: boolean } = {};
-
-  /**
-   * Get GLExtRequestor from WebGLRenderingContext
-   * @param  {WebGLRenderingContext} gl [description]
-   * @return {GLExtRequestor}           [description]
-   */
-  public static get(gl: WebGLRenderingContext): GLExtRequestor {
-    return GLExtRequestor._glToRequestorMap.get(gl);
-  }
 
   /**
    * Check specified extension was supported on this device.
@@ -65,9 +60,7 @@ export default class GLExtRequestor {
 
 
   private static _getFirst(): GLExtRequestor {
-    for (let f of GLExtRequestor._glToRequestorMap.values()) {
-      return f;
-    }
+    return GLExtRequestor.__getAll(GLExtRequestor)[0];
   }
 
   private static _requestIndexOf(extName: string): number {
@@ -82,7 +75,7 @@ export default class GLExtRequestor {
 
 
   constructor(public gl: WebGLRenderingContext) {
-    GLExtRequestor._glToRequestorMap.set(gl, this);
+    super();
     this._resolveRequested();
     GLExtRequestor._requestObserver.push(this._resolveExtensionSafely.bind(this));
   }

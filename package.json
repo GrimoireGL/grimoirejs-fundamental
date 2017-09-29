@@ -16,7 +16,7 @@
   "keywords": [
     "grimoire",
     "grimoirejs",
-    "shading"
+    "webgl"
   ],
   "dependencies": {
     "@types/node": "^8.0.24"
