@@ -27,7 +27,7 @@ export default {
           return vec;
         }
       } catch (e) {
-        ;
+
       }
       attr.convertContext._node = Attribute.convert("Node", attr, val) as GomlNode;
       if (attr.convertContext._node) {

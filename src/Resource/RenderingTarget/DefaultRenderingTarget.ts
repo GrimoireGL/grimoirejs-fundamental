@@ -4,10 +4,10 @@ import IRenderingTarget from "./IRenderingTarget";
  * Rendering target to render into canvas
  */
 export default class DefaultRenderingTarget implements IRenderingTarget {
-    bind(): void {
+    public bind(): void {
         this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
     }
-    clear(flag: number, color: number[], depth: number): void {
+    public clear(flag: number, color: number[], depth: number): void {
         this.bind();
         let clearTarget = 0;
         if (color !== null){

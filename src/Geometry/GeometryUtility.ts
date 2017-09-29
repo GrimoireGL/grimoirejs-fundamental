@@ -49,7 +49,7 @@ export default class GeometryUtility {
         ret[fi + 2] = sp[2] + sr[2] * h + su[2] * v;
 
         const l = Math.tan(Math.PI / divide) / Math.sin(Math.PI / divide);
-        if (h == 0) {
+        if (h === 0) {
           ret[fi + 3] = normal[0] - l * right[0];
           ret[fi + 4] = normal[1] - l * right[1];
           ret[fi + 5] = normal[2] - l * right[2];
@@ -61,7 +61,7 @@ export default class GeometryUtility {
 
 
         ret[fi + 6] = 1 / divide * (order + 1 + h);
-        ret[fi + 7] = v == 0 ? 1 : 0;
+        ret[fi + 7] = v === 0 ? 1 : 0;
       }
     }
     return ret;
@@ -99,13 +99,13 @@ export default class GeometryUtility {
       ret[5 + 8 * i] = normal[2];
       const k = Math.pow(2, 0.5);
       const l = Math.tan(Math.PI / divide) / Math.sin(Math.PI / divide) / Math.pow(3, 0.5) * 2;
-      if (i == 0) {
+      if (i === 0) {
         ret[3 + 8 * i] = normal[0];
         ret[4 + 8 * i] = normal[1];
         ret[5 + 8 * i] = normal[2];
         ret[6 + 8 * i] = 0;
         ret[7 + 8 * i] = 0;
-      } else if (i == 1) {
+      } else if (i === 1) {
         ret[3 + 8 * i] = normal[0] / k + l * right[0];
         ret[4 + 8 * i] = normal[1] / k + l * right[1];
         ret[5 + 8 * i] = normal[2] / k + l * right[2];

@@ -42,6 +42,7 @@
     "semantic-release": "^7.0.2",
     "sinon": "^3.2.1",
     "ts-loader": "^2.3.3",
+    "tslint": "^5.7.0",
     "typedoc": "^0.8.0",
     "typescript": "^2.4.2",
     "watch": "^1.0.2",
@@ -55,7 +56,8 @@
   },
   "scripts": {
     "prepublish": "npm run build -- --env.prod",
-    "lint":"",
+    "lint": "tslint --project ./",
+    "lint:fix":"tslint --project ./ --fix",
     "start": "webpack --watch --progress",
     "test": "tsc --outDir ./lib && babel ./lib --presets es2015 --plugins transform-runtime --out-dir ./lib-es5 && babel ./test --presets es2015 --plugins transform-runtime --out-dir ./test-es5 && ava ./test-es5/**/*Test.js --verbose ",
     "bundle": "webpack --progress --watch",
