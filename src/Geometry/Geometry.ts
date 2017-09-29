@@ -163,6 +163,9 @@ export default class Geometry {
             if (typeof topology !== "number") {
                 topology = WebGLRenderingContext.TRIANGLES;
             }
+            if (typeof offset !== "number"){
+                offset = 0;
+            }
         }
         if (!count) {
             if ((buffer instanceof Buffer || buffer instanceof ArrayBuffer || buffer instanceof DataView)) {

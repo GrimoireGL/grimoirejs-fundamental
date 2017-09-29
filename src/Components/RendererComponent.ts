@@ -50,7 +50,7 @@ export default class RendererComponent extends Component {
 
   private _mouseMoveHandler: (e: MouseEvent) => void;
 
-  private _wasInside: boolean = false;
+  private _wasInside = false;
 
   public $awake(): void {
     // initializing attributes

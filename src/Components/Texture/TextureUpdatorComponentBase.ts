@@ -4,12 +4,12 @@ import TextureContainer from "./TextureContainer";
 
 
 export default class TextureUpdatorComponentBase extends BasicComponent{
-    private textureComponent:TextureContainer;
-    protected get __texture():Texture2D{
+    private textureComponent: TextureContainer;
+    protected get __texture(): Texture2D{
         return this.textureComponent.texture;
     }
 
-    public $mount():void{
+    public $mount(): void{
         this.textureComponent = this.node.getComponent(TextureContainer);
     }
 }

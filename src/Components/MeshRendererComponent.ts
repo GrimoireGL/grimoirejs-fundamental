@@ -82,8 +82,8 @@ export default class MeshRenderer extends Component implements IRenderable {
 
     public index: number;
     public renderArgs: { [key: string]: any } = {};
-    private geometry: Promise<Geometry>;
-    private geometryInstance: Geometry;
+    public geometry: Promise<Geometry>;
+    public geometryInstance: Geometry;
     private targetBuffer: string;
     private layer: string;
     private drawOffset: number;

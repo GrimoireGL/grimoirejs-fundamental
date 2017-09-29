@@ -44,7 +44,7 @@ export default class MouseCameraControlComponent extends Component {
   public center: Vector3;
   public distance: number;
   private _transform: TransformComponent;
-  private _updated: boolean = false;
+  private _updated = false;
 
   private _lastCenter: Vector3 = null;
 
@@ -53,9 +53,9 @@ export default class MouseCameraControlComponent extends Component {
   private _initialDirection: Vector3;
   private _initialRotation: Quaternion;
 
-  private _xsum: number = 0;
+  private _xsum = 0;
 
-  private _ysum: number = 0;
+  private _ysum = 0;
 
   private _d: Vector3 = Vector3.Zero;
 

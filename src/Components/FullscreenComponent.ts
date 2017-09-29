@@ -34,7 +34,7 @@ export default class FullscreenComponent extends Component {
     }
   };
 
-  private _fullscreen: boolean = false;
+  private _fullscreen = false;
 
   public $awake(): void {
     this.getAttributeRaw("fullscreen").watch((attr) => {

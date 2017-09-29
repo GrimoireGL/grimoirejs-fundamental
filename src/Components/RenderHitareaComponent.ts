@@ -45,7 +45,7 @@ export default class RenderHitareaComponent extends Component {
   public $mount(): void {
     this._sceneRenderer = this.node.getComponent(RenderSceneComponent);
     if (!this._sceneRenderer) {
-      throw new Error("The node attaching RenderHitArea should contain RenderScene.")
+      throw new Error("The node attaching RenderHitArea should contain RenderScene.");
     }
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
@@ -99,7 +99,7 @@ export default class RenderHitareaComponent extends Component {
     this._gl.flush();
     // pick pointer pixel
     this._gl.readPixels(this._lastPosition[0] * this._bufferViewport.Width, this._lastPosition[1] * this._bufferViewport.Height, 1, 1, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._readCache);
-    this._updateCurrentIndex(MeshIndexCalculator.fromColor(this._readCache),camera);
+    this._updateCurrentIndex(MeshIndexCalculator.fromColor(this._readCache), camera);
     // reset bound frame buffer
     this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
   }
@@ -127,10 +127,10 @@ export default class RenderHitareaComponent extends Component {
 
   /**
    * Update current mesh index. Emit events if need.
-   * @param index 
-   * @param camera 
+   * @param index
+   * @param camera
    */
-  private _updateCurrentIndex(index:number,camera:CameraComponent):void{
+  private _updateCurrentIndex(index: number, camera: CameraComponent): void{
     if (index === 0) { // there was no object at pointer
       if (this._lastRenderable instanceof Component) {
         this._lastRenderable.node.emit("mouseleave", this._lastRenderable);

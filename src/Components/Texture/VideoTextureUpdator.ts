@@ -54,6 +54,7 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
   public loop: boolean;
 
   public $mount() {
+    super.$mount();
     this.__bindAttributes();
     this.getAttributeRaw("src").watch((v: string) => {
       if (v !== null) {

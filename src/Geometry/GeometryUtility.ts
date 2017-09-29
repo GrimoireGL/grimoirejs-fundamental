@@ -13,7 +13,7 @@ export default class GeometryUtility {
     }
     return ret;
   }
-  public static plane(center: number[], normal: number[], up: number[], right: number[], hdiv: number = 1, vdiv: number = 1, reverse = false): number[] {
+  public static plane(center: number[], normal: number[], up: number[], right: number[], hdiv = 1, vdiv = 1, reverse = false): number[] {
     const ret = new Array(8 * (hdiv + 1) * (vdiv + 1));
     const sp = [center[0] - up[0] - right[0], center[1] - up[1] - right[1], center[2] - up[2] - right[2]];
     const sr = [right[0] / hdiv * 2, right[1] / hdiv * 2, right[2] / hdiv * 2];
@@ -29,7 +29,7 @@ export default class GeometryUtility {
         ret[fi + 4] = normal[1];
         ret[fi + 5] = normal[2];
 
-        ret[fi + 6] = reverse?1 - 1 / hdiv * h:1 / hdiv * h;
+        ret[fi + 6] = reverse ? 1 - 1 / hdiv * h : 1 / hdiv * h;
         ret[fi + 7] = 1 - 1 / vdiv * v;
       }
     }
@@ -130,7 +130,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static planeIndex(offset: number = 0, hdiv: number = 0, vdiv: number = 0): number[] {
+  public static planeIndex(offset = 0, hdiv = 0, vdiv = 0): number[] {
     const ret = new Array(6 * hdiv * vdiv);
     for (let v = 0; v < vdiv; v++) {
       for (let h = 0; h < hdiv; h++) {
@@ -148,7 +148,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static circle(center: number[], normal: number[], up: number[], right: number[], divide: number = 5): number[] {
+  public static circle(center: number[], normal: number[], up: number[], right: number[], divide = 5): number[] {
     const ret = new Array((3 + divide) * 6);
     // center
     ret[0] = center[0];
@@ -189,31 +189,31 @@ export default class GeometryUtility {
     }
     return ret;
   }
-  public static capsule(center: number[], up: number[], right: number[], forward: number[], vdiv: number = 3, hdiv: number = 3): number[] {
+  public static capsule(center: number[], up: number[], right: number[], forward: number[], vdiv = 3, hdiv = 3): number[] {
     const ret = new Array(vdiv * hdiv * 8);
     for (let i = 0; i < vdiv; i++) {
       for (let j = 0; j < hdiv; j++) {
         ret[8 * (vdiv * i + j) + 0] = center[0]
           + 0.5 * Math.sin(Math.PI * i / (vdiv - 1)) * (right[0] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[0] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          - 0.5 * up[0] * Math.cos(Math.PI * i / (vdiv - 1))
+          - 0.5 * up[0] * Math.cos(Math.PI * i / (vdiv - 1));
         ret[8 * (vdiv * i + j) + 1] = center[1]
           + 0.5 * Math.sin(Math.PI * i / (vdiv - 1)) * (right[1] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[1] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          - 0.5 * up[1] * Math.cos(Math.PI * i / (vdiv - 1))
+          - 0.5 * up[1] * Math.cos(Math.PI * i / (vdiv - 1));
         ret[8 * (vdiv * i + j) + 2] = center[2]
           + 0.5 * Math.sin(Math.PI * i / (vdiv - 1)) * (right[2] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[2] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          - 0.5 * up[2] * Math.cos(Math.PI * i / (vdiv - 1))
+          - 0.5 * up[2] * Math.cos(Math.PI * i / (vdiv - 1));
         const d = Math.pow(
           ret[8 * (vdiv * i + j) + 0] * ret[8 * (vdiv * i + j) + 0] +
           ret[8 * (vdiv * i + j) + 1] * ret[8 * (vdiv * i + j) + 1] +
-          ret[8 * (vdiv * i + j) + 2] * ret[8 * (vdiv * i + j) + 2], 0.5)
-        ret[8 * (vdiv * i + j) + 3] = ret[8 * (vdiv * i + j) + 0] / d
-        ret[8 * (vdiv * i + j) + 4] = ret[8 * (vdiv * i + j) + 1] / d
-        ret[8 * (vdiv * i + j) + 5] = ret[8 * (vdiv * i + j) + 2] / d
-        ret[8 * (vdiv * i + j) + 6] = 1 - j / (hdiv - 1)
-        ret[8 * (vdiv * i + j) + 7] = 1 - i / (vdiv - 1)
+          ret[8 * (vdiv * i + j) + 2] * ret[8 * (vdiv * i + j) + 2], 0.5);
+        ret[8 * (vdiv * i + j) + 3] = ret[8 * (vdiv * i + j) + 0] / d;
+        ret[8 * (vdiv * i + j) + 4] = ret[8 * (vdiv * i + j) + 1] / d;
+        ret[8 * (vdiv * i + j) + 5] = ret[8 * (vdiv * i + j) + 2] / d;
+        ret[8 * (vdiv * i + j) + 6] = 1 - j / (hdiv - 1);
+        ret[8 * (vdiv * i + j) + 7] = 1 - i / (vdiv - 1);
       }
     }
     return ret;
@@ -226,24 +226,24 @@ export default class GeometryUtility {
         ret[8 * (vdiv * i + j) + 0] = center[0]
           + Math.sin(Math.PI * i / (vdiv - 1)) * (right[0] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[0] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          -  up[0] * Math.cos(Math.PI * i / (vdiv - 1))
+          -  up[0] * Math.cos(Math.PI * i / (vdiv - 1));
         ret[8 * (vdiv * i + j) + 1] = center[1]
           +  Math.sin(Math.PI * i / (vdiv - 1)) * (right[1] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[1] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          -  up[1] * Math.cos(Math.PI * i / (vdiv - 1))
+          -  up[1] * Math.cos(Math.PI * i / (vdiv - 1));
         ret[8 * (vdiv * i + j) + 2] = center[2]
           +  Math.sin(Math.PI * i / (vdiv - 1)) * (right[2] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[2] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          -  up[2] * Math.cos(Math.PI * i / (vdiv - 1))
+          -  up[2] * Math.cos(Math.PI * i / (vdiv - 1));
         const d = Math.pow(
           ret[8 * (vdiv * i + j) + 0] * ret[8 * (vdiv * i + j) + 0] +
           ret[8 * (vdiv * i + j) + 1] * ret[8 * (vdiv * i + j) + 1] +
-          ret[8 * (vdiv * i + j) + 2] * ret[8 * (vdiv * i + j) + 2], 0.5)
-        ret[8 * (vdiv * i + j) + 3] = ret[8 * (vdiv * i + j) + 0] / d
-        ret[8 * (vdiv * i + j) + 4] = ret[8 * (vdiv * i + j) + 1] / d
-        ret[8 * (vdiv * i + j) + 5] = ret[8 * (vdiv * i + j) + 2] / d
-        ret[8 * (vdiv * i + j) + 6] = 1 - j / (hdiv - 1)
-        ret[8 * (vdiv * i + j) + 7] = 1 - i / (vdiv - 1)
+          ret[8 * (vdiv * i + j) + 2] * ret[8 * (vdiv * i + j) + 2], 0.5);
+        ret[8 * (vdiv * i + j) + 3] = ret[8 * (vdiv * i + j) + 0] / d;
+        ret[8 * (vdiv * i + j) + 4] = ret[8 * (vdiv * i + j) + 1] / d;
+        ret[8 * (vdiv * i + j) + 5] = ret[8 * (vdiv * i + j) + 2] / d;
+        ret[8 * (vdiv * i + j) + 6] = 1 - j / (hdiv - 1);
+        ret[8 * (vdiv * i + j) + 7] = 1 - i / (vdiv - 1);
       }
     }
     return ret;
@@ -254,12 +254,12 @@ export default class GeometryUtility {
     const ret: number[] = new Array(hdiv * vdiv * 6);
     for (let i = 0; i < vdiv - 1; i++) {
       for (let j = 0; j < hdiv - 1; j++) {
-        ret[6 * (vdiv * j + i) + 0] = vdiv * i + j
-        ret[6 * (vdiv * j + i) + 1] = vdiv * (i + 1) + j
-        ret[6 * (vdiv * j + i) + 2] = vdiv * i + j + 1
-        ret[6 * (vdiv * j + i) + 3] = vdiv * i + j + 1
-        ret[6 * (vdiv * j + i) + 4] = vdiv * (i + 1) + j
-        ret[6 * (vdiv * j + i) + 5] = vdiv * (i + 1) + j + 1
+        ret[6 * (vdiv * j + i) + 0] = vdiv * i + j;
+        ret[6 * (vdiv * j + i) + 1] = vdiv * (i + 1) + j;
+        ret[6 * (vdiv * j + i) + 2] = vdiv * i + j + 1;
+        ret[6 * (vdiv * j + i) + 3] = vdiv * i + j + 1;
+        ret[6 * (vdiv * j + i) + 4] = vdiv * (i + 1) + j;
+        ret[6 * (vdiv * j + i) + 5] = vdiv * (i + 1) + j + 1;
       }
     }
     return ret;

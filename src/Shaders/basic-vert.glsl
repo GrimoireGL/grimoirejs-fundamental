@@ -35,6 +35,13 @@
   attribute vec4 attrColor;
   #endif
 
+  #ifdef ATTRIBUTE_POINT_SIZE_ENABLED
+  @POINT_SIZE
+  attribute float pointSize;
+  #endif
+
+  @{default:1.0}
+  uniform float pointScale;
   void main()
   {
     gl_Position = _matPVM * vec4(position,1.0);
@@ -51,5 +58,10 @@
     #ifdef ATTRIBUTE_COLOR_ENABLED
     vColor = attrColor;
     #endif
+    float pSize = 1.0;
+    #ifdef ATTRIBUTE_POINT_SIZE_ENABLED
+    pSize *= pointSize;
+    #endif
+    gl_PointSize = pointScale * pSize;
   }
 #endif

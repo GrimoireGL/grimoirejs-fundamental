@@ -1,11 +1,12 @@
 import gr from "grimoirejs";
-import IResizeBufferMessage from "../Messages/IResizeBufferMessage";
-import Texture2D from "../Resource/Texture2D";
+import IResizeBufferMessage from "../../Messages/IResizeBufferMessage";
+import Texture2D from "../../Resource/Texture2D";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import TextureSizeCalculator from "../Util/TextureSizeCalculator";
-import Viewport from "../Resource/Viewport";
-export default class TextureBufferComponent extends Component {
+import TextureSizeCalculator from "../../Util/TextureSizeCalculator";
+import Viewport from "../../Resource/Viewport";
+import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
+export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBase {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
       converter: "String",
@@ -41,15 +42,15 @@ export default class TextureBufferComponent extends Component {
     }
   };
 
-  public buffer: Texture2D;
-
   public $mount(): void {
-    this.buffer = new Texture2D(this.companion.get("gl"));
+    super.$mount();
   }
 
-  public $unmount(): void {
-    this.buffer.destroy();
-    this.buffer = null;
+  public resize(width: number, height: number): void {
+    const format = this.getAttribute("format");
+    const type = this.getAttribute("type");
+    const newSize = TextureSizeCalculator.getPow2Size(width, height);
+    this.__texture.update(0, newSize.width, newSize.height, 0, format, type, null);
   }
 
   public $resizeBuffer(arg: IResizeBufferMessage): void {
@@ -60,8 +61,8 @@ export default class TextureBufferComponent extends Component {
     const format = this.getAttribute("format");
     const type = this.getAttribute("type");
     const newSize = TextureSizeCalculator.getPow2Size(arg.width, arg.height);
-    this.buffer.update(0, newSize.width, newSize.height, 0, format, type, null);
+    this.__texture.update(0, newSize.width, newSize.height, 0, format, type, null);
     arg.bufferViewports[bufferName] = new Viewport(0, 0, newSize.width, newSize.height);
-    arg.buffers[bufferName] = this.buffer;
+    arg.buffers[bufferName] = this.__texture;
   }
 }

@@ -24,7 +24,7 @@ import RendererManagerComponent from "./Components/RendererManagerComponent";
 import RenderQuadComponent from "./Components/RenderQuadComponent";
 import RenderSceneComponent from "./Components/RenderSceneComponent";
 import SceneComponent from "./Components/SceneComponent";
-import TextureBufferComponent from "./Components/TextureBufferComponent";
+import ColorBufferTextureUpdator from "./Components/Texture/ColorBufferTextureUpdator";
 import TextureContainer from "./Components/Texture/TextureContainer";
 import TransformComponent from "./Components/TransformComponent";
 import CanvasSizeConverter from "./Converters/CanvasSizeConverter";
@@ -35,6 +35,7 @@ import Texture2DConverter from "./Converters/TextureConverter";
 import ViewportConverter from "./Converters/ViewportConverter";
 import ImageTextureUpdator from "./Components/Texture/ImageTextureUpdator";
 import VideoTextureUpdator from "./Components/Texture/VideoTextureUpdator";
+import RenderingTargetRegistry from "./Components/RenderingTarget/RenderingTargetRegistry";
 
 export default () => {
     GrimoireInterface.register(async () => {
@@ -56,12 +57,13 @@ export default () => {
         GrimoireInterface.registerComponent("RenderQuad", RenderQuadComponent);
         GrimoireInterface.registerComponent("RenderScene", RenderSceneComponent);
         GrimoireInterface.registerComponent("Scene", SceneComponent);
-        GrimoireInterface.registerComponent("TextureBuffer", TextureBufferComponent);
+        GrimoireInterface.registerComponent("ColorBufferTextureUpdator", ColorBufferTextureUpdator);
         GrimoireInterface.registerComponent("TextureContainer", TextureContainer);
         GrimoireInterface.registerComponent("Transform", TransformComponent);
         GrimoireInterface.registerComponent("RenderHitArea", RenderHitArea);
         GrimoireInterface.registerComponent("ImageTextureUpdator", ImageTextureUpdator);
         GrimoireInterface.registerComponent("VideoTextureUpdator", VideoTextureUpdator);
+        GrimoireInterface.registerComponent("RenderingTargetRegistry", RenderingTargetRegistry);
 
         GrimoireInterface.registerConverter("CanvasSize", CanvasSizeConverter);
         GrimoireInterface.registerConverter("Geometry", GeometryConverter);
@@ -84,7 +86,7 @@ export default () => {
         GrimoireInterface.registerNode("video-texture", ["VideoTextureUpdator"], {}, "texture");
         GrimoireInterface.registerNode("material", ["Material"]);
         GrimoireInterface.registerNode("import-material", ["MaterialImporter"]);
-        GrimoireInterface.registerNode("texture-buffer", ["TextureBuffer"]);
+        GrimoireInterface.registerNode("texture-buffer", ["ColorBufferTextureUpdator"]);
         GrimoireInterface.registerNode("render-buffer", ["RenderBuffer"]);
         GrimoireInterface.registerNode("render-scene", ["RenderScene", "RenderHitArea"], {
             material: null

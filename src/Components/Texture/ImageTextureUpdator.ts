@@ -27,6 +27,7 @@ export default class ImageTextureUpdator extends TextureUpdatorComponentBase {
   public src: string;
 
   public $mount() {
+    super.$mount();
     this.__bindAttributes();
     this.getAttributeRaw("src").watch((v: string) => {
       if (v !== null) {
