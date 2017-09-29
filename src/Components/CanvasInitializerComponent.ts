@@ -1,4 +1,3 @@
-import MaterialFactory from "../Material/MaterialFactory";
 import Namespace from "grimoirejs/ref/Base/Namespace";
 import Texture2D from "../Resource/Texture2D";
 import gr from "grimoirejs/ref/Interface/GrimoireInterface";
@@ -124,7 +123,6 @@ export default class CanvasInitializerComponent extends Component {
     const gl = this._getContext(this.canvas);
     this.companion.set(ns.for("gl"), gl);
     this.companion.set(ns.for("canvasElement"), this.canvas);
-    this.companion.set(ns.for("MaterialFactory"), new MaterialFactory(gl));
     this.companion.set(ns.for("GLExtRequestor"), new GLExtRequestor(gl));
     Texture2D.generateDefaultTexture(gl);
     return this.canvas;

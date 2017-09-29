@@ -25,7 +25,8 @@ export default class MaterialComponent extends MaterialContainerBase {
     public $mount(): void {
         const typeName = this.getAttribute("type");
         if (typeName && typeof typeName === "string") {
-            this.materialPromise = (this.companion.get("MaterialFactory") as MaterialFactory).instanciate(typeName);
+            const materialFactory = MaterialFactory.get(this.companion.get("gl"));
+            this.materialPromise = materialFactory.instanciate(typeName);
             this._registerAttributes();
         } else {
             throw new Error("Material type name must be sppecified and string");

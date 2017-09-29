@@ -1,6 +1,7 @@
 import MaterialFactory from "../Material/MaterialFactory";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import NameResolver from "../Asset/NameResolver";
 
 /**
  * マテリアル設定ファイルを読み込むためのコンポーネント
@@ -34,7 +35,7 @@ export default class MaterialImporterComponent extends Component {
       throw new Error("type or src cannot be null in material importer");
     } else {
       const typeName = this.getAttribute("typeName") as string;
-      if (MaterialFactory.factories[typeName] !== void 0) {
+      if (MaterialFactory.getMaterialStatus(typeName) !== NameResolver.UNLOADED) {
         throw new Error(`A material type '${typeName}' is already loaded.`);
       }
       MaterialFactory.addSORTMaterialFromURL(this.getAttribute("typeName"), this.getAttribute("src"));
