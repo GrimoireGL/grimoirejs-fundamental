@@ -8,7 +8,7 @@ import Texture2D from "../Resource/Texture2D";
 import RenderBuffer from "../Resource/RenderBuffer";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 import IResizeBufferMessage from "../Messages/IResizeBufferMessage";
-import RenderSceneComponent from "./RenderSceneComponent";
+import RenderSceneComponent from "./RenderStage/RenderSceneComponent";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Component from "grimoirejs/ref/Node/Component";
 import Viewport from "../Resource/Viewport";

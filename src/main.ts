@@ -21,8 +21,8 @@ import MouseCameraControlComponent from "./Components/MouseCameraControlComponen
 import RenderBufferComponent from "./Components/RenderBufferComponent";
 import RendererComponent from "./Components/RendererComponent";
 import RendererManagerComponent from "./Components/RendererManagerComponent";
-import RenderQuadComponent from "./Components/RenderQuadComponent";
-import RenderSceneComponent from "./Components/RenderSceneComponent";
+import RenderQuadComponent from "./Components/RenderStage/RenderQuadComponent";
+import RenderSceneComponent from "./Components/RenderStage/RenderSceneComponent";
 import SceneComponent from "./Components/SceneComponent";
 import ColorBufferTextureUpdator from "./Components/Texture/ColorBufferTextureUpdator";
 import TextureContainer from "./Components/Texture/TextureContainer";

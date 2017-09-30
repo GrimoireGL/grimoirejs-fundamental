@@ -5,7 +5,7 @@ import Texture2D from "../Resource/Texture2D";
 import TransformComponent from "../Components/TransformComponent";
 import Geometry from "../Geometry/Geometry";
 interface IMaterialArgument {
-  targetBuffer: string;
+  indexGroup: string;
   geometry: Geometry;
   sceneDescription: { [key: string]: any };
   camera: CameraComponent;

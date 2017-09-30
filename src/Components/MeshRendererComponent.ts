@@ -49,7 +49,7 @@ export default class MeshRenderer extends Component implements IRenderable {
         /**
          * 描画に用いるインデックスバッファ名
          */
-        targetBuffer: {
+        indexGroup: {
             converter: "String",
             default: "default"
         },
@@ -84,7 +84,7 @@ export default class MeshRenderer extends Component implements IRenderable {
     public renderArgs: { [key: string]: any } = {};
     public geometry: Promise<Geometry>;
     public geometryInstance: Geometry;
-    private targetBuffer: string;
+    private indexGroup: string;
     private layer: string;
     private drawOffset: number;
     private drawCount: number;
@@ -129,7 +129,7 @@ export default class MeshRenderer extends Component implements IRenderable {
             return; // material is not instanciated yet.
         }
         const renderArgs = <IMaterialArgument>{
-            targetBuffer: this.targetBuffer,
+            indexGroup: this.indexGroup,
             geometry: this.geometryInstance,
             camera: args.camera,
             transform: this._transformComponent,

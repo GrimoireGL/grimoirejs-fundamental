@@ -1,4 +1,4 @@
-import RenderSceneComponent from "../Components/RenderSceneComponent";
+import RenderSceneComponent from "../Components/RenderStage/RenderSceneComponent";
 import gr from "grimoirejs";
 import Component from "grimoirejs/ref/Node/Component";
 import Rectangle from "grimoirejs-math/ref/Rectangle";
