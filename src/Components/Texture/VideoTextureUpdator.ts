@@ -11,14 +11,6 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
       converter: "String",
       default: null
     },
-    flipY: {
-      converter: "Boolean",
-      default: false
-    },
-    premultipliedAlpha: {
-      converter: "Boolean",
-      default: false
-    },
     currentTime: {
       converter: "Number",
       default: 0

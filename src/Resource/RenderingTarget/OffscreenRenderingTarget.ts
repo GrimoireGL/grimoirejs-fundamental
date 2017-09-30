@@ -5,7 +5,7 @@ import FrameBuffer from "../FrameBuffer";
 /**
  * Render target contains texture and render buffer
  */
-export default class OffscreenRenderTarget implements IRenderingTarget{
+export default class OffscreenRenderTarget{
     public clear(flag: number, color: number[]|null = [0, 0, 0, 0], depth: number|null = 1): void {
         this.bind();
         let clearTarget = 0;

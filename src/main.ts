@@ -33,6 +33,7 @@ import MaterialConverter from "./Converters/MaterialConverter";
 import TextureConverter from "./Converters/TextureConverter";
 import Texture2DConverter from "./Converters/TextureConverter";
 import ViewportConverter from "./Converters/ViewportConverter";
+import RenderingTargetConverter from "./Converters/RenderingTargetConverter";
 import ImageTextureUpdator from "./Components/Texture/ImageTextureUpdator";
 import VideoTextureUpdator from "./Components/Texture/VideoTextureUpdator";
 
@@ -71,6 +72,7 @@ export default () => {
         GrimoireInterface.registerConverter("Viewport", ViewportConverter);
         GrimoireInterface.registerConverter("Node", NodeConverter);
         GrimoireInterface.registerConverter(PositionConverter);
+        GrimoireInterface.registerConverter("RenderingTarget",RenderingTargetConverter);
 
         GrimoireInterface.registerNode("goml", ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "RendererManager", "Fullscreen"]);
         GrimoireInterface.registerNode("scene", ["Scene"]);

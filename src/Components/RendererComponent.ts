@@ -11,13 +11,19 @@ import Rectangle from "grimoirejs-math/ref/Rectangle";
 import Timer from "../Util/Timer";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 import Viewport from "../Resource/Viewport";
+import RenderingTargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
+import CanvasRegionRenderingTarget from "../Resource/RenderingTarget/CanvasRegionRenderingTarget";
 export default class RendererComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
+    regionName:{
+      converter:"String",
+      default:null
+    },
     camera: {
       converter: "Component",
       default: "camera",
       target: "Camera"
-    },
+    }, 
     viewport: {
       converter: "Viewport",
       default: "auto"
@@ -29,6 +35,17 @@ export default class RendererComponent extends Component {
   };
 
   public camera: CameraComponent;
+
+  public renderingTarget:CanvasRegionRenderingTarget;  
+
+  public get viewport():Viewport{
+    if(this._viewportCache){
+      return this._viewportCache;
+    }else{
+      this._viewportCache = this._viewportSizeGenerator((this.companion.get("gl") as WebGLRenderingContext).canvas);
+      return this._viewportCache;
+    }
+  }
 
   private _gl: WebGLRenderingContext;
 
@@ -52,6 +69,7 @@ export default class RendererComponent extends Component {
 
   private _wasInside = false;
 
+
   public $awake(): void {
     // initializing attributes
     this.getAttributeRaw("camera").boundTo("camera");
@@ -61,6 +79,13 @@ export default class RendererComponent extends Component {
     });
     // viewport converter returns a delegate to generate viewport size
     this._viewportSizeGenerator = this.getAttribute("viewport");
+    let regionName = this.getAttribute("regionName");
+    if(!regionName){
+      regionName = "renderer-" + this.node.index;
+    }
+    this.renderingTarget = new CanvasRegionRenderingTarget(this.companion.get("gl"));
+    this.renderingTarget.setViewport(this.viewport);
+    RenderingTargetRegistry.get(this.companion.get("gl")).setRenderingTarget(regionName,this.renderingTarget);
     this._initializeMouseHandlers();
   }
 
@@ -91,6 +116,7 @@ export default class RendererComponent extends Component {
 
   public $resizeCanvas(): void {
     this._viewportCache = this._viewportSizeGenerator(this._canvas);
+    this.renderingTarget.setViewport(this._viewportCache);
     const pow2Size = TextureSizeCalculator.getPow2Size(this._viewportCache.Width, this._viewportCache.Height);
     this.node.broadcastMessage("resizeBuffer", <IResizeBufferMessage>{
       width: this._viewportCache.Width,

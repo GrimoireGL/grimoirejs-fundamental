@@ -1,4 +1,8 @@
+import Viewport from "../Viewport";
+
 export default interface IRenderingTarget {
-    bind(): void;
-    clear(flag: number, color: number[] | null, depth: number | null): void;
+    beforeDraw(clearFlag: number, color: number[] | null, depth: number | null): void;
+    getBufferWidth():number;
+    getBufferHeight():number;
+    getViewport():Viewport;
 }

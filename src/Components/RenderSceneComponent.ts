@@ -10,6 +10,7 @@ import Framebuffer from "../Resource/FrameBuffer";
 import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
 import CameraComponent from "./CameraComponent";
 import Viewport from "../Resource/Viewport";
+import IRenderingTarget from "../Resource/RenderingTarget/IRenderingTarget";
 export default class RenderSceneComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     layer: {
@@ -21,7 +22,7 @@ export default class RenderSceneComponent extends Component {
       converter: "String"
     },
     out: {
-      converter: "String",
+      converter: "RenderingTarget",
       default: "default"
     },
     clearColor: {
@@ -73,6 +74,8 @@ export default class RenderSceneComponent extends Component {
 
   private _fboViewport: Viewport;
 
+  public out: IRenderingTarget;
+
   // messages
 
   public $awake(): void {
@@ -83,6 +86,7 @@ export default class RenderSceneComponent extends Component {
     this.getAttributeRaw("clearDepth").boundTo("clearDepth");
     this.getAttributeRaw("camera").boundTo("_camera");
     this.getAttributeRaw("technique").boundTo("technique");
+    this.getAttributeRaw("out").boundTo("out");
   }
 
 
@@ -109,29 +113,21 @@ export default class RenderSceneComponent extends Component {
     if (!camera) {
       return;
     }
-    if (this._fbo) {
-      this._fbo.bind();
-      this._fboViewport.configure(this._gl);
-    } else {
-      this._gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
-      args.viewport.configure(this._gl);
+    let clearFlag = 0;
+    if(this._fbo && this.clearColorEnabled){
+      clearFlag |= WebGLRenderingContext.COLOR_BUFFER_BIT;
     }
-    // clear buffer if needed
-    if (this._fbo && this.clearColorEnabled) {
-      this._gl.clearColor(this.clearColor.R, this.clearColor.G, this.clearColor.B, this.clearColor.A);
-      this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
+    if(this.clearDepthEnabled){
+      clearFlag |= WebGLRenderingContext.DEPTH_BUFFER_BIT;
     }
-    if (this.clearDepthEnabled) {
-      this._gl.clearDepth(this.clearDepth);
-      this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
-    }
+    this.out.beforeDraw(clearFlag,this.clearColor.rawElements as number[],this.clearDepth);
     camera.updateContainedScene(args.timer);
     camera.renderScene({
       renderer: this,
       camera: camera,
       buffers: args.buffers,
       layer: this.layer,
-      viewport: args.viewport,
+      viewport: this.out.getViewport(),
       timer: args.timer,
       technique: this.technique,
       sceneDescription: {}

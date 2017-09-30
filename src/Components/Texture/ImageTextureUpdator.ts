@@ -9,14 +9,6 @@ export default class ImageTextureUpdator extends TextureUpdatorComponentBase {
     src: {
       converter: "String",
       default: null
-    },
-    flipY: {
-      converter: "Boolean",
-      default: false
-    },
-    premultipliedAlpha: {
-      converter: "Boolean",
-      default: false
     }
   };
 
