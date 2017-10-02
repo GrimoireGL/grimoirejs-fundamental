@@ -66,7 +66,7 @@ basicRegister(gl.FLOAT_MAT4, true, "Object", [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: TextureReference, args) => {
   let texture: Texture2D;
   if (value) {
-    const fetched = value.get(args.buffers);
+    const fetched = value.get();
     if (fetched.valid) {
       texture = fetched;
     }

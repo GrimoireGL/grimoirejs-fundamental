@@ -11,7 +11,6 @@ interface IMaterialArgument {
   camera: CameraComponent;
   viewport: Rectangle;
   transform: TransformComponent;
-  buffers: { [key: string]: Texture2D; };
   drawOffset?: number;
   drawCount?: number;
   technique: string;

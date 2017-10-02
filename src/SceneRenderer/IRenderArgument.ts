@@ -17,7 +17,6 @@ interface IRenderArgument {
    */
   renderer: Component;
   camera: CameraComponent;
-  buffers: { [key: string]: Texture2D };
   layer: string;
   viewport: Viewport;
   material?: Material;

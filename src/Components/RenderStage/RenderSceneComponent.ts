@@ -7,7 +7,6 @@ import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import Framebuffer from "../../Resource/FrameBuffer";
-import IBufferUpdatedMessage from "../../Messages/IBufferUpdatedMessage";
 import CameraComponent from "../CameraComponent";
 import Viewport from "../../Resource/Viewport";
 import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
@@ -63,7 +62,6 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
     camera.renderScene({
       renderer: this,
       camera: camera,
-      buffers: args.buffers,
       layer: this.layer,
       viewport: this.out.getViewport(),
       timer: args.timer,

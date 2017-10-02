@@ -133,7 +133,6 @@ export default class MeshRenderer extends Component implements IRenderable {
             geometry: this.geometryInstance,
             camera: args.camera,
             transform: this._transformComponent,
-            buffers: args.buffers,
             viewport: args.viewport,
             drawCount: this.drawCount,
             drawOffset: this.drawOffset,

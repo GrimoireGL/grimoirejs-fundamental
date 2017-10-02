@@ -7,7 +7,7 @@ import Framebuffer from "../Resource/FrameBuffer";
 import Texture2D from "../Resource/Texture2D";
 import RenderBuffer from "../Resource/RenderBuffer";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
-import IResizeBufferMessage from "../Messages/IResizeBufferMessage";
+import IResizeViewportMessage from "../Messages/IResizeViewportMessage";
 import RenderSceneComponent from "./RenderStage/RenderSceneComponent";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Component from "grimoirejs/ref/Node/Component";
@@ -57,7 +57,7 @@ export default class RenderHitareaComponent extends Component {
     }
   }
 
-  public $resizeBuffer(args: IResizeBufferMessage): void {
+  public $resizeViewport(args: IResizeViewportMessage): void {
     const size = TextureSizeCalculator.getPow2Size(args.width, args.height);
     this._bufferViewport = new Viewport(0, 0, size.width, size.height);
     this.hitareaTexture.update(0, size.width, size.height, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE);
@@ -88,7 +88,6 @@ export default class RenderHitareaComponent extends Component {
     camera.renderScene({
       renderer: this._sceneRenderer, // TODO
       camera: camera,
-      buffers: args.buffers,
       layer: this._sceneRenderer.layer,
       viewport: args.viewport,
       timer: args.timer,

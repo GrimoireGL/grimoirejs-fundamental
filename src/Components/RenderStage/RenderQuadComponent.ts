@@ -4,7 +4,6 @@ import GeometryRegistoryComponent from "../GeometryRegistoryComponent";
 import Geometry from "../../Geometry/Geometry";
 import IMaterialArgument from "../../Material/IMaterialArgument";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
-import IBufferUpdatedMessage from "../../Messages/IBufferUpdatedMessage";
 import Framebuffer from "../../Resource/FrameBuffer";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
@@ -58,7 +57,6 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
       geometry: this._geom,
       camera: null,
       transform: null,
-      buffers: args.buffers,
       viewport: args.viewport,
       technique: this.technique,
       sceneDescription: {}

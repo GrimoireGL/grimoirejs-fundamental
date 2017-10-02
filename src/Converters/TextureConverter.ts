@@ -4,6 +4,7 @@ import Attribute from "grimoirejs/ref/Node/Attribute";
 import Texture2D from "../Resource/Texture2D";
 import ImageResolver from "../Asset/ImageResolver";
 import {Nullable} from "grimoirejs/ref/Base/Types";
+import RenderingBufferResourceRegistry from "../Resource/RenderingTarget/RenderingBufferResourceRegistry";
 
 type Query = {
   type: "query" | "backbuffer",
@@ -45,7 +46,7 @@ export default function TextureConverter(val: any, attr: Attribute): any {
       const param = parseResult.param;
       switch (parseResult.type) {
         case "backbuffer":
-          return new TextureReference((buffers) => buffers[param]);
+          return new TextureReference((buffers) => RenderingBufferResourceRegistry.get(attr.companion.get("gl")).getBackbuffer(param));
         case "query":
           const obtainedTag = attr.tree!(param);
           const texture = obtainedTag.first()!.getComponent(TextureContainer);
