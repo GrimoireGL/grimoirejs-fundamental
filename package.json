@@ -36,7 +36,7 @@
     "grimoirejs-math": "^1.14.5",
     "http-server": "^0.10.0",
     "nightwatch": "^0.9.16",
-    "raw-loader": "^0.5.1",
+    "raw-loader": "^1.0.0-beta.0",
     "regenerator-runtime": "^0.11.0",
     "selenium-server-standalone-jar": "^3.5.0",
     "semantic-release": "^7.0.2",
