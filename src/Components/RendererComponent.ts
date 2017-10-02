@@ -203,7 +203,7 @@ export default class RendererComponent extends Component {
     const rect = this._canvas.getBoundingClientRect();
     const positionX = rect.left + window.pageXOffset;
     const positionY = rect.top + window.pageYOffset;
-    return [e.pageX - positionX, e.pageY - positionY];
+    return [e.pageX - positionX, rect.height - (e.pageY - positionY)];
   }
 
   /**

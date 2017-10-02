@@ -1,4 +1,4 @@
-import RenderHitArea from "./Components/RenderHitareaComponent";
+import RenderHitArea from "./Components/RenderStage/RenderHitareaComponent";
 import PositionConverter from "./Converters/PositionConverter";
 import NodeConverter from "./Converters/NodeConverter";
 import DefaultMaterial from "./Material/Defaults/DefaultMaterial";
