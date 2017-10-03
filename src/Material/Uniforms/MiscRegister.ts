@@ -69,4 +69,15 @@ UniformResolverRegistry.add("MOUSE_POSITION", (valInfo: IVariableInfo) => {
   };
 });
 
+UniformResolverRegistry.add("MOUSE_STATE", (valInfo: IVariableInfo) => {
+  return (proxy: UniformProxy, args: IMaterialArgument) => {
+    const mouseDesc = args.rendererDescription["mouse"] as ViewportBaseMouseState;
+    if (mouseDesc) {
+      proxy.uniformVector2(valInfo.name, new Vector2(mouseDesc.left ? 1 : 0, mouseDesc.right ? 1 : 0));
+    } else {
+      proxy.uniformVector2(valInfo.name, Vector2.Zero);
+    }
+  };
+});
+
 export default null;

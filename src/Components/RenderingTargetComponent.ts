@@ -44,14 +44,18 @@ export default class RenderingTargetComponent extends Component {
         depthBufferType: {
             converter: "Enum",
             default: WebGLRenderingContext.DEPTH_COMPONENT16,
-            table:{
+            table: {
                 NONE: 0,
                 DEPTH_COMPONENT16: WebGLRenderingContext.DEPTH_COMPONENT16
             }
+        },
+        resizerType: {
+            converter: "String",
+            default: "ViewportSize"
         }
     };
 
-    public renderingTarget:OffscreenRenderingTarget;
+    public renderingTarget: OffscreenRenderingTarget;
 
     public $mount(): void {
         const name = this.getAttribute("name");
@@ -62,26 +66,28 @@ export default class RenderingTargetComponent extends Component {
             this._instanciateDefaultBuffers(name);
         }
         const textures = this.node.getComponentsInChildren(TextureContainer);
-        const texture = textures[0].texture
-        this.renderingTarget = new OffscreenRenderingTarget(this.companion.get("gl"),[texture]);
-        RenderingTrargetRegistry.get(this.companion.get("gl")).setRenderingTarget(name,this.renderingTarget);
+        const texture = textures[0].texture;
+        this.renderingTarget = new OffscreenRenderingTarget(this.companion.get("gl"), [texture]);
+        RenderingTrargetRegistry.get(this.companion.get("gl")).setRenderingTarget(name, this.renderingTarget);
     }
 
     /**
      * Generate default buffers as children node
      * @param name 
      */
-    private _instanciateDefaultBuffers(name:string): void {
-        this.node.addChildByName("color-buffer",{
-            name:name,
-            format:this.getAttribute("colorBufferFormat"),
-            type:this.getAttribute("colorBufferType")
+    private _instanciateDefaultBuffers(name: string): void {
+        this.node.addChildByName("color-buffer", {
+            name: name,
+            format: this.getAttribute("colorBufferFormat"),
+            type: this.getAttribute("colorBufferType"),
+            resizerType: this.getAttribute("resizerType")
         });
-        if(this.getAttribute("depthBufferType") !== 0){
-            this.node.addChildByName("render-buffer",{
-                name:name,
-                type:this.getAttribute("depthBufferType")
-            }); 
+        if (this.getAttribute("depthBufferType") !== 0) {
+            this.node.addChildByName("render-buffer", {
+                name: name,
+                type: this.getAttribute("depthBufferType"),
+                resizerType: this.getAttribute("resizerType")
+            });
         }
     }
 }

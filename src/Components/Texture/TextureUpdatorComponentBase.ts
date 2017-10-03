@@ -5,7 +5,7 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import ResizableResourceUpdator from "./ResizableResourceUpdator";
 
 export default class TextureUpdatorComponentBase extends ResizableResourceUpdator {
-    public static attributes:{ [key: string]: IAttributeDeclaration } = {
+    public static attributes: { [key: string]: IAttributeDeclaration } = {
         flipY: {
             converter: "Boolean",
             default: false

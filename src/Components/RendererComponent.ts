@@ -60,6 +60,10 @@ export default class RendererComponent extends Component {
 
   private _mouseMoveHandler: (e: MouseEvent) => void;
 
+  private _mouseDownHandler: (e: MouseEvent) => void;
+
+  private _mouseUpHandler: (e: MouseEvent) => void;
+
   private _wasInside = false;
 
 
@@ -130,44 +134,40 @@ export default class RendererComponent extends Component {
   private _initializeMouseHandlers() {
     // initializing mouse handlers
     this._mouseMoveHandler = (e: MouseEvent) => {
-      if (!this.isActive) {
-        return;
-      }
       if (this._isViewportInside(e)) {
         if (!this._wasInside) { // If the last mouse pointer was inside of canvas but not inside of viewport
-          this.node.emit("mouseenter");
-          this.node.broadcastMessage("mouseenter", this._toViewportMouseArgs(e));
+          this._sendMouseEvent("mouseenter", e);
         }
-        this.node.emit("mousemove");
-        this.node.broadcastMessage("mousemove", this._toViewportMouseArgs(e));
+        this._sendMouseEvent("mousemove", e);
         this._wasInside = true; // Mark as last pointer was inside of viewport
       } else {
         if (this._wasInside) { // if position of last mouse pointer was inside and now the pointer is out side of viewport but inside of canvas
-          this.node.emit("mouseleave");
-          this.node.broadcastMessage("mouseleave", this._toViewportMouseArgs(e));
+          this._sendMouseEvent("mouseleave", e);
         }
         this._wasInside = false; // Mark as last pointer was not inside of viewport
       }
     };
     this._mouseEnterHandler = (e: MouseEvent) => {
-      if (!this.isActive) {
-        return;
-      }
       if (this._isViewportInside(e)) { // If mouse entered and inside of viewport
-        this.node.emit("mouseenter");
-        this.node.broadcastMessage("mouseenter", this._toViewportMouseArgs(e));
+        this._sendMouseEvent("mouseenter", e);
         this._wasInside = true;
       }
     };
     this._mouseLeaveHandler = (e: MouseEvent) => {
-      if (!this.isActive) {
-        return;
-      }
       if (this._wasInside) { // If mouse left canvas area and last mouse position was on viewport area
-        this.node.emit("mouseleave");
-        this.node.broadcastMessage("mouseleave", this._toViewportMouseArgs(e));
+        this._sendMouseEvent("mouseleave", e);
       }
       this._wasInside = false;
+    };
+    this._mouseDownHandler = (e: MouseEvent) => {
+      if (this._isViewportInside(e)) {
+        this._sendMouseEvent("mousedown", e);
+        this._wasInside = true;
+      }
+    };
+    // Mouse up can be called even if mouse pointer was not inside of viewport
+    this._mouseUpHandler = (e: MouseEvent) => {
+      this._sendMouseEvent("mouseup", e);
     };
   }
 
@@ -175,12 +175,24 @@ export default class RendererComponent extends Component {
     this._canvas.addEventListener("mousemove", this._mouseMoveHandler);
     this._canvas.addEventListener("mouseleave", this._mouseLeaveHandler);
     this._canvas.addEventListener("mouseenter", this._mouseEnterHandler);
+    this._canvas.addEventListener("mousedown", this._mouseDownHandler);
+    this._canvas.addEventListener("mouseup", this._mouseUpHandler);
   }
 
   private _disableMouseHandling(): void {
     this._canvas.removeEventListener("mousemove", this._mouseMoveHandler);
     this._canvas.removeEventListener("mouseleave", this._mouseLeaveHandler);
     this._canvas.removeEventListener("mouseenter", this._mouseEnterHandler);
+    this._canvas.removeEventListener("mousedown", this._mouseDownHandler);
+    this._canvas.removeEventListener("mouseup", this._mouseUpHandler);
+  }
+
+  private _sendMouseEvent(eventName: string, e: MouseEvent): void {
+    if (!this.isActive) {
+      return;
+    }
+    this.node.emit(eventName);
+    this.node.broadcastMessage(eventName, this._toViewportMouseArgs(e));
   }
 
   /**
@@ -197,7 +209,7 @@ export default class RendererComponent extends Component {
   /**
    * Obtain mouse point of relative coordinate from element.
    * @param  {MouseEvent} e [description]
-   * @return {number[]}     [description]
+   * @return {number[]}     [description] x,y,width,height
    */
   private _getRelativePosition(e: MouseEvent): number[] {
     const rect = this._canvas.getBoundingClientRect();
@@ -223,7 +235,8 @@ export default class RendererComponent extends Component {
       canvasX: ro[0],
       canvasY: ro[1],
       canvasNormalizedX: ro[0] / ro[2],
-      canvasNormalizedY: ro[1] / ro[3]
+      canvasNormalizedY: ro[1] / ro[3],
+      inside: this._isViewportInside(e)
     });
   }
 }

@@ -38,7 +38,9 @@ export default class ResizableResourceUpdator extends BasicComponent {
             if (!resizerCtor) {
                 throw new Error(`Specified resizer '${resizerType}' is not yet registered to resizable resource updator`);
             }
-            this.node.addComponent(resizerCtor);
+            setImmediate(() => {
+                this.node.addComponent(resizerCtor); // darkside          
+            });
         }
     }
 

@@ -7,6 +7,7 @@ interface ViewportMouseEvent extends MouseEvent {
   canvasY: number;
   canvasNormalizedX: number;
   canvasNormalizedY: number;
+  inside: boolean;
 }
 
 export default ViewportMouseEvent;

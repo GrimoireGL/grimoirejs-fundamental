@@ -37,6 +37,7 @@ import RenderingTargetConverter from "./Converters/RenderingTargetConverter";
 import ImageTextureUpdator from "./Components/Texture/ImageTextureUpdator";
 import VideoTextureUpdator from "./Components/Texture/VideoTextureUpdator";
 import ViewportSizeResourceResizer from "./Components/Texture/ViewportSizeResourceResizer";
+import ConstantSizeResourceResizer from "./Components/Texture/ConstantSizeResourceResizer";
 import RenderingTargetComponent from "./Components/RenderingTargetComponent";
 
 export default () => {
@@ -66,6 +67,7 @@ export default () => {
         GrimoireInterface.registerComponent("ImageTextureUpdator", ImageTextureUpdator);
         GrimoireInterface.registerComponent("VideoTextureUpdator", VideoTextureUpdator);
         GrimoireInterface.registerComponent("ViewportSizeResourceResizer", ViewportSizeResourceResizer);
+        GrimoireInterface.registerComponent("ConstantSizeResourceResizer", ConstantSizeResourceResizer);
         GrimoireInterface.registerComponent("RenderingTarget", RenderingTargetComponent);
 
         GrimoireInterface.registerConverter("CanvasSize", CanvasSizeConverter);
