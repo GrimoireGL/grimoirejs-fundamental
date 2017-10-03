@@ -1,7 +1,6 @@
-interface VertexBufferAccessor {
-  size: number;
-  offset?: number;
-  stride?: number;
+import BufferAccessor from "./BufferAccessor";
+
+interface VertexBufferAccessor extends BufferAccessor {
   type?: number;
   keepOnBuffer?: boolean;
   normalized?: boolean;

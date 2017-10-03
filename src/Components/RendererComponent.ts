@@ -1,7 +1,6 @@
 import ViewportMouseEvent from "../Objects/ViewportMouseEvent";
 import gr from "grimoirejs";
-import IBufferUpdatedMessage from "../Messages/IBufferUpdatedMessage";
-import IResizeBufferMessage from "../Messages/IResizeBufferMessage";
+import IResizeViewportMessage from "../Messages/IResizeViewportMessage";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import Texture2D from "../Resource/Texture2D";
 import CameraComponent from "./CameraComponent";
@@ -11,8 +10,14 @@ import Rectangle from "grimoirejs-math/ref/Rectangle";
 import Timer from "../Util/Timer";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 import Viewport from "../Resource/Viewport";
+import RenderingTargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
+import CanvasRegionRenderingTarget from "../Resource/RenderingTarget/CanvasRegionRenderingTarget";
 export default class RendererComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
+    regionName: {
+      converter: "String",
+      default: null
+    },
     camera: {
       converter: "Component",
       default: "camera",
@@ -30,6 +35,17 @@ export default class RendererComponent extends Component {
 
   public camera: CameraComponent;
 
+  public renderingTarget: CanvasRegionRenderingTarget;
+
+  public get viewport(): Viewport {
+    if (this._viewportCache) {
+      return this._viewportCache;
+    } else {
+      this._viewportCache = this._viewportSizeGenerator((this.companion.get("gl") as WebGLRenderingContext).canvas);
+      return this._viewportCache;
+    }
+  }
+
   private _gl: WebGLRenderingContext;
 
   private _canvas: HTMLCanvasElement;
@@ -38,19 +54,18 @@ export default class RendererComponent extends Component {
 
   private _viewportCache: Viewport;
 
-  private _buffers: { [key: string]: Texture2D } = {};
-
-  private _bufferViewports: {
-    [bufferName: string]: Viewport
-  } = {};
-
   private _mouseLeaveHandler: (e: MouseEvent) => void;
 
   private _mouseEnterHandler: (e: MouseEvent) => void;
 
   private _mouseMoveHandler: (e: MouseEvent) => void;
 
-  private _wasInside: boolean = false;
+  private _mouseDownHandler: (e: MouseEvent) => void;
+
+  private _mouseUpHandler: (e: MouseEvent) => void;
+
+  private _wasInside = false;
+
 
   public $awake(): void {
     // initializing attributes
@@ -61,6 +76,13 @@ export default class RendererComponent extends Component {
     });
     // viewport converter returns a delegate to generate viewport size
     this._viewportSizeGenerator = this.getAttribute("viewport");
+    let regionName = this.getAttribute("regionName");
+    if (!regionName) {
+      regionName = "renderer-" + this.node.index;
+    }
+    this.renderingTarget = new CanvasRegionRenderingTarget(this.companion.get("gl"));
+    this.renderingTarget.setViewport(this.viewport);
+    RenderingTargetRegistry.get(this.companion.get("gl")).setRenderingTarget(regionName, this.renderingTarget);
     this._initializeMouseHandlers();
   }
 
@@ -91,18 +113,13 @@ export default class RendererComponent extends Component {
 
   public $resizeCanvas(): void {
     this._viewportCache = this._viewportSizeGenerator(this._canvas);
+    this.renderingTarget.setViewport(this._viewportCache);
     const pow2Size = TextureSizeCalculator.getPow2Size(this._viewportCache.Width, this._viewportCache.Height);
-    this.node.broadcastMessage("resizeBuffer", <IResizeBufferMessage>{
+    this.node.broadcastMessage("resizeViewport", <IResizeViewportMessage>{
       width: this._viewportCache.Width,
       height: this._viewportCache.Height,
       pow2Width: pow2Size.width,
-      pow2Height: pow2Size.height,
-      buffers: this._buffers,
-      bufferViewports: this._bufferViewports
-    });
-    this.node.broadcastMessage("bufferUpdated", <IBufferUpdatedMessage>{
-      buffers: this._buffers,
-      bufferViewports: this._bufferViewports
+      pow2Height: pow2Size.height
     });
   }
 
@@ -110,8 +127,6 @@ export default class RendererComponent extends Component {
     this.node.broadcastMessage("render", <IRenderRendererMessage>{
       camera: this.camera,
       viewport: this._viewportCache,
-      bufferViewports: this._bufferViewports,
-      buffers: this._buffers,
       timer: args.timer
     });
   }
@@ -119,44 +134,40 @@ export default class RendererComponent extends Component {
   private _initializeMouseHandlers() {
     // initializing mouse handlers
     this._mouseMoveHandler = (e: MouseEvent) => {
-      if (!this.isActive) {
-        return;
-      }
       if (this._isViewportInside(e)) {
         if (!this._wasInside) { // If the last mouse pointer was inside of canvas but not inside of viewport
-          this.node.emit("mouseenter");
-          this.node.broadcastMessage("mouseenter", this._toViewportMouseArgs(e));
+          this._sendMouseEvent("mouseenter", e);
         }
-        this.node.emit("mousemove");
-        this.node.broadcastMessage("mousemove", this._toViewportMouseArgs(e));
+        this._sendMouseEvent("mousemove", e);
         this._wasInside = true; // Mark as last pointer was inside of viewport
       } else {
         if (this._wasInside) { // if position of last mouse pointer was inside and now the pointer is out side of viewport but inside of canvas
-          this.node.emit("mouseleave");
-          this.node.broadcastMessage("mouseleave", this._toViewportMouseArgs(e));
+          this._sendMouseEvent("mouseleave", e);
         }
         this._wasInside = false; // Mark as last pointer was not inside of viewport
       }
     };
     this._mouseEnterHandler = (e: MouseEvent) => {
-      if (!this.isActive) {
-        return;
-      }
       if (this._isViewportInside(e)) { // If mouse entered and inside of viewport
-        this.node.emit("mouseenter");
-        this.node.broadcastMessage("mouseenter", this._toViewportMouseArgs(e));
+        this._sendMouseEvent("mouseenter", e);
         this._wasInside = true;
       }
     };
     this._mouseLeaveHandler = (e: MouseEvent) => {
-      if (!this.isActive) {
-        return;
-      }
       if (this._wasInside) { // If mouse left canvas area and last mouse position was on viewport area
-        this.node.emit("mouseleave");
-        this.node.broadcastMessage("mouseleave", this._toViewportMouseArgs(e));
+        this._sendMouseEvent("mouseleave", e);
       }
       this._wasInside = false;
+    };
+    this._mouseDownHandler = (e: MouseEvent) => {
+      if (this._isViewportInside(e)) {
+        this._sendMouseEvent("mousedown", e);
+        this._wasInside = true;
+      }
+    };
+    // Mouse up can be called even if mouse pointer was not inside of viewport
+    this._mouseUpHandler = (e: MouseEvent) => {
+      this._sendMouseEvent("mouseup", e);
     };
   }
 
@@ -164,12 +175,24 @@ export default class RendererComponent extends Component {
     this._canvas.addEventListener("mousemove", this._mouseMoveHandler);
     this._canvas.addEventListener("mouseleave", this._mouseLeaveHandler);
     this._canvas.addEventListener("mouseenter", this._mouseEnterHandler);
+    this._canvas.addEventListener("mousedown", this._mouseDownHandler);
+    this._canvas.addEventListener("mouseup", this._mouseUpHandler);
   }
 
   private _disableMouseHandling(): void {
     this._canvas.removeEventListener("mousemove", this._mouseMoveHandler);
     this._canvas.removeEventListener("mouseleave", this._mouseLeaveHandler);
     this._canvas.removeEventListener("mouseenter", this._mouseEnterHandler);
+    this._canvas.removeEventListener("mousedown", this._mouseDownHandler);
+    this._canvas.removeEventListener("mouseup", this._mouseUpHandler);
+  }
+
+  private _sendMouseEvent(eventName: string, e: MouseEvent): void {
+    if (!this.isActive) {
+      return;
+    }
+    this.node.emit(eventName);
+    this.node.broadcastMessage(eventName, this._toViewportMouseArgs(e));
   }
 
   /**
@@ -186,13 +209,13 @@ export default class RendererComponent extends Component {
   /**
    * Obtain mouse point of relative coordinate from element.
    * @param  {MouseEvent} e [description]
-   * @return {number[]}     [description]
+   * @return {number[]}     [description] x,y,width,height
    */
   private _getRelativePosition(e: MouseEvent): number[] {
     const rect = this._canvas.getBoundingClientRect();
     const positionX = rect.left + window.pageXOffset;
     const positionY = rect.top + window.pageYOffset;
-    return [e.pageX - positionX, e.pageY - positionY];
+    return [e.pageX - positionX, rect.height - (e.pageY - positionY), rect.width, rect.height];
   }
 
   /**
@@ -208,7 +231,12 @@ export default class RendererComponent extends Component {
       viewportX: r[0],
       viewportY: r[1],
       viewportNormalizedX: n[0],
-      viewportNormalizedY: n[1]
+      viewportNormalizedY: n[1],
+      canvasX: ro[0],
+      canvasY: ro[1],
+      canvasNormalizedX: ro[0] / ro[2],
+      canvasNormalizedY: ro[1] / ro[3],
+      inside: this._isViewportInside(e)
     });
   }
 }

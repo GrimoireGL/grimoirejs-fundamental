@@ -53,7 +53,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
 
   private static _defaultMaterial = "unlit";
 
-  public getDrawPriorty(depth: number,technique: string): number {
+  public getDrawPriorty(depth: number, technique: string): number {
     if (!this.materialReady && !this.isActive) { // If material was not ready
       return Number.MAX_VALUE;
     }
@@ -81,9 +81,9 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
 
   public materialArgs: { [key: string]: any; } = {};
 
-  public materialReady: boolean = false;
+  public materialReady = false;
 
-  public useMaterial: boolean = false;
+  public useMaterial = false;
 
   private _materialComponent: MaterialComponent;
 

@@ -1,9 +1,9 @@
 import gr from "grimoirejs";
-import Texture2D from "../Resource/Texture2D";
+import Texture2D from "../../Resource/Texture2D";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import ImageResolver from "../Asset/ImageResolver";
-export default class TextureComponent extends Component {
+import ImageResolver from "../../Asset/ImageResolver";
+export default class TextureContainer extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     minFilter: {
       converter: "Enum",
@@ -57,5 +57,10 @@ export default class TextureComponent extends Component {
     this.getAttributeRaw("minFilter").watch(v => this.texture.minFilter = v);
     this.getAttributeRaw("wrapS").watch(v => this.texture.wrapS = v);
     this.getAttributeRaw("wrapT").watch(v => this.texture.wrapT = v);
+  }
+
+  public $unmount(): void {
+    this.texture.destroy();
+    this.texture = null;
   }
 }

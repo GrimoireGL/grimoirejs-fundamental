@@ -5,19 +5,15 @@ import TextFileResolver from "../Asset/TextFileResolver";
 import Material from "./Material";
 import NameResolver from "../Asset/NameResolver";
 import ShaderHeader from "raw-loader!../Shaders/header.glsl";
+import GLRelatedRegistryBase from "../Resource/GLRelatedRegistryBase";
 /**
  * Manage materialGenerators for materials.
  * Materials can be instanciated with this instance.
  * Every gl reference can contain 1 of MaterialFactory at most.
  */
-export default class MaterialFactory {
-
-    /**
-     * Map for gl reference and MaterialFactory.
-     * @type {Map<WebGLRenderingContext,MaterialFactory>}
-     */
-    public static factories: Map<WebGLRenderingContext, MaterialFactory> = new Map<WebGLRenderingContext, MaterialFactory>();
-
+export default class MaterialFactory extends GLRelatedRegistryBase {
+    public static registryName = "MaterialFactory";
+    
     public static defaultShaderHeader: string = ShaderHeader;
 
     public static materialGeneratorResolver: NameResolver<(factory: MaterialFactory) => Material> = new NameResolver<(factory: MaterialFactory) => Material>();
@@ -28,11 +24,7 @@ export default class MaterialFactory {
      * @return {MaterialFactory}          [description]
      */
     public static get(gl: WebGLRenderingContext): MaterialFactory {
-        const factory = this.factories.get(gl);
-        if (!factory) {
-            throw new Error("There was no associated MaterialFactory with specified WebGLRenderingContext");
-        }
-        return factory;
+        return GLRelatedRegistryBase.__get(gl,MaterialFactory);
     }
 
     public static addMaterialType(typeName: string, materialGenerator: (factory: MaterialFactory) => Material): void {
@@ -70,16 +62,17 @@ export default class MaterialFactory {
         })());
     }
 
+    public static getMaterialStatus(typeName:string):number{
+        return this.materialGeneratorResolver.getStatus(typeName);
+    }
+
     public shaderHeader: string = MaterialFactory.defaultShaderHeader;
 
     public macro: MacroRegistory;
 
     constructor(public gl: WebGLRenderingContext) {
+        super();
         this.macro = new MacroRegistory();
-        if (MaterialFactory.factories.has(gl)) {
-            throw new Error(`MaterialFactory can not be instanciated dupelicately for a WebGLRenderingContext.`);
-        }
-        MaterialFactory.factories.set(gl, this);
     }
 
     public async instanciate(typeName: string): Promise<Material> {

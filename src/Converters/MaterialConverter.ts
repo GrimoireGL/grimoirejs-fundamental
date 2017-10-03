@@ -17,7 +17,7 @@ export default function MaterialConverter(val: any, attr: Attribute): any {
     let regexResult: RegExpExecArray |null;
     if (regexResult = regex.exec(val)) { // new material should be instanciated for this material
       (attr.component as any)[attr.declaration["componentBoundTo"]] = null;
-      return (attr.companion!.get("MaterialFactory") as MaterialFactory).instanciate(regexResult[1]);
+      return MaterialFactory.get(attr.companion.get("gl")).instanciate(regexResult[1]);
     } else {
       const node = attr.tree!(val).first();
       if (node) {

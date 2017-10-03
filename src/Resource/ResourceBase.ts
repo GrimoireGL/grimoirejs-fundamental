@@ -1,11 +1,14 @@
 import gr from "grimoirejs";
 import IDObject from "grimoirejs/ref/Base/IDObject";
 
-
+/**
+ * Abstraction of resource related class.
+ * Provides unique index for each resources, promise for wating resource available and destroyed flag.
+ */
 abstract class ResourceBase {
   private static _maxIndex = 0;
 
-  public index: number;
+  public readonly index: number;
 
   public destroyed = false;
 

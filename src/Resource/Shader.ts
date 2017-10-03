@@ -31,7 +31,7 @@ export default class Shader extends ResourceBase {
     let lN = 2;
     for (let i = 0; i < source.length; i++) {
       const c = source.charAt(i);
-      if (c === '\n') {
+      if (c === "\n") {
         source = source.substring(0, i + 1) + `${lN}:` + source.substring(i + 1, source.length);
         i++;
         lN++;

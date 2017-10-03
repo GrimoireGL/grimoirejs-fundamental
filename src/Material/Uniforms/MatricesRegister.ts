@@ -98,7 +98,7 @@ UniformResolverRegistry.add("MODELINVERSETRANSPOSE", (valInfo: IVariableInfo) =>
 
 UniformResolverRegistry.add("MODELVIEWINVERSETRANSPOSE", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
   if (!args.transform) {
-    proxy.uniformMatrix(valInfo.name, Matrix.identity());
+    proxy.uniformMatrix3(valInfo.name, Matrix.identity());
     return;
   }
   proxy.uniformMatrix3(valInfo.name, Matrix.transpose(Matrix.inverse(args.transform.calcVM(args.camera))));

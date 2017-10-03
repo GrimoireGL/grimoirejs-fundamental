@@ -106,7 +106,7 @@ export default class Pass {
       const attribute = this.passRecipe.attributes[key];
       Geometry.bindBufferToAttribute(args.geometry, p, key, attribute.semantic);
     }
-    Geometry.drawWithCurrentVertexBuffer(args.geometry, args.targetBuffer, args.drawCount, args.drawOffset);
+    Geometry.drawWithCurrentVertexBuffer(args.geometry, args.indexGroup, args.drawCount, args.drawOffset);
   }
 
   /**

@@ -1,11 +1,15 @@
 import Geometry from "./Geometry";
 import IGeometryFactoryDelegate from "./IGeometryFactoryDelegate";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import GLRelatedRegistryBase from "../Resource/GLRelatedRegistryBase";
 
 /**
  * Provides the feature to instanciate primitive geometry.
  */
-export default class GeometryFactory {
+export default class GeometryFactory extends GLRelatedRegistryBase{
+
+  public static registryName = "GeometryFactory";
+
   /**
    * Delegates to be used as factory
    */
@@ -17,6 +21,14 @@ export default class GeometryFactory {
   public static factoryArgumentDeclarations: { [typeName: string]: { [argName: string]: IAttributeDeclaration } } = {};
 
   public static factoryExtentions: { [typeName: string]: ((geometry: Geometry, attrs: { [attrKey: string]: any }) => void)[] } = {};
+
+  /**
+   * Get geometry factory by WebGLRenderingContext
+   * @param gl 
+   */
+  public static get(gl:WebGLRenderingContext):GeometryFactory{
+    return this.__get(gl,GeometryFactory);
+  }
 
   /**
    * Add new type geometry
@@ -37,7 +49,7 @@ export default class GeometryFactory {
   }
 
   constructor(public gl: WebGLRenderingContext) {
-
+    super();
   }
 
   public async instanciate(type: string, args: { [argName: string]: any }): Promise<Geometry> {

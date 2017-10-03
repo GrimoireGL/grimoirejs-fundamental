@@ -13,22 +13,22 @@ class AssetLoader extends EEObject {
    * Promise count registered.
    * @type {number}
    */
-  public registerCount: number = 0;
+  public registerCount = 0;
   /**
    * Promise count finished successfully.
    * @type {number}
    */
-  public loadCount: number = 0;
+  public loadCount = 0;
   /**
    * Promise count completed(success and errored)
    * @type {number}
    */
-  public completeCount: number = 0;
+  public completeCount = 0;
   /**
    * Promise count errored
    * @type {number}
    */
-  public errorCount: number = 0;
+  public errorCount = 0;
   /**
    * Main promise to provide tasks for waiting for all resource loading.
    * @type {Promise<void>}

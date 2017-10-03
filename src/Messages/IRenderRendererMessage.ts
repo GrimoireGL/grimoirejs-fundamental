@@ -9,8 +9,6 @@ import Viewport from "../Resource/Viewport";
 interface IRendnerRendererMessage {
   camera: CameraComponent;
   viewport: Viewport;
-  buffers: { [key: string]: Texture2D };
-  bufferViewports: { [bufferName: string]: Viewport};
   material?: Material;
   materialArgs?: { [key: string]: Material; };
   timer: Timer;

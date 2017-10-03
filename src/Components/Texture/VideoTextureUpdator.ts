@@ -1,22 +1,15 @@
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import TextureComponent from "./TextureComponent";
-import VideoResolver from "../Asset/VideoResolver";
-import LoopManager from "./LoopManagerComponent";
-import BasicComponent from "./BasicComponent";
-export default class VideoTextureComponent extends BasicComponent {
+import TextureContainer from "./TextureContainer";
+import VideoResolver from "../../Asset/VideoResolver";
+import LoopManager from "../LoopManagerComponent";
+import BasicComponent from "../BasicComponent";
+import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
+export default class VideoTextureUpdatorComponent extends TextureUpdatorComponentBase {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     src: {
       converter: "String",
       default: null
-    },
-    flipY: {
-      converter: "Boolean",
-      default: false
-    },
-    premultipliedAlpha: {
-      converter: "Boolean",
-      default: false
     },
     currentTime: {
       converter: "Number",
@@ -52,14 +45,9 @@ export default class VideoTextureComponent extends BasicComponent {
 
   public loop: boolean;
 
-  private _textureComponent: TextureComponent;
-
-  private _loopManager: LoopManager;
-
   public $mount() {
+    super.$mount();
     this.__bindAttributes();
-    this._textureComponent = this.node.getComponent(TextureComponent);
-    this._loopManager = this.tree("goml").single().getComponent(LoopManager);
     this.getAttributeRaw("src").watch((v: string) => {
       if (v !== null) {
         this._loadTask(v);
@@ -93,7 +81,7 @@ export default class VideoTextureComponent extends BasicComponent {
         this.currentTime = this.video.currentTime;
       }
       if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
-        this._textureComponent.texture.update(this.video, {
+        this.__texture.update(this.video, {
           premultipliedAlpha: this.premultipliedAlpha,
           flipY: this.flipY
         });

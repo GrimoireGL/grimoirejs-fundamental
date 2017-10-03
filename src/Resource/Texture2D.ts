@@ -1,5 +1,6 @@
 import ResourceBase from "./ResourceBase";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
+import Viewport from "./Viewport";
 type ImageSource = HTMLVideoElement | HTMLCanvasElement | HTMLImageElement | ImageData;
 
 export type ImageUploadConfig = {
@@ -102,6 +103,10 @@ export default class Texture2D extends ResourceBase {
     return this._height;
   }
 
+  public get viewport(): Viewport{
+    return new Viewport(0, 0, this.width, this.height);
+  }
+
   public get drawerContext(): CanvasRenderingContext2D {
     if (!this._drawerContext) {
       const c = document.createElement("canvas");
@@ -113,7 +118,7 @@ export default class Texture2D extends ResourceBase {
     return this._drawerContext;
   }
 
-  private _texParameterChanged: boolean = true;
+  private _texParameterChanged = true;
 
   private _drawerContext: CanvasRenderingContext2D;
 

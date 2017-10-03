@@ -1,45 +1,27 @@
-import TextureComponent from "../Components/TextureComponent";
+import TextureContainer from "../Components/Texture/TextureContainer";
 import TextureReference from "../Material/TextureReference";
 import Attribute from "grimoirejs/ref/Node/Attribute";
 import Texture2D from "../Resource/Texture2D";
 import ImageResolver from "../Asset/ImageResolver";
 import {Nullable} from "grimoirejs/ref/Base/Types";
+import RenderingBufferResourceRegistry from "../Resource/RenderingTarget/RenderingBufferResourceRegistry";
 
 type Query = {
-  type: "query" | "backbuffer" | "video",
+  type: "query" | "backbuffer",
   param: string
 };
 
-function updateVideo(tex: Texture2D, video: HTMLVideoElement): void {
-  tex.update(video);
-  requestAnimationFrame(() => updateVideo(tex, video));
-}
 function _parseQuery(query: string): Nullable<Query> {
-  const regex = /(query|backbuffer|video)\((.+)\)[^\)]*$/;
+  const regex = /(query|backbuffer)\((.+)\)[^\)]*$/;
   let regexResult;
   if ((regexResult = regex.exec(query))) {
     return {
-      type: regexResult[1] as "query" | "backbuffer" | "video",
+      type: regexResult[1] as "query" | "backbuffer",
       param: regexResult[2]
     };
   }
   return null;
 }
-
-function generateVideoTag(src: string): HTMLVideoElement {
-  const vTag = document.createElement("video");
-  vTag.src = src;
-  return vTag;
-}
-
-function fromVideoTexture(gl: WebGLRenderingContext, val: HTMLVideoElement): Texture2D {
-  const tex = new Texture2D(gl);
-  val.play();
-  tex.update(val);
-  updateVideo(tex, val);
-  return tex;
-}
-
 /**
  * テクスチャへの参照を取得するためのコンバーター
  * 渡すものが文字列である場合、4つの方法がある。
@@ -64,13 +46,10 @@ export default function TextureConverter(val: any, attr: Attribute): any {
       const param = parseResult.param;
       switch (parseResult.type) {
         case "backbuffer":
-          return new TextureReference((buffers) => buffers[param]);
-        case "video":
-          console.warn(`The syntax "video(URL)" is deprecated after version 0.16.0.\n You should use <video-texture> tag instead.`);
-          return new TextureReference(fromVideoTexture(attr.companion!.get("gl"), generateVideoTag(param)));
+          return new TextureReference((buffers) => RenderingBufferResourceRegistry.get(attr.companion.get("gl")).getBackbuffer(param));
         case "query":
           const obtainedTag = attr.tree!(param);
-          const texture = obtainedTag.first()!.getComponent(TextureComponent);
+          const texture = obtainedTag.first()!.getComponent(TextureContainer);
           return new TextureReference(() => texture.texture);
       }
     } else {
@@ -97,8 +76,6 @@ export default function TextureConverter(val: any, attr: Attribute): any {
       const tex = new Texture2D(attr.companion!.get("gl"));
       tex.update(val);
       return new TextureReference(tex);
-    } else if (val instanceof HTMLVideoElement) {
-      return new TextureReference(fromVideoTexture(attr.companion!.get("gl"), val));
     }
   }
   return null;

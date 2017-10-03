@@ -67,7 +67,7 @@ export default class DefaultPrimitives {
     }, (gl, attrs) => {
       const div = attrs["divide"];
       const geometry = new Geometry(gl);
-      const theta = div % 2 != 0 ? Math.PI / div : 0;
+      const theta = div % 2  !==  0 ? Math.PI / div : 0;
       const vertices = [].concat.apply([], [
         GeometryUtility.circle([0, -0.5, 0], [0, -1, 0], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div),
       ]);
@@ -109,7 +109,7 @@ export default class DefaultPrimitives {
     }, (gl, attrs) => {
       const div = attrs["divide"];
       const geometry = new Geometry(gl);
-      const theta = div % 2 != 0 ? Math.PI / div : 0;
+      const theta = div % 2  !==  0 ? Math.PI / div : 0;
       const vertices = [].concat.apply([], [
         GeometryUtility.circle([0, 1, 0], [0, 1, 0], [0, 0, -1], [1, 0, 0], div),
         GeometryUtility.circle([0, -1, 0], [0, -1, 0], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div)
@@ -203,7 +203,7 @@ export default class DefaultPrimitives {
       }
     }, (gl, attrs) => {
       const dH = attrs["divide"];
-      const dV = attrs["divide"] % 2 == 1 ? attrs["divide"] + 1 : attrs["divide"];
+      const dV = attrs["divide"] % 2 === 1 ? attrs["divide"] + 1 : attrs["divide"];
 
       const geometry = new Geometry(gl);
       geometry.addAttributes(GeometryUtility.capsule([0, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], dV, dH), primitiveLayout);
@@ -238,7 +238,7 @@ export default class DefaultPrimitives {
       const vdiv = attrs["divide"];
       const geometry = new Geometry(gl);
       const vertices = [].concat.apply([], [
-        GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], hdiv, vdiv), GeometryUtility.plane([0, 0, 0], [0, 0, -1], [0, 1, 0], [-1, 0, 0], hdiv, vdiv,true)
+        GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], hdiv, vdiv), GeometryUtility.plane([0, 0, 0], [0, 0, -1], [0, 1, 0], [-1, 0, 0], hdiv, vdiv, true)
       ]);
       geometry.addAttributes(vertices, primitiveLayout);
       const indices = [].concat.apply([], [

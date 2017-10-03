@@ -1,4 +1,4 @@
-import RenderSceneComponent from "../Components/RenderSceneComponent";
+import RenderSceneComponent from "../Components/RenderStage/RenderSceneComponent";
 import gr from "grimoirejs";
 import Component from "grimoirejs/ref/Node/Component";
 import Rectangle from "grimoirejs-math/ref/Rectangle";
@@ -17,12 +17,12 @@ interface IRenderArgument {
    */
   renderer: Component;
   camera: CameraComponent;
-  buffers: { [key: string]: Texture2D };
   layer: string;
   viewport: Viewport;
   material?: Material;
   materialArgs?: { [key: string]: any };
   sceneDescription: { [key: string]: any };
+  rendererDescription: { [key: string]: any };
   timer: Timer;
   technique: string;
   sortingTechnique?: string;
