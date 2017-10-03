@@ -42,8 +42,8 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
   public async $mount(): Promise<void> {
     this._gl = this.companion.get("gl");
     this._materialContainer = this.node.getComponent(MaterialContainerComponent);
-    const gr = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
-    this._geom = await gr.getGeometry("quad");
+    const geometryRegistry = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
+    this._geom = await geometryRegistry.getGeometry("quad");
   }
 
   public $render(args: IRenderRendererMessage): void {
@@ -57,9 +57,10 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
       geometry: this._geom,
       camera: null,
       transform: null,
-      viewport: args.viewport,
+      viewport: this.out.getViewport(),
       technique: this.technique,
-      sceneDescription: {}
+      sceneDescription: {},
+      rendererDescription: this.rendererDescription
     };
     // do render
     this._materialContainer.material.draw(renderArgs);

@@ -11,11 +11,11 @@ export default class OffscreenRenderTarget implements IRenderingTarget {
         this.bind();
         if (clearFlag !== 0) {
             let clearTarget = 0;
-            if (color !== null) {
+            if ((clearFlag & WebGLRenderingContext.COLOR_BUFFER_BIT) !== 0 && color) {
                 this.gl.clearColor.apply(this.gl, color);
                 clearTarget |= WebGLRenderingContext.COLOR_BUFFER_BIT;
             }
-            if (depth !== null && this.depthBuffer) {
+            if ((clearFlag & WebGLRenderingContext.DEPTH_BUFFER_BIT) !== 0 && depth !== null && this.depthBuffer) {
                 this.gl.clearDepth(depth);
                 clearTarget |= WebGLRenderingContext.DEPTH_BUFFER_BIT;
             }

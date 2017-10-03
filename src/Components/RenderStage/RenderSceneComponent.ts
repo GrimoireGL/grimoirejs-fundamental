@@ -66,7 +66,8 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
       viewport: this.out.getViewport(),
       timer: args.timer,
       technique: this.technique,
-      sceneDescription: {}
+      sceneDescription: {},
+      rendererDescription: this.rendererDescription
     });
   }
 }

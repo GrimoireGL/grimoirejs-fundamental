@@ -10,15 +10,15 @@ export default class CanvasRenderingTarget implements IRenderingTarget {
         if(clearFlag){
             this.__configureClearScissor();
             let clearTarget = 0;
-            if (color !== null){
+            if ((clearFlag & WebGLRenderingContext.COLOR_BUFFER_BIT) !== 0 && color) {
                 this.gl.clearColor.apply(this.gl, color);
                 clearTarget |= WebGLRenderingContext.COLOR_BUFFER_BIT;
             }
-            if (depth !== null){
+            if ((clearFlag & WebGLRenderingContext.DEPTH_BUFFER_BIT) !== 0 && depth !== null) {
                 this.gl.clearDepth(depth);
                 clearTarget |= WebGLRenderingContext.DEPTH_BUFFER_BIT;
             }
-            if (clearTarget !== 0){
+            if (clearTarget !== 0) {
                 this.gl.clear(clearTarget);
             }
         }

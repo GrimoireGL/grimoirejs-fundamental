@@ -7,6 +7,7 @@ import UniformProxy from "../../Resource/UniformProxy";
 import IVariableInfo from "../Schema/IVariableInfo";
 import UniformResolverRegistry from "../UniformResolverRegistry";
 import Pass from "../Pass";
+import ViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
 
 UniformResolverRegistry.add("VIEWPORT", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
   const vp = args.viewport;
@@ -18,8 +19,17 @@ UniformResolverRegistry.add("VIEWPORT_SIZE", (valInfo: IVariableInfo) => (proxy:
   proxy.uniformVector2(valInfo.name, new Vector2(vp.Width, vp.Height));
 });
 
-UniformResolverRegistry.add("TIME", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
-  proxy.uniformFloat(valInfo.name, Date.now() % 1.0e7);
+UniformResolverRegistry.add("TIME", (valInfo: IVariableInfo) => {
+  let unit = valInfo.attributes["unit"] || "ms";
+  let divider = 1;
+  switch (unit) {
+    case "s":
+      divider = 1000;
+      break;
+  }
+  return (proxy: UniformProxy, args: IMaterialArgument) => {
+    proxy.uniformFloat(valInfo.name, Date.now() / divider);
+  };
 });
 
 UniformResolverRegistry.add("HAS_TEXTURE", (valInfo: IVariableInfo, pass: Pass) => {
@@ -45,6 +55,18 @@ UniformResolverRegistry.add("CAMERA_DIRECTION", (valInfo: IVariableInfo) => (pro
 UniformResolverRegistry.add("MESH_INDEX", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
   const index = args.renderable.index;
   proxy.uniformVector4(valInfo.name, MeshIndexCalculator.fromIndex(index));
+});
+
+UniformResolverRegistry.add("MOUSE_POSITION", (valInfo: IVariableInfo) => {
+  const coords = valInfo.attributes["coord"] || "viewportNormalized";
+  return (proxy: UniformProxy, args: IMaterialArgument) => {
+    const mouseDesc = args.rendererDescription["mouse"] as ViewportBaseMouseState;
+    if (mouseDesc) {
+      proxy.uniformVector2(valInfo.name, new Vector2(mouseDesc.coords[coords][0], mouseDesc.coords[coords][1]));
+    } else {
+      proxy.uniformVector2(valInfo.name, Vector2.Zero);
+    }
+  };
 });
 
 export default null;

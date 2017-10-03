@@ -93,7 +93,8 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
       timer: args.timer,
       technique: "hitarea",
       sceneDescription: {},
-      sortingTechnique: "default"
+      sortingTechnique: "default",
+      rendererDescription: this.rendererDescription
     });
     this._gl.flush();
     // pick pointer pixel
@@ -105,7 +106,6 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
 
   public $mousemove(v: ViewportMouseEvent): void {
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
-    console.log(this._lastPosition,this.node.id);
     this._mouseMoved = true;
   }
 

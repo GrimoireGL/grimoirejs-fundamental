@@ -8,6 +8,7 @@ interface IMaterialArgument {
   indexGroup: string;
   geometry: Geometry;
   sceneDescription: { [key: string]: any };
+  rendererDescription: { [key: string]: any };
   camera: CameraComponent;
   viewport: Rectangle;
   transform: TransformComponent;

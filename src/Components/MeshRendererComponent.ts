@@ -137,6 +137,7 @@ export default class MeshRenderer extends Component implements IRenderable {
             drawCount: this.drawCount,
             drawOffset: this.drawOffset,
             sceneDescription: args.sceneDescription,
+            rendererDescription: args.rendererDescription,
             technique: args.technique,
             renderable: this
         };

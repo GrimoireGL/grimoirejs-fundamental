@@ -22,6 +22,7 @@ interface IRenderArgument {
   material?: Material;
   materialArgs?: { [key: string]: any };
   sceneDescription: { [key: string]: any };
+  rendererDescription: { [key: string]: any };
   timer: Timer;
   technique: string;
   sortingTechnique?: string;

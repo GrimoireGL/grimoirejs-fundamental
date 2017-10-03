@@ -203,7 +203,7 @@ export default class RendererComponent extends Component {
     const rect = this._canvas.getBoundingClientRect();
     const positionX = rect.left + window.pageXOffset;
     const positionY = rect.top + window.pageYOffset;
-    return [e.pageX - positionX, rect.height - (e.pageY - positionY)];
+    return [e.pageX - positionX, rect.height - (e.pageY - positionY), rect.width, rect.height];
   }
 
   /**
@@ -219,7 +219,11 @@ export default class RendererComponent extends Component {
       viewportX: r[0],
       viewportY: r[1],
       viewportNormalizedX: n[0],
-      viewportNormalizedY: n[1]
+      viewportNormalizedY: n[1],
+      canvasX: ro[0],
+      canvasY: ro[1],
+      canvasNormalizedX: ro[0] / ro[2],
+      canvasNormalizedY: ro[1] / ro[3]
     });
   }
 }
