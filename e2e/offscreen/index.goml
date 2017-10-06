@@ -1,0 +1,11 @@
+<goml width="fit" height="fit">
+    <scene>
+        <camera/>
+        <mesh color="red" position="0,0,0" geometry="cube"/>
+    </scene>
+    <renderer>
+        <rendering-target name="main"/>
+        <render-scene out="main"/>
+        <render-quad material="new(unlit)" texture="backbuffer(main)"/>
+    </renderer>
+</goml>

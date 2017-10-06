@@ -75,7 +75,7 @@ export default class RenderingTargetComponent extends Component {
 
     /**
      * Generate default buffers as children node
-     * @param name 
+     * @param name
      */
     private _instanciateDefaultBuffers(name: string): void {
         this.node.addChildByName("color-buffer", {
