@@ -2,6 +2,7 @@ varying vec2 vTexCoord;
 varying vec2 vScreenPos;
 varying vec2 vScreenPosWithOffset;
 varying vec2 vScreenPosNormalized;
+varying vec2 vAspectScale;
 #ifdef VS
   @POSITION
   attribute vec3 position;
