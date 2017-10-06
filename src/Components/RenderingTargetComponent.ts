@@ -3,6 +3,7 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import OffscreenRenderingTarget from "../Resource/RenderingTarget/OffscreenRenderingTarget";
 import TextureContainer from "./Texture/TextureContainer";
 import RenderingTrargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
+import RenderBufferUpdator from "./Texture/RenderBufferUpdator";
 /**
  * Register specified buffer to rendering target.
  * If there were no child buffer node, this component will instanciate default buffers.
@@ -67,7 +68,8 @@ export default class RenderingTargetComponent extends Component {
         }
         const textures = this.node.getComponentsInChildren(TextureContainer);
         const texture = textures[0].texture;
-        this.renderingTarget = new OffscreenRenderingTarget(this.companion.get("gl"), [texture]);
+        const renderBuffer = this.node.getComponentsInChildren(RenderBufferUpdator);
+        this.renderingTarget = new OffscreenRenderingTarget(this.companion.get("gl"), [texture], renderBuffer[0].buffer);
         RenderingTrargetRegistry.get(this.companion.get("gl")).setRenderingTarget(name, this.renderingTarget);
     }
 
