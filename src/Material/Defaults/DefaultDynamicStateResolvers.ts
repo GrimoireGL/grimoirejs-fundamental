@@ -8,8 +8,8 @@ export default {
             default: args[0] || "back",
         });
         const currentState = null;
-        function changeState(state: string){
-            if (currentState !== state){
+        function changeState(state: string) {
+            if (currentState !== state) {
                 pass.program.setMacro("CONTEXT_STATE_CULL", state);
             }
         }
