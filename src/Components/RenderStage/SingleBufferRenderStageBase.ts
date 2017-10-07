@@ -22,7 +22,7 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
             converter: "Boolean",
         },
         clearDepth: {
-            default: 1.0,
+            default: 1,
             converter: "Number",
         },
     };
@@ -35,6 +35,8 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
 
     public clearDepthEnabled: boolean;
 
+    public _out: Promise<IRenderingTarget>;
+
     public out: IRenderingTarget;
 
     public $awake(): void {
@@ -42,15 +44,14 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
         this.getAttributeRaw("clearColorEnabled").boundTo("clearColorEnabled");
         this.getAttributeRaw("clearDepthEnabled").boundTo("clearDepthEnabled");
         this.getAttributeRaw("clearDepth").boundTo("clearDepth");
+        this.getAttributeRaw("out").watch((promise: Promise<IRenderingTarget>) => {
+            this._out = promise;
+            promise.then(r => this.out = r);
+        }, true);
     }
 
     protected __beforeRender(): boolean {
         if (!this.out) {
-            if (this.out === void 0) {
-                setImmediate(() => {
-                    this.getAttributeRaw("out").boundTo("out"); // TODO DARK MAGIC
-                });
-            }
             return false;
         }
         let clearFlag = 0;
