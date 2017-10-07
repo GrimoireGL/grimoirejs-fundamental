@@ -32,7 +32,7 @@ export default class Texture2D extends ResourceBase {
 
   public static maxTextureSize: number;
 
-  public static generateDefaultTexture (gl: WebGLRenderingContext): void {
+  public static generateDefaultTexture(gl: WebGLRenderingContext): void {
     Texture2D.defaultTextures.set(gl, null); // for preventing called this method recursively by instanciating default texture
     const texture = new Texture2D(gl);
     texture.update(0, 1, 1, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0]));
@@ -41,11 +41,11 @@ export default class Texture2D extends ResourceBase {
 
   public readonly texture: WebGLTexture;
 
-  public get magFilter (): number {
+  public get magFilter(): number {
     return this._magFilter;
   }
 
-  public set magFilter (filter: number) {
+  public set magFilter(filter: number) {
     if (this._magFilter !== filter) {
       this._texParameterChanged = true;
       this._magFilter = filter;
@@ -53,11 +53,11 @@ export default class Texture2D extends ResourceBase {
     }
   }
 
-  public get minFilter (): number {
+  public get minFilter(): number {
     return this._minFilter;
   }
 
-  public set minFilter (filter: number) {
+  public set minFilter(filter: number) {
     if (this._minFilter !== filter) {
       this._texParameterChanged = true;
       this._minFilter = filter;
@@ -65,22 +65,22 @@ export default class Texture2D extends ResourceBase {
     }
   }
 
-  public get wrapS (): number {
+  public get wrapS(): number {
     return this._wrapS;
   }
 
-  public set wrapS (filter: number) {
+  public set wrapS(filter: number) {
     if (this._wrapS !== filter) {
       this._texParameterChanged = true;
       this._wrapS = filter;
     }
   }
 
-  public get wrapT (): number {
+  public get wrapT(): number {
     return this._wrapT;
   }
 
-  public set wrapT (filter: number) {
+  public set wrapT(filter: number) {
     if (this._wrapT !== filter) {
       this._texParameterChanged = true;
       this._wrapT = filter;
@@ -91,7 +91,7 @@ export default class Texture2D extends ResourceBase {
    * Width of this texture
    * @return {number} [description]
    */
-  public get width (): number {
+  public get width(): number {
     return this._width;
   }
 
@@ -99,15 +99,15 @@ export default class Texture2D extends ResourceBase {
    * Height of this texture
    * @return {number} [description]
    */
-  public get height (): number {
+  public get height(): number {
     return this._height;
   }
 
-  public get viewport (): Viewport{
+  public get viewport(): Viewport{
     return new Viewport(0, 0, this.width, this.height);
   }
 
-  public get drawerContext (): CanvasRenderingContext2D {
+  public get drawerContext(): CanvasRenderingContext2D {
     if (!this._drawerContext) {
       const c = document.createElement("canvas");
       c.width = this._width;
@@ -138,7 +138,7 @@ export default class Texture2D extends ResourceBase {
 
   private _type: number;
 
-  constructor (gl: WebGLRenderingContext) {
+  constructor(gl: WebGLRenderingContext) {
     super(gl);
     if (!Texture2D.maxTextureSize) {
       Texture2D.maxTextureSize = gl.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE);
@@ -146,9 +146,9 @@ export default class Texture2D extends ResourceBase {
     this.texture = gl.createTexture();
   }
 
-  public update (level: number, width: number, height: number, border: number, format: number, type: number, pxiels?: ArrayBufferView, config?: ImageUploadConfig): void;
-  public update (image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement, config?: ImageUploadConfig): void;
-  public update (levelOrImage: any, widthOrConfig: any, height?: number, border?: number, format?: number, type?: number, pixels?: ArrayBufferView, config?: ImageUploadConfig): void {
+  public update(level: number, width: number, height: number, border: number, format: number, type: number, pxiels?: ArrayBufferView, config?: ImageUploadConfig): void;
+  public update(image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement, config?: ImageUploadConfig): void;
+  public update(levelOrImage: any, widthOrConfig: any, height?: number, border?: number, format?: number, type?: number, pixels?: ArrayBufferView, config?: ImageUploadConfig): void {
     this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.texture);
     let uploadConfig: ImageUploadConfig;
     let image: HTMLImageElement;
@@ -205,7 +205,7 @@ export default class Texture2D extends ResourceBase {
     this.valid = true;
   }
 
-  public getRawPixels (): Uint8Array {
+  public getRawPixels(): Uint8Array {
     if (this._type === WebGLRenderingContext.UNSIGNED_BYTE && this._format === WebGLRenderingContext.RGBA) {
       const buffer = new Uint8Array(this.width * this.height * 4);
       const frame = this.gl.createFramebuffer();
@@ -221,13 +221,13 @@ export default class Texture2D extends ResourceBase {
     }
   }
 
-  public applyDraw (): void {
+  public applyDraw(): void {
     if (this._drawerContext) {
       this.update(this._drawerContext.canvas);
     }
   }
 
-  public register (registerNumber: number): void {
+  public register(registerNumber: number): void {
     this.gl.activeTexture(WebGLRenderingContext.TEXTURE0 + registerNumber);
     this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.texture);
     if (this._texParameterChanged) {
@@ -235,12 +235,12 @@ export default class Texture2D extends ResourceBase {
     }
   }
 
-  public destroy (): void {
+  public destroy(): void {
     super.destroy();
     this.gl.deleteTexture(this.texture);
   }
 
-  private _justifyResource (image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): ResizeResult {
+  private _justifyResource(image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): ResizeResult {
     if (image instanceof HTMLImageElement) {
       return this._justifyImage(image);
     } else if (image instanceof HTMLCanvasElement) {
@@ -253,7 +253,7 @@ export default class Texture2D extends ResourceBase {
   }
 
   // There should be more effective way to resize texture
-  private _justifyImage (img: HTMLImageElement): ResizeResult {
+  private _justifyImage(img: HTMLImageElement): ResizeResult {
     const w = img.naturalWidth, h = img.naturalHeight;
     const size = TextureSizeCalculator.getPow2Size(w, h);
     if (w !== size.width || h !== size.height) {
@@ -274,7 +274,7 @@ export default class Texture2D extends ResourceBase {
     };
   }
 
-  private _justifyCanvas (canvas: HTMLCanvasElement): ResizeResult {
+  private _justifyCanvas(canvas: HTMLCanvasElement): ResizeResult {
     const w = canvas.width;
     const h = canvas.height;
     const size = TextureSizeCalculator.getPow2Size(w, h);
@@ -294,7 +294,7 @@ export default class Texture2D extends ResourceBase {
     };
   }
 
-  private _justifyVideo (video: HTMLVideoElement): ResizeResult {
+  private _justifyVideo(video: HTMLVideoElement): ResizeResult {
     const w = video.videoWidth, h = video.videoHeight;
     const size = TextureSizeCalculator.getPow2Size(w, h); // largest 2^n integer that does not exceed s
     if (w !== size.width || h !== size.height) {
@@ -315,7 +315,7 @@ export default class Texture2D extends ResourceBase {
     };
   }
 
-  private _updateTexParameter (): void {
+  private _updateTexParameter(): void {
     this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, this._minFilter);
     this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, this._magFilter);
     this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, this._wrapS);
@@ -323,14 +323,14 @@ export default class Texture2D extends ResourceBase {
     this._texParameterChanged = false;
   }
 
-  private _ensureMipmap (): void {
+  private _ensureMipmap(): void {
     if (Texture2D._filtersNeedsMipmap.indexOf(this.magFilter) >= 0 || Texture2D._filtersNeedsMipmap.indexOf(this.minFilter) >= 0) {
       this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.texture);
       this.gl.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
     }
   }
 
-  private _updateDrawingContextWithCurrent (): void {
+  private _updateDrawingContextWithCurrent(): void {
     const imageData = this.drawerContext.createImageData(this.width, this.height);
     const buffer = this.getRawPixels();
     for (let i = 0; i < buffer.length; i++) {

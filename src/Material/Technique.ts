@@ -22,7 +22,7 @@ export default class Technique {
    */
   public passes: Pass[] = [];
 
-  constructor (public material: Material, recipe: ITechniqueRecipe) {
+  constructor(public material: Material, recipe: ITechniqueRecipe) {
     this.drawOrder = recipe.drawOrder;
     this.passes = recipe.passes.map(p => {
       return new Pass(this, p);
@@ -33,7 +33,7 @@ export default class Technique {
    * Draw with specified argument by this technique
    * @param {IMaterialArgument} args [description]
    */
-  public draw (args: IMaterialArgument): void {
+  public draw(args: IMaterialArgument): void {
     for (let i = 0; i < this.passes.length; i++) {
       this.passes[i].draw(args);
     }
@@ -42,7 +42,7 @@ export default class Technique {
   /**
    * Destroy to release resources
    */
-  public dispose (): void {
+  public dispose(): void {
     this.passes.forEach(p => p.dispose());
   }
 }

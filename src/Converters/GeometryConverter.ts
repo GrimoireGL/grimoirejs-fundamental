@@ -6,7 +6,7 @@ import Geometry from "../Geometry/Geometry";
  * ジオメトリを指定するためのコンバーター
  * `quad`など、ジオメトリ名を指定するか、Geometry型のインスタンスを渡す。
  */
-export default function GeometryConverter (val: any, attr: Attribute): any {
+export default function GeometryConverter(val: any, attr: Attribute): any {
   if (typeof val === "string") {
     const registory = attr.companion.get("GeometryRegistory") as GeometryRegistory;
     return registory.getGeometry(val);

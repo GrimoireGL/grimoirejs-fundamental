@@ -35,7 +35,7 @@ export default class FullscreenComponent extends Component {
 
   private _fullscreen = false;
 
-  public $awake (): void {
+  public $awake(): void {
     this.getAttributeRaw("fullscreen").watch((attr) => {
       if (this._fullscreen === attr) {
         return;
@@ -45,7 +45,7 @@ export default class FullscreenComponent extends Component {
     });
   }
 
-  private _switchFullscreen (): void {
+  private _switchFullscreen(): void {
     if (this._fullscreen) {
       const target = this.getAttribute("fullscreenTarget");
       if (target) {
@@ -63,7 +63,7 @@ export default class FullscreenComponent extends Component {
     }
   }
 
-  private requestFullscreen (target: Element): void {
+  private requestFullscreen(target: Element): void {
     if (target.webkitRequestFullscreen) {
       target.webkitRequestFullscreen(); // Chrome15+, Safari5.1+, Opera15+
     } else if (target["mozRequestFullScreen"]) {
@@ -78,7 +78,7 @@ export default class FullscreenComponent extends Component {
     }
   }
   /*フルスクリーン終了用ファンクション*/
-  private exitFullscreen (): void {
+  private exitFullscreen(): void {
     if (document.webkitCancelFullScreen) {
       document.webkitCancelFullScreen(); // Chrome15+, Safari5.1+, Opera15+
     } else if (document["mozCancelFullScreen"]) {

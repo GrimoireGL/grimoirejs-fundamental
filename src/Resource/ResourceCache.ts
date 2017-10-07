@@ -5,7 +5,7 @@ export class ResourceCache {
 	 * Save the specified WebGLProgram as last used program.
 	 * And check the specified program was used last time.
 	 */
-  public useProgramCheck (gl: WebGLRenderingContext, program: WebGLProgram): boolean {
+  public useProgramCheck(gl: WebGLRenderingContext, program: WebGLProgram): boolean {
     if (this._lastUsedPrograms.get(gl) === program) {
       return true;
     }

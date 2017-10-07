@@ -7,7 +7,7 @@ import IRenderingTarget from "./IRenderingTarget";
  * Render target contains texture and render buffer
  */
 export default class OffscreenRenderTarget implements IRenderingTarget {
-    public beforeDraw (clearFlag: number, color: number[], depth: number): void {
+    public beforeDraw(clearFlag: number, color: number[], depth: number): void {
         this.bind();
         if (clearFlag !== 0) {
             let clearTarget = 0;
@@ -25,27 +25,27 @@ export default class OffscreenRenderTarget implements IRenderingTarget {
         }
         this.getViewport().configure(this.gl);
     }
-    public getBufferWidth (): number {
+    public getBufferWidth(): number {
         return this.texture.width;
     }
-    public getBufferHeight (): number {
+    public getBufferHeight(): number {
         return this.texture.height;
     }
-    public getViewport (): Viewport {
+    public getViewport(): Viewport {
         return new Viewport(0, 0, this.getBufferWidth(), this.getBufferHeight());
     }
 
-    public bind (): void {
+    public bind(): void {
         this.fbo.bind();
     }
 
     public readonly fbo: FrameBuffer;
 
-    public get texture (): Texture2D {
+    public get texture(): Texture2D {
         return this.textures[0];
     }
 
-    constructor (public gl: WebGLRenderingContext, public textures: Texture2D[], public depthBuffer?: RenderBuffer) {
+    constructor(public gl: WebGLRenderingContext, public textures: Texture2D[], public depthBuffer?: RenderBuffer) {
         if (textures.length === 0) {
             throw new Error("Textures must contain 1 texture at least");
         }

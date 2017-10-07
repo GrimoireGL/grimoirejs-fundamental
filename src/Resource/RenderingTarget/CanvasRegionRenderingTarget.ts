@@ -8,19 +8,19 @@ import CanvasRenderingTarget from "./CanvasRenderingTarget";
 export default class CanvasRegionRenderingTarget extends CanvasRenderingTarget {
     private _viewport: Viewport;
 
-    constructor (gl: WebGLRenderingContext) {
+    constructor(gl: WebGLRenderingContext) {
         super(gl);
     }
 
-    public setViewport (viewport: Viewport): void {
+    public setViewport(viewport: Viewport): void {
         this._viewport = viewport;
     }
 
-    public getViewport (): Viewport {
+    public getViewport(): Viewport {
         return this._viewport;
     }
 
-    protected __configureClearScissor (): void {
+    protected __configureClearScissor(): void {
         this.gl.enable(WebGLRenderingContext.SCISSOR_TEST);
         const vp = this.getViewport();
         this.gl.scissor(vp.Left, vp.Bottom, vp.Width, vp.Height);

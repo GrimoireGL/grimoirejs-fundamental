@@ -16,11 +16,11 @@ export default class TextureUpdatorComponentBase extends ResizableResourceUpdato
     };
 
     private textureComponent: TextureContainer;
-    protected get __texture (): Texture2D {
+    protected get __texture(): Texture2D {
         return this.textureComponent.texture;
     }
 
-    public $awake (): void {
+    public $awake(): void {
         super.$awake();
         this.textureComponent = this.node.getComponent(TextureContainer);
     }

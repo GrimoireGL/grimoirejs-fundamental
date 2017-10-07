@@ -97,13 +97,13 @@
     "no-unused-variable": true,
     "no-use-before-declare": true,
     "no-var-keyword": true,
-    "no-void-expression": true,
+    "no-void-expression": false,
     "prefer-conditional-expression": false,
     "prefer-object-spread": true,
     "radix": true,
     "restrict-plus-operands": true,
     "strict-boolean-expressions": false,
-    "strict-type-predicates": true,
+    "strict-type-predicates": false,
     "switch-default": false,
     "triple-equals": [
       true,
@@ -223,11 +223,14 @@
       true,
       "always"
     ],
-    "space-before-function-paren": true,
+    "space-before-function-paren": [
+      true,
+      "never"
+    ],
     "space-within-parens": true,
     "switch-final-break": true,
-    "type-literal-delimiter": true,
-    "variable-name": true,
+    "type-literal-delimiter": false,
+    "variable-name": false,
     "whitespace": [
       true,
       "check-branch",

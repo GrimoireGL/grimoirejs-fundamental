@@ -30,18 +30,18 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
 
   // messages
 
-  public $awake (): void {
+  public $awake(): void {
     super.$awake();
     this.getAttributeRaw("layer").boundTo("layer");
     this.getAttributeRaw("camera").boundTo("_camera");
     this.getAttributeRaw("technique").boundTo("technique");
   }
 
-  public $mount (): void {
+  public $mount(): void {
     this._gl = this.companion.get("gl");
   }
 
-  public $render (args: IRenderRendererMessage): void {
+  public $render(args: IRenderRendererMessage): void {
     const camera = this.camera ? this.camera : args.camera;
     if (!camera) {
       return;

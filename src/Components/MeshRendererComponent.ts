@@ -23,7 +23,7 @@ export default class MeshRenderer extends Component implements IRenderable {
    * @param  {GomlNode}       node [the node to searching currently]
    * @return {SceneComponent}      [the scene component found]
    */
-    private static _findContainedScene (node: GomlNode): SceneComponent {
+    private static _findContainedScene(node: GomlNode): SceneComponent {
         if (node.parent) {
             const scene = node.parent.getComponent(SceneComponent);
             if (scene) {
@@ -92,7 +92,7 @@ export default class MeshRenderer extends Component implements IRenderable {
 
     private _priortyCalcCache = new Float32Array(3);
 
-    public getRenderingPriorty (camera: CameraComponent, technique: string): number {
+    public getRenderingPriorty(camera: CameraComponent, technique: string): number {
         if (!this.geometryInstance) {
             return Number.NEGATIVE_INFINITY;
         }
@@ -101,25 +101,25 @@ export default class MeshRenderer extends Component implements IRenderable {
         return this._materialContainer.getDrawPriorty(vec3.sqrLen(this._priortyCalcCache), technique); // Obtains distance between camera and center of aabb
     }
 
-    public $awake (): void {
+    public $awake(): void {
         this.__bindAttributes();
-        this.getAttributeRaw("geometry").watch(async () => {
+        this.getAttributeRaw("geometry").watch(async() => {
             this.geometryInstance = await this.geometry;
         }, true);
     }
 
-    public $mount (): void {
+    public $mount(): void {
         this._transformComponent = this.node.getComponent(TransformComponent);
         this._materialContainer = this.node.getComponent(MaterialContainerComponent);
         this._containedScene = MeshRenderer._findContainedScene(this.node);
         this._containedScene.queueRegistory.addRenderable(this);
     }
 
-    public $unmount (): void {
+    public $unmount(): void {
         this._containedScene.queueRegistory.removeRenderable(this);
     }
 
-    public render (args: IRenderArgument): void {
+    public render(args: IRenderArgument): void {
         if (!this.node.isActive || !this.enabled || this.layer !== args.layer) {
             return;
         }
@@ -143,7 +143,7 @@ export default class MeshRenderer extends Component implements IRenderable {
         this.node.emit("render", args);
     }
 
-    public setRenderableIndex (index: number): void {
+    public setRenderableIndex(index: number): void {
         this.index = index;
     }
 }

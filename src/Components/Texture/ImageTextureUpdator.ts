@@ -16,7 +16,7 @@ export default class ImageTextureUpdator extends TextureUpdatorComponentBase {
 
   public src: string;
 
-  public $awake () {
+  public $awake() {
     super.$awake();
     this.__bindAttributes();
     this.getAttributeRaw("src").watch((v: string) => {
@@ -26,7 +26,7 @@ export default class ImageTextureUpdator extends TextureUpdatorComponentBase {
     }, true);
   }
 
-  private async _loadTask (src: string): Promise<void> {
+  private async _loadTask(src: string): Promise<void> {
     const image = await ImageResolver.resolve(src);
     this.__texture.update(image, {
       premultipliedAlpha: this.premultipliedAlpha,

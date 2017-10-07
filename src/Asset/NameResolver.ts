@@ -27,7 +27,7 @@ export default class NameResolver<T> {
      * Obtain the named resource.
      * @return {Promise<T>} the resource
      */
-    public get (name: string): Promise<T> {
+    public get(name: string): Promise<T> {
         if (this._resolved[name] !== void 0) {
             return Promise.resolve(this._resolved[name]);
         } else {
@@ -41,7 +41,7 @@ export default class NameResolver<T> {
      * @param  {string} name resource name to check status
      * @return {number}      status code
      */
-    public getStatus (name: string): number {
+    public getStatus(name: string): number {
         if (this._resolvers[name] !== void 0) {
             return NameResolver.RESOLVING;
         } else if (this._resolved[name] !== void 0) {
@@ -57,7 +57,7 @@ export default class NameResolver<T> {
      * @param  {Promise<T>} generator Promise to resolve the resource
      * @return {Promise<T>} The promise of resource
      */
-    public async register (name: string, generator: Promise<T> | T): Promise<T> {
+    public async register(name: string, generator: Promise<T> | T): Promise<T> {
         if (this._isPromise(generator)) {
             try {
                 if (this._resolvers[name] !== void 0) {
@@ -82,7 +82,7 @@ export default class NameResolver<T> {
      * @param  {string}     name name of the resource
      * @return {Promise<T>}     Promise to wait for registering
      */
-    private _waitForResolved (name: string): Promise<T> {
+    private _waitForResolved(name: string): Promise<T> {
         return new Promise<T>((resolve, reject) => {
             if (this._handlers[name] === void 0) {
                 this._handlers[name] = [];
@@ -98,7 +98,7 @@ export default class NameResolver<T> {
      * @param {string} name      name of the resource
      * @param {T}      resolved Promise to wait for registering
      */
-    private _callHandlers (name: string, resolved: T): void {
+    private _callHandlers(name: string, resolved: T): void {
         if (this._handlers[name] === void 0) {
             return;
         }
@@ -106,7 +106,7 @@ export default class NameResolver<T> {
         delete this._handlers[name];
     }
 
-    private _isPromise (generator: Promise<T> | T): generator is Promise<T> {
+    private _isPromise(generator: Promise<T> | T): generator is Promise<T> {
         return (typeof generator["then"] === "function");
     }
 }

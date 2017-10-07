@@ -87,7 +87,7 @@ export default class CanvasInitializerComponent extends Component {
   // Ratio of aspect
   private _ratio: number;
 
-  public $awake (): void {
+  public $awake(): void {
     this._scriptTag = this.companion.get("scriptElement");
     if (this._isContainedInBody(this._scriptTag)) {
       // canvas should be placed siblings of the script tag
@@ -115,7 +115,7 @@ export default class CanvasInitializerComponent extends Component {
    * @param  {Element}           parent [description]
    * @return {HTMLCanvasElement}        [description]
    */
-  private _generateCanvas (scriptTag: Element): HTMLCanvasElement {
+  private _generateCanvas(scriptTag: Element): HTMLCanvasElement {
     this._autoFixForBody(scriptTag);
     this.canvas = document.createElement("canvas");
     window.addEventListener("resize", () => this._onWindowResize());
@@ -128,7 +128,7 @@ export default class CanvasInitializerComponent extends Component {
     return this.canvas;
   }
 
-  private _resize (supressBroadcast?: boolean): void {
+  private _resize(supressBroadcast?: boolean): void {
     const widthRaw = this.getAttribute("width") as CanvasSizeObject;
     const heightRaw = this.getAttribute("height") as CanvasSizeObject;
     this._widthMode = this._asResizeMode(widthRaw);
@@ -151,7 +151,7 @@ export default class CanvasInitializerComponent extends Component {
     this._onWindowResize(supressBroadcast);
   }
 
-  private _onWindowResize (supressBroadcast?: boolean): void {
+  private _onWindowResize(supressBroadcast?: boolean): void {
     const size = this._getParentSize();
     if (this._widthMode === ResizeMode.Fit) {
       this._applyManualWidth(size.width, supressBroadcast);
@@ -164,7 +164,7 @@ export default class CanvasInitializerComponent extends Component {
     }
   }
 
-  private _applyManualWidth (width: number, supressBroadcast?: boolean): void {
+  private _applyManualWidth(width: number, supressBroadcast?: boolean): void {
     if (width === this.canvas.width) {
       return;
     }
@@ -178,7 +178,7 @@ export default class CanvasInitializerComponent extends Component {
     }
   }
 
-  private _applyManualHeight (height: number, supressBroadcast?: boolean): void {
+  private _applyManualHeight(height: number, supressBroadcast?: boolean): void {
     if (height === this.canvas.height) {
       return;
     }
@@ -192,7 +192,7 @@ export default class CanvasInitializerComponent extends Component {
     }
   }
 
-  private _getParentSize (): ClientRect {
+  private _getParentSize(): ClientRect {
     const parent = this._canvasContainer.parentElement;
     const boundingBox = parent.getBoundingClientRect();
     return boundingBox;
@@ -203,7 +203,7 @@ export default class CanvasInitializerComponent extends Component {
    * @param  {string  | number}      mode [description]
    * @return {ResizeMode}   [description]
    */
-  private _asResizeMode (cso: CanvasSizeObject): ResizeMode {
+  private _asResizeMode(cso: CanvasSizeObject): ResizeMode {
     if (cso.mode === "fit") {
       return ResizeMode.Fit;
     } else if (cso.mode === "aspect") {
@@ -213,7 +213,7 @@ export default class CanvasInitializerComponent extends Component {
     }
   }
 
-  private _configureCanvas (canvas: HTMLCanvasElement, scriptTag: HTMLScriptElement): void {
+  private _configureCanvas(canvas: HTMLCanvasElement, scriptTag: HTMLScriptElement): void {
     canvas.style.position = "absolute";
     canvas.style.top = "0px";
     canvas.style.left = "0px";
@@ -232,7 +232,7 @@ export default class CanvasInitializerComponent extends Component {
     this._resize(true);
   }
 
-  private _getContext (canvas: HTMLCanvasElement): WebGLRenderingContextWithId {
+  private _getContext(canvas: HTMLCanvasElement): WebGLRenderingContextWithId {
     const contextConfig = {
       antialias: this.getAttribute("antialias"),
       preserveDrawingBuffer: this.getAttribute("preserveDrawingBuffer"),
@@ -250,7 +250,7 @@ export default class CanvasInitializerComponent extends Component {
   /**
    * Insert __id__property to be identify rendering contexts
    */
-  private _applyContextId (context: WebGLRenderingContext): WebGLRenderingContextWithId{
+  private _applyContextId(context: WebGLRenderingContext): WebGLRenderingContextWithId{
     const contextWithId = context as WebGLRenderingContextWithId;
     contextWithId.__id__ = Math.random().toString(36).slice(-6); // Generating random string
     return contextWithId;
@@ -261,7 +261,7 @@ export default class CanvasInitializerComponent extends Component {
    * @param  {Element} tag [description]
    * @return {boolean}     [description]
    */
-  private _isContainedInBody (tag: Element): boolean {
+  private _isContainedInBody(tag: Element): boolean {
     if (!tag.parentElement) {
       return false;
     }
@@ -271,7 +271,7 @@ export default class CanvasInitializerComponent extends Component {
     return this._isContainedInBody(tag.parentElement);
   }
 
-  private _autoFixForBody (scriptTag: Element): void {
+  private _autoFixForBody(scriptTag: Element): void {
     if (scriptTag.parentElement.nodeName === "BODY") {
       const boudningBox = document.body.getBoundingClientRect();
       if (boudningBox.height === 0) {

@@ -40,7 +40,7 @@ import TextureConverter from "./Converters/TextureConverter";
 import ViewportConverter from "./Converters/ViewportConverter";
 
 export default () => {
-    GrimoireInterface.register(async () => {
+    GrimoireInterface.register(async() => {
         GrimoireInterface.registerComponent("AssetLoadingManager", AssetLoadingManagerComponent);
         GrimoireInterface.registerComponent("Camera", CameraComponent);
         GrimoireInterface.registerComponent("CanvasInitializer", CanvasInitializerComponent);

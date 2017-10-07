@@ -23,7 +23,7 @@ export default class Program extends ResourceBase {
 
   private _attributeLocations: { [variableName: string]: number } = {};
 
-  constructor (gl: WebGLRenderingContext) {
+  constructor(gl: WebGLRenderingContext) {
     super(gl);
     this.uniforms = new UniformProxy(this);
     this.program = gl.createProgram();
@@ -33,7 +33,7 @@ export default class Program extends ResourceBase {
    * Check this program is the last used one or not.
    * @return {boolean} [description]
    */
-  public get isLastUsed (): boolean {
+  public get isLastUsed(): boolean {
     return ResourceCache.useProgramCheck(this.gl, this.program);
   }
 
@@ -42,7 +42,7 @@ export default class Program extends ResourceBase {
    * The array might be set of vertex shader and fragment shader couple.
    * @param {Shader[]} shaders [description]
    */
-  public update (shaders: Shader[]): void {
+  public update(shaders: Shader[]): void {
     if (this.valid) {
       // detach all attached shaders previously
       const preciousShaders = this.gl.getAttachedShaders(this.program);
@@ -65,7 +65,7 @@ export default class Program extends ResourceBase {
   /**
    * Use this program for drawing.
    */
-  public use (): void {
+  public use(): void {
     if (!this.isLastUsed) {
       this.gl.useProgram(this.program);
     }
@@ -75,7 +75,7 @@ export default class Program extends ResourceBase {
   /**
    * Destroy this instance.
    */
-  public destroy (): void {
+  public destroy(): void {
     super.destroy();
     this.gl.deleteProgram(this.program);
     this._uniformLocations = {};
@@ -87,7 +87,7 @@ export default class Program extends ResourceBase {
    * @param  {string} variableName [description]
    * @return {number}              [description]
    */
-  public findAttributeLocation (variableName: string): number {
+  public findAttributeLocation(variableName: string): number {
     if (this._attributeLocations[variableName] === void 0) { // If cache is not available
       this._attributeLocations[variableName] = this.gl.getAttribLocation(this.program, variableName);
       this._safeEnableVertexAttribArray(this._attributeLocations[variableName]);
@@ -101,7 +101,7 @@ export default class Program extends ResourceBase {
    * @param  {string}               variableName [description]
    * @return {WebGLUniformLocation}              [description]
    */
-  public findUniformLocation (variableName: string): WebGLUniformLocation {
+  public findUniformLocation(variableName: string): WebGLUniformLocation {
     const location = this._uniformLocations[variableName];
     if (location === void 0) { // if cache is not available
       return this._uniformLocations[variableName] = this.gl.getUniformLocation(this.program, variableName);
@@ -110,7 +110,7 @@ export default class Program extends ResourceBase {
     }
   }
 
-  private _safeEnableVertexAttribArray (location: number): void {
+  private _safeEnableVertexAttribArray(location: number): void {
     if (location < 0) {
       return;
     }

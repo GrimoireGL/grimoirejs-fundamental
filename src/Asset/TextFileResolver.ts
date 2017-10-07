@@ -1,7 +1,7 @@
 import ExternalResourceResolver from "./ExternalResourceResolver";
 export class TextFileResolver extends ExternalResourceResolver<string> {
 
-  public resolve (path: string): Promise<string> {
+  public resolve(path: string): Promise<string> {
     return super.resolve(path, (abs) => {
       if (TextFileResolver.isDataURL(abs)) {
         return Promise.resolve(this._dataUriToText(abs));
@@ -20,7 +20,7 @@ export class TextFileResolver extends ExternalResourceResolver<string> {
     });
   }
 
-  private _dataUriToText (dataUrl: string): string {
+  private _dataUriToText(dataUrl: string): string {
     const splittedUri = dataUrl.split(",");
     const byteString = atob(splittedUri[1]);
     return byteString;

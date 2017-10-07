@@ -3,7 +3,7 @@ export default class Shader extends ResourceBase {
 
   public shader: WebGLShader;
 
-  constructor (gl: WebGLRenderingContext, public readonly type: number, public sourceCode?: string) {
+  constructor(gl: WebGLRenderingContext, public readonly type: number, public sourceCode?: string) {
     super(gl);
     this.shader = gl.createShader(type);
     if (sourceCode) {
@@ -11,7 +11,7 @@ export default class Shader extends ResourceBase {
     }
   }
 
-  public update (source: string): void {
+  public update(source: string): void {
     this.gl.shaderSource(this.shader, source);
     this.gl.compileShader(this.shader);
     if (!this.gl.getShaderParameter(this.shader, WebGLRenderingContext.COMPILE_STATUS)) {
@@ -21,12 +21,12 @@ export default class Shader extends ResourceBase {
     this.valid = true;
   }
 
-  public destroy (): void {
+  public destroy(): void {
     super.destroy();
     this.gl.deleteShader(this.shader);
   }
 
-  private _insertLineNumbers (source: string): string {
+  private _insertLineNumbers(source: string): string {
     source = "1:" + source;
     let lN = 2;
     for (let i = 0; i < source.length; i++) {

@@ -27,20 +27,20 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
 
   private _materialContainer: MaterialContainerComponent;
 
-  public $awake (): void {
+  public $awake(): void {
     super.$awake();
     this.getAttributeRaw("indexGroup").boundTo("indexGroup");
     this.getAttributeRaw("technique").boundTo("technique");
   }
 
-  public async $mount (): Promise<void> {
+  public async $mount(): Promise<void> {
     this._gl = this.companion.get("gl");
     this._materialContainer = this.node.getComponent(MaterialContainerComponent);
     const geometryRegistry = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
     this._geom = await geometryRegistry.getGeometry("quad");
   }
 
-  public $render (args: IRenderRendererMessage): void {
+  public $render(args: IRenderRendererMessage): void {
     if (!this._materialContainer.materialReady || !this._geom) {
       return;
     }

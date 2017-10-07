@@ -37,14 +37,14 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
 
     public out: IRenderingTarget;
 
-    public $awake (): void {
+    public $awake(): void {
         this.getAttributeRaw("clearColor").boundTo("clearColor");
         this.getAttributeRaw("clearColorEnabled").boundTo("clearColorEnabled");
         this.getAttributeRaw("clearDepthEnabled").boundTo("clearDepthEnabled");
         this.getAttributeRaw("clearDepth").boundTo("clearDepth");
     }
 
-    protected __beforeRender (): boolean {
+    protected __beforeRender(): boolean {
         if (!this.out) {
             if (this.out === void 0) {
                 setImmediate(() => {

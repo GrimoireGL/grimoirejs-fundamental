@@ -58,7 +58,7 @@ export default class RenderingTargetComponent extends Component {
 
     public renderingTarget: OffscreenRenderingTarget;
 
-    public $mount (): void {
+    public $mount(): void {
         const name = this.getAttribute("name");
         if (!name) {
             throw new Error("Rendering target must have name");
@@ -79,7 +79,7 @@ export default class RenderingTargetComponent extends Component {
      * Generate default buffers as children node
      * @param name
      */
-    private _instanciateDefaultBuffers (name: string): void {
+    private _instanciateDefaultBuffers(name: string): void {
         this.node.addChildByName("color-buffer", {
             name,
             format: this.getAttribute("colorBufferFormat"),

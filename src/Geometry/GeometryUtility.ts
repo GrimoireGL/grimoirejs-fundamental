@@ -1,5 +1,5 @@
 export default class GeometryUtility {
-  public static linesFromTriangles (indices: number[]): number[] {
+  public static linesFromTriangles(indices: number[]): number[] {
     const ret: number[] = [];
     const ic: number[] = new Array(3);
     let i = 0;
@@ -13,7 +13,7 @@ export default class GeometryUtility {
     }
     return ret;
   }
-  public static plane (center: number[], normal: number[], up: number[], right: number[], hdiv = 1, vdiv = 1, reverse = false): number[] {
+  public static plane(center: number[], normal: number[], up: number[], right: number[], hdiv = 1, vdiv = 1, reverse = false): number[] {
     const ret = new Array(8 * (hdiv + 1) * (vdiv + 1));
     const sp = [center[0] - up[0] - right[0], center[1] - up[1] - right[1], center[2] - up[2] - right[2]];
     const sr = [right[0] / hdiv * 2, right[1] / hdiv * 2, right[2] / hdiv * 2];
@@ -36,7 +36,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static cylinderPlane (center: number[], normal: number[], up: number[], right: number[], divide: number, order: number): number[] {
+  public static cylinderPlane(center: number[], normal: number[], up: number[], right: number[], divide: number, order: number): number[] {
     const ret = new Array(32);
     const sp = [center[0] - up[0] - right[0], center[1] - up[1] - right[1], center[2] - up[2] - right[2]];
     const sr = [right[0] * 2, right[1] * 2, right[2] * 2];
@@ -65,7 +65,7 @@ export default class GeometryUtility {
     }
     return ret;
   }
-  public static triangle (center: number[], normal: number[], up: number[], right: number[]): number[] {
+  public static triangle(center: number[], normal: number[], up: number[], right: number[]): number[] {
     const ret = new Array(24);
     const delta = 2 * Math.PI / 3;
     for (let i = 0; i < 3; i++) {
@@ -83,7 +83,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static coneTriangle (center: number[], normal: number[], up: number[], right: number[], divide: number, order: number): number[] {
+  public static coneTriangle(center: number[], normal: number[], up: number[], right: number[], divide: number, order: number): number[] {
     const ret = new Array(24);
     const delta = 2 * Math.PI / 3;
     for (let i = 0; i < 3; i++) {
@@ -121,7 +121,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static triangleIndex (offset: number) {
+  public static triangleIndex(offset: number) {
     const ret = new Array(3);
     ret[0] = offset;
     ret[1] = offset + 2;
@@ -129,7 +129,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static planeIndex (offset = 0, hdiv = 0, vdiv = 0): number[] {
+  public static planeIndex(offset = 0, hdiv = 0, vdiv = 0): number[] {
     const ret = new Array(6 * hdiv * vdiv);
     for (let v = 0; v < vdiv; v++) {
       for (let h = 0; h < hdiv; h++) {
@@ -147,7 +147,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static circle (center: number[], normal: number[], up: number[], right: number[], divide = 5): number[] {
+  public static circle(center: number[], normal: number[], up: number[], right: number[], divide = 5): number[] {
     const ret = new Array((3 + divide) * 6);
     // center
     ret[0] = center[0];
@@ -179,7 +179,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static circleIndex (offset: number, divide: number): number[] {
+  public static circleIndex(offset: number, divide: number): number[] {
     const ret = new Array(3 * divide);
     for (let i = 0; i < divide; i++) {
       ret[3 * i + 0] = offset;
@@ -188,7 +188,7 @@ export default class GeometryUtility {
     }
     return ret;
   }
-  public static capsule (center: number[], up: number[], right: number[], forward: number[], vdiv = 3, hdiv = 3): number[] {
+  public static capsule(center: number[], up: number[], right: number[], forward: number[], vdiv = 3, hdiv = 3): number[] {
     const ret = new Array(vdiv * hdiv * 8);
     for (let i = 0; i < vdiv; i++) {
       for (let j = 0; j < hdiv; j++) {
@@ -218,7 +218,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static sphere (center: number[], up: number[], right: number[], forward: number[], vdiv: number, hdiv: number): number[] {
+  public static sphere(center: number[], up: number[], right: number[], forward: number[], vdiv: number, hdiv: number): number[] {
     const ret = new Array(vdiv * hdiv * 8);
     for (let i = 0; i < vdiv; i++) {
       for (let j = 0; j < hdiv; j++) {
@@ -248,7 +248,7 @@ export default class GeometryUtility {
     return ret;
   }
 
-  public static sphereIndex (offset: number, vdiv: number, hdiv: number): number[] {
+  public static sphereIndex(offset: number, vdiv: number, hdiv: number): number[] {
     const ret: number[] = new Array(hdiv * vdiv * 6);
     for (let i = 0; i < vdiv - 1; i++) {
       for (let j = 0; j < hdiv - 1; j++) {

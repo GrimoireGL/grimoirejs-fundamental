@@ -8,7 +8,7 @@ class SortParser {
    */
   private static _parsedCache: { [key: number]: { [key: string]: ITechniqueRecipe } } = {};
 
-  public static parse (source: string): Promise<{ [key: string]: ITechniqueRecipe }> {
+  public static parse(source: string): Promise<{ [key: string]: ITechniqueRecipe }> {
     const sourceHash = HashCalculator.calcHash(source);
     if (SortParser._parsedCache[sourceHash] !== void 0) { // When specified source was loaded already
       return new Promise((resolve, reject) => {
@@ -22,7 +22,7 @@ class SortParser {
     }
   }
 
-  private static _parse (source: string): Promise<{ [key: string]: ITechniqueRecipe }> {
+  private static _parse(source: string): Promise<{ [key: string]: ITechniqueRecipe }> {
     return new Promise((resolve, reject) => {
       const result: { [key: string]: ITechniqueRecipe; } = {};
       SortTransformUtility.resolveImports(SortTransformUtility.removeComment(source)).then(uncommented => {
@@ -39,7 +39,7 @@ class SortParser {
     });
   }
 
-  private static _parseTechnique (techniqueSource: string): ITechniqueRecipe {
+  private static _parseTechnique(techniqueSource: string): ITechniqueRecipe {
     const drawOrder = SortTransformUtility.fetchDrawOrder(techniqueSource) || "Auto";
     const passSources = SortTransformUtility.separatePassSource(techniqueSource);
     const passes: IPassRecipe[] = new Array(passSources.length);
@@ -52,7 +52,7 @@ class SortParser {
     };
   }
 
-  private static _parsePassSource (passSource: string): IPassRecipe {
+  private static _parsePassSource(passSource: string): IPassRecipe {
     const shaderSource = SortTransformUtility.removePreferences(passSource);
     const attributes = SortTransformUtility.parseVariables(passSource, "attribute");
     const uniforms = SortTransformUtility.parseVariables(passSource, "uniform");

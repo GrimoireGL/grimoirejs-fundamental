@@ -8,7 +8,7 @@ export default class Buffer extends ResourceBase {
    */
   public keepSource = false;
 
-  public get bufferSource (): BufferSource {
+  public get bufferSource(): BufferSource {
     if (this.keepSource) {
       return this._bufferSource;
     } else {
@@ -18,15 +18,15 @@ export default class Buffer extends ResourceBase {
 
   private _bufferSource: BufferSource = null;
 
-  constructor (gl: WebGLRenderingContext, public readonly target: number = WebGLRenderingContext.ARRAY_BUFFER, public usage: number = WebGLRenderingContext.STATIC_DRAW) {
+  constructor(gl: WebGLRenderingContext, public readonly target: number = WebGLRenderingContext.ARRAY_BUFFER, public usage: number = WebGLRenderingContext.STATIC_DRAW) {
     super(gl);
     this.buffer = gl.createBuffer();
   }
 
-  public update (length: number): void;
-  public update (buffer: BufferSource): void;
-  public update (offset: number, buffer: BufferSource): void;
-  public update (length: number | BufferSource, subBuffer?: BufferSource): void {
+  public update(length: number): void;
+  public update(buffer: BufferSource): void;
+  public update(offset: number, buffer: BufferSource): void;
+  public update(length: number | BufferSource, subBuffer?: BufferSource): void {
     this.bind();
     this._bufferSource = null;
     if (subBuffer) {
@@ -45,11 +45,11 @@ export default class Buffer extends ResourceBase {
     this.valid = true;
   }
 
-  public bind (): void {
+  public bind(): void {
     this.gl.bindBuffer(this.target, this.buffer);
   }
 
-  public destroy (): void {
+  public destroy(): void {
     super.destroy();
     this._bufferSource = null;
     this.gl.deleteBuffer(this.buffer);

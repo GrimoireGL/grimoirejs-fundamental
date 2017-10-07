@@ -113,12 +113,12 @@ export default class TransformComponent extends Component {
    * Global transform that consider parent transform and local transform
    * @return {[type]} [description]
    */
-  public get globalTransform (): Matrix {
+  public get globalTransform(): Matrix {
     this._updateTransform();
     return this._globalTransform;
   }
 
-  public get globalTransformInverse (): Matrix {
+  public get globalTransformInverse(): Matrix {
     if (!this._globalTransformInverse) {
       this._globalTransformInverse = Matrix.inverse(this.globalTransform);
     }else {
@@ -127,42 +127,42 @@ export default class TransformComponent extends Component {
     return this._globalTransformInverse;
   }
 
-  public get globalPosition (): Vector3 {
+  public get globalPosition(): Vector3 {
     this._updateTransform();
     return this._globalPosition;
   }
 
-  public get globalScale (): Vector3 {
+  public get globalScale(): Vector3 {
     this._updateTransform();
     return this._globalScale;
   }
 
-  public get forward (): Vector3 {
+  public get forward(): Vector3 {
     this._updateTransform();
     return this._forward;
   }
 
-  public get up (): Vector3 {
+  public get up(): Vector3 {
     this._updateTransform();
     return this._up;
   }
 
-  public get right (): Vector3 {
+  public get right(): Vector3 {
     this._updateTransform();
     return this._right;
   }
 
-  public calcPVM (camera: CameraComponent): Matrix {
+  public calcPVM(camera: CameraComponent): Matrix {
     mat4.mul(this._cachePVM.rawElements, camera.ProjectionViewMatrix.rawElements, this.globalTransform.rawElements);
     return this._cachePVM;
   }
 
-  public calcVM (camera: CameraComponent): Matrix {
+  public calcVM(camera: CameraComponent): Matrix {
     mat4.mul(this._cacheVM.rawElements, camera.ViewMatrix.rawElements, this.globalTransform.rawElements);
     return this._cacheVM;
   }
 
-  public $awake (): void {
+  public $awake(): void {
     // register observers
     this.getAttributeRaw("position").watch((v) => {
       this.notifyUpdateTransform();
@@ -177,7 +177,7 @@ export default class TransformComponent extends Component {
     this.__bindAttributes();
   }
 
-  public $mount (): void {
+  public $mount(): void {
     this._parentTransform = this.node.parent.getComponent(TransformComponent);
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
@@ -185,27 +185,27 @@ export default class TransformComponent extends Component {
     this._updateTransform();
   }
 
-  public $unmount (): void {
+  public $unmount(): void {
     if (this._parentTransform) {
       this._parentTransform._children.splice(this._parentTransform._children.indexOf(this), 1);
       this._parentTransform = null;
     }
   }
 
-  public notifyUpdateTransform (): void {
+  public notifyUpdateTransform(): void {
     if (!this._updatedTransform) {
       this._updatedTransform = true;
       this._children.forEach(c => c.notifyUpdateTransform());
     }
   }
 
-  public applyMatrix (mat: Matrix): void {
+  public applyMatrix(mat: Matrix): void {
     this.setAttribute("scale",  mat.getScaling());
     this.setAttribute("rotation", mat.getRotation());
     this.setAttribute("position", mat.getTranslation());
   }
 
-  private _updateTransform (noDirectionalUpdate?: boolean): void {
+  private _updateTransform(noDirectionalUpdate?: boolean): void {
     if (!this._updatedTransform) {
       return;
     }
@@ -217,7 +217,7 @@ export default class TransformComponent extends Component {
   /**
    * Update global transoform.
    */
-  private _updateGlobalTransform (noDirectionalUpdate?: boolean): void {
+  private _updateGlobalTransform(noDirectionalUpdate?: boolean): void {
     if (!this._parentTransform) {
       mat4.copy(this._globalTransform.rawElements, this.localTransform.rawElements);
     } else {
@@ -233,13 +233,13 @@ export default class TransformComponent extends Component {
     this.node.emit("transformUpdated", this);
   }
 
-  private _updateDirections (): void {
+  private _updateDirections(): void {
     vec4.transformMat4(this._forward.rawElements, TransformComponent._forwardBase.rawElements, this.globalTransform.rawElements);
     vec4.transformMat4(this._up.rawElements, TransformComponent._upBase.rawElements, this.globalTransform.rawElements);
     vec4.transformMat4(this._right.rawElements, TransformComponent._rightBase.rawElements, this.globalTransform.rawElements);
   }
 
-  private _updateGlobalProperty (): void {
+  private _updateGlobalProperty(): void {
     if (!this._parentTransform) {
       vec3.copy(this._globalPosition.rawElements, this.position.rawElements);
       vec3.copy(this._globalScale.rawElements, this.scale.rawElements);

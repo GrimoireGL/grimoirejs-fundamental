@@ -6,11 +6,11 @@ export default class CacheResolver<T> {
 
   public resolvers: { [key: string]: Promise<T> } = {};
 
-  constructor (public toAbsolute: (relative: string) => string) {
+  constructor(public toAbsolute: (relative: string) => string) {
 
   }
 
-  public async resolve (src: string, resolver: (abs: string) => Promise<T>): Promise<T> {
+  public async resolve(src: string, resolver: (abs: string) => Promise<T>): Promise<T> {
     const abs = this.toAbsolute(src);
     if (this._cached(abs)) {
       return this.cache[abs];
@@ -24,15 +24,15 @@ export default class CacheResolver<T> {
     }
   }
 
-  private _cached (abs: string): boolean {
+  private _cached(abs: string): boolean {
     return typeof this.cache[abs] !== "undefined";
   }
 
-  private _resolving (abs: string): boolean {
+  private _resolving(abs: string): boolean {
     return typeof this.resolvers[abs] !== "undefined";
   }
 
-  private _resolved (abs: string, result: T): void {
+  private _resolved(abs: string, result: T): void {
     delete this.resolvers[abs];
     this.cache[abs] = result;
   }

@@ -22,11 +22,11 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
      * @param  {WebGLRenderingContext} gl [description]
      * @return {MaterialFactory}          [description]
      */
-    public static get (gl: WebGLRenderingContext): MaterialFactory {
+    public static get(gl: WebGLRenderingContext): MaterialFactory {
         return GLRelatedRegistryBase.__get(gl, MaterialFactory);
     }
 
-    public static addMaterialType (typeName: string, materialGenerator: (factory: MaterialFactory) => Material): void {
+    public static addMaterialType(typeName: string, materialGenerator: (factory: MaterialFactory) => Material): void {
         this.materialGeneratorResolver.register(typeName, Promise.resolve(materialGenerator));
     }
 
@@ -36,8 +36,8 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
      * @param  {string}        source   [description]
      * @return {Promise<void>}          [description]
      */
-    public static async addSORTMaterial (typeName: string, source: string): Promise<(factory: MaterialFactory) => Material> {
-        return this.materialGeneratorResolver.register(typeName, (async () => {
+    public static async addSORTMaterial(typeName: string, source: string): Promise<(factory: MaterialFactory) => Material> {
+        return this.materialGeneratorResolver.register(typeName, (async() => {
             const techniques = await SortParser.parse(source);
             return (factory) => {
                 return new Material(factory.gl, techniques);
@@ -51,8 +51,8 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
      * @param  {string}        url      [description]
      * @return {Promise<void>}          [description]
      */
-    public static addSORTMaterialFromURL (typeName: string, url: string): Promise<(factory: MaterialFactory) => Material> {
-        return this.materialGeneratorResolver.register(typeName, (async () => {
+    public static addSORTMaterialFromURL(typeName: string, url: string): Promise<(factory: MaterialFactory) => Material> {
+        return this.materialGeneratorResolver.register(typeName, (async() => {
             const source = await TextFileResolver.resolve(url);
             const techniques = await SortParser.parse(source);
             return (factory) => {
@@ -61,7 +61,7 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
         })());
     }
 
-    public static getMaterialStatus (typeName: string): number{
+    public static getMaterialStatus(typeName: string): number{
         return this.materialGeneratorResolver.getStatus(typeName);
     }
 
@@ -69,12 +69,12 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
 
     public macro: MacroRegistory;
 
-    constructor (public gl: WebGLRenderingContext) {
+    constructor(public gl: WebGLRenderingContext) {
         super();
         this.macro = new MacroRegistory();
     }
 
-    public async instanciate (typeName: string): Promise<Material> {
+    public async instanciate(typeName: string): Promise<Material> {
         const generator =  await MaterialFactory.materialGeneratorResolver.get(typeName);
         return generator(this);
     }

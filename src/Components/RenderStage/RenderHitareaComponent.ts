@@ -41,7 +41,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
 
   private _mouseMoved: boolean;
 
-  public $mount (): void {
+  public $mount(): void {
     this._sceneRenderer = this.node.getComponent(RenderSceneComponent);
     if (!this._sceneRenderer) {
       throw new Error("The node attaching RenderHitArea should contain RenderScene.");
@@ -56,7 +56,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     }
   }
 
-  public $resizeViewport (args: IResizeViewportMessage): void {
+  public $resizeViewport(args: IResizeViewportMessage): void {
     const size = TextureSizeCalculator.getPow2Size(args.width, args.height);
     this._bufferViewport = new Viewport(0, 0, size.width, size.height);
     this.hitareaTexture.update(0, size.width, size.height, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE);
@@ -68,7 +68,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     }
   }
 
-  public $render (args: IRenderRendererMessage): void {
+  public $render(args: IRenderRendererMessage): void {
     if (!this._mouseInside) {
       return;
     }
@@ -103,18 +103,18 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
   }
 
-  public $mousemove (v: ViewportMouseEvent): void {
+  public $mousemove(v: ViewportMouseEvent): void {
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
   }
 
-  public $mouseenter (v: ViewportMouseEvent): void {
+  public $mouseenter(v: ViewportMouseEvent): void {
     this._mouseInside = true;
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
   }
 
-  public $mouseleave (v: ViewportMouseEvent): void {
+  public $mouseleave(v: ViewportMouseEvent): void {
     this._mouseInside = false;
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
@@ -129,7 +129,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
    * @param index
    * @param camera
    */
-  private _updateCurrentIndex (index: number, camera: CameraComponent): void {
+  private _updateCurrentIndex(index: number, camera: CameraComponent): void {
     if (index === 0) { // there was no object at pointer
       if (this._lastRenderable instanceof Component) {
         this._lastRenderable.node.emit("mouseleave", this._lastRenderable);

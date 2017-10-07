@@ -26,7 +26,7 @@ export default class Pass {
   /**
    * Get related material
    */
-  public get material (): Material {
+  public get material(): Material {
     return this.technique.material;
   }
 
@@ -54,7 +54,7 @@ export default class Pass {
 
   private _argumentInitialized: boolean;
 
-  constructor (public technique: Technique, public passRecipe: IPassRecipe) {
+  constructor(public technique: Technique, public passRecipe: IPassRecipe) {
     this._uniformResolvers = UniformResolverRegistry.generateRegisterers(this, passRecipe);
     this._gl = this.material.gl;
     const factory = MaterialFactory.get(this._gl);
@@ -91,7 +91,7 @@ export default class Pass {
    * Execute single drawcall with specified arguments.
    * @param {IMaterialArgument} args [description]
    */
-  public draw (args: IMaterialArgument): void {
+  public draw(args: IMaterialArgument): void {
     // configure programs and gl states
     const p = this.program.getProgram(args.geometry);
     p.use();
@@ -110,7 +110,7 @@ export default class Pass {
    * Append an argument as pass variable.
    * This is mainly used for resolving uniform stages.
    */
-  public addArgument (name: string, val: IAttributeDeclaration): void {
+  public addArgument(name: string, val: IAttributeDeclaration): void {
     if (this._argumentInitialized) {
       throw new Error("setArgument cant be called for initialized pass");
     }
@@ -119,7 +119,7 @@ export default class Pass {
   /**
    * Update argument of specified value.
    */
-  public setArgument (variableName: string, newValue: any, oldValue: any): void {
+  public setArgument(variableName: string, newValue: any, oldValue: any): void {
     if (this._macroHandlers[variableName]) { // if the value was macro
       this._macroHandlers[variableName](newValue);
     } else {
@@ -130,7 +130,7 @@ export default class Pass {
   /**
    * Destroy pass to release resources.
    */
-  public dispose (): void {
+  public dispose(): void {
     this._uniformResolvers.dispose();
     this.program.dispose();
   }

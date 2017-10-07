@@ -35,20 +35,20 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
     },
   };
 
-  public static rewriteDefaultMaterial (materialName: string): void {
+  public static rewriteDefaultMaterial(materialName: string): void {
     if (materialName !== MaterialContainerComponent._defaultMaterial) {
       MaterialContainerComponent._defaultMaterial = materialName;
       GrimoireInterface.componentDeclarations.get("MaterialContainer").attributes["material"].default = `new(${materialName})`;
     }
   }
 
-  public static get defaultMaterial (): string {
+  public static get defaultMaterial(): string {
     return this._defaultMaterial;
   }
 
   private static _defaultMaterial = "unlit";
 
-  public getDrawPriorty (depth: number, technique: string): number {
+  public getDrawPriorty(depth: number, technique: string): number {
     if (!this.materialReady && !this.isActive) { // If material was not ready
       return Number.MAX_VALUE;
     }
@@ -88,7 +88,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
 
   private _transparent: boolean;
 
-  public $mount (): void {
+  public $mount(): void {
     this.getAttributeRaw("material").watch(this._onMaterialChanged.bind(this));
     this.__registerAssetLoading(this._onMaterialChanged());
     this.getAttributeRaw("drawOrder").boundTo("_drawOrder");
@@ -98,7 +98,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
   /**
    * When the material attribute is changed.
    */
-  private async _onMaterialChanged (): Promise<void> {
+  private async _onMaterialChanged(): Promise<void> {
     const materialPromise = this.getAttribute("material") as Promise<Material>;
     if (materialPromise === null) {
       this.useMaterial = false;
@@ -119,14 +119,14 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
    * Resolve materials only when the material required from external material component.
    * @return {Promise<void>} [description]
    */
-  private async _prepareExternalMaterial (materialPromise: Promise<Material>): Promise<void> {
+  private async _prepareExternalMaterial(materialPromise: Promise<Material>): Promise<void> {
     const material = await materialPromise; // waiting for material load completion
     this.material = material;
     this.materialArgs = this._materialComponent.materialArgs;
     this.materialReady = true;
   }
 
-  private async _prepareInternalMaterial (materialPromise: Promise<Material>): Promise<void> {
+  private async _prepareInternalMaterial(materialPromise: Promise<Material>): Promise<void> {
     // obtain promise of instanciating material
     if (!materialPromise) {
       return;
