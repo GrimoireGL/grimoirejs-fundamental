@@ -1,5 +1,3 @@
-import gr from "grimoirejs";
-import IDObject from "grimoirejs/ref/Base/IDObject";
 
 /**
  * Abstraction of resource related class.
@@ -18,11 +16,11 @@ abstract class ResourceBase {
 
   private _validResolve: (r: ResourceBase) => void;
 
-  public get valid(): boolean {
+  public get valid (): boolean {
     return this._valid;
   }
 
-  public set valid(val: boolean) {
+  public set valid (val: boolean) {
     if (this._valid === val) {
       return;
     }
@@ -35,7 +33,7 @@ abstract class ResourceBase {
       });
     }
   }
-  constructor(public gl: WebGLRenderingContext) {
+  constructor (public gl: WebGLRenderingContext) {
     if (!gl) {
       throw new Error("missing WebGLRenderingContext");
     }
@@ -43,7 +41,7 @@ abstract class ResourceBase {
     this.valid = false;
   }
 
-  public destroy(): void {
+  public destroy (): void {
     this.destroyed = true;
   }
 }

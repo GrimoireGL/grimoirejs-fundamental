@@ -14,9 +14,8 @@ export default class MacroRegistory {
    */
   private _observers: {[macroName: string]: ((value: string, isImmediateCall: boolean) => void)[]} = {};
 
-
-  constructor() {
-    for (let key in DefaultMacro) {
+  constructor () {
+    for (const key in DefaultMacro) {
       this.setValue(key, DefaultMacro[key]);
     }
   }
@@ -26,7 +25,7 @@ export default class MacroRegistory {
    * @param {string}    key [description]
    * @param {string =   null}        val [description]
    */
-  public setValue(key: string, val: string = null): void {
+  public setValue (key: string, val: string = null): void {
     if (val === null) {
       val = "";
     }
@@ -44,7 +43,7 @@ export default class MacroRegistory {
    * @param  {string} key [description]
    * @return {string}     [description]
    */
-  public getValue(key: string): string {
+  public getValue (key: string): string {
     const macro = this._macro[key];
     if (macro === null) {
       return "";
@@ -53,7 +52,7 @@ export default class MacroRegistory {
     }
   }
 
-  public watch(macroName: string, handler: (value: string, isImmediateCall: boolean) => void, immediate = false): void {
+  public watch (macroName: string, handler: (value: string, isImmediateCall: boolean) => void, immediate = false): void {
     let observers = this._observers[macroName];
     if (!observers) {
       observers = this._observers[macroName] = [];
@@ -64,7 +63,7 @@ export default class MacroRegistory {
     }
   }
 
-  public unwatch(macroName: string, handler: (value: string, isImmediateCall: boolean) => void): boolean {
+  public unwatch (macroName: string, handler: (value: string, isImmediateCall: boolean) => void): boolean {
     const observers = this._observers[macroName];
     if (!observers) {
       return false;
@@ -77,7 +76,7 @@ export default class MacroRegistory {
     }
   }
 
-  private _notifyMacroChanged(key: string, value: string): void {
+  private _notifyMacroChanged (key: string, value: string): void {
     for (let i = 0; i < this._observers[key].length; i++) {
       this._observers[key][i](value, false);
     }

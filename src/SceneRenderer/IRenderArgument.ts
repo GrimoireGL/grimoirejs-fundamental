@@ -1,12 +1,8 @@
-import RenderSceneComponent from "../Components/RenderStage/RenderSceneComponent";
-import gr from "grimoirejs";
 import Component from "grimoirejs/ref/Node/Component";
-import Rectangle from "grimoirejs-math/ref/Rectangle";
-import Material from "../Material/Material";
-import Texture2D from "../Resource/Texture2D";
 import CameraComponent from "../Components/CameraComponent";
-import Timer from "../Util/Timer";
+import Material from "../Material/Material";
 import Viewport from "../Resource/Viewport";
+import Timer from "../Util/Timer";
 /**
  * The message args of $render called by RendererComponent.
  */

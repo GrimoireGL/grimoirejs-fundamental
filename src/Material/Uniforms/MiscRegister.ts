@@ -1,13 +1,12 @@
-import MeshIndexCalculator from "../../Util/MeshIndexCalculator";
 import Vector2 from "grimoirejs-math/ref/Vector2";
-import Material from "../Material";
 import Vector4 from "grimoirejs-math/ref/Vector4";
-import IMaterialArgument from "../IMaterialArgument";
+import ViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
 import UniformProxy from "../../Resource/UniformProxy";
+import MeshIndexCalculator from "../../Util/MeshIndexCalculator";
+import IMaterialArgument from "../IMaterialArgument";
+import Pass from "../Pass";
 import IVariableInfo from "../Schema/IVariableInfo";
 import UniformResolverRegistry from "../UniformResolverRegistry";
-import Pass from "../Pass";
-import ViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
 
 UniformResolverRegistry.add("VIEWPORT", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
   const vp = args.viewport;
@@ -20,7 +19,7 @@ UniformResolverRegistry.add("VIEWPORT_SIZE", (valInfo: IVariableInfo) => (proxy:
 });
 
 UniformResolverRegistry.add("TIME", (valInfo: IVariableInfo) => {
-  let unit = valInfo.attributes["unit"] || "ms";
+  const unit = valInfo.attributes["unit"] || "ms";
   let divider = 1;
   switch (unit) {
     case "s":
@@ -35,9 +34,9 @@ UniformResolverRegistry.add("TIME", (valInfo: IVariableInfo) => {
 UniformResolverRegistry.add("HAS_TEXTURE", (valInfo: IVariableInfo, pass: Pass) => {
   const sampler = valInfo.attributes["sampler"];
   if (!sampler) {
-    throw new Error(`The variable having HAS_TEXTURE as semantics must have sampler attribute`);
+    throw new Error("The variable having HAS_TEXTURE as semantics must have sampler attribute");
   }
-  console.warn(`HAS_TEXTURE is deprecated now. Use flag attribute on sampler2D variables to register macro values`);
+  console.warn("HAS_TEXTURE is deprecated now. Use flag attribute on sampler2D variables to register macro values");
   return (proxy: UniformProxy, args: IMaterialArgument) => {
     const hasTexture = !!pass.arguments[sampler] && !!pass.arguments[sampler].get();
     proxy.uniformBool(valInfo.name, hasTexture);

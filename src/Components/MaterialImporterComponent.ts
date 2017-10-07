@@ -1,7 +1,7 @@
-import MaterialFactory from "../Material/MaterialFactory";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import NameResolver from "../Asset/NameResolver";
+import MaterialFactory from "../Material/MaterialFactory";
 
 /**
  * マテリアル設定ファイルを読み込むためのコンポーネント
@@ -13,23 +13,23 @@ export default class MaterialImporterComponent extends Component {
      */
     typeName: {
       default: null,
-      converter: "String"
+      converter: "String",
     },
     /**
      * 読み込み先のファイルパス
      */
     src: {
       default: null,
-      converter: "String"
-    }
+      converter: "String",
+    },
   };
 
-  public $awake(): void {
+  public $awake (): void {
     this.getAttributeRaw("typeName").watch(() => {
-      console.warn(`Changeing 'typeName' on MaterialImporter makes no sense. This change won't affect anything.`);
+      console.warn("Changeing 'typeName' on MaterialImporter makes no sense. This change won't affect anything.");
     });
     this.getAttributeRaw("src").watch(() => {
-      console.warn(`Changeing 'src' on MaterialImporter makes no sense. This change won't affect anything.`);
+      console.warn("Changeing 'src' on MaterialImporter makes no sense. This change won't affect anything.");
     });
     if (!this.getAttribute("typeName") || !this.getAttribute("src")) {
       throw new Error("type or src cannot be null in material importer");

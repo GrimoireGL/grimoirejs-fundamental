@@ -2,7 +2,7 @@ export default {
   attribute: {
     position: "POSITION",
     normal: "NORMAL",
-    texCoord: "TEXCOORD"
+    texCoord: "TEXCOORD",
   },
   uniform: {
     _time: "TIME",
@@ -19,6 +19,6 @@ export default {
     _matIVM: "MODELVIEWINVERSE",
     _matIPVM: "MODELVIEWPROJECTIONINVERSE",
     _matITM: "MODELINVERSETRANSPOSE",
-    _matITVM: "MODELVIEWINVERSETRANSPOSE"
-  }
+    _matITVM: "MODELVIEWINVERSETRANSPOSE",
+  },
 };

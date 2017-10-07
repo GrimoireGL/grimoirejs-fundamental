@@ -10,23 +10,23 @@ export default class Timer {
   private _frameCount = 0;
   private _lastFPS: number;
 
-  public get deltaTime() {
+  public get deltaTime () {
     return this._deltaTime;
   }
 
-  public get time() {
+  public get time () {
     return this._time;
   }
 
-  public get timeInSecound() {
+  public get timeInSecound () {
     return this._time / 1000;
   }
 
-  public get frameCount() {
+  public get frameCount () {
     return this._frameCount;
   }
 
-  public get FPS() {
+  public get FPS () {
     return this._lastFPS ? this._lastFPS.toFixed(2) : Number.NaN;
   }
 
@@ -35,7 +35,7 @@ export default class Timer {
    * This method is only use for internal procedure in framework.
    * @return {[type]} [description]
    */
-  public internalUpdate(): boolean {
+  public internalUpdate (): boolean {
     this._frameCount++;
     const time = Date.now();
     if (this._shouldUpdate(time)) {
@@ -46,7 +46,7 @@ export default class Timer {
     }
   }
 
-  private _shouldUpdate(time: number): boolean {
+  private _shouldUpdate (time: number): boolean {
     if (this._time === void 0) {
       this._unrestrictedLastRealTime = time;
       return true; // first frame
@@ -64,7 +64,7 @@ export default class Timer {
     }
   }
 
-  private _updateTimer(time: number): void {
+  private _updateTimer (time: number): void {
     if (this._lastRealTime === undefined) {
       this._time = 0;
       this._deltaTime = 0;

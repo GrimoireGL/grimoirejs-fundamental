@@ -9,8 +9,8 @@ export default class TextureResizerComponentBase extends Component {
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         keepPow2Size: {
             converter: "Boolean",
-            default: true
-        }
+            default: true,
+        },
     };
 
     private _lastWidth = 0;
@@ -22,7 +22,7 @@ export default class TextureResizerComponentBase extends Component {
      * @param width
      * @param height
      */
-    protected __resizeResources(width: number, height: number): void {
+    protected __resizeResources (width: number, height: number): void {
         if (this.getAttribute("keepPow2Size")) {
             const newSize = TextureSizeCalculator.getPow2Size(width, height);
             width = newSize.width;

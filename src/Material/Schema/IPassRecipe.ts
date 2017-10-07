@@ -1,6 +1,6 @@
 import IMacro from "./IMacro";
-import IVariableInfo from "./IVariableInfo";
 import IState from "./IState";
+import IVariableInfo from "./IVariableInfo";
 interface IPassRecipe {
   fragment: string;
   vertex: string;

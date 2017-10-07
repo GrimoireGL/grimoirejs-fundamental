@@ -4,7 +4,10 @@
         <mesh color="red" position="0,0,0" geometry="cube"/>
     </scene>
     <renderer>
-        <rendering-target name="main"/>
+        <rendering-target name="main">
+            <color-buffer name="main" resizerType="Constant" resolution="2048,2048"/>
+            <render-buffer name="main" resizerType="Constant" resolution="2048,2048"/>
+        </rendering-target>
         <render-scene out="main"/>
         <render-quad material="new(unlit)" texture="backbuffer(main)"/>
     </renderer>

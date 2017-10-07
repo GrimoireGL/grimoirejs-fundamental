@@ -1,23 +1,23 @@
+import {Nullable} from "grimoirejs/ref/Base/Types";
+import Attribute from "grimoirejs/ref/Node/Attribute";
+import ImageResolver from "../Asset/ImageResolver";
 import TextureContainer from "../Components/Texture/TextureContainer";
 import TextureReference from "../Material/TextureReference";
-import Attribute from "grimoirejs/ref/Node/Attribute";
-import Texture2D from "../Resource/Texture2D";
-import ImageResolver from "../Asset/ImageResolver";
-import {Nullable} from "grimoirejs/ref/Base/Types";
 import RenderingBufferResourceRegistry from "../Resource/RenderingTarget/RenderingBufferResourceRegistry";
+import Texture2D from "../Resource/Texture2D";
 
 type Query = {
   type: "query" | "backbuffer",
-  param: string
+  param: string,
 };
 
-function _parseQuery(query: string): Nullable<Query> {
+function _parseQuery (query: string): Nullable<Query> {
   const regex = /(query|backbuffer)\((.+)\)[^\)]*$/;
   let regexResult;
   if ((regexResult = regex.exec(query))) {
     return {
       type: regexResult[1] as "query" | "backbuffer",
-      param: regexResult[2]
+      param: regexResult[2],
     };
   }
   return null;
@@ -35,7 +35,7 @@ function _parseQuery(query: string): Nullable<Query> {
  * * `HTMLCanvasElement`・・・必要がある場合リサイズされた上で利用される。(自動的に2の累乗に変換される)
  * * `HTMLVideoElement`・・・必要がある場合リサイズされた上で、自動的に再生される(自動的に2の累乗に変換される)
  */
-export default function TextureConverter(val: any, attr: Attribute): any {
+export default function TextureConverter (val: any, attr: Attribute): any {
   if (val instanceof Texture2D) {
     return new TextureReference(val);
   } else if (val instanceof TextureReference) {
@@ -48,32 +48,32 @@ export default function TextureConverter(val: any, attr: Attribute): any {
         case "backbuffer":
           return new TextureReference((buffers) => RenderingBufferResourceRegistry.get(attr.companion.get("gl")).getBackbuffer(param));
         case "query":
-          const obtainedTag = attr.tree!(param);
-          const texture = obtainedTag.first()!.getComponent(TextureContainer);
+          const obtainedTag = attr.tree(param);
+          const texture = obtainedTag.first().getComponent(TextureContainer);
           return new TextureReference(() => texture.texture);
       }
     } else {
-      const tex = new Texture2D(attr.companion!.get("gl"));
+      const tex = new Texture2D(attr.companion.get("gl"));
       ImageResolver.resolve(val).then(t => {
         tex.update(t);
       });
-      attr.companion!.get("loader").register(tex.validPromise);
+      attr.companion.get("loader").register(tex.validPromise);
       return new TextureReference(tex);
     }
   }
   if (typeof val === "object") {
     if (val instanceof HTMLImageElement) {
-      const tex = new Texture2D(attr.companion!.get("gl"));
+      const tex = new Texture2D(attr.companion.get("gl"));
       if (val.complete && val.naturalWidth) {
         tex.update(val);
       } else {
-        val.onload = function() {
+        val.onload = function () {
           tex.update(val);
         };
       }
       return new TextureReference(tex);
     } else if (val instanceof HTMLCanvasElement) {
-      const tex = new Texture2D(attr.companion!.get("gl"));
+      const tex = new Texture2D(attr.companion.get("gl"));
       tex.update(val);
       return new TextureReference(tex);
     }

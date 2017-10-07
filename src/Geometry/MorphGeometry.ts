@@ -12,7 +12,7 @@ export default class MorphGeometry extends Geometry {
 
     public lastWeights: number[] = null;
 
-    public addMorphAttribute(semantics: string, morphParameters: MorphParameter[]): void {
+    public addMorphAttribute (semantics: string, morphParameters: MorphParameter[]): void {
         const accessor = this.accessors[semantics];
         if (!accessor) {
             throw new Error("There was no accessor related to specified accessor");
@@ -46,12 +46,12 @@ export default class MorphGeometry extends Geometry {
         }
         this._morphBaseAttribute[semantics] = {
             buffer: copiedBaseBuffer,
-            accessor: this.accessors[semantics]
+            accessor: this.accessors[semantics],
         };
         this.morphParameters[semantics] = morphParameters;
     }
 
-    public removeMorphAttribute(semantics: string): void{
+    public removeMorphAttribute (semantics: string): void{
         delete this.morphParameters[semantics];
         delete this._morphBaseAttribute[semantics];
         if (Object.keys(this.morphParameters).length === 0){
@@ -59,14 +59,14 @@ export default class MorphGeometry extends Geometry {
         }
     }
 
-    public setWeight(weights: number[]): void{
+    public setWeight (weights: number[]): void{
         this.lastWeights = weights;
-        for (let key in this._morphBaseAttribute){
+        for (const key in this._morphBaseAttribute){
             this._updateForSemantics(key);
         }
     }
 
-    private _updateForSemantics(semantics: string): void{
+    private _updateForSemantics (semantics: string): void{
         const accessor = this.accessors[semantics];
         const target = this.buffers[accessor.bufferIndex];
         const targetBuffer = target.bufferSource;
@@ -79,7 +79,7 @@ export default class MorphGeometry extends Geometry {
         target.update(targetBuffer);
     }
 
-    private _calculateWeights(semantics: string, index: number): number{
+    private _calculateWeights (semantics: string, index: number): number{
         let result = this._morphBaseAttribute[semantics].buffer[index];
         for (let i = 0 ; i < this.lastWeights.length; i++){
             result += this.lastWeights[i] * this.morphParameters[semantics][i].buffer[index];

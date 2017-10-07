@@ -1,11 +1,11 @@
 import IMacro from "../Material/Schema/IMacro";
-import IVariableInfo from "../Material/Schema/IVariableInfo";
 import IState from "../Material/Schema/IState";
+import IVariableInfo from "../Material/Schema/IVariableInfo";
+import CommentRemover from "./CommentRemover";
+import ImportResolver from "./ImportResolver";
+import NameSemanticPair from "./NameSemanticsPair";
 import Preferences from "./Preferences";
 import TypeToConstant from "./TypeToConstant";
-import NameSemanticPair from "./NameSemanticsPair";
-import ImportResolver from "./ImportResolver";
-import CommentRemover from "./CommentRemover";
 
 export default class SortTransformUtility {
   /**
@@ -13,7 +13,7 @@ export default class SortTransformUtility {
    * @param  {string} uncommentedSource [description]
    * @return {[type]}                   [description]
    */
-  public static separateTechniqueSource(uncommentedSource: string): { [key: string]: string } {
+  public static separateTechniqueSource (uncommentedSource: string): { [key: string]: string } {
     if (uncommentedSource.indexOf("@Technique") === -1) {
       return { default: uncommentedSource };
     } else {
@@ -37,7 +37,7 @@ export default class SortTransformUtility {
    * @param  {string}   uncommentedSource [description]
    * @return {string[]}                   [description]
    */
-  public static separatePassSource(uncommentedSource: string): string[] {
+  public static separatePassSource (uncommentedSource: string): string[] {
     if (uncommentedSource.indexOf("@Pass") === -1) {
       return [uncommentedSource];
     } else {
@@ -56,7 +56,7 @@ export default class SortTransformUtility {
    * @param  {string} uncommentedTechniqueSource [description]
    * @return {string}                            [description]
    */
-  public static fetchDrawOrder(uncommentedTechniqueSource: string): string {
+  public static fetchDrawOrder (uncommentedTechniqueSource: string): string {
     const regexResult = /@DrawOrder\s*\((\w+)\)/g.exec(uncommentedTechniqueSource);
     if (regexResult) {
       const firstPassIndex = uncommentedTechniqueSource.indexOf("@Pass");
@@ -68,12 +68,12 @@ export default class SortTransformUtility {
     return null;
   }
 
-  public static removePreferences(source: string): string {
+  public static removePreferences (source: string): string {
     const regex = /@.+$/gm;
     return source.replace(regex, "");
   }
 
-  public static async resolveImports(uncommentedSource: string): Promise<string> {
+  public static async resolveImports (uncommentedSource: string): Promise<string> {
     while (true) {
       const regexResult = /\s*@import\s+"([^"]+)"/.exec(uncommentedSource);
       if (!regexResult) { break; }
@@ -87,7 +87,7 @@ export default class SortTransformUtility {
     return uncommentedSource;
   }
 
-  public static parseMacros(source: string): { [key: string]: IMacro } {
+  public static parseMacros (source: string): { [key: string]: IMacro } {
     const result = {};
     let regex = /@ExposeMacro\s*\(\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*\)/g;
     let regexResult;
@@ -110,30 +110,30 @@ export default class SortTransformUtility {
           throw new Error(`Default macro value "${regexResult[4]}" is invalid for int type macro. Must be a number.`);
         }
       }
-      result[regexResult[2]] = <IMacro>{
+      result[regexResult[2]] = {
         name: regexResult[2],
         macroName: regexResult[3],
         type: regexResult[1],
-        value: value,
-        target: "expose"
-      };
+        value,
+        target: "expose",
+      } as IMacro;
     }
     regex = /@ReferMacro\s*\(\s*([a-zA-Z0-9_]+)\s*,\s*(.+)\s*\)/g;
     while ((regexResult = regex.exec(source))) {
       if (!regexResult[1] || !regexResult[2]) {
         throw new Error(`Invalid parameter was passed on @ReferMacro preference on '${regexResult[0]}'`);
       }
-      result[regexResult[1]] = <IMacro>{
+      result[regexResult[1]] = {
         name: regexResult[1],
         macroName: regexResult[1],
         value: regexResult[2],
-        target: "refer"
-      };
+        target: "refer",
+      } as IMacro;
     }
     return result;
   }
 
-  public static parsePreferences(source: string): IState {
+  public static parsePreferences (source: string): IState {
     const result: IState = {
       enable: [WebGLRenderingContext.CULL_FACE, WebGLRenderingContext.BLEND, WebGLRenderingContext.DEPTH_TEST],
       functions: {
@@ -144,9 +144,9 @@ export default class SortTransformUtility {
         lineWidth: [1],
         frontFace: [WebGLRenderingContext.CCW],
         depthRange: [0, 1],
-        depthFunc: [WebGLRenderingContext.LESS]
+        depthFunc: [WebGLRenderingContext.LESS],
       },
-      dynamicState: []
+      dynamicState: [],
     };
     const regex = /@([A-Za-z]+)\(([\sa-zA-Z_0-9,\.\-]*)\)/g;
     let regexResult;
@@ -160,17 +160,17 @@ export default class SortTransformUtility {
     return result;
   }
 
-  public static asValidJSON(json: string): string {
+  public static asValidJSON (json: string): string {
     const regex = /([\{,]\s*)([a-zA-Z0-9_]+)(\s*\:)/gm;
-    let result = json.replace(regex, '$1"$2"$3');
+    const result = json.replace(regex, '$1"$2"$3');
     return result;
   }
 
-  public static removeComment(source: string): string {
+  public static removeComment (source: string): string {
     return CommentRemover.remove(source);
   }
 
-  public static obtainNextSection(source: string, begin: string, end: string, offset: number): string {
+  public static obtainNextSection (source: string, begin: string, end: string, offset: number): string {
     const beginningPosition = source.indexOf(begin, offset);
     if (beginningPosition === -1) {
       throw new Error(`Begining section charactor '${begin}' was not found.`);
@@ -192,24 +192,24 @@ export default class SortTransformUtility {
         return source.substring(beginningPosition + 1, i);
       }
     }
-    throw new Error(`Invalid bracket matching`);
+    throw new Error("Invalid bracket matching");
   }
 
-  public static generateVariableFetchRegex(variableType: string): RegExp {
+  public static generateVariableFetchRegex (variableType: string): RegExp {
     return new RegExp(`(?:@([a-zA-Z0-9_]+)?(\\{.+\\})?)?\\s*${variableType}\\s+(?:(lowp|mediump|highp)\\s+)?([a-z0-9A-Z]+)\\s+([a-zA-Z0-9_]+)(?:\\s*\\[\\s*([a-zA-Z0-9_]+)\\s*\\]\\s*)?\\s*;`, "g");
   }
 
-  public static parseVariables(source: string, variableType: string): { [key: string]: IVariableInfo } {
+  public static parseVariables (source: string, variableType: string): { [key: string]: IVariableInfo } {
     const result = {};
     const regex = SortTransformUtility.generateVariableFetchRegex(variableType);
     let regexResult: RegExpExecArray;
     while ((regexResult = regex.exec(source))) {
-      let name = regexResult[5];
-      let type = TypeToConstant[regexResult[4]];
-      let precision = regexResult[3];
-      let rawAnnotations = regexResult[2];
-      let isArray = regexResult[6] !== void 0;
-      let arrayCount = undefined;
+      const name = regexResult[5];
+      const type = TypeToConstant[regexResult[4]];
+      const precision = regexResult[3];
+      const rawAnnotations = regexResult[2];
+      const isArray = regexResult[6] !== void 0;
+      let arrayCount;
       let semantic = regexResult[1];
       if (!semantic) {
         semantic = NameSemanticPair[variableType][name];
@@ -223,15 +223,15 @@ export default class SortTransformUtility {
           arrayCount = regexResult[6];
         }
       }
-      result[name] = <IVariableInfo>{
-        semantic: semantic,
-        name: name,
-        type: type,
-        precision: precision,
+      result[name] = {
+        semantic,
+        name,
+        type,
+        precision,
         attributes: rawAnnotations ? JSON.parse(SortTransformUtility.asValidJSON(rawAnnotations)) : {},
-        isArray: isArray,
-        count: arrayCount
-      };
+        isArray,
+        count: arrayCount,
+      } as IVariableInfo;
     }
     return result;
   }

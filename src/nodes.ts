@@ -6,7 +6,7 @@ export default {
    * `<canvas>`の設定(`width`や`height`)またはフルスクリーンなどのコンポーネントを含む。
    */
   goml: {
-    components: ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "RendererManager", "Fullscreen"]
+    components: ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "RendererManager", "Fullscreen"],
   },
   /**
    * ある3D空間上のモデルの配置やカメラの設定などの場面の設定を含むためのノード
@@ -14,7 +14,7 @@ export default {
    * 全ての場面に存在する座標を持ちうるノード(`TransformComponent`を含むノード)は必ずこのノードの子ノードのとして存在する必要があります。
    */
   scene: {
-    components: ["Scene"]
+    components: ["Scene"],
   },
   /**
    * 3D空間上の物体を意味するノード
@@ -22,7 +22,7 @@ export default {
    * 詳しくは`TransformComponent`を参照すると良いでしょう。
    */
   object: {
-    components: ["Transform"]
+    components: ["Transform"],
   },
   /**
    * 3D空間を撮影するためのカメラのノード
@@ -31,9 +31,9 @@ export default {
   camera: {
     components: ["Camera"],
     default: {
-      position: [0, 0, 10]
+      position: [0, 0, 10],
     },
-    super: "object"
+    super: "object",
   },
   /**
    * 3D空間上のモデルなど、 **映るもの** を表すためのノード
@@ -42,7 +42,7 @@ export default {
    */
   mesh: {
     components: ["MaterialContainer", "MeshRenderer"],
-    super: "object"
+    super: "object",
   },
   /**
    * キャンバスの描画手法を指定するためのノード
@@ -52,14 +52,14 @@ export default {
    * 通常、`<renderer>`の子ノードに何も存在しない場合、自動的に`<render-scene>`タグが生成されます。
    */
   renderer: {
-    components: ["Renderer"]
+    components: ["Renderer"],
   },
   /**
    * 新しい形状を生成するためのノード
    * 単純な変形(`scale`、`position`、`rotation`だけで表せない)、例えば円の分割数などを指定したい別の形状を明示的に生成するためのノードです。
    */
   geometry: {
-    components: ["Geometry"]
+    components: ["Geometry"],
   },
   /**
    * テクスチャを明示的に読み込むためのノード
@@ -67,7 +67,7 @@ export default {
    * サンプラの指定などをしたい場合、このタグで明示的に読み込むことにより読み込むことができます。
    */
   texture: {
-    components: ["Texture"]
+    components: ["Texture"],
   },
   /**
    * マテリアルを明示的に読み込むためのノード
@@ -75,14 +75,14 @@ export default {
    * これは、同時にマテリアルの値が編集できるだけでなく、パフォーマンス的にも大きな利点をもたらします。
    */
   material: {
-    components: ["Material"]
+    components: ["Material"],
   },
   /**
    * 新しいマテリアルを外部から読み込むためのノード
    * Grimoire.jsのマテリアルファイル(*.sort)から新しい種類のマテリアルを読み込むためのノードです。
    */
   "import-material": {
-    components: ["MaterialImporter"]
+    components: ["MaterialImporter"],
   },
   /**
    * カラーバッファ用のテクスチャを生成するためのノード
@@ -91,7 +91,7 @@ export default {
    * カラーバッファはオフスクリーンレンダリングなどへの利用など様々な面で利用することができます。
    */
   "texture-buffer": {
-    components: ["TextureBuffer"]
+    components: ["TextureBuffer"],
   },
   /**
    * 深度バッファ/ステンシルバッファ用の`renderbuffer`を生成するためのノード
@@ -99,7 +99,7 @@ export default {
    * このノードによってレンダリングに用いる深度バッファやステンシルバッファを生成することができます。
    */
   "render-buffer": {
-    components: ["RenderBuffer"]
+    components: ["RenderBuffer"],
   },
   /**
    *
@@ -110,8 +110,8 @@ export default {
   "render-scene": {
     components: ["RenderScene", "RenderHitArea"],
     default: {
-      material: null
-    }
+      material: null,
+    },
   },
   /**
    * 四角形単体を特定のマテリアルで描画するためのノード
@@ -121,7 +121,7 @@ export default {
   "render-quad": {
     components: ["MaterialContainer", "RenderQuad"],
     default: {
-      material: null
-    }
-  }
+      material: null,
+    },
+  },
 };
