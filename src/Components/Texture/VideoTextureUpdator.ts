@@ -41,7 +41,7 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
 
   public loop: boolean;
 
-  public $awake () {
+  public $awake() {
     super.$awake();
     this.__bindAttributes();
     this.getAttributeRaw("src").watch((v: string) => {
@@ -71,7 +71,7 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
     });
   }
 
-  private *_update () {
+  private *_update() {
     while (true) {
       if (this.currentTime !== this.video.currentTime) {
         this.currentTime = this.video.currentTime;
@@ -86,7 +86,7 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
     }
   }
 
-  private async _loadTask (src: string): Promise<void> {
+  private async _loadTask(src: string): Promise<void> {
     this.video = await VideoResolver.resolve(src);
     this.__registerFrameCoroutine(this._update);
     this.video.play();
@@ -94,7 +94,7 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
     this._update();
   }
 
-  private _syncVideoPref (): void {
+  private _syncVideoPref(): void {
     this.video.playbackRate = this.playbackRate;
     this.video.muted = this.muted;
     this.video.loop = this.loop;

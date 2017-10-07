@@ -11,7 +11,7 @@ type Query = {
   param: string,
 };
 
-function _parseQuery (query: string): Nullable<Query> {
+function _parseQuery(query: string): Nullable<Query> {
   const regex = /(query|backbuffer)\((.+)\)[^\)]*$/;
   let regexResult;
   if ((regexResult = regex.exec(query))) {
@@ -35,7 +35,7 @@ function _parseQuery (query: string): Nullable<Query> {
  * * `HTMLCanvasElement`・・・必要がある場合リサイズされた上で利用される。(自動的に2の累乗に変換される)
  * * `HTMLVideoElement`・・・必要がある場合リサイズされた上で、自動的に再生される(自動的に2の累乗に変換される)
  */
-export default function TextureConverter (val: any, attr: Attribute): any {
+export default function TextureConverter(val: any, attr: Attribute): any {
   if (val instanceof Texture2D) {
     return new TextureReference(val);
   } else if (val instanceof TextureReference) {
@@ -67,7 +67,7 @@ export default function TextureConverter (val: any, attr: Attribute): any {
       if (val.complete && val.naturalWidth) {
         tex.update(val);
       } else {
-        val.onload = function () {
+        val.onload = function() {
           tex.update(val);
         };
       }

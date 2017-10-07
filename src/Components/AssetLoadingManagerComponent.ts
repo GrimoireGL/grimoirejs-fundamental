@@ -39,14 +39,14 @@ export default class AssetLoadingManagerComponent extends Component {
 
   private _loaderElement: Element;
 
-  public $treeInitialized (): void {
+  public $treeInitialized(): void {
     if (this.getAttribute("autoStart")) {
       this._autoStart();
     }
     this._documentResolver();
   }
 
-  public $awake (): void {
+  public $awake(): void {
     this.companion.set(this.name.ns.for("loader"), this.loader);
     this.loader.register(new Promise((resolve) => { this._documentResolver = resolve; }), this);
     const canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
@@ -60,7 +60,7 @@ export default class AssetLoadingManagerComponent extends Component {
     this._loaderElement = loaderContainer;
   }
 
-  private async _autoStart (): Promise<void> {
+  private async _autoStart(): Promise<void> {
     await this.loader.promise;
     if (this._loaderElement) {
       this._loaderElement.remove();

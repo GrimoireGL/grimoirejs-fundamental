@@ -13,7 +13,7 @@ export default class SortTransformUtility {
    * @param  {string} uncommentedSource [description]
    * @return {[type]}                   [description]
    */
-  public static separateTechniqueSource (uncommentedSource: string): { [key: string]: string } {
+  public static separateTechniqueSource(uncommentedSource: string): { [key: string]: string } {
     if (uncommentedSource.indexOf("@Technique") === -1) {
       return { default: uncommentedSource };
     } else {
@@ -37,7 +37,7 @@ export default class SortTransformUtility {
    * @param  {string}   uncommentedSource [description]
    * @return {string[]}                   [description]
    */
-  public static separatePassSource (uncommentedSource: string): string[] {
+  public static separatePassSource(uncommentedSource: string): string[] {
     if (uncommentedSource.indexOf("@Pass") === -1) {
       return [uncommentedSource];
     } else {
@@ -56,7 +56,7 @@ export default class SortTransformUtility {
    * @param  {string} uncommentedTechniqueSource [description]
    * @return {string}                            [description]
    */
-  public static fetchDrawOrder (uncommentedTechniqueSource: string): string {
+  public static fetchDrawOrder(uncommentedTechniqueSource: string): string {
     const regexResult = /@DrawOrder\s*\((\w+)\)/g.exec(uncommentedTechniqueSource);
     if (regexResult) {
       const firstPassIndex = uncommentedTechniqueSource.indexOf("@Pass");
@@ -68,12 +68,12 @@ export default class SortTransformUtility {
     return null;
   }
 
-  public static removePreferences (source: string): string {
+  public static removePreferences(source: string): string {
     const regex = /@.+$/gm;
     return source.replace(regex, "");
   }
 
-  public static async resolveImports (uncommentedSource: string): Promise<string> {
+  public static async resolveImports(uncommentedSource: string): Promise<string> {
     while (true) {
       const regexResult = /\s*@import\s+"([^"]+)"/.exec(uncommentedSource);
       if (!regexResult) { break; }
@@ -87,7 +87,7 @@ export default class SortTransformUtility {
     return uncommentedSource;
   }
 
-  public static parseMacros (source: string): { [key: string]: IMacro } {
+  public static parseMacros(source: string): { [key: string]: IMacro } {
     const result = {};
     let regex = /@ExposeMacro\s*\(\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*\)/g;
     let regexResult;
@@ -133,7 +133,7 @@ export default class SortTransformUtility {
     return result;
   }
 
-  public static parsePreferences (source: string): IState {
+  public static parsePreferences(source: string): IState {
     const result: IState = {
       enable: [WebGLRenderingContext.CULL_FACE, WebGLRenderingContext.BLEND, WebGLRenderingContext.DEPTH_TEST],
       functions: {
@@ -160,17 +160,17 @@ export default class SortTransformUtility {
     return result;
   }
 
-  public static asValidJSON (json: string): string {
+  public static asValidJSON(json: string): string {
     const regex = /([\{,]\s*)([a-zA-Z0-9_]+)(\s*\:)/gm;
     const result = json.replace(regex, '$1"$2"$3');
     return result;
   }
 
-  public static removeComment (source: string): string {
+  public static removeComment(source: string): string {
     return CommentRemover.remove(source);
   }
 
-  public static obtainNextSection (source: string, begin: string, end: string, offset: number): string {
+  public static obtainNextSection(source: string, begin: string, end: string, offset: number): string {
     const beginningPosition = source.indexOf(begin, offset);
     if (beginningPosition === -1) {
       throw new Error(`Begining section charactor '${begin}' was not found.`);
@@ -195,11 +195,11 @@ export default class SortTransformUtility {
     throw new Error("Invalid bracket matching");
   }
 
-  public static generateVariableFetchRegex (variableType: string): RegExp {
+  public static generateVariableFetchRegex(variableType: string): RegExp {
     return new RegExp(`(?:@([a-zA-Z0-9_]+)?(\\{.+\\})?)?\\s*${variableType}\\s+(?:(lowp|mediump|highp)\\s+)?([a-z0-9A-Z]+)\\s+([a-zA-Z0-9_]+)(?:\\s*\\[\\s*([a-zA-Z0-9_]+)\\s*\\]\\s*)?\\s*;`, "g");
   }
 
-  public static parseVariables (source: string, variableType: string): { [key: string]: IVariableInfo } {
+  public static parseVariables(source: string, variableType: string): { [key: string]: IVariableInfo } {
     const result = {};
     const regex = SortTransformUtility.generateVariableFetchRegex(variableType);
     let regexResult: RegExpExecArray;

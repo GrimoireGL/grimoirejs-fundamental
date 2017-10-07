@@ -15,26 +15,26 @@ export default class RenderingTargetRegistry extends GLRelatedRegistryBase {
      * Obtain reference of the class by WebGLRenderingContext.
      * @param gl
      */
-    public static get (gl: WebGLRenderingContext): RenderingTargetRegistry {
+    public static get(gl: WebGLRenderingContext): RenderingTargetRegistry {
         return this.__get(gl, RenderingTargetRegistry);
     }
 
     public renderingTargets: { [key: string]: IRenderingTarget } = {};
 
-    constructor (public gl: WebGLRenderingContext) {
+    constructor(public gl: WebGLRenderingContext) {
         super();
         // default rendering target
         this.setRenderingTarget("canvas", new CanvasRenderingTarget(gl));
     }
 
-    public setRenderingTarget (name: string, renderingTarget: IRenderingTarget): void {
+    public setRenderingTarget(name: string, renderingTarget: IRenderingTarget): void {
         if (name === "default"){
             throw new Error("Rendering target can't be named as 'default'.");
         }
         this.renderingTargets[name] = renderingTarget;
     }
 
-    public getRenderingTarget (name: string): IRenderingTarget{
+    public getRenderingTarget(name: string): IRenderingTarget{
         return this.renderingTargets[name];
     }
 }

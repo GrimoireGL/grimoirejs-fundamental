@@ -3,25 +3,25 @@ import DefaultStaticImport from "../Material/Defaults/DefaultStaticImport";
 export class ImportResolver extends CacheResolver<string> {
   public staticImports: { [key: string]: string } = {...DefaultStaticImport};
 
-  private static _toAbsolute (href: string): string {
+  private static _toAbsolute(href: string): string {
     const link = document.createElement("a");
     link.href = href;
     return (link.protocol + "//" + link.host + link.pathname + link.search + link.hash);
   }
 
-  constructor () {
+  constructor() {
     super((str) => {
       const regex = /^https?:\/\/.*/gm;
       return regex.test(str) ? ImportResolver._toAbsolute(str) : str;
     });
   }
-  public resolve (path: string): Promise<string> {
+  public resolve(path: string): Promise<string> {
     return super.resolve(path, (abs) => {
       return this._resolve(path);
     });
   }
 
-  private async _resolve (path: string): Promise<string> {
+  private async _resolve(path: string): Promise<string> {
     if (typeof this.staticImports[path] === "string") {
       return this.staticImports[path];
     } else {
@@ -29,7 +29,7 @@ export class ImportResolver extends CacheResolver<string> {
     }
   }
 
-  private _fromExternal (path: string): Promise<string> {
+  private _fromExternal(path: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open("GET", path);

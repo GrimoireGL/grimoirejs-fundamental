@@ -5,7 +5,7 @@ import IRenderingTarget from "./IRenderingTarget";
  * Rendering target to render into canvas
  */
 export default class CanvasRenderingTarget implements IRenderingTarget {
-    public beforeDraw (clearFlag: number, color: number[], depth: number): void {
+    public beforeDraw(clearFlag: number, color: number[], depth: number): void {
         this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
         if (clearFlag){
             this.__configureClearScissor();
@@ -29,7 +29,7 @@ export default class CanvasRenderingTarget implements IRenderingTarget {
      * This value can't be changed by viewport.
      * Just depending on canvas size.
      */
-    public getBufferWidth (): number {
+    public getBufferWidth(): number {
         return this.gl.canvas.width;
     }
     /**
@@ -37,18 +37,18 @@ export default class CanvasRenderingTarget implements IRenderingTarget {
      * This value can't be changed by viewport.
      * Just depending on canvas size.
      */
-    public getBufferHeight (): number {
+    public getBufferHeight(): number {
         return this.gl.canvas.height;
     }
-    public getViewport (): Viewport {
+    public getViewport(): Viewport {
         return new Viewport(0, 0, this.getBufferWidth(), this.getBufferHeight());
     }
 
-    protected __configureClearScissor (): void{
+    protected __configureClearScissor(): void{
         this.gl.disable(WebGLRenderingContext.SCISSOR_TEST);
     }
 
-    constructor (public gl: WebGLRenderingContext){
+    constructor(public gl: WebGLRenderingContext){
 
     }
 }

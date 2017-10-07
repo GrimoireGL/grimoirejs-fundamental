@@ -24,14 +24,14 @@ export class UniformResolverRegistry {
 
   private _generators: { [semantics: string]: IUniformRegisterer } = {};
 
-  public add (semantic: string, generator: IUniformRegisterer): void {
+  public add(semantic: string, generator: IUniformRegisterer): void {
     if (typeof generator !== "function") {
       throw new Error("secound argument of add must be function");
     }
     this._generators[semantic.toUpperCase()] = generator;
   }
 
-  public generateRegisterers (pass: Pass, passInfo: IPassRecipe): UniformResolverContainer {
+  public generateRegisterers(pass: Pass, passInfo: IPassRecipe): UniformResolverContainer {
     const registerers: IUniformRegisterOnRegister[] = [], disposers: IUniformRegisterOnDispose[] = [], updators: { [variableName: string]: IUniformRegisterOnUpdate } = {};
     for (const key in passInfo.uniforms) {
       const valueInfo = passInfo.uniforms[key];

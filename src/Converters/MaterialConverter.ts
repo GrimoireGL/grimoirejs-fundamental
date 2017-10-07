@@ -10,7 +10,7 @@ import MaterialFactory from "../Material/MaterialFactory";
  * 通常、マテリアルを指定するコンポーネントはマテリアルによって、そのコンポーネントが所持する属性が置き換わる。
  * `new(マテリアル)`名で指定した場合、そのコンポーネント自身がマテリアルの属性を管理することになるので注意が必要。
  */
-export default function MaterialConverter (val: any, attr: Attribute): any {
+export default function MaterialConverter(val: any, attr: Attribute): any {
   if (typeof val === "string") {
     const regex = /\s*new\s*\(\s*([a-zA-Z\d\-]+)\s*\)/;
     let regexResult: RegExpExecArray |null;

@@ -15,21 +15,21 @@ export default class RenderQueue {
 
   private _rendeables: IRenderable[] = [];
 
-  public add (rendarable: IRenderable): void {
+  public add(rendarable: IRenderable): void {
     this._rendeables.push(rendarable);
     for (const technique in this._sortedRenderablesByTechniques) {
       this._sortedRenderablesByTechniques[technique].rendarables.push({ renderable: rendarable, priortyCache: 0 });
     }
   }
 
-  public remove (rendarable: IRenderable): void {
+  public remove(rendarable: IRenderable): void {
     this._removeFromRenderables(rendarable, this._rendeables);
     for (const tech in this._sortedRenderablesByTechniques) {
       this._removeFromRenderables(rendarable, this._sortedRenderablesByTechniques[tech].rendarables);
     }
   }
 
-  public renderAll (args: IRenderArgument): void {
+  public renderAll(args: IRenderArgument): void {
     const targetTechnique = args.sortingTechnique || args.technique;
     this._ensureCacheForTechnique(targetTechnique);
     this._sortForTechnique(args, targetTechnique);
@@ -38,7 +38,7 @@ export default class RenderQueue {
     });
   }
 
-  private _sortForTechnique (args: IRenderArgument, technique: string): void {
+  private _sortForTechnique(args: IRenderArgument, technique: string): void {
     const techniqueCache = this._sortedRenderablesByTechniques[technique];
     if (techniqueCache.lastFrame === args.timer.frameCount) {
       return;
@@ -51,7 +51,7 @@ export default class RenderQueue {
     }
   }
 
-  private _ensureCacheForTechnique (technique: string): void {
+  private _ensureCacheForTechnique(technique: string): void {
     if (this._sortedRenderablesByTechniques[technique]) {
       return;
     }
@@ -66,7 +66,7 @@ export default class RenderQueue {
     };
   }
 
-  private _removeFromRenderables (renderable: IRenderable, source: IRenderable[] | RenderElement[]): void {
+  private _removeFromRenderables(renderable: IRenderable, source: IRenderable[] | RenderElement[]): void {
     let index = 0;
     for (; index < source.length; index++) {
       const r = source[index];

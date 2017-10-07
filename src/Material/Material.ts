@@ -9,13 +9,13 @@ export default class Material {
 
     public techniques: { [key: string]: Technique } = {};
 
-    constructor (public gl: WebGLRenderingContext, public techniqueRecipes: { [key: string]: ITechniqueRecipe }) {
+    constructor(public gl: WebGLRenderingContext, public techniqueRecipes: { [key: string]: ITechniqueRecipe }) {
         for (const key in techniqueRecipes) {
             this.techniques[key] = new Technique(this, techniqueRecipes[key]);
         }
     }
 
-    public draw (arg: IMaterialArgument): void {
+    public draw(arg: IMaterialArgument): void {
         const technique = this.techniques[arg.technique];
         if (technique) {
             technique.draw(arg);
@@ -26,7 +26,7 @@ export default class Material {
      * Clone this material to new instance.
      * @return {Material} new material instance
      */
-    public clone (): Material {
+    public clone(): Material {
         const cloned = new Material(this.gl, this.techniqueRecipes);
         for (const techniqueKey in this.techniques) {
           const technique = this.techniques[techniqueKey];

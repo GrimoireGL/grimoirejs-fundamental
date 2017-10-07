@@ -113,73 +113,73 @@ export default class CameraComponent extends Component {
     private _aspect: number;
     private _orthographic = false;
 
-    public get ViewMatrix (): Matrix {
+    public get ViewMatrix(): Matrix {
         return this.__viewMatrix;
     }
-    public get ProjectionMatrix (): Matrix {
+    public get ProjectionMatrix(): Matrix {
         return this.__projectionMatrix;
     }
-    public get InvProjectionMatrix (): Matrix {
+    public get InvProjectionMatrix(): Matrix {
         return this.__invProjectionMatrix;
     }
-    public get ProjectionViewMatrix (): Matrix {
+    public get ProjectionViewMatrix(): Matrix {
         return this.__projectionViewMatrix;
     }
-    public get Far (): number {
+    public get Far(): number {
         return this._far;
     }
-    public set Far (far: number) {
+    public set Far(far: number) {
         this._far = far;
         this._recalculateProjection();
     }
-    public get Near (): number {
+    public get Near(): number {
         return this._near;
     }
-    public set Near (near: number) {
+    public set Near(near: number) {
         this._near = near;
         this._recalculateProjection();
     }
-    public get Aspect (): number {
+    public get Aspect(): number {
         return this._aspect;
     }
-    public set Aspect (aspect: number) {
+    public set Aspect(aspect: number) {
         this._aspect = aspect;
         this._recalculateProjection();
     }
-    public get Fovy (): number {
+    public get Fovy(): number {
         return this._fovy;
     }
 
-    public set Fovy (fov: number) {
+    public set Fovy(fov: number) {
         this._fovy = fov;
         this._recalculateProjection();
     }
 
-    public get OrthoSize (): number {
+    public get OrthoSize(): number {
         return this._orthoSize;
     }
 
-    public set OrthoSize (size: number) {
+    public set OrthoSize(size: number) {
         this._orthoSize = size;
     }
 
-    public set OrthographicMode (isOrtho: boolean) {
+    public set OrthographicMode(isOrtho: boolean) {
         this._orthographic = isOrtho;
         this._recalculateProjection();
     }
 
-    public get OrthographicMode (): boolean {
+    public get OrthographicMode(): boolean {
         return this._orthographic;
     }
 
-    public set AutoAspect (autoMode: boolean) {
+    public set AutoAspect(autoMode: boolean) {
         if (this._autoAspect !== autoMode) {
             this._autoAspect = autoMode;
             this._recalculateProjection();
         }
     }
 
-    public get AutoAspect (): boolean {
+    public get AutoAspect(): boolean {
         return this._autoAspect;
     }
 
@@ -188,7 +188,7 @@ export default class CameraComponent extends Component {
    * @param  {GomlNode}       node [the node to searching currently]
    * @return {SceneComponent}      [the scene component found]
    */
-    private static _findContainedScene (node: GomlNode): SceneComponent {
+    private static _findContainedScene(node: GomlNode): SceneComponent {
         if (node.parent) {
             const scene = node.parent.getComponent(SceneComponent);
             if (scene) {
@@ -201,7 +201,7 @@ export default class CameraComponent extends Component {
         }
     }
 
-    public $awake (): void {
+    public $awake(): void {
         this.getAttributeRaw("far").watch((v) => {
             this.Far = v;
         }, true);
@@ -223,7 +223,7 @@ export default class CameraComponent extends Component {
         this.getAttributeRaw("autoAspect").boundTo("_autoAspect");
     }
 
-    public $mount (): void {
+    public $mount(): void {
         this.transform = this.node.getComponent(TransformComponent);
         this.containedScene = CameraComponent._findContainedScene(this.node);
         this.containedScene.queueRegistory.registerQueue(this._renderQueue);
@@ -231,7 +231,7 @@ export default class CameraComponent extends Component {
         this.updateTransform();
     }
 
-    public $unmount (): void {
+    public $unmount(): void {
         this.containedScene.queueRegistory.unregisterQueue(this._renderQueue);
         this.containedScene = null;
     }
@@ -241,14 +241,14 @@ export default class CameraComponent extends Component {
      * @param  {TransformComponent} transform The transform to convert position
      * @return {Vector3}                      Viewport relative position
      */
-    public getViewportRelativePosition (transform: TransformComponent): Vector3;
+    public getViewportRelativePosition(transform: TransformComponent): Vector3;
     /**
      * Convert specified world position to viewport relative position.
      * @param  {Vector3} worldPos [description]
      * @return {Vector3}          [description]
      */
-    public getViewportRelativePosition (worldPos: Vector3): Vector3;
-    public getViewportRelativePosition (input: Vector3 | TransformComponent): Vector3 {
+    public getViewportRelativePosition(worldPos: Vector3): Vector3;
+    public getViewportRelativePosition(input: Vector3 | TransformComponent): Vector3 {
         let inputVector;
         if (input instanceof TransformComponent) {
             inputVector = input.globalPosition;
@@ -258,13 +258,13 @@ export default class CameraComponent extends Component {
         return Matrix.transformPoint(this.ProjectionViewMatrix, inputVector);
     }
 
-    public updateContainedScene (timer: Timer): void {
+    public updateContainedScene(timer: Timer): void {
         if (this.containedScene) {
             this.containedScene.updateScene(timer);
         }
     }
 
-    public renderScene (args: IRenderArgument): void {
+    public renderScene(args: IRenderArgument): void {
         if (this.containedScene) {
             this._justifyAspect(args);
             args.sceneDescription = this.containedScene.sceneDescription;
@@ -272,7 +272,7 @@ export default class CameraComponent extends Component {
         }
     }
 
-    public updateTransform (): void {
+    public updateTransform(): void {
         const transform = this.transform;
         vec3.transformMat4(this._eyeCache.rawElements, Vector3.Zero.rawElements, transform.globalTransform.rawElements);
         vec4.transformMat4(this._lookAtCache.rawElements, CameraComponent._frontOrigin.rawElements, transform.globalTransform.rawElements);
@@ -282,7 +282,7 @@ export default class CameraComponent extends Component {
         mat4.mul(this.__projectionViewMatrix.rawElements, this.__projectionMatrix.rawElements, this.__viewMatrix.rawElements);
     }
 
-    private _justifyAspect (args: IRenderArgument): void {
+    private _justifyAspect(args: IRenderArgument): void {
         if (this._autoAspect) {
             const asp = args.viewport.Width / args.viewport.Height;
             if (this._aspectCache !== asp) { // Detect changing viewport size
@@ -292,7 +292,7 @@ export default class CameraComponent extends Component {
         }
     }
 
-    private _recalculateProjection (): void {
+    private _recalculateProjection(): void {
         if (!this._orthographic) {
             mat4.perspective(this.__projectionMatrix.rawElements, this._fovy, this._aspect, this._near, this._far);
         } else {

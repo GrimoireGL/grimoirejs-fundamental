@@ -10,7 +10,7 @@ type CoroutineTuple = { coroutine: Iterator<number>; next: number; container: Co
 class CoroutineRegistry {
   public coroutines: CoroutineTuple[] = [];
 
-  public callCoroutine (criteria: number, timer: Timer): void {
+  public callCoroutine(criteria: number, timer: Timer): void {
     let removeTarget: CoroutineTuple[];
     this.coroutines.forEach(val => {
       if (val.next <= criteria) {
@@ -48,7 +48,7 @@ class CoroutineRegistry {
     }
   }
 
-  public register (container: Component, coroutine: () => IterableIterator<number>, tag?: string | symbol): void {
+  public register(container: Component, coroutine: () => IterableIterator<number>, tag?: string | symbol): void {
     const generator = coroutine.call(container);
     this.coroutines.push({
       coroutine: generator,
@@ -58,7 +58,7 @@ class CoroutineRegistry {
     });
   }
 
-  public unregister (container: Component, tag?: string | symbol): void {
+  public unregister(container: Component, tag?: string | symbol): void {
     const removeTarget: CoroutineTuple[] = [];
     if (tag) {
       this.coroutines.forEach(f => {
@@ -89,7 +89,7 @@ export default class BasicComponent extends Component {
    * Getter for loop manager used for loop mamnagement
    * @return {LoopManager} [description]
    */
-  public get loopManager (): LoopManager {
+  public get loopManager(): LoopManager {
     if (!this._loopManagerBackingStore) {
       this._loopManagerBackingStore = this.node.getComponentInAncestor(LoopManager);
     }
@@ -99,7 +99,7 @@ export default class BasicComponent extends Component {
    * Getter for assetLoading manager
    * @return {LoopManager} [description]
    */
-  public get assetLoadingManager (): AssetLoadingManager {
+  public get assetLoadingManager(): AssetLoadingManager {
     if (!this._assetLoadingManagerBackingStore) {
       this._assetLoadingManagerBackingStore = this.node.getComponentInAncestor(AssetLoadingManager);
     }
@@ -111,7 +111,7 @@ export default class BasicComponent extends Component {
    * Yield values from coroutine will be used as next frame to recall the generator.
    * Ensure this is not called exactly specified timing. This will be called in the frame after specified timing.
    */
-  protected __registerTimerCoroutine (coroutine: () => IterableIterator<number>, tag?: string | symbol): void {
+  protected __registerTimerCoroutine(coroutine: () => IterableIterator<number>, tag?: string | symbol): void {
     // check companion containing coroutine cache
     let coroutines = this.companion.get("timer-coroutine") as CoroutineRegistry;
     if (!coroutines) {
@@ -125,7 +125,7 @@ export default class BasicComponent extends Component {
    * Register coroutine invoked by timer in frame count.
    * Yield values from coroutine will be used as next frame to recall the generator.
    */
-  protected __registerFrameCoroutine (coroutine: () => IterableIterator<number>, tag?: string | symbol): void {
+  protected __registerFrameCoroutine(coroutine: () => IterableIterator<number>, tag?: string | symbol): void {
     // check companion containing coroutine cache
     let coroutines = this.companion.get("frame-coroutine") as CoroutineRegistry;
     if (!coroutines) {
@@ -141,29 +141,29 @@ export default class BasicComponent extends Component {
    * @param  {Timer}  method [description]
    * @return {[type]}        [description]
    */
-  protected __invoke (method: (timer: Timer) => void, timeInMillis: number): void {
+  protected __invoke(method: (timer: Timer) => void, timeInMillis: number): void {
     const _that = this;
-    this.__registerTimerCoroutine(function* () {
+    this.__registerTimerCoroutine(function*() {
       const timer = yield timeInMillis;
       method.call(_that, timer as Timer);
     });
   }
 
-  protected __unregisterTimerCoroutine (tag?: string | symbol): void {
+  protected __unregisterTimerCoroutine(tag?: string | symbol): void {
     const coroutines = this.companion.get("timer-coroutine") as CoroutineRegistry;
     if (coroutines) {
       coroutines.unregister(this, tag);
     }
   }
 
-  protected __unregisterFrameCoroutine (tag?: string | symbol): void {
+  protected __unregisterFrameCoroutine(tag?: string | symbol): void {
     const coroutines = this.companion.get("frame-coroutine") as CoroutineRegistry;
     if (coroutines) {
       coroutines.unregister(this, tag);
     }
   }
 
-  protected __registerAssetLoading<T> (loadingPromise: Promise<T>): Promise<T> {
+  protected __registerAssetLoading<T>(loadingPromise: Promise<T>): Promise<T> {
     return this.assetLoadingManager.loader.register(loadingPromise, this);
   }
 }

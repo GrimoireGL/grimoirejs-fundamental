@@ -9,7 +9,7 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
 
   public static registryName = "GLExtensionRequestor";
 
-  public static get (gl: WebGLRenderingContext): GLExtRequestor {
+  public static get(gl: WebGLRenderingContext): GLExtRequestor {
     return this.__get(gl, GLExtRequestor);
   }
   /**
@@ -35,7 +35,7 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
    * @param  {string}  extName [description]
    * @return {boolean}         [description]
    */
-  public static supported (extName: string): boolean {
+  public static supported(extName: string): boolean {
     const fg = GLExtRequestor._getFirst();
     if (!fg) {
       throw new Error("There was no WebGLRenderingContext initialized yet");
@@ -48,7 +48,7 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
    * Request extension to use.
    * @param {string} str [description]
    */
-  public static request (extName: string, isNecessary = false): void {
+  public static request(extName: string, isNecessary = false): void {
     const index = GLExtRequestor._requestIndexOf(extName);
     if (index > -1 && isNecessary) {
       GLExtRequestor._requestedExtensions[index] = { extensionName: extName, isNecessary };
@@ -58,11 +58,11 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
     GLExtRequestor._requestObserver.forEach((o) => o(extName));
   }
 
-  private static _getFirst (): GLExtRequestor {
+  private static _getFirst(): GLExtRequestor {
     return GLExtRequestor.__getAll(GLExtRequestor)[0];
   }
 
-  private static _requestIndexOf (extName: string): number {
+  private static _requestIndexOf(extName: string): number {
     for (let i = 0; i < GLExtRequestor._requestedExtensions.length; i++) {
       if (GLExtRequestor._requestedExtensions[i].extensionName === extName) {
         return i;
@@ -71,7 +71,7 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
     return -1;
   }
 
-  constructor (public gl: WebGLRenderingContext) {
+  constructor(public gl: WebGLRenderingContext) {
     super();
     this._resolveRequested();
     GLExtRequestor._requestObserver.push(this._resolveExtensionSafely.bind(this));
@@ -80,20 +80,20 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
   /**
    * Resolve all extension requested already.
    */
-  private _resolveRequested (): void {
+  private _resolveRequested(): void {
     GLExtRequestor._requestedExtensions.forEach((e) => {
       this._resolveExtensionSafely(e.extensionName);
     });
   }
 
-  private _resolveExtensionSafely (extName: string): void {
+  private _resolveExtensionSafely(extName: string): void {
     const e = GLExtRequestor._requestedExtensions[GLExtRequestor._requestIndexOf(extName)];
     if (!this._resolveExtension(e.extensionName) && e.isNecessary) {
       throw new Error(`A WebGL extension '${e.extensionName}' was requested. But that is not supported on this device.`);
     }
   }
 
-  private _resolveExtension (name: string): boolean {
+  private _resolveExtension(name: string): boolean {
     if (this._readyExtensions[name]) {
       return true;
     }

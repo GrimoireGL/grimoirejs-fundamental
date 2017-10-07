@@ -35,7 +35,7 @@ export default class GeometryComponent extends Component {
 
     public geometry: Geometry;
 
-    public async $mount (): Promise<void> {
+    public async $mount(): Promise<void> {
         const type = this.getAttribute("type");
         if (type) {
             const gf = GeometryFactory.get(this.companion.get("gl"));

@@ -5,14 +5,14 @@ import Texture2D from "./Texture2D";
 export default class FrameBuffer extends ResourceBase {
   public readonly fbo: WebGLFramebuffer;
 
-  constructor (gl: WebGLRenderingContext) {
+  constructor(gl: WebGLRenderingContext) {
     super(gl);
     this.fbo = gl.createFramebuffer();
   }
 
-  public update (boundTo: RenderBuffer, attachTo?: number): void;
-  public update (boundTo: Texture2D, level?: number, bindIndex?: number): void;
-  public update (boundTo: Texture2D | RenderBuffer, level?: number, bindIndex?: number): void {
+  public update(boundTo: RenderBuffer, attachTo?: number): void;
+  public update(boundTo: Texture2D, level?: number, bindIndex?: number): void;
+  public update(boundTo: Texture2D | RenderBuffer, level?: number, bindIndex?: number): void {
     this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, this.fbo);
     if (boundTo instanceof Texture2D) {
       if (typeof bindIndex === "undefined") {
@@ -32,11 +32,11 @@ export default class FrameBuffer extends ResourceBase {
     this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
   }
 
-  public bind (): void {
+  public bind(): void {
     this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, this.fbo);
   }
 
-  public destroy (): void {
+  public destroy(): void {
     super.destroy();
     this.gl.deleteFramebuffer(this.fbo);
   }

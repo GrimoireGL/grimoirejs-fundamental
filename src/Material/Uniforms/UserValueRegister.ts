@@ -30,14 +30,14 @@ UniformResolverRegistry.add("USER_VALUE", (valInfo: IVariableInfo, pass: Pass, t
   return register(valInfo, pass);
 });
 
-function basicRegister (type: number, isArray: boolean, converter: string, defaultValue: any, register: (proxy: UniformProxy, name: string, value, matArg: IMaterialArgument) => void, update?: (valInfo: IVariableInfo, passProgram: PassProgram, n: any, o: any) => void) {
+function basicRegister(type: number, isArray: boolean, converter: string, defaultValue: any, register: (proxy: UniformProxy, name: string, value, matArg: IMaterialArgument) => void, update?: (valInfo: IVariableInfo, passProgram: PassProgram, n: any, o: any) => void) {
   let registerTarget;
   if (isArray) {
     registerTarget = _userValueRegisterers.array;
   } else {
     registerTarget = _userValueRegisterers.single;
   }
-  registerTarget[type] = function (valInfo: IVariableInfo, pass: Pass) {
+  registerTarget[type] = function(valInfo: IVariableInfo, pass: Pass) {
     pass.addArgument(valInfo.name, {
       converter,
       default: valInfo.attributes["default"] ? valInfo.attributes["default"] : defaultValue,
@@ -97,7 +97,7 @@ basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: Textur
 
 // vec3 or vec4 should consider the arguments are color or vector.
 
-_userValueRegisterers.single[gl.FLOAT_VEC3] = function (valInfo: IVariableInfo, pass: Pass) {
+_userValueRegisterers.single[gl.FLOAT_VEC3] = function(valInfo: IVariableInfo, pass: Pass) {
   const isColor = valInfo.attributes["type"] === "color";
   const attrDefault = valInfo.attributes["default"];
   const defaultValue = attrDefault ? attrDefault : (isColor ? [1, 1, 1] : [0, 0, 0]);
@@ -114,7 +114,7 @@ _userValueRegisterers.single[gl.FLOAT_VEC3] = function (valInfo: IVariableInfo, 
   };
 };
 
-_userValueRegisterers.single[gl.FLOAT_VEC4] = function (valInfo: IVariableInfo, pass: Pass) {
+_userValueRegisterers.single[gl.FLOAT_VEC4] = function(valInfo: IVariableInfo, pass: Pass) {
   const isColor = valInfo.attributes["type"] === "color";
   const attrDefault = valInfo.attributes["default"];
   const defaultValue = attrDefault ? attrDefault : (isColor ? [1, 1, 1, 1] : [0, 0, 0, 0]);

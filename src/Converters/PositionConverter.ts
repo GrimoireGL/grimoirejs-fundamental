@@ -9,10 +9,10 @@ import GomlNode from "grimoirejs/ref/Node/GomlNode";
 export default {
   name: "Position",
   lazy: true,
-  verify (attr: Attribute) {
+  verify(attr: Attribute) {
     return true;
   },
-  convert (val: any, attr: Attribute) {
+  convert(val: any, attr: Attribute) {
     if (val === null) {
       return null;
     }

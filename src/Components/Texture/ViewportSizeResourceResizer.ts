@@ -20,7 +20,7 @@ export default class ViewportSizeResourceResizer extends ResourceResizerComponen
     },
   };
 
-  public $mount (): void {
+  public $mount(): void {
     const renderer = this.node.getComponentInAncestor(RendererComponent);
     if (renderer) {
       this.__resizeResources(renderer.viewport.Width, renderer.viewport.Height);
@@ -29,7 +29,7 @@ export default class ViewportSizeResourceResizer extends ResourceResizerComponen
     }
   }
 
-  public $resizeViewport (arg: IResizeViewportMessage): void {
+  public $resizeViewport(arg: IResizeViewportMessage): void {
     const scale = this.getAttribute("resolutionScale") as Vector2;
     this.__resizeResources(arg.width * scale.X, arg.height * scale.Y);
   }

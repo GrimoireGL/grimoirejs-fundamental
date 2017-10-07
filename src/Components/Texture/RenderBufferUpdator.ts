@@ -12,7 +12,7 @@ export default class RenderBufferComponent extends ResizableResourceUpdator {
 
   public buffer: RenderBuffer;
 
-  public $awake (): void {
+  public $awake(): void {
     super.$awake();
     this.buffer = new RenderBuffer(this.companion.get("gl"));
     this.buffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, 1, 1);
@@ -22,12 +22,12 @@ export default class RenderBufferComponent extends ResizableResourceUpdator {
     }
   }
 
-  public $unmount (): void {
+  public $unmount(): void {
     this.buffer.destroy();
     this.buffer = null;
   }
 
-  public resize (width: number, height: number): void {
+  public resize(width: number, height: number): void {
     this.buffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, width, height);
   }
 }

@@ -11,7 +11,7 @@ export default class MaterialContainerBase extends BasicComponent {
    * Expose sepcified parameters as attribute parameters on this component
    * @param {Material} material [description]
    */
-  protected __exposeMaterialParameters (material: Material): void {
+  protected __exposeMaterialParameters(material: Material): void {
     for (const techniqueName in material.techniques) {
       const technique = material.techniques[techniqueName];
       for (const passIndex in technique.passes) {

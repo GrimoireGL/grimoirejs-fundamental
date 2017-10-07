@@ -18,7 +18,7 @@ export default class ManagedShader extends Shader {
    * @param  {string}                shader [description]
    * @return {ManagedShader}                [description]
    */
-  public static getShader (gl: WebGLRenderingContext, type: number, shader: string): ManagedShader {
+  public static getShader(gl: WebGLRenderingContext, type: number, shader: string): ManagedShader {
     if (!ManagedShader._managedShaders.has(gl)) {
       ManagedShader._managedShaders.set(gl, {});
     }
@@ -33,7 +33,7 @@ export default class ManagedShader extends Shader {
 
   private _referenceCount = 0;
 
-  constructor (gl: WebGLRenderingContext, public readonly type: number, public sourceCode: string, public hash: number) {
+  constructor(gl: WebGLRenderingContext, public readonly type: number, public sourceCode: string, public hash: number) {
     super(gl, type, sourceCode);
   }
 
@@ -43,7 +43,7 @@ export default class ManagedShader extends Shader {
    *
    * That would make this shader disposed unintendedly.
    */
-  public release (): void {
+  public release(): void {
     this._referenceCount--;
     if (this._referenceCount === 0) {
       this.destroy();

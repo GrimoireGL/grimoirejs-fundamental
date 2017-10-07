@@ -40,16 +40,16 @@ export default class RendererManagerComponent extends Component {
 
   private _clearDepth: number;
 
-  public $awake (): void {
+  public $awake(): void {
     this.getAttributeRaw("bgColor").boundTo("_bgColor");
     this.getAttributeRaw("clearDepth").boundTo("_clearDepth");
   }
 
-  public $mount (): void {
+  public $mount(): void {
     this.gl = this.companion.get("gl");
   }
 
-  public $treeInitialized (): void {
+  public $treeInitialized(): void {
     this.node.getComponent(LoopManagerComponent).register(this.onloop.bind(this), 1000);
     if (this.getAttribute("complementRenderer") && this.node.getChildrenByNodeName("renderer").length === 0) {
       this.node.addChildByName("renderer", {});
@@ -57,7 +57,7 @@ export default class RendererManagerComponent extends Component {
     this._importSortFromHTML();
   }
 
-  public onloop (timer: Timer): void {
+  public onloop(timer: Timer): void {
     if (this.enabled) {
       const c: Color4 = this._bgColor;
       this.gl.clearColor(c.R, c.G, c.B, c.A);
@@ -69,7 +69,7 @@ export default class RendererManagerComponent extends Component {
     }
   }
 
-  private _importSortFromHTML (): void {
+  private _importSortFromHTML(): void {
     if (RendererManagerComponent._sortImportedFromHTML) {
       return;
     }

@@ -18,7 +18,7 @@ export default class MaterialComponent extends MaterialContainerBase {
 
     public materialArgs: { [key: string]: any } = {};
 
-    public $mount (): void {
+    public $mount(): void {
         const typeName = this.getAttribute("type");
         if (typeName && typeof typeName === "string") {
             const materialFactory = MaterialFactory.get(this.companion.get("gl"));
@@ -29,7 +29,7 @@ export default class MaterialComponent extends MaterialContainerBase {
         }
     }
 
-    private async _registerAttributes (): Promise<void> {
+    private async _registerAttributes(): Promise<void> {
         this.material = await this.materialPromise;
         this.__exposeMaterialParameters(this.material);
         this.ready = true;

@@ -2,7 +2,7 @@ import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Timer from "../Util/Timer";
 interface LoopAction {
-  action (timer: Timer): void;
+  action(timer: Timer): void;
   priorty: number;
 }
 
@@ -27,7 +27,7 @@ export default class LoopManagerComponent extends Component {
 
   private _timer: Timer;
 
-  public $awake (): void {
+  public $awake(): void {
     this._registerNextLoop =
       window.requestAnimationFrame  // if window.requestAnimationFrame is defined or undefined
         ?
@@ -40,7 +40,7 @@ export default class LoopManagerComponent extends Component {
         };
   }
 
-  public $mount (): void {
+  public $mount(): void {
     this.getAttributeRaw("loopEnabled").watch((attr) => {
       if (attr) {
         this._begin();
@@ -53,7 +53,7 @@ export default class LoopManagerComponent extends Component {
     this._timer.internalUpdate();
   }
 
-  public register (action: (timer: Timer) => void, priorty: number): void {
+  public register(action: (timer: Timer) => void, priorty: number): void {
     this._loopActions.push({
       action,
       priorty,
@@ -61,11 +61,11 @@ export default class LoopManagerComponent extends Component {
     this._loopActions.sort((a, b) => a.priorty - b.priorty);
   }
 
-  private _begin (): void {
+  private _begin(): void {
     this._registerNextLoop();
   }
 
-  private _loop (): void {
+  private _loop(): void {
     if (this._timer.internalUpdate()) {
       this.node.emit("loop", {
         timer: this._timer,
