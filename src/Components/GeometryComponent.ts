@@ -1,9 +1,8 @@
-import gr from "grimoirejs";
-import GeometryRegistory from "./GeometryRegistoryComponent";
-import GeometryFactory from "../Geometry/GeometryFactory";
-import Geometry from "../Geometry/Geometry";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Geometry from "../Geometry/Geometry";
+import GeometryFactory from "../Geometry/GeometryFactory";
+import GeometryRegistory from "./GeometryRegistoryComponent";
 /**
  * ジオメトリを生成するためのコンポーネント
  * `type`属性に指定されたタイプのジオメトリを生成して、`name`属性に指定された名前で利用できる形にして登録します。
@@ -20,7 +19,7 @@ export default class GeometryComponent extends Component {
          */
         type: {
             converter: "String",
-            default: null
+            default: null,
         },
         /**
          * ジオメトリにつける名前
@@ -30,8 +29,8 @@ export default class GeometryComponent extends Component {
          */
         name: {
             converter: "String",
-            default: null
-        }
+            default: null,
+        },
     };
 
     public geometry: Geometry;
@@ -42,7 +41,7 @@ export default class GeometryComponent extends Component {
             const gf = GeometryFactory.get(this.companion.get("gl"));
             const attrs = GeometryFactory.factoryArgumentDeclarations[type];
             const geometryArgument = {};
-            for (let key in attrs) {
+            for (const key in attrs) {
                 this.__addAttribute(key, attrs[key]);
                 geometryArgument[key] = this.getAttribute(key);
             }

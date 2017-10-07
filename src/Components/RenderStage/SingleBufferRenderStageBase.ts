@@ -1,13 +1,13 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import RenderStageBase from "./RenderStageBase";
 import Color4 from "grimoirejs-math/ref/Color4";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
+import RenderStageBase from "./RenderStageBase";
 
 export default class SingleBufferRenderStageBase extends RenderStageBase {
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         out: {
             converter: "RenderingTarget",
-            default: "default"
+            default: "default",
         },
         clearColor: {
             default: "#0000",
@@ -22,9 +22,9 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
             converter: "Boolean",
         },
         clearDepth: {
-            default: 1.0,
+            default: 1,
             converter: "Number",
-        }
+        },
     };
 
     public clearColor: Color4;
@@ -35,6 +35,8 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
 
     public clearDepthEnabled: boolean;
 
+    public _out: Promise<IRenderingTarget>;
+
     public out: IRenderingTarget;
 
     public $awake(): void {
@@ -42,17 +44,24 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
         this.getAttributeRaw("clearColorEnabled").boundTo("clearColorEnabled");
         this.getAttributeRaw("clearDepthEnabled").boundTo("clearDepthEnabled");
         this.getAttributeRaw("clearDepth").boundTo("clearDepth");
-        this.getAttributeRaw("out").boundTo("out");
+        this.getAttributeRaw("out").watch((promise: Promise<IRenderingTarget>) => {
+            this._out = promise;
+            promise.then(r => this.out = r);
+        }, true);
     }
 
-    protected __beforeRender():void{
+    protected __beforeRender(): boolean {
+        if (!this.out) {
+            return false;
+        }
         let clearFlag = 0;
         if (this.clearColorEnabled) {
-          clearFlag |= WebGLRenderingContext.COLOR_BUFFER_BIT;
+            clearFlag |= WebGLRenderingContext.COLOR_BUFFER_BIT;
         }
         if (this.clearDepthEnabled) {
-          clearFlag |= WebGLRenderingContext.DEPTH_BUFFER_BIT;
+            clearFlag |= WebGLRenderingContext.DEPTH_BUFFER_BIT;
         }
-        this.out.beforeDraw(clearFlag,this.clearColor.rawElements as number[],this.clearDepth);
+        this.out.beforeDraw(clearFlag, this.clearColor.rawElements as number[], this.clearDepth);
+        return true;
     }
 }

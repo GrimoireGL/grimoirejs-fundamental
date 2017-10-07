@@ -1,7 +1,7 @@
-import ResourceCache from "./ResourceCache";
-import UniformProxy from "./UniformProxy";
 import ResourceBase from "./ResourceBase";
+import ResourceCache from "./ResourceCache";
 import Shader from "./Shader";
+import UniformProxy from "./UniformProxy";
 
 /**
  * Manages WebGLProgram related stuff.

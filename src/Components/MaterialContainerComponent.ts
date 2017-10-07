@@ -1,13 +1,8 @@
-import DrawPriorty from "../SceneRenderer/DrawPriorty";
-import Attribute from "grimoirejs/ref/Node/Attribute";
-import gr from "grimoirejs";
-import ResourceBase from "../Resource/ResourceBase";
-import MaterialComponent from "./MaterialComponent";
-import Material from "../Material/Material";
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import GrimoireInterface from "grimoirejs";
-import BasicComponent from "./BasicComponent";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Material from "../Material/Material";
+import DrawPriorty from "../SceneRenderer/DrawPriorty";
+import MaterialComponent from "./MaterialComponent";
 import MaterialContainerBase from "./MaterialContainerBase";
 
 /**
@@ -23,7 +18,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
     material: {
       converter: "Material",
       default: "new(unlit)",
-      componentBoundTo: "_materialComponent" // When the material was specified with the other material tag, this field would be assigned.
+      componentBoundTo: "_materialComponent", // When the material was specified with the other material tag, this field would be assigned.
     },
     /**
      * 描画順序
@@ -32,12 +27,12 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
      */
     drawOrder: {
       converter: "String",
-      default: "Auto"
+      default: "Auto",
     },
     transparent: {
       converter: "Boolean",
-      default: true
-    }
+      default: true,
+    },
   };
 
   public static rewriteDefaultMaterial(materialName: string): void {
@@ -105,7 +100,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
    */
   private async _onMaterialChanged(): Promise<void> {
     const materialPromise = this.getAttribute("material") as Promise<Material>;
-    if (materialPromise === void 0) {
+    if (materialPromise === null) {
       this.useMaterial = false;
       return; // When specified material is null
     }

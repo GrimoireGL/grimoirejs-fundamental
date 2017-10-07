@@ -1,17 +1,17 @@
 import Namespace from "grimoirejs/ref/Base/Namespace";
-import Texture2D from "../Resource/Texture2D";
 import gr from "grimoirejs/ref/Interface/GrimoireInterface";
-import CanvasSizeObject from "../Objects/CanvasSizeObject";
-import GLExtRequestor from "../Resource/GLExtRequestor";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import CanvasSizeObject from "../Objects/CanvasSizeObject";
+import GLExtRequestor from "../Resource/GLExtRequestor";
+import Texture2D from "../Resource/Texture2D";
 import WebGLRenderingContextWithId from "../Resource/WebGLRenderingContextWithId";
 const ns = Namespace.define("grimoirejs-fundamental");
 
 enum ResizeMode {
   Aspect,
   Fit,
-  Manual
+  Manual,
 }
 
 /**
@@ -25,28 +25,28 @@ export default class CanvasInitializerComponent extends Component {
      */
     width: {
       default: "fit",
-      converter: "CanvasSize"
+      converter: "CanvasSize",
     },
     /**
      * キャンバスタグの縦幅を指定します。
      */
     height: {
       default: "fit",
-      converter: "CanvasSize"
+      converter: "CanvasSize",
     },
     /**
      * キャンバス要素の直接の親要素のコンテナに割り当てるidを指定します。
      */
     containerId: {
       default: "",
-      converter: "String"
+      converter: "String",
     },
     /**
      * キャンバス要素の直接の親要素のコンテナに割り当てるクラス名を指定します。
      */
     containerClass: {
       default: "gr-container",
-      converter: "String"
+      converter: "String",
     },
     /**
      * GLコンテキストの初期化時に、preserveDrawingBufferフラグを有効にするか指定します。
@@ -55,7 +55,7 @@ export default class CanvasInitializerComponent extends Component {
      */
     preserveDrawingBuffer: {
       default: true,
-      converter: "Boolean"
+      converter: "Boolean",
     },
     /**
      * GLコンテキストの初期化時に、MSAAによるアンチエイリアスを有効にするか指定します。
@@ -64,8 +64,8 @@ export default class CanvasInitializerComponent extends Component {
      */
     antialias: {
       default: true,
-      converter: "Boolean"
-    }
+      converter: "Boolean",
+    },
   };
 
   /**
@@ -193,7 +193,7 @@ export default class CanvasInitializerComponent extends Component {
   }
 
   private _getParentSize(): ClientRect {
-    const parent = this._canvasContainer.parentElement as HTMLElement;
+    const parent = this._canvasContainer.parentElement;
     const boundingBox = parent.getBoundingClientRect();
     return boundingBox;
   }
@@ -232,11 +232,10 @@ export default class CanvasInitializerComponent extends Component {
     this._resize(true);
   }
 
-
   private _getContext(canvas: HTMLCanvasElement): WebGLRenderingContextWithId {
     const contextConfig = {
       antialias: this.getAttribute("antialias"),
-      preserveDrawingBuffer: this.getAttribute("preserveDrawingBuffer")
+      preserveDrawingBuffer: this.getAttribute("preserveDrawingBuffer"),
     };
     let context: WebGLRenderingContext = canvas.getContext("webgl", contextConfig) as WebGLRenderingContext;
     if (!context) {
@@ -251,7 +250,7 @@ export default class CanvasInitializerComponent extends Component {
   /**
    * Insert __id__property to be identify rendering contexts
    */
-  private _applyContextId(context:WebGLRenderingContext):WebGLRenderingContextWithId{
+  private _applyContextId(context: WebGLRenderingContext): WebGLRenderingContextWithId{
     const contextWithId = context as WebGLRenderingContextWithId;
     contextWithId.__id__ = Math.random().toString(36).slice(-6); // Generating random string
     return contextWithId;
@@ -266,18 +265,18 @@ export default class CanvasInitializerComponent extends Component {
     if (!tag.parentElement) {
       return false;
     }
-    if (tag.parentNode!.nodeName === "BODY") {
+    if (tag.parentNode.nodeName === "BODY") {
       return true;
     }
     return this._isContainedInBody(tag.parentElement);
   }
 
   private _autoFixForBody(scriptTag: Element): void {
-    if (scriptTag.parentElement!.nodeName === "BODY") {
+    if (scriptTag.parentElement.nodeName === "BODY") {
       const boudningBox = document.body.getBoundingClientRect();
       if (boudningBox.height === 0) {
         document.body.style.height = "100%";
-        document.body.parentElement!.style.height = "100%";
+        document.body.parentElement.style.height = "100%";
       }
     }
   }

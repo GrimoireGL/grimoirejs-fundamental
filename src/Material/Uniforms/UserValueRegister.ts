@@ -1,18 +1,17 @@
 import Texture2D from "../../Resource/Texture2D";
-import TextureReference from "../TextureReference";
-import Material from "../Material";
-import IVariableInfo from "../Schema/IVariableInfo";
-import IMaterialArgument from "../IMaterialArgument";
 import UniformProxy from "../../Resource/UniformProxy";
-import UniformResolverRegistry from "../UniformResolverRegistry";
-import { IUniformRegisterOnUpdate } from "../UniformResolverRegistry";
-import PassProgram from "../PassProgram";
+import IMaterialArgument from "../IMaterialArgument";
+import Material from "../Material";
 import Pass from "../Pass";
+import PassProgram from "../PassProgram";
+import IVariableInfo from "../Schema/IVariableInfo";
 import Technique from "../Technique";
+import TextureReference from "../TextureReference";
+import UniformResolverRegistry from "../UniformResolverRegistry";
 const gl = WebGLRenderingContext;
 const _userValueRegisterers = {
   array: {},
-  single: {}
+  single: {},
 };
 
 UniformResolverRegistry.add("USER_VALUE", (valInfo: IVariableInfo, pass: Pass, technique: Technique, material: Material) => {
@@ -40,8 +39,8 @@ function basicRegister(type: number, isArray: boolean, converter: string, defaul
   }
   registerTarget[type] = function(valInfo: IVariableInfo, pass: Pass) {
     pass.addArgument(valInfo.name, {
-      converter: converter,
-      default: valInfo.attributes["default"] ? valInfo.attributes["default"] : defaultValue
+      converter,
+      default: valInfo.attributes["default"] ? valInfo.attributes["default"] : defaultValue,
     });
     const updator = update ? (p, n, o) => {
       update(valInfo, p, n, o);
@@ -50,7 +49,7 @@ function basicRegister(type: number, isArray: boolean, converter: string, defaul
       register: (proxy: UniformProxy, args: IMaterialArgument) => {
         register(proxy, valInfo.name, pass.arguments[valInfo.name], args);
       },
-      update: updator
+      update: updator,
     };
   };
 }
@@ -104,14 +103,14 @@ _userValueRegisterers.single[gl.FLOAT_VEC3] = function(valInfo: IVariableInfo, p
   const defaultValue = attrDefault ? attrDefault : (isColor ? [1, 1, 1] : [0, 0, 0]);
   pass.addArgument(valInfo.name, {
     converter: isColor ? "Color3" : "Vector3",
-    default: defaultValue
+    default: defaultValue,
   });
   return {
     register: isColor ? (proxy: UniformProxy, args: IMaterialArgument) => {
       proxy.uniformColor3(valInfo.name, pass.arguments[valInfo.name]);
     } : (proxy: UniformProxy, args: IMaterialArgument) => {
       proxy.uniformVector3(valInfo.name, pass.arguments[valInfo.name]);
-    }
+    },
   };
 };
 
@@ -121,14 +120,14 @@ _userValueRegisterers.single[gl.FLOAT_VEC4] = function(valInfo: IVariableInfo, p
   const defaultValue = attrDefault ? attrDefault : (isColor ? [1, 1, 1, 1] : [0, 0, 0, 0]);
   pass.addArgument(valInfo.name, {
     converter: isColor ? "Color4" : "Vector4",
-    default: defaultValue
+    default: defaultValue,
   });
   return {
     register: isColor ? (proxy: UniformProxy, args: IMaterialArgument) => {
       proxy.uniformColor4(valInfo.name, pass.arguments[valInfo.name]);
     } : (proxy: UniformProxy, args: IMaterialArgument) => {
       proxy.uniformVector4(valInfo.name, pass.arguments[valInfo.name]);
-    }
+    },
   };
 };
 export default null;

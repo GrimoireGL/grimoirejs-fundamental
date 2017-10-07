@@ -2,7 +2,7 @@ import EEObject from "grimoirejs/ref/Base/EEObject";
 import Component from "grimoirejs/ref/Node/Component";
 type AssetLoadingInfoTuple = {
   promise: Promise<any>,
-  component: Component
+  component: Component,
 };
 
 /**

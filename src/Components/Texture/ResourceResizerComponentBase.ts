@@ -2,6 +2,7 @@ import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import TextureSizeCalculator from "../../Util/TextureSizeCalculator";
 import ResizableResourceUpdator from "./ResizableResourceUpdator";
+
 /**
  * Base class of texture resizer
  */
@@ -9,8 +10,8 @@ export default class TextureResizerComponentBase extends Component {
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         keepPow2Size: {
             converter: "Boolean",
-            default: true
-        }
+            default: true,
+        },
     };
 
     private _lastWidth = 0;
@@ -24,7 +25,7 @@ export default class TextureResizerComponentBase extends Component {
      */
     protected __resizeResources(width: number, height: number): void {
         if (this.getAttribute("keepPow2Size")) {
-            const newSize = TextureSizeCalculator.getPow2Size(width, height);
+            let newSize = TextureSizeCalculator.getPow2Size(width, height);
             width = newSize.width;
             height = newSize.height;
         }

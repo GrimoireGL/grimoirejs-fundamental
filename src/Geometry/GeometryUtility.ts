@@ -3,7 +3,7 @@ export default class GeometryUtility {
     const ret: number[] = [];
     const ic: number[] = new Array(3);
     let i = 0;
-    for (let index of indices) {
+    for (const index of indices) {
       ic[i % 3] = index;
       if (i % 3 === 2) {
         const a = ic[0], b = ic[1], c = ic[2];
@@ -58,7 +58,6 @@ export default class GeometryUtility {
           ret[fi + 4] = normal[1] + l * right[1];
           ret[fi + 5] = normal[2] + l * right[2];
         }
-
 
         ret[fi + 6] = 1 / divide * (order + 1 + h);
         ret[fi + 7] = v === 0 ? 1 : 0;
@@ -248,7 +247,6 @@ export default class GeometryUtility {
     }
     return ret;
   }
-
 
   public static sphereIndex(offset: number, vdiv: number, hdiv: number): number[] {
     const ret: number[] = new Array(hdiv * vdiv * 6);

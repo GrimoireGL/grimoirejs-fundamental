@@ -2,7 +2,7 @@ import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Timer from "../Util/Timer";
 interface LoopAction {
-  action: (timer: Timer) => void;
+  action(timer: Timer): void;
   priorty: number;
 }
 
@@ -13,12 +13,12 @@ export default class LoopManagerComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     loopEnabled: {
       default: false,
-      converter: "Boolean"
+      converter: "Boolean",
     },
     fpsRestriction: {
       default: 60,
-      converter: "Number"
-    }
+      converter: "Number",
+    },
   };
 
   private _loopActions: LoopAction[] = [];
@@ -55,8 +55,8 @@ export default class LoopManagerComponent extends Component {
 
   public register(action: (timer: Timer) => void, priorty: number): void {
     this._loopActions.push({
-      action: action,
-      priorty: priorty
+      action,
+      priorty,
     });
     this._loopActions.sort((a, b) => a.priorty - b.priorty);
   }
@@ -68,7 +68,7 @@ export default class LoopManagerComponent extends Component {
   private _loop(): void {
     if (this._timer.internalUpdate()) {
       this.node.emit("loop", {
-        timer: this._timer
+        timer: this._timer,
       });
       this._loopActions.forEach((a) => a.action(this._timer));
     }

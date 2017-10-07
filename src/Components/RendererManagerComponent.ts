@@ -1,10 +1,9 @@
 import Color4 from "grimoirejs-math/ref/Color4";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import LoopManagerComponent from "./LoopManagerComponent";
 import Component from "grimoirejs/ref/Node/Component";
-import Timer from "../Util/Timer";
-import gr from "grimoirejs";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import MaterialFactory from "../Material/MaterialFactory";
+import Timer from "../Util/Timer";
+import LoopManagerComponent from "./LoopManagerComponent";
 /**
  * 全レンダラーを管理するためのコンポーネント
  */
@@ -15,22 +14,22 @@ export default class RendererManagerComponent extends Component {
      */
     bgColor: {
       default: new Color4(0, 0, 0, 0),
-      converter: "Color4"
+      converter: "Color4",
     },
     /**
      * キャンバスの初期化深度値
      */
     clearDepth: {
       default: 1.0,
-      converter: "Number"
+      converter: "Number",
     },
     /**
      * goml内にrendererが一つもなかった場合に自動的に補完するかどうか
      */
     complementRenderer: {
       default: true,
-      converter: "Boolean"
-    }
+      converter: "Boolean",
+    },
   };
 
   private static _sortImportedFromHTML = false;
@@ -65,7 +64,7 @@ export default class RendererManagerComponent extends Component {
       this.gl.clearDepth(this._clearDepth);
       this.gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);
       this.node.broadcastMessage(1, "renderViewport", {
-        timer: timer
+        timer,
       });
     }
   }
@@ -76,11 +75,12 @@ export default class RendererManagerComponent extends Component {
     }
     const scripts = document.getElementsByTagName("script");
     for (let i = 0; i < scripts.length; i++) {
+      i = i;
       const script = scripts.item(i);
       if (script.getAttribute("type") === "text/sort") { // If the script tag is for shader file
         const typeName = script.getAttribute("typeName");
         if (!typeName) {
-          throw new Error(`Every script tag with 'text/sort' type should have typeName attribute to specify the name to be registered as a material.`);
+          throw new Error("Every script tag with 'text/sort' type should have typeName attribute to specify the name to be registered as a material.");
         }
         if (script.getAttribute("src")) {
           MaterialFactory.addSORTMaterialFromURL(typeName, script.getAttribute("src"));

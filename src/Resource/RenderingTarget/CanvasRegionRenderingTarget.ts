@@ -1,5 +1,5 @@
-import CanvasRenderingTarget from "./CanvasRenderingTarget";
 import Viewport from "../Viewport";
+import CanvasRenderingTarget from "./CanvasRenderingTarget";
 
 /**
  * Rendering target of part of canvas.

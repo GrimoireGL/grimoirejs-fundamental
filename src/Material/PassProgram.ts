@@ -1,6 +1,6 @@
-import ManagedShader from "../Resource/ManagedShader";
-import ManagedProgram from "../Resource/ManagedProgram";
 import Geometry from "../Geometry/Geometry";
+import ManagedProgram from "../Resource/ManagedProgram";
+import ManagedShader from "../Resource/ManagedShader";
 import ShaderMixer from "./ShaderMixer";
 /**
  * Container of shader program used for Pass.
@@ -87,7 +87,7 @@ export default class PassProgram {
    * Destroy instance to relase resources.
    */
   public dispose(): void {
-    for (let key in this._programs) {
+    for (const key in this._programs) {
       this._programs[key].release();
     }
     this._programs = {};

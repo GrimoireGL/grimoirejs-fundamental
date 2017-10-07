@@ -1,17 +1,13 @@
-import gr from "grimoirejs";
-import MaterialFactory from "../Material/MaterialFactory";
-import Material from "../Material/Material";
-import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import ResourceBase from "../Resource/ResourceBase";
+import Material from "../Material/Material";
+import MaterialFactory from "../Material/MaterialFactory";
 import MaterialContainerBase from "./MaterialContainerBase";
-
 export default class MaterialComponent extends MaterialContainerBase {
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         type: {
             converter: "String",
-            default: null
-        }
+            default: null,
+        },
     };
 
     public materialPromise: Promise<Material>;

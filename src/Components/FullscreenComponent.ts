@@ -1,4 +1,3 @@
-import gr from "grimoirejs";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 
@@ -21,7 +20,7 @@ export default class FullscreenComponent extends Component {
      */
     fullscreen: {
       converter: "Boolean",
-      default: false
+      default: false,
     },
     /**
      * フルスクリーンにするDOM要素へのクエリ
@@ -30,8 +29,8 @@ export default class FullscreenComponent extends Component {
      */
     fullscreenTarget: {
       converter: "String",
-      default: null
-    }
+      default: null,
+    },
   };
 
   private _fullscreen = false;

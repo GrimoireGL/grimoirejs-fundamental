@@ -1,15 +1,15 @@
-import IDynamicStateResolver from "../Schema/IDynamicStateResolver";
 import Pass from "../Pass";
+import IDynamicStateResolver from "../Schema/IDynamicStateResolver";
 export default {
     "dynamic-cull": (args: string[], pass: Pass) => {
         const attributeName = args[1] || "cull";
         pass.addArgument(attributeName, {
             converter: "String",
-            default: args[0] || "back"
+            default: args[0] || "back",
         });
-        let currentState = null;
-        function changeState(state: string){
-            if (currentState !== state){
+        const currentState = null;
+        function changeState(state: string) {
+            if (currentState !== state) {
                 pass.program.setMacro("CONTEXT_STATE_CULL", state);
             }
         }
@@ -30,5 +30,5 @@ export default {
                 changeState("0");
             }
         };
-    }
+    },
 } as { [key: string]: IDynamicStateResolver };

@@ -1,36 +1,33 @@
-import ViewportMouseEvent from "../Objects/ViewportMouseEvent";
-import gr from "grimoirejs";
-import IResizeViewportMessage from "../Messages/IResizeViewportMessage";
-import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
-import Texture2D from "../Resource/Texture2D";
-import CameraComponent from "./CameraComponent";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import Rectangle from "grimoirejs-math/ref/Rectangle";
-import Timer from "../Util/Timer";
-import TextureSizeCalculator from "../Util/TextureSizeCalculator";
-import Viewport from "../Resource/Viewport";
-import RenderingTargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
+import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
+import IResizeViewportMessage from "../Messages/IResizeViewportMessage";
+import ViewportMouseEvent from "../Objects/ViewportMouseEvent";
 import CanvasRegionRenderingTarget from "../Resource/RenderingTarget/CanvasRegionRenderingTarget";
+import RenderingTargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
+import Viewport from "../Resource/Viewport";
+import TextureSizeCalculator from "../Util/TextureSizeCalculator";
+import Timer from "../Util/Timer";
+import CameraComponent from "./CameraComponent";
 export default class RendererComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     regionName: {
       converter: "String",
-      default: null
+      default: null,
     },
     camera: {
       converter: "Component",
       default: "camera",
-      target: "Camera"
+      target: "Camera",
     },
     viewport: {
       converter: "Viewport",
-      default: "auto"
+      default: "auto",
     },
     handleMouse: {
       converter: "Boolean",
-      default: true
-    }
+      default: true,
+    },
   };
 
   public camera: CameraComponent;
@@ -65,7 +62,6 @@ export default class RendererComponent extends Component {
   private _mouseUpHandler: (e: MouseEvent) => void;
 
   private _wasInside = false;
-
 
   public $awake(): void {
     // initializing attributes
@@ -115,20 +111,20 @@ export default class RendererComponent extends Component {
     this._viewportCache = this._viewportSizeGenerator(this._canvas);
     this.renderingTarget.setViewport(this._viewportCache);
     const pow2Size = TextureSizeCalculator.getPow2Size(this._viewportCache.Width, this._viewportCache.Height);
-    this.node.broadcastMessage("resizeViewport", <IResizeViewportMessage>{
+    this.node.broadcastMessage("resizeViewport", {
       width: this._viewportCache.Width,
       height: this._viewportCache.Height,
       pow2Width: pow2Size.width,
-      pow2Height: pow2Size.height
-    });
+      pow2Height: pow2Size.height,
+    } as IResizeViewportMessage);
   }
 
   public $renderViewport(args: { timer: Timer }): void {
-    this.node.broadcastMessage("render", <IRenderRendererMessage>{
+    this.node.broadcastMessage("render", {
       camera: this.camera,
       viewport: this._viewportCache,
-      timer: args.timer
-    });
+      timer: args.timer,
+    } as IRenderRendererMessage);
   }
 
   private _initializeMouseHandlers() {
@@ -227,7 +223,7 @@ export default class RendererComponent extends Component {
     const ro = this._getRelativePosition(e);
     const r = this._viewportCache.toLocal(ro[0], ro[1]);
     const n = this._viewportCache.toLocalNormalized(ro[0], ro[1]);
-    return Object.assign(e, {
+    return {...e,
       viewportX: r[0],
       viewportY: r[1],
       viewportNormalizedX: n[0],
@@ -236,7 +232,6 @@ export default class RendererComponent extends Component {
       canvasY: ro[1],
       canvasNormalizedX: ro[0] / ro[2],
       canvasNormalizedY: ro[1] / ro[3],
-      inside: this._isViewportInside(e)
-    });
+      inside: this._isViewportInside(e)};
   }
 }

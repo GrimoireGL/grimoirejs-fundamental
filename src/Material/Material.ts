@@ -1,9 +1,7 @@
-import MaterialFactory from "./MaterialFactory";
-import ITechniqueRecipe from "./Schema/ITechniqueRecipe";
-import Technique from "./Technique";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import IMaterialArgument from "./IMaterialArgument";
 import Pass from "./Pass";
+import ITechniqueRecipe from "./Schema/ITechniqueRecipe";
+import Technique from "./Technique";
 /**
  * Provides abstraction of configurations for multiple shaders.
  */
@@ -12,7 +10,7 @@ export default class Material {
     public techniques: { [key: string]: Technique } = {};
 
     constructor(public gl: WebGLRenderingContext, public techniqueRecipes: { [key: string]: ITechniqueRecipe }) {
-        for (let key in techniqueRecipes) {
+        for (const key in techniqueRecipes) {
             this.techniques[key] = new Technique(this, techniqueRecipes[key]);
         }
     }
@@ -30,13 +28,13 @@ export default class Material {
      */
     public clone(): Material {
         const cloned = new Material(this.gl, this.techniqueRecipes);
-        for (let techniqueKey in this.techniques) {
+        for (const techniqueKey in this.techniques) {
           const technique = this.techniques[techniqueKey];
           const destTechnique = cloned.techniques[techniqueKey];
-          for (let passIndex in technique.passes) {
+          for (const passIndex in technique.passes) {
             const pass = technique.passes[passIndex];
             const destPass = destTechnique.passes[passIndex];
-            for (let argument in pass.arguments) {
+            for (const argument in pass.arguments) {
               destPass[argument] = pass[argument];
             }
           }

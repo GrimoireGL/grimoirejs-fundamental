@@ -1,7 +1,7 @@
-import HashCalculator from "../Util/HashCalculator";
 import IPassRecipe from "../Material/Schema/IPassRecipe";
-import SortTransformUtility from "./SortTransformUtility";
 import ITechniqueRecipe from "../Material/Schema/ITechniqueRecipe";
+import HashCalculator from "../Util/HashCalculator";
+import SortTransformUtility from "./SortTransformUtility";
 class SortParser {
   /**
    * Cache to prevent double loading
@@ -28,7 +28,7 @@ class SortParser {
       SortTransformUtility.resolveImports(SortTransformUtility.removeComment(source)).then(uncommented => {
         try {
           const techniqueSources = SortTransformUtility.separateTechniqueSource(uncommented);
-          for (let key in techniqueSources) {
+          for (const key in techniqueSources) {
             result[key] = SortParser._parseTechnique(techniqueSources[key]);
           }
           resolve(result);
@@ -47,8 +47,8 @@ class SortParser {
       passes[i] = SortParser._parsePassSource(passSources[i]);
     }
     return {
-      drawOrder: drawOrder,
-      passes: passes
+      drawOrder,
+      passes,
     };
   }
 
@@ -58,14 +58,14 @@ class SortParser {
     const uniforms = SortTransformUtility.parseVariables(passSource, "uniform");
     const macros = SortTransformUtility.parseMacros(passSource);
     const states = SortTransformUtility.parsePreferences(passSource);
-    return <IPassRecipe>{
+    return {
       fragment: shaderSource,
       vertex: shaderSource,
-      attributes: attributes,
-      uniforms: uniforms,
-      macros: macros,
-      states: states
-    };
+      attributes,
+      uniforms,
+      macros,
+      states,
+    } as IPassRecipe;
   }
 }
 

@@ -2,5 +2,5 @@ export default interface WebGLRenderingContextWithId extends WebGLRenderingConte
     /**
      * Context ID that Grimoire.js will apply on initialization timing
      */
-    __id__:string;
+    __id__: string;
 }

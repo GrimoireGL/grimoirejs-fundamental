@@ -20,7 +20,7 @@ export default class ShaderMixer {
 
   private static _macroCode(macros: {[key: string]: string}): string {
     let macroCode = "";
-    for (let macroName in macros) {
+    for (const macroName in macros) {
       if (macros[macroName] === void 0) {
         continue;
       }
@@ -31,7 +31,7 @@ export default class ShaderMixer {
 
   private static _geometryToAttributeUsedFlags(geometry: Geometry): string {
     let macroCode = "";
-    for (let attribName in geometry.accessors) {
+    for (const attribName in geometry.accessors) {
       macroCode += `#define ATTRIBUTE_${attribName}_ENABLED\n`;
     }
     return macroCode;

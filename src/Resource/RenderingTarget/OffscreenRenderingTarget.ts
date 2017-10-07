@@ -1,8 +1,8 @@
-import Texture2D from "../Texture2D";
-import RenderBuffer from "../RenderBuffer";
-import IRenderingTarget from "./IRenderingTarget";
 import FrameBuffer from "../FrameBuffer";
+import RenderBuffer from "../RenderBuffer";
+import Texture2D from "../Texture2D";
 import Viewport from "../Viewport";
+import IRenderingTarget from "./IRenderingTarget";
 /**
  * Render target contains texture and render buffer
  */

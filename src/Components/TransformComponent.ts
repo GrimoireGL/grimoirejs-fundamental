@@ -1,12 +1,11 @@
-import CameraComponent from "./CameraComponent";
-import gr from "grimoirejs";
+import GLM from "grimoirejs-math/ref/GLM";
 import Matrix from "grimoirejs-math/ref/Matrix";
+import Quaternion from "grimoirejs-math/ref/Quaternion";
 import Vector3 from "grimoirejs-math/ref/Vector3";
 import Vector4 from "grimoirejs-math/ref/Vector4";
-import Quaternion from "grimoirejs-math/ref/Quaternion";
-import GLM from "grimoirejs-math/ref/GLM";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import CameraComponent from "./CameraComponent";
 const {mat4, vec3, vec4} = GLM;
 /**
  * シーン中に存在する物体の変形を司るコンポーネント
@@ -20,22 +19,22 @@ export default class TransformComponent extends Component {
      */
     position: {
       converter: "Vector3",
-      default: [0, 0, 0]
+      default: [0, 0, 0],
     },
     /**
      * この物体の回転量
      */
     rotation: {
       converter: "Rotation3",
-      default: [0, 0, 0, 1]
+      default: [0, 0, 0, 1],
     },
     /**
      * この物体の拡大率
      */
     scale: {
       converter: "Vector3",
-      default: [1, 1, 1]
-    }
+      default: [1, 1, 1],
+    },
   };
   /**
    * Source vector to be multiplied with global transform to calculate forward direction of attached object.
@@ -192,7 +191,6 @@ export default class TransformComponent extends Component {
       this._parentTransform = null;
     }
   }
-
 
   public notifyUpdateTransform(): void {
     if (!this._updatedTransform) {

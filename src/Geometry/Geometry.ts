@@ -1,12 +1,12 @@
-import Vector3 from "grimoirejs-math/ref/Vector3";
 import AABB from "grimoirejs-math/ref/AABB";
-import VertexBufferAccessor from "./VertexBufferAccessor";
-import Program from "../Resource/Program";
-import IndexBufferInfo from "./IndexBufferInfo";
+import Vector3 from "grimoirejs-math/ref/Vector3";
 import Buffer from "../Resource/Buffer";
-import GLExtRequestor from "../Resource/GLExtRequestor";
 import IGLInstancedArrayInterface from "../Resource/GLExt/IGLInstancedArrayInterface";
+import GLExtRequestor from "../Resource/GLExtRequestor";
+import Program from "../Resource/Program";
 import HashCalculator from "../Util/HashCalculator";
+import IndexBufferInfo from "./IndexBufferInfo";
+import VertexBufferAccessor from "./VertexBufferAccessor";
 export interface GeometryVertexBufferAccessor extends VertexBufferAccessor {
     bufferIndex: number;
 }
@@ -90,9 +90,9 @@ export default class Geometry {
     public addAttributes(buffer: number[] | BufferSource, accessors: { [semantcis: string]: VertexBufferAccessor }, usage?: number): void;
     public addAttributes(buffer: number[] | BufferSource | Buffer, accessors: { [semantics: string]: VertexBufferAccessor }): void;
     public addAttributes(buffer: Buffer | number[] | BufferSource, accessors: { [semantics: string]: VertexBufferAccessor }, usage: number = WebGLRenderingContext.STATIC_DRAW): void {
-        let index = this.buffers.length;
+        const index = this.buffers.length;
         let keepBuffer = false;
-        for (let semantic in accessors) {
+        for (const semantic in accessors) {
             const accessor = accessors[semantic] as GeometryVertexBufferAccessor;
             accessor.bufferIndex = index;
             if (accessor.size === void 0) {
@@ -157,7 +157,7 @@ export default class Geometry {
         } else {
             buffer = bufferOrInstanceCount;
             topology = bufferOrTopology as number;
-            offset = offsetOrTopology as number;
+            offset = offsetOrTopology;
             count = countOrOffset;
             type = typeOrCount;
             if (typeof topology !== "number") {
@@ -181,11 +181,11 @@ export default class Geometry {
         this.indices[indexName] = {
             byteOffset: offset,
             byteSize: this._indexTypeToByteSize(type),
-            type: type,
-            topology: topology,
-            count: count,
+            type,
+            topology,
+            count,
             index: buffer,
-            instanceCount: instanceCount
+            instanceCount,
         };
     }
 
@@ -199,8 +199,8 @@ export default class Geometry {
     public clone(): Geometry {
         const geometry = new Geometry(this.gl);
         geometry.buffers = [].concat(this.buffers);
-        geometry.accessors = Object.assign({}, this.accessors);
-        geometry.indices = Object.assign({}, this.indices);
+        geometry.accessors = {...this.accessors};
+        geometry.indices = {...this.indices};
         geometry.aabb = new AABB([this.aabb.pointLBF, this.aabb.pointRTN]);
         return geometry;
     }
@@ -298,7 +298,7 @@ export default class Geometry {
 
     private _recalculateAccsessorHash(): void {
       let hashSource = "";
-      for (let key in this.accessors) {
+      for (const key in this.accessors) {
         hashSource += key + "|";
       }
       this._accessorHashCache = HashCalculator.calcHash(hashSource);

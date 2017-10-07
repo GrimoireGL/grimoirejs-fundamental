@@ -1,5 +1,5 @@
-import IRenderingTarget from "./IRenderingTarget";
 import Viewport from "../Viewport";
+import IRenderingTarget from "./IRenderingTarget";
 
 /**
  * Rendering target to render into canvas
@@ -7,7 +7,7 @@ import Viewport from "../Viewport";
 export default class CanvasRenderingTarget implements IRenderingTarget {
     public beforeDraw(clearFlag: number, color: number[], depth: number): void {
         this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
-        if(clearFlag){
+        if (clearFlag){
             this.__configureClearScissor();
             let clearTarget = 0;
             if ((clearFlag & WebGLRenderingContext.COLOR_BUFFER_BIT) !== 0 && color) {
@@ -41,10 +41,10 @@ export default class CanvasRenderingTarget implements IRenderingTarget {
         return this.gl.canvas.height;
     }
     public getViewport(): Viewport {
-        return new Viewport(0,0,this.getBufferWidth(),this.getBufferHeight());
+        return new Viewport(0, 0, this.getBufferWidth(), this.getBufferHeight());
     }
 
-    protected __configureClearScissor():void{
+    protected __configureClearScissor(): void{
         this.gl.disable(WebGLRenderingContext.SCISSOR_TEST);
     }
 

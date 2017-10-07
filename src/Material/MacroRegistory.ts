@@ -14,9 +14,8 @@ export default class MacroRegistory {
    */
   private _observers: {[macroName: string]: ((value: string, isImmediateCall: boolean) => void)[]} = {};
 
-
   constructor() {
-    for (let key in DefaultMacro) {
+    for (const key in DefaultMacro) {
       this.setValue(key, DefaultMacro[key]);
     }
   }

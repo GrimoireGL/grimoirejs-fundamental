@@ -9,7 +9,7 @@ function asGLConstantArgs(args: string[], length: number): number[] {
     if (typeof argNum !== "number") {
       throw new Error(`Unknown WebGL constant ${arg} was specified`);
     }
-    return argNum as number;
+    return argNum;
   });
 }
 
@@ -22,7 +22,7 @@ function asNumberArgs(args: string[], length: number): number[] {
     if (isNaN(argNum)) {
       throw new Error("Failed to parse number on preference parsing");
     }
-    return argNum as number;
+    return argNum;
   });
 }
 
@@ -39,14 +39,14 @@ function asBooleanArgs(args: string[], length: number): boolean[] {
 }
 
 export default {
-  Enable: function(state: IState, args: string[]) {
+  Enable(state: IState, args: string[]) {
     const enableTarget = WebGLRenderingContext[args[0]];
     if (typeof enableTarget !== "number") {
       throw new Error(`Unknown WebGL constant "${args[0]}" was specified on @Enable`);
     }
     state.enable.push(enableTarget);
   },
-  Disable: function(state: IState, args: string[]) {
+  Disable(state: IState, args: string[]) {
     const disableTarget = WebGLRenderingContext[args[0]];
     if (typeof disableTarget !== "number") {
       throw new Error(`Unknown WebGL constant "${args[0]}" was specified on @Disable`);
@@ -56,60 +56,60 @@ export default {
       state.enable.splice(index, 1);
     }
   },
-  BlendFunc: function(state: IState, args: string[]) {
+  BlendFunc(state: IState, args: string[]) {
     const config = asGLConstantArgs(args, 2);
     state.functions.blendFuncSeparate = [config[0], config[1], config[0], config[1]];
   },
-  BlendFuncSeparate: function(state: IState, args: string[]) {
+  BlendFuncSeparate(state: IState, args: string[]) {
     state.functions.blendFuncSeparate = asGLConstantArgs(args, 4);
   },
-  BlendEquation: function(state: IState, args: string[]) {
+  BlendEquation(state: IState, args: string[]) {
     const config = asGLConstantArgs(args, 1);
     state.functions.blendEquationSeparate = [config[0], config[0]];
   },
-  BlendEquationSeparate: function(state: IState, args: string[]) {
+  BlendEquationSeparate(state: IState, args: string[]) {
     state.functions.blendEquationSeparate = asGLConstantArgs(args, 4);
   },
-  BlendColor: function(state: IState, args: string[]) {
+  BlendColor(state: IState, args: string[]) {
     state.functions.blendColor = asNumberArgs(args, 4);
   },
-  ColorMask: function(state: IState, args: string[]) {
+  ColorMask(state: IState, args: string[]) {
     state.functions.colorMask = asBooleanArgs(args, 4);
     state.enable.push(WebGLRenderingContext.COLOR_WRITEMASK);
   },
-  CullFace: function(state: IState, args: string[]) {
+  CullFace(state: IState, args: string[]) {
     state.functions.cullFace = asGLConstantArgs(args, 1);
   },
-  DepthFunc: function(state: IState, args: string[]) {
+  DepthFunc(state: IState, args: string[]) {
     state.functions.depthFunc = asGLConstantArgs(args, 1);
   },
-  DepthRange: function(state: IState, args: string[]) {
+  DepthRange(state: IState, args: string[]) {
     state.functions.depthRange = asNumberArgs(args, 2);
   },
-  DepthMask: function(state: IState, args: string[]) {
+  DepthMask(state: IState, args: string[]) {
     state.functions.depthMask = asBooleanArgs(args, 1);
   },
-  FrontFace: function(state: IState, args: string[]) {
+  FrontFace(state: IState, args: string[]) {
     state.functions.frontFace = asGLConstantArgs(args, 1);
   },
-  LineWidth: function(state: IState, args: string[]) {
+  LineWidth(state: IState, args: string[]) {
     state.functions.lineWidth = asNumberArgs(args, 1);
   },
-  PolygonOffset: function(state: IState, args: string[]) {
+  PolygonOffset(state: IState, args: string[]) {
     state.functions.polygonOffset = asNumberArgs(args, 2);
     state.enable.push(WebGLRenderingContext.POLYGON_OFFSET_FILL);
   },
-  Scissor: function(state: IState, args: string[]) {
+  Scissor(state: IState, args: string[]) {
     state.functions.scissor = asNumberArgs(args, 4);
     state.enable.push(WebGLRenderingContext.SCISSOR_TEST);
   },
-  ExposeMacro: function() {
+  ExposeMacro() {
     return;
   },
-  ReferMacro: function() {
+  ReferMacro() {
     return;
   },
-  DynamicState: function(state: IState, args: string[]) {
+  DynamicState(state: IState, args: string[]) {
     if (!args.length) {
       throw new Error("DynamicState require at least 1 argument for specifying state resolver");
     }
@@ -117,8 +117,8 @@ export default {
     args.splice(0, 1);
     state.dynamicState.push({
       stateResolver: resolver,
-      args: args
+      args,
     });
     return;
-  }
+  },
 };

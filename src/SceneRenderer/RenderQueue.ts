@@ -1,6 +1,5 @@
-import IRenderArgument from "./IRenderArgument";
 import IRenderable from "./IRenderable";
-import Timer from "../Util/Timer";
+import IRenderArgument from "./IRenderArgument";
 type RenderElement = {
   renderable: IRenderable;
   priortyCache: number;
@@ -18,14 +17,14 @@ export default class RenderQueue {
 
   public add(rendarable: IRenderable): void {
     this._rendeables.push(rendarable);
-    for (let technique in this._sortedRenderablesByTechniques) {
+    for (const technique in this._sortedRenderablesByTechniques) {
       this._sortedRenderablesByTechniques[technique].rendarables.push({ renderable: rendarable, priortyCache: 0 });
     }
   }
 
   public remove(rendarable: IRenderable): void {
     this._removeFromRenderables(rendarable, this._rendeables);
-    for (let tech in this._sortedRenderablesByTechniques) {
+    for (const tech in this._sortedRenderablesByTechniques) {
       this._removeFromRenderables(rendarable, this._sortedRenderablesByTechniques[tech].rendarables);
     }
   }
@@ -63,7 +62,7 @@ export default class RenderQueue {
           renderable: r,
           priortyCache: -1,
         };
-      })
+      }),
     };
   }
 

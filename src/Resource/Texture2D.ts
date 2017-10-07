@@ -1,17 +1,17 @@
-import ResourceBase from "./ResourceBase";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
+import ResourceBase from "./ResourceBase";
 import Viewport from "./Viewport";
 type ImageSource = HTMLVideoElement | HTMLCanvasElement | HTMLImageElement | ImageData;
 
 export type ImageUploadConfig = {
   flipY?: boolean,
-  premultipliedAlpha?: boolean
+  premultipliedAlpha?: boolean,
 };
 
 type ResizeResult = {
   result: ImageSource,
   width: number,
-  height: number
+  height: number,
 };
 
 export default class Texture2D extends ResourceBase {
@@ -27,7 +27,7 @@ export default class Texture2D extends ResourceBase {
     WebGLRenderingContext.LINEAR_MIPMAP_LINEAR,
     WebGLRenderingContext.LINEAR_MIPMAP_NEAREST,
     WebGLRenderingContext.NEAREST_MIPMAP_LINEAR,
-    WebGLRenderingContext.NEAREST_MIPMAP_NEAREST
+    WebGLRenderingContext.NEAREST_MIPMAP_NEAREST,
   ];
 
   public static maxTextureSize: number;
@@ -157,7 +157,7 @@ export default class Texture2D extends ResourceBase {
     if (height === void 0) {
       uploadConfig = widthOrConfig || {
         flipY: false,
-        premultipliedAlpha: false
+        premultipliedAlpha: false,
       };
       image = levelOrImage as HTMLImageElement;
     } else {
@@ -165,7 +165,7 @@ export default class Texture2D extends ResourceBase {
       width = widthOrConfig as number;
       uploadConfig = config || {
         flipY: false,
-        premultipliedAlpha: false
+        premultipliedAlpha: false,
       };
     }
     if (uploadConfig.flipY === void 0) {
@@ -264,13 +264,13 @@ export default class Texture2D extends ResourceBase {
       return {
         result: canv,
         height: canv.height,
-        width: canv.width
+        width: canv.width,
       };
     }
     return {
       result: img,
       width: w,
-      height: h
+      height: h,
     };
   }
 
@@ -284,13 +284,13 @@ export default class Texture2D extends ResourceBase {
       return {
         result: canvas,
         width: canvas.width,
-        height: canvas.height
+        height: canvas.height,
       };
     }
     return {
       result: canvas,
       width: canvas.width,
-      height: canvas.height
+      height: canvas.height,
     };
   }
 
@@ -305,13 +305,13 @@ export default class Texture2D extends ResourceBase {
       return {
         result: canv,
         width: w,
-        height: h
+        height: h,
       };
     }
     return {
       result: video,
       width: w,
-      height: h
+      height: h,
     };
   }
 

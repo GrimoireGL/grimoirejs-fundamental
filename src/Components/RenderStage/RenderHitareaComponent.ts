@@ -1,18 +1,17 @@
-import RendererComponent from "../RendererComponent";
+import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
+import IResizeViewportMessage from "../../Messages/IResizeViewportMessage";
+import ViewportMouseEvent from "../../Objects/ViewportMouseEvent";
+import Framebuffer from "../../Resource/FrameBuffer";
+import RenderBuffer from "../../Resource/RenderBuffer";
+import Texture2D from "../../Resource/Texture2D";
+import Viewport from "../../Resource/Viewport";
 import IRenderable from "../../SceneRenderer/IRenderable";
 import MeshIndexCalculator from "../../Util/MeshIndexCalculator";
-import ViewportMouseEvent from "../../Objects/ViewportMouseEvent";
-import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
-import Framebuffer from "../../Resource/FrameBuffer";
-import Texture2D from "../../Resource/Texture2D";
-import RenderBuffer from "../../Resource/RenderBuffer";
 import TextureSizeCalculator from "../../Util/TextureSizeCalculator";
-import IResizeViewportMessage from "../../Messages/IResizeViewportMessage";
-import RenderSceneComponent from "../RenderStage/RenderSceneComponent";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import Component from "grimoirejs/ref/Node/Component";
-import Viewport from "../../Resource/Viewport";
 import CameraComponent from "../CameraComponent";
+import RenderSceneComponent from "../RenderStage/RenderSceneComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
 export default class RenderHitareaComponent extends SingleBufferRenderStageBase {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
@@ -87,14 +86,14 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     // draw for mesh indices
     camera.renderScene({
       renderer: this._sceneRenderer, // TODO
-      camera: camera,
+      camera,
       layer: this._sceneRenderer.layer,
       viewport: args.viewport,
       timer: args.timer,
       technique: "hitarea",
       sceneDescription: {},
       sortingTechnique: "default",
-      rendererDescription: this.rendererDescription
+      rendererDescription: this.rendererDescription,
     });
     this._gl.flush();
     // pick pointer pixel

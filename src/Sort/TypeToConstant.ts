@@ -19,5 +19,5 @@ export default {
   samplerCube: gl.SAMPLER_CUBE,
   mat4: gl.FLOAT_MAT4,
   mat3: gl.FLOAT_MAT3,
-  mat2: gl.FLOAT_MAT2
+  mat2: gl.FLOAT_MAT2,
 };

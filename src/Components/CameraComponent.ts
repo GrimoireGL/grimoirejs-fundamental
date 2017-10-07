@@ -1,17 +1,16 @@
 import GLM from "grimoirejs-math/ref/GLM";
 const { vec3, vec4, mat4 } = GLM;
-import Vector4 from "grimoirejs-math/ref/Vector4";
-import Vector3 from "grimoirejs-math/ref/Vector3";
 import Matrix from "grimoirejs-math/ref/Matrix";
-import RenderQueue from "../SceneRenderer/RenderQueue";
-import IRenderArgument from "../SceneRenderer/IRenderArgument";
-import gr from "grimoirejs";
-import TransformComponent from "./TransformComponent";
-import SceneComponent from "./SceneComponent";
-import GomlNode from "grimoirejs/ref/Node/GomlNode";
+import Vector3 from "grimoirejs-math/ref/Vector3";
+import Vector4 from "grimoirejs-math/ref/Vector4";
 import Component from "grimoirejs/ref/Node/Component";
+import GomlNode from "grimoirejs/ref/Node/GomlNode";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IRenderArgument from "../SceneRenderer/IRenderArgument";
+import RenderQueue from "../SceneRenderer/RenderQueue";
 import Timer from "../Util/Timer";
+import SceneComponent from "./SceneComponent";
+import TransformComponent from "./TransformComponent";
 /**
  * シーンを描画するカメラのコンポーネント
  * このコンポーネントによって、透視射影や正方射影などの歪みを調整します。
@@ -26,7 +25,7 @@ export default class CameraComponent extends Component {
          */
         fovy: {
             default: "45d",
-            converter: "Angle2D"
+            converter: "Angle2D",
         },
         /**
          * カメラに映るもっとも近い距離です。
@@ -34,7 +33,7 @@ export default class CameraComponent extends Component {
          */
         near: {
             default: 0.01,
-            converter: "Number"
+            converter: "Number",
         },
         /**
          * カメラに映る最も遠い距離です。
@@ -47,7 +46,7 @@ export default class CameraComponent extends Component {
          */
         far: {
             default: 100,
-            converter: "Number"
+            converter: "Number",
         },
         /**
          * カメラのアスペクト比
@@ -55,7 +54,7 @@ export default class CameraComponent extends Component {
          */
         aspect: {
             default: 1.6,
-            converter: "Number"
+            converter: "Number",
         },
         /**
          * アスペクト比の自動調整が有効か否か
@@ -63,7 +62,7 @@ export default class CameraComponent extends Component {
          */
         autoAspect: {
             default: true,
-            converter: "Boolean"
+            converter: "Boolean",
         },
         /**
          * 正射影時の横の基準サイズ
@@ -72,7 +71,7 @@ export default class CameraComponent extends Component {
          */
         orthoSize: {
             default: 100,
-            converter: "Number"
+            converter: "Number",
         },
         /**
          * このカメラが正射影かどうか
@@ -82,8 +81,8 @@ export default class CameraComponent extends Component {
          */
         orthogonal: {
             default: false,
-            converter: "Boolean"
-        }
+            converter: "Boolean",
+        },
     };
 
     private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
@@ -202,7 +201,6 @@ export default class CameraComponent extends Component {
         }
     }
 
-
     public $awake(): void {
         this.getAttributeRaw("far").watch((v) => {
             this.Far = v;
@@ -224,7 +222,6 @@ export default class CameraComponent extends Component {
         }, true);
         this.getAttributeRaw("autoAspect").boundTo("_autoAspect");
     }
-
 
     public $mount(): void {
         this.transform = this.node.getComponent(TransformComponent);
@@ -252,13 +249,13 @@ export default class CameraComponent extends Component {
      */
     public getViewportRelativePosition(worldPos: Vector3): Vector3;
     public getViewportRelativePosition(input: Vector3 | TransformComponent): Vector3 {
-      let inputVector;
-      if (input instanceof TransformComponent) {
-        inputVector = input.globalPosition;
-      }else {
-        inputVector = input;
-      }
-      return Matrix.transformPoint(this.ProjectionViewMatrix, inputVector);
+        let inputVector;
+        if (input instanceof TransformComponent) {
+            inputVector = input.globalPosition;
+        } else {
+            inputVector = input;
+        }
+        return Matrix.transformPoint(this.ProjectionViewMatrix, inputVector);
     }
 
     public updateContainedScene(timer: Timer): void {
@@ -294,7 +291,6 @@ export default class CameraComponent extends Component {
             }
         }
     }
-
 
     private _recalculateProjection(): void {
         if (!this._orthographic) {

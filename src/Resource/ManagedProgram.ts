@@ -1,6 +1,6 @@
-import Shader from "./Shader";
 import HashCalculator from "../Util/HashCalculator";
 import Program from "./Program";
+import Shader from "./Shader";
 
 export default class ManagedProgram extends Program {
   private static _managedPrograms: Map<WebGLRenderingContext, { [hash: number]: ManagedProgram }> = new Map<WebGLRenderingContext, { [hash: number]: ManagedProgram }>();

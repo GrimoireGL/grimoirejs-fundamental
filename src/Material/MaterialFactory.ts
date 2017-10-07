@@ -1,11 +1,10 @@
-import SortParser from "../Sort/Parser";
-import DrawPriorty from "../SceneRenderer/DrawPriorty";
-import MacroRegistory from "./MacroRegistory";
-import TextFileResolver from "../Asset/TextFileResolver";
-import Material from "./Material";
-import NameResolver from "../Asset/NameResolver";
 import ShaderHeader from "raw-loader!../Shaders/header.glsl";
+import NameResolver from "../Asset/NameResolver";
+import TextFileResolver from "../Asset/TextFileResolver";
 import GLRelatedRegistryBase from "../Resource/GLRelatedRegistryBase";
+import SortParser from "../Sort/Parser";
+import MacroRegistory from "./MacroRegistory";
+import Material from "./Material";
 /**
  * Manage materialGenerators for materials.
  * Materials can be instanciated with this instance.
@@ -13,7 +12,7 @@ import GLRelatedRegistryBase from "../Resource/GLRelatedRegistryBase";
  */
 export default class MaterialFactory extends GLRelatedRegistryBase {
     public static registryName = "MaterialFactory";
-    
+
     public static defaultShaderHeader: string = ShaderHeader;
 
     public static materialGeneratorResolver: NameResolver<(factory: MaterialFactory) => Material> = new NameResolver<(factory: MaterialFactory) => Material>();
@@ -24,7 +23,7 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
      * @return {MaterialFactory}          [description]
      */
     public static get(gl: WebGLRenderingContext): MaterialFactory {
-        return GLRelatedRegistryBase.__get(gl,MaterialFactory);
+        return GLRelatedRegistryBase.__get(gl, MaterialFactory);
     }
 
     public static addMaterialType(typeName: string, materialGenerator: (factory: MaterialFactory) => Material): void {
@@ -38,7 +37,7 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
      * @return {Promise<void>}          [description]
      */
     public static async addSORTMaterial(typeName: string, source: string): Promise<(factory: MaterialFactory) => Material> {
-        return this.materialGeneratorResolver.register(typeName, (async () => {
+        return this.materialGeneratorResolver.register(typeName, (async() => {
             const techniques = await SortParser.parse(source);
             return (factory) => {
                 return new Material(factory.gl, techniques);
@@ -53,7 +52,7 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
      * @return {Promise<void>}          [description]
      */
     public static addSORTMaterialFromURL(typeName: string, url: string): Promise<(factory: MaterialFactory) => Material> {
-        return this.materialGeneratorResolver.register(typeName, (async () => {
+        return this.materialGeneratorResolver.register(typeName, (async() => {
             const source = await TextFileResolver.resolve(url);
             const techniques = await SortParser.parse(source);
             return (factory) => {
@@ -62,7 +61,7 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
         })());
     }
 
-    public static getMaterialStatus(typeName:string):number{
+    public static getMaterialStatus(typeName: string): number{
         return this.materialGeneratorResolver.getStatus(typeName);
     }
 

@@ -46,7 +46,7 @@ export default class MorphGeometry extends Geometry {
         }
         this._morphBaseAttribute[semantics] = {
             buffer: copiedBaseBuffer,
-            accessor: this.accessors[semantics]
+            accessor: this.accessors[semantics],
         };
         this.morphParameters[semantics] = morphParameters;
     }
@@ -61,7 +61,7 @@ export default class MorphGeometry extends Geometry {
 
     public setWeight(weights: number[]): void{
         this.lastWeights = weights;
-        for (let key in this._morphBaseAttribute){
+        for (const key in this._morphBaseAttribute){
             this._updateForSemantics(key);
         }
     }

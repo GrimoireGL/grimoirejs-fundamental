@@ -10,7 +10,7 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
   public static registryName = "GLExtensionRequestor";
 
   public static get(gl: WebGLRenderingContext): GLExtRequestor {
-    return this.__get(gl,GLExtRequestor);
+    return this.__get(gl, GLExtRequestor);
   }
   /**
    * Some of extensions needed to override resolving extensions by this.
@@ -51,13 +51,12 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
   public static request(extName: string, isNecessary = false): void {
     const index = GLExtRequestor._requestIndexOf(extName);
     if (index > -1 && isNecessary) {
-      GLExtRequestor._requestedExtensions[index] = { extensionName: extName, isNecessary: isNecessary };
+      GLExtRequestor._requestedExtensions[index] = { extensionName: extName, isNecessary };
     } else if (index === -1) {
-      GLExtRequestor._requestedExtensions.push({ extensionName: extName, isNecessary: isNecessary });
+      GLExtRequestor._requestedExtensions.push({ extensionName: extName, isNecessary });
     }
     GLExtRequestor._requestObserver.forEach((o) => o(extName));
   }
-
 
   private static _getFirst(): GLExtRequestor {
     return GLExtRequestor.__getAll(GLExtRequestor)[0];
@@ -71,8 +70,6 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
     }
     return -1;
   }
-
-
 
   constructor(public gl: WebGLRenderingContext) {
     super();

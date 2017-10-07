@@ -13,12 +13,12 @@ export default class RenderStageBase extends Component {
                 canvas: [0, 0],
                 canvasNormalized: [0, 0],
                 viewport: [0, 0],
-                viewportNormalized: [0, 0]
+                viewportNormalized: [0, 0],
             },
             left: false,
             right: false,
-            inside: false
-        } as ViewportBaseMouseState
+            inside: false,
+        } as ViewportBaseMouseState,
     };
 
     public $mousemove(v: ViewportMouseEvent): void {

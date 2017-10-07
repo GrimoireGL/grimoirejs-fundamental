@@ -22,7 +22,6 @@ export default class Technique {
    */
   public passes: Pass[] = [];
 
-
   constructor(public material: Material, recipe: ITechniqueRecipe) {
     this.drawOrder = recipe.drawOrder;
     this.passes = recipe.passes.map(p => {

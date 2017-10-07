@@ -1,7 +1,7 @@
-import Geometry from "./Geometry";
-import IGeometryFactoryDelegate from "./IGeometryFactoryDelegate";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import GLRelatedRegistryBase from "../Resource/GLRelatedRegistryBase";
+import Geometry from "./Geometry";
+import IGeometryFactoryDelegate from "./IGeometryFactoryDelegate";
 
 /**
  * Provides the feature to instanciate primitive geometry.
@@ -24,10 +24,10 @@ export default class GeometryFactory extends GLRelatedRegistryBase{
 
   /**
    * Get geometry factory by WebGLRenderingContext
-   * @param gl 
+   * @param gl
    */
-  public static get(gl:WebGLRenderingContext):GeometryFactory{
-    return this.__get(gl,GeometryFactory);
+  public static get(gl: WebGLRenderingContext): GeometryFactory{
+    return this.__get(gl, GeometryFactory);
   }
 
   /**
@@ -73,7 +73,7 @@ export default class GeometryFactory extends GLRelatedRegistryBase{
   public instanciateAsDefault(type: string): Promise<Geometry> {
     const decl = GeometryFactory.factoryArgumentDeclarations[type];
     const args: { [key: string]: any } = {};
-    for (let attr in decl) {
+    for (const attr in decl) {
       const attrDecl = decl[attr];
       args[attr] = attrDecl.default;
     }

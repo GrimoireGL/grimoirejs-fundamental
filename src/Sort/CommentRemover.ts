@@ -6,7 +6,7 @@ enum CommentParsingStatus {
   SingleQuotationString,
   DoubleQuatationString,
   MultilineComment,
-  SinglelineComment
+  SinglelineComment,
 }
 
 export default class CommentRemover {
@@ -33,8 +33,8 @@ export default class CommentRemover {
     let text = "";
     let last;
     for (let i = 0; i < this.source.length; i++) {
-      let c = this.source.charAt(i);
-      let cn = this.source.charAt(i + 1);
+      const c = this.source.charAt(i);
+      const cn = this.source.charAt(i + 1);
       if (c === "\\") {
         this._afterSlush = true;
         i++;

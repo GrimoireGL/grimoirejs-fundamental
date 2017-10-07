@@ -1,8 +1,6 @@
 import GLRelatedRegistryBase from "../GLRelatedRegistryBase";
-import IRenderingTarget from "./IRenderingTarget";
-import CanvasRenderingTarget from "./CanvasRenderingTarget";
-import Texture2D from "../Texture2D";
 import Renderbuffer from "../RenderBuffer";
+import Texture2D from "../Texture2D";
 /**
  * =
  */
@@ -11,7 +9,7 @@ export default class RenderingBufferResourceRegistry extends GLRelatedRegistryBa
     public static registryName = "RenderingBufferResourceRegistry";
     /**
      * Obtain reference of the class by WebGLRenderingContext.
-     * @param gl 
+     * @param gl
      */
     public static get(gl: WebGLRenderingContext): RenderingBufferResourceRegistry {
         return this.__get(gl, RenderingBufferResourceRegistry);

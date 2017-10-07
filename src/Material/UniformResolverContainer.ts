@@ -1,7 +1,7 @@
-import {IUniformRegisterOnRegister, IUniformRegisterOnDispose, IUniformRegisterOnUpdate} from "./UniformResolverRegistry";
 import UniformProxy from "../Resource/UniformProxy";
 import IMaterialArgument from "./IMaterialArgument";
 import PassProgram from "./PassProgram";
+import {IUniformRegisterOnDispose, IUniformRegisterOnRegister, IUniformRegisterOnUpdate} from "./UniformResolverRegistry";
 
 /**
  * Container of uniform registerers resolved by UniformResolverRegistry already.

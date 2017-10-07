@@ -1,9 +1,9 @@
-import IPassRecipe from "./Schema/IPassRecipe";
-import IState from "./Schema/IState";
-import IDynamicStateResolver from "./Schema/IDynamicStateResolver";
+import DefaultDynamicStateResolver from "./Defaults/DefaultDynamicStateResolvers";
 import IMaterialArgument from "./IMaterialArgument";
 import Pass from "./Pass";
-import DefaultDynamicStateResolver from "./Defaults/DefaultDynamicStateResolvers";
+import IDynamicStateResolver from "./Schema/IDynamicStateResolver";
+import IPassRecipe from "./Schema/IPassRecipe";
+import IState from "./Schema/IState";
 export default class GLStateConfigurator {
   private static _glEnableTargets: number[] = [
     WebGLRenderingContext.CULL_FACE,
@@ -99,7 +99,7 @@ export default class GLStateConfigurator {
     if (!state.disable) {
       state.disable = [];
     }
-    for (let key of GLStateConfigurator._glEnableTargets) {
+    for (const key of GLStateConfigurator._glEnableTargets) {
       if (state.enable.indexOf(key) === -1) {
         state.disable.push(key);
       }

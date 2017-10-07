@@ -6,7 +6,7 @@ export default class TextureSizeCalculator {
     const nh = Math.pow(2, Math.ceil(Math.log2(height))); // largest 2^n integer that does not exceed s
     return {
       width: Math.max(1, Math.min(nw, Texture2D.maxTextureSize)),
-      height: Math.max(1, Math.min(nh, Texture2D.maxTextureSize))
+      height: Math.max(1, Math.min(nh, Texture2D.maxTextureSize)),
     };
   }
 }

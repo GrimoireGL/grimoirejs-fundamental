@@ -13,5 +13,4 @@ class HashCalculator {
   }
 }
 
-
 export default HashCalculator;

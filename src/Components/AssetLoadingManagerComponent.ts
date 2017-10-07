@@ -1,7 +1,7 @@
-import AssetLoader from "../Asset/AssetLoader";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import DefaultLoaderChunk from "raw-loader!../Asset/defaultLoader.html";
+import AssetLoader from "../Asset/AssetLoader";
 
 /**
  * アセットの読み込みを司るコンポーネント。ローダーの表示などを司る。
@@ -15,22 +15,22 @@ export default class AssetLoadingManagerComponent extends Component {
      */
     loadingProgress: {
       default: 0,
-      converter: "Number"
+      converter: "Number",
     },
     /**
      * リソースの読み込み完了後に、自動的にレンダリングループを開始するかどうか
      */
     autoStart: {
       default: true,
-      converter: "Boolean"
+      converter: "Boolean",
     },
     /**
      * リソースのロード時にローディング画面を表示するかどうか
      */
     enableLoader: {
       default: true,
-      converter: "Boolean"
-    }
+      converter: "Boolean",
+    },
   };
 
   public loader: AssetLoader = new AssetLoader();
@@ -59,7 +59,6 @@ export default class AssetLoadingManagerComponent extends Component {
     canvasContainer.appendChild(loaderContainer);
     this._loaderElement = loaderContainer;
   }
-
 
   private async _autoStart(): Promise<void> {
     await this.loader.promise;

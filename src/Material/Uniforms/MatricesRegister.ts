@@ -1,7 +1,7 @@
 import Matrix from "grimoirejs-math/ref/Matrix";
-import IVariableInfo from "../Schema/IVariableInfo";
-import IMaterialArgument from "../IMaterialArgument";
 import UniformProxy from "../../Resource/UniformProxy";
+import IMaterialArgument from "../IMaterialArgument";
+import IVariableInfo from "../Schema/IVariableInfo";
 import UniformResolverRegistry from "../UniformResolverRegistry";
 
 UniformResolverRegistry.add("MODELVIEWPROJECTION", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {

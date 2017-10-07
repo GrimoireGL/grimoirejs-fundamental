@@ -1,9 +1,7 @@
-import gr from "grimoirejs";
-import Viewport from "../Resource/Viewport";
 import Rectangle from "grimoirejs-math/ref/Rectangle";
-import Attribute from "grimoirejs/ref/Node/Attribute";
+import Viewport from "../Resource/Viewport";
 function _toPixel(parentSize: number, rep: string): number {
-  let regex = /(\d+)\s*%/;
+  const regex = /(\d+)\s*%/;
   let regexResult: RegExpExecArray;
   if ((regexResult = regex.exec(rep))) {
     const percentage = Number.parseFloat(regexResult[1]);

@@ -1,7 +1,7 @@
 export class ResourceCache {
 
   private _lastUsedPrograms: Map<WebGLRenderingContext, WebGLProgram> = new Map<WebGLRenderingContext, WebGLProgram>();
-	/**
+  /**
 	 * Save the specified WebGLProgram as last used program.
 	 * And check the specified program was used last time.
 	 */

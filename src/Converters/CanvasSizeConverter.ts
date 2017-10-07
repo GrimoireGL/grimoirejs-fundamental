@@ -18,12 +18,12 @@ export default function CanvasSizeConverter(val: any): any {
     if (matched) {
       return {
         mode: "aspect",
-        aspect: Number.parseFloat(matched[1])
+        aspect: Number.parseFloat(matched[1]),
       };
     }
   }
   return {
     mode: "manual",
-    size: Number.parseFloat(val)
+    size: Number.parseFloat(val),
   } as CanvasSizeObject;
 }

@@ -1,8 +1,8 @@
-import GeometryFactory from "../Geometry/GeometryFactory";
-import Geometry from "../Geometry/Geometry";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import NameResolver from "../Asset/NameResolver";
+import Geometry from "../Geometry/Geometry";
+import GeometryFactory from "../Geometry/GeometryFactory";
 
 /**
  * ジオメトリを管理するコンポーネント
@@ -15,8 +15,8 @@ export default class GeometryRegistoryComponent extends Component {
      */
     defaultGeometry: {
       converter: "StringArray",
-      default: ["quad", "cube", "sphere"]
-    }
+      default: ["quad", "cube", "sphere"],
+    },
   };
 
   private _geometryResolver: NameResolver<Geometry> = new NameResolver<Geometry>();
@@ -24,7 +24,7 @@ export default class GeometryRegistoryComponent extends Component {
   public $awake(): void {
     this.companion.set(this.name, this);
     const factory = GeometryFactory.get(this.companion.get("gl"));
-    for (let geometry of this.getAttribute("defaultGeometry") as string[]) {
+    for (const geometry of this.getAttribute("defaultGeometry") as string[]) {
       this.addGeometry(geometry, factory.instanciateAsDefault(geometry));
     }
   }

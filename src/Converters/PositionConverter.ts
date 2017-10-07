@@ -1,7 +1,6 @@
 import Attribute from "grimoirejs/ref/Node/Attribute";
 import GomlNode from "grimoirejs/ref/Node/GomlNode";
 
-
 /**
  * 座標を取得するためのコンバーター
  * Vector3コンバーターの受け取り売る値もしくは、任意のシーン中のノードへのクエリを受け取る。
@@ -10,10 +9,10 @@ import GomlNode from "grimoirejs/ref/Node/GomlNode";
 export default {
   name: "Position",
   lazy: true,
-  verify: function(attr: Attribute) {
+  verify(attr: Attribute) {
     return true;
   },
-  convert: function(val: any, attr: Attribute) {
+  convert(val: any, attr: Attribute) {
     if (val === null) {
       return null;
     }
@@ -22,7 +21,7 @@ export default {
     } else {
       attr.convertContext._lastVal = null;
       try { // TODO: remove try cache after fixed grimoirejs-math.
-        let vec = Attribute.convert("Vector3", attr, val);
+        const vec = Attribute.convert("Vector3", attr, val);
         if (vec) {
           return vec;
         }
@@ -35,5 +34,5 @@ export default {
         return attr.convertContext._node.getAttribute("position"); // TODO should not use getAttribute on node
       }
     }
-  }
+  },
 };

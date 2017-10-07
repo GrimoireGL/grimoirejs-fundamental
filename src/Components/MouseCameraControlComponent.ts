@@ -1,40 +1,37 @@
-import SceneComponent from "./SceneComponent";
-import gr from "grimoirejs";
-import Attribute from "grimoirejs/ref/Node/Attribute";
-import Vector3 from "grimoirejs-math/ref/Vector3";
-import Quaternion from "grimoirejs-math/ref/Quaternion";
 import Matrix from "grimoirejs-math/ref/Matrix";
-import TransformComponent from "./TransformComponent";
+import Quaternion from "grimoirejs-math/ref/Quaternion";
+import Vector3 from "grimoirejs-math/ref/Vector3";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import TransformComponent from "./TransformComponent";
 
 export default class MouseCameraControlComponent extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     rotateSpeed: {
       default: 1,
-      converter: "Number"
+      converter: "Number",
     },
     zoomSpeed: {
       default: 1,
-      converter: "Number"
+      converter: "Number",
     },
     moveSpeed: {
       default: 1,
-      converter: "Number"
+      converter: "Number",
     },
     center: {
       default: "0,0,0",
       converter: "Position",
-      lazy: true
+      lazy: true,
     },
     distance: {
       default: null,
-      converter: "Number"
+      converter: "Number",
     },
     preventScroll: {
       default: true,
-      converter: "Boolean"
-    }
+      converter: "Boolean",
+    },
   };
 
   // propaty bound to
@@ -66,7 +63,7 @@ export default class MouseCameraControlComponent extends Component {
     this._listeners = {
       mousemove: this._mouseMove.bind(this),
       contextmenu: this._contextMenu.bind(this),
-      wheel: this._mouseWheel.bind(this)
+      wheel: this._mouseWheel.bind(this),
     };
   }
 
@@ -89,8 +86,8 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   public $initialized() {
-    let look = Vector3.normalize(this.center.subtractWith(this._transform.position));
-    let g = Quaternion.fromToRotation(this._transform.forward, look).normalize();
+    const look = Vector3.normalize(this.center.subtractWith(this._transform.position));
+    const g = Quaternion.fromToRotation(this._transform.forward, look).normalize();
     this._transform.rotation = g;
     this._initialRotation = g;
     this._initialDirection = Vector3.copy(this._transform.forward.negateThis()).normalized;
@@ -107,9 +104,9 @@ export default class MouseCameraControlComponent extends Component {
       this._lastCenter = this.center;
 
       // rotate excution
-      let rotationVartical = Quaternion.angleAxis(-this._xsum * this.rotateSpeed * 0.01, Vector3.YUnit);
-      let rotationHorizontal = Quaternion.angleAxis(-this._ysum * this.rotateSpeed * 0.01, Vector3.XUnit);
-      let rotation = Quaternion.multiply(rotationVartical, rotationHorizontal);
+      const rotationVartical = Quaternion.angleAxis(-this._xsum * this.rotateSpeed * 0.01, Vector3.YUnit);
+      const rotationHorizontal = Quaternion.angleAxis(-this._ysum * this.rotateSpeed * 0.01, Vector3.XUnit);
+      const rotation = Quaternion.multiply(rotationVartical, rotationHorizontal);
 
       const rotationMat = Matrix.rotationQuaternion(rotation);
       const direction = Matrix.transformNormal(rotationMat, this._initialDirection);
@@ -133,7 +130,7 @@ export default class MouseCameraControlComponent extends Component {
     if (this._lastScreenPos === null) {
       this._lastScreenPos = {
         x: m.screenX,
-        y: m.screenY
+        y: m.screenY,
       };
       return;
     }
@@ -148,15 +145,15 @@ export default class MouseCameraControlComponent extends Component {
       this._updated = true;
     }
     if (this._checkButtonPress(m, false)) { // When right button was pressed, move origin.
-      let moveX = -diffX * this.moveSpeed * 0.01;
-      let moveY = diffY * this.moveSpeed * 0.01;
+      const moveX = -diffX * this.moveSpeed * 0.01;
+      const moveY = diffY * this.moveSpeed * 0.01;
       this._d = this._d.addWith(this._transform.right.multiplyWith(moveX)).addWith(this._transform.up.multiplyWith(moveY));
       this._updated = true;
     }
 
     this._lastScreenPos = {
       x: m.screenX,
-      y: m.screenY
+      y: m.screenY,
     };
   }
 
@@ -180,8 +177,8 @@ export default class MouseCameraControlComponent extends Component {
     if (!this.isActive) {
       return;
     }
-    let dir = Vector3.subtract(this._transform.position, this.center).normalized;
-    let moveDist = m.deltaY * this.zoomSpeed * 0.05;
+    const dir = Vector3.subtract(this._transform.position, this.center).normalized;
+    const moveDist = m.deltaY * this.zoomSpeed * 0.05;
     this.distance = Math.max(1, this.distance + moveDist);
     this._transform.position = this.center.addWith(dir.multiplyWith(this.distance));
     if (this.getAttribute("preventScroll")) {

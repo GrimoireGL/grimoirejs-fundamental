@@ -1,11 +1,11 @@
-import Texture2D from "./Texture2D";
-import Vector2 from "grimoirejs-math/ref/Vector2";
-import Vector3 from "grimoirejs-math/ref/Vector3";
-import Vector4 from "grimoirejs-math/ref/Vector4";
 import Color3 from "grimoirejs-math/ref/Color3";
 import Color4 from "grimoirejs-math/ref/Color4";
 import Matrix from "grimoirejs-math/ref/Matrix";
+import Vector2 from "grimoirejs-math/ref/Vector2";
+import Vector3 from "grimoirejs-math/ref/Vector3";
+import Vector4 from "grimoirejs-math/ref/Vector4";
 import Program from "./Program";
+import Texture2D from "./Texture2D";
 
 const mat3Cache = new Float32Array(9);
 
@@ -43,41 +43,40 @@ export default class UniformProxy {
     const length = matricies.length / 16;
     for (let i = 0; i < length; i++) {
       this._passAsArray(variableName, i, (l) =>
-        this._gl.uniformMatrix4fv(l, false, new Float32Array(matricies.buffer, matricies.byteOffset + i * 64))
+        this._gl.uniformMatrix4fv(l, false, new Float32Array(matricies.buffer, matricies.byteOffset + i * 64)),
       );
     }
   }
 
   public uniformFloat(variableName: string, val: number): void {
     this._pass(variableName, (l) =>
-      this._gl.uniform1f(l, val)
+      this._gl.uniform1f(l, val),
     );
   }
 
   public uniformFloatArray(variableName: string, val: number[]): void {
     this._pass(variableName, (l) =>
-      this._gl.uniform1fv(l, val)
+      this._gl.uniform1fv(l, val),
     );
   }
 
   public uniformInt(variableName: string, val: number): void {
     this._pass(variableName, (l) =>
-      this._gl.uniform1i(l, val)
+      this._gl.uniform1i(l, val),
     );
   }
 
   public uniformVector2(variableName: string, val: Vector2): void {
     this._pass(variableName, (l) =>
-      this._gl.uniform2f(l, val.X, val.Y)
+      this._gl.uniform2f(l, val.X, val.Y),
     );
   }
 
   public uniformIntVector2(variableName: string, val: Vector2): void {
     this._pass(variableName, (l) =>
-      this._gl.uniform2i(l, val.X, val.Y)
+      this._gl.uniform2i(l, val.X, val.Y),
     );
   }
-
 
   public uniformVector2Array(variableName: string, val: number[] | Float32Array): void {
     this._pass(variableName, (l) => this._gl.uniform2fv(l, val));
@@ -85,13 +84,13 @@ export default class UniformProxy {
 
   public uniformVector3(variableName: string, val: Vector3): void {
     this._pass(variableName, (l) =>
-      this._gl.uniform3f(l, val.X, val.Y, val.Z)
+      this._gl.uniform3f(l, val.X, val.Y, val.Z),
     );
   }
 
   public uniformIntVector3(variableName: string, val: Vector3): void {
     this._pass(variableName, (l) =>
-      this._gl.uniform3i(l, val.X, val.Y, val.Z)
+      this._gl.uniform3i(l, val.X, val.Y, val.Z),
     );
   }
 
@@ -101,19 +100,19 @@ export default class UniformProxy {
 
   public uniformColor3(variableName: string, val: Color3): void {
     this._pass(variableName, (l) =>
-      this._gl.uniform3f(l, val.R, val.G, val.B)
+      this._gl.uniform3f(l, val.R, val.G, val.B),
     );
   }
 
   public uniformVector4(variableName: string, val: Vector4): void {
     this._pass(variableName, (l) =>
-      this._gl.uniform4f(l, val.X, val.Y, val.Z, val.W)
+      this._gl.uniform4f(l, val.X, val.Y, val.Z, val.W),
     );
   }
 
   public uniformIntVector4(variableName: string, val: Vector4): void {
     this._pass(variableName, (l) =>
-      this._gl.uniform4f(l, val.X, val.Y, val.Z, val.W)
+      this._gl.uniform4f(l, val.X, val.Y, val.Z, val.W),
     );
   }
 
@@ -123,7 +122,7 @@ export default class UniformProxy {
 
   public uniformColor4(variableName: string, val: Color4): void {
     this._pass(variableName, (l) =>
-      this._gl.uniform4f(l, val.R, val.G, val.B, val.A)
+      this._gl.uniform4f(l, val.R, val.G, val.B, val.A),
     );
   }
 

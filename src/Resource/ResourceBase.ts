@@ -1,5 +1,3 @@
-import gr from "grimoirejs";
-import IDObject from "grimoirejs/ref/Base/IDObject";
 
 /**
  * Abstraction of resource related class.

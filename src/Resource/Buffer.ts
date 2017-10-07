@@ -12,12 +12,11 @@ export default class Buffer extends ResourceBase {
     if (this.keepSource) {
       return this._bufferSource;
     } else {
-      throw new Error(`Accessing bufferSource getter of Buffer class instance require keepSource flag being enabled before updating Buffer.`);
+      throw new Error("Accessing bufferSource getter of Buffer class instance require keepSource flag being enabled before updating Buffer.");
     }
   }
 
   private _bufferSource: BufferSource = null;
-
 
   constructor(gl: WebGLRenderingContext, public readonly target: number = WebGLRenderingContext.ARRAY_BUFFER, public usage: number = WebGLRenderingContext.STATIC_DRAW) {
     super(gl);
@@ -37,10 +36,10 @@ export default class Buffer extends ResourceBase {
       this.gl.bufferSubData(this.target, length as number, subBuffer);
     } else {
       if (typeof length === "number") {
-        this.gl.bufferData(this.target, length as number, this.usage);
+        this.gl.bufferData(this.target, length, this.usage);
       } else {
-        this.gl.bufferData(this.target, length as BufferSource, this.usage);
-        this._bufferSource = length as BufferSource;
+        this.gl.bufferData(this.target, length, this.usage);
+        this._bufferSource = length;
       }
     }
     this.valid = true;

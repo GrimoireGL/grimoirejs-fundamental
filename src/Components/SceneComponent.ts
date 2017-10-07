@@ -1,8 +1,7 @@
-import RenderQueueRegistry from "../SceneRenderer/RenderQueueRegistry";
-import gr from "grimoirejs";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import ISceneUpdateArgument from "../SceneRenderer/ISceneUpdateArgument";
+import RenderQueueRegistry from "../SceneRenderer/RenderQueueRegistry";
 import Timer from "../Util/Timer";
 
 /**
@@ -44,7 +43,7 @@ export default class SceneComponent extends Component {
     if (this._lastUpdateIndex !== timer.frameCount) {
       const sceneUpdateInfo: ISceneUpdateArgument = {
         sceneDescription: this.sceneDescription,
-        timer: timer
+        timer,
       };
       this.node.broadcastMessage("update", sceneUpdateInfo);
       this._lastUpdateIndex = timer.frameCount;
