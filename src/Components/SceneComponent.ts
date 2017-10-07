@@ -1,8 +1,7 @@
-import RenderQueueRegistry from "../SceneRenderer/RenderQueueRegistry";
-import gr from "grimoirejs";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import ISceneUpdateArgument from "../SceneRenderer/ISceneUpdateArgument";
+import RenderQueueRegistry from "../SceneRenderer/RenderQueueRegistry";
 import Timer from "../Util/Timer";
 
 /**
@@ -27,11 +26,11 @@ export default class SceneComponent extends Component {
 
   private static _sceneDescriptionCreationHandlers: ((sd: { [key: string]: any }, scene: SceneComponent) => void)[] = [];
 
-  public static onSceneDescriptionCreation(handler: (sd: { [key: string]: any }, scene: SceneComponent) => void): void {
+  public static onSceneDescriptionCreation (handler: (sd: { [key: string]: any }, scene: SceneComponent) => void): void {
     SceneComponent._sceneDescriptionCreationHandlers.push(handler);
   }
 
-  public $mount(): void {
+  public $mount (): void {
     this.sceneDescription = {};
     SceneComponent._sceneDescriptionCreationHandlers.forEach(v => v(this.sceneDescription, this));
   }
@@ -40,11 +39,11 @@ export default class SceneComponent extends Component {
    * Notify update scene only when send update message is needed.
    * @param {Timer} timer [description]
    */
-  public updateScene(timer: Timer): void {
+  public updateScene (timer: Timer): void {
     if (this._lastUpdateIndex !== timer.frameCount) {
       const sceneUpdateInfo: ISceneUpdateArgument = {
         sceneDescription: this.sceneDescription,
-        timer: timer
+        timer,
       };
       this.node.broadcastMessage("update", sceneUpdateInfo);
       this._lastUpdateIndex = timer.frameCount;

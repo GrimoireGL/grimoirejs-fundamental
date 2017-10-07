@@ -9,7 +9,7 @@ export class ImageResolver extends ExternalResourceResolver<HTMLImageElement> {
      */
     public static corsResolvers: ((path: string) => string)[] = [];
 
-    public resolve(path: string): Promise<HTMLImageElement> {
+    public resolve (path: string): Promise<HTMLImageElement> {
         return super.resolve(path, (abs) => {
             return new Promise((resolve, reject) => {
                 const imgTag = new Image();
@@ -25,7 +25,7 @@ export class ImageResolver extends ExternalResourceResolver<HTMLImageElement> {
         });
     }
 
-    private _getCORSConfig(path: string): string {
+    private _getCORSConfig (path: string): string {
       let corsConfig = null;
       for (let i = 0; i < ImageResolver.corsResolvers.length; i++) {
         corsConfig = ImageResolver.corsResolvers[i](path);

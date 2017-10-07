@@ -1,7 +1,7 @@
-import Geometry from "./Geometry";
-import IGeometryFactoryDelegate from "./IGeometryFactoryDelegate";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import GLRelatedRegistryBase from "../Resource/GLRelatedRegistryBase";
+import Geometry from "./Geometry";
+import IGeometryFactoryDelegate from "./IGeometryFactoryDelegate";
 
 /**
  * Provides the feature to instanciate primitive geometry.
@@ -24,10 +24,10 @@ export default class GeometryFactory extends GLRelatedRegistryBase{
 
   /**
    * Get geometry factory by WebGLRenderingContext
-   * @param gl 
+   * @param gl
    */
-  public static get(gl:WebGLRenderingContext):GeometryFactory{
-    return this.__get(gl,GeometryFactory);
+  public static get (gl: WebGLRenderingContext): GeometryFactory{
+    return this.__get(gl, GeometryFactory);
   }
 
   /**
@@ -36,23 +36,23 @@ export default class GeometryFactory extends GLRelatedRegistryBase{
    * @param {IAttributeDeclaration }}             argumentDeclarations [description]
    * @param {IGeometryFactoryDelegate} factoryDelegate [description]
    */
-  public static addType(typeName: string, argumentDeclarations: { [argName: string]: IAttributeDeclaration }, factoryDelegate: IGeometryFactoryDelegate): void {
+  public static addType (typeName: string, argumentDeclarations: { [argName: string]: IAttributeDeclaration }, factoryDelegate: IGeometryFactoryDelegate): void {
     GeometryFactory.factoryDelegates[typeName] = factoryDelegate;
     GeometryFactory.factoryArgumentDeclarations[typeName] = argumentDeclarations;
   }
 
-  public static extend(typeName: string, extender: (geometry: Geometry, attrs: { [attrKey: string]: any }) => Promise<void> | void): void {
+  public static extend (typeName: string, extender: (geometry: Geometry, attrs: { [attrKey: string]: any }) => Promise<void> | void): void {
     if (GeometryFactory.factoryExtentions[typeName] === void 0) {
       GeometryFactory.factoryExtentions[typeName] = [];
     }
     GeometryFactory.factoryExtentions[typeName].push(extender);
   }
 
-  constructor(public gl: WebGLRenderingContext) {
+  constructor (public gl: WebGLRenderingContext) {
     super();
   }
 
-  public async instanciate(type: string, args: { [argName: string]: any }): Promise<Geometry> {
+  public async instanciate (type: string, args: { [argName: string]: any }): Promise<Geometry> {
     const factoryDelegate = GeometryFactory.factoryDelegates[type];
     if (!factoryDelegate) {
       throw new Error(`Can not instanciate unknown geometry type ${type}`);
@@ -70,10 +70,10 @@ export default class GeometryFactory extends GLRelatedRegistryBase{
     return geometry;
   }
 
-  public instanciateAsDefault(type: string): Promise<Geometry> {
+  public instanciateAsDefault (type: string): Promise<Geometry> {
     const decl = GeometryFactory.factoryArgumentDeclarations[type];
     const args: { [key: string]: any } = {};
-    for (let attr in decl) {
+    for (const attr in decl) {
       const attrDecl = decl[attr];
       args[attr] = attrDecl.default;
     }

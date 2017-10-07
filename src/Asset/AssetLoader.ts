@@ -2,7 +2,7 @@ import EEObject from "grimoirejs/ref/Base/EEObject";
 import Component from "grimoirejs/ref/Node/Component";
 type AssetLoadingInfoTuple = {
   promise: Promise<any>,
-  component: Component
+  component: Component,
 };
 
 /**
@@ -43,7 +43,7 @@ class AssetLoader extends EEObject {
   /**
    * Register an promise to be waited until finished.
    */
-  public async register<T>(promise: Promise<T>, component: Component): Promise<T> {
+  public async register<T> (promise: Promise<T>, component: Component): Promise<T> {
     this.registerCount++;
     let result: T = null;
     try {
@@ -61,7 +61,7 @@ class AssetLoader extends EEObject {
   /**
    * Verify all promises are completed.
    */
-  private _checkLoadCompleted(): void {
+  private _checkLoadCompleted (): void {
     this.emit("progress", this);
     if (this.registerCount === this.completeCount) {
       this._resolve();

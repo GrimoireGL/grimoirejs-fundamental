@@ -1,9 +1,9 @@
 import RenderHitArea from "./Components/RenderStage/RenderHitareaComponent";
-import PositionConverter from "./Converters/PositionConverter";
 import NodeConverter from "./Converters/NodeConverter";
+import PositionConverter from "./Converters/PositionConverter";
+import DefaultPrimitives from "./Geometry/DefaultPrimitives";
 import DefaultMaterial from "./Material/Defaults/DefaultMaterial";
 import GLExtRequestor from "./Resource/GLExtRequestor";
-import DefaultPrimitives from "./Geometry/DefaultPrimitives";
 
 import GrimoireInterface from "grimoirejs";
 import AssetLoadingManagerComponent from "./Components/AssetLoadingManagerComponent";
@@ -18,27 +18,26 @@ import MaterialContainerComponent from "./Components/MaterialContainerComponent"
 import MaterialImporterComponent from "./Components/MaterialImporterComponent";
 import MeshRendererComponent from "./Components/MeshRendererComponent";
 import MouseCameraControlComponent from "./Components/MouseCameraControlComponent";
-import RenderBufferUpdator from "./Components/Texture/RenderBufferUpdator";
 import RendererComponent from "./Components/RendererComponent";
 import RendererManagerComponent from "./Components/RendererManagerComponent";
+import RenderingTargetComponent from "./Components/RenderingTargetComponent";
 import RenderQuadComponent from "./Components/RenderStage/RenderQuadComponent";
 import RenderSceneComponent from "./Components/RenderStage/RenderSceneComponent";
 import SceneComponent from "./Components/SceneComponent";
 import ColorBufferTextureUpdator from "./Components/Texture/ColorBufferTextureUpdator";
+import ConstantSizeResourceResizer from "./Components/Texture/ConstantSizeResourceResizer";
+import ImageTextureUpdator from "./Components/Texture/ImageTextureUpdator";
+import RenderBufferUpdator from "./Components/Texture/RenderBufferUpdator";
 import TextureContainer from "./Components/Texture/TextureContainer";
+import VideoTextureUpdator from "./Components/Texture/VideoTextureUpdator";
+import ViewportSizeResourceResizer from "./Components/Texture/ViewportSizeResourceResizer";
 import TransformComponent from "./Components/TransformComponent";
 import CanvasSizeConverter from "./Converters/CanvasSizeConverter";
 import GeometryConverter from "./Converters/GeometryConverter";
 import MaterialConverter from "./Converters/MaterialConverter";
-import TextureConverter from "./Converters/TextureConverter";
-import Texture2DConverter from "./Converters/TextureConverter";
-import ViewportConverter from "./Converters/ViewportConverter";
 import RenderingTargetConverter from "./Converters/RenderingTargetConverter";
-import ImageTextureUpdator from "./Components/Texture/ImageTextureUpdator";
-import VideoTextureUpdator from "./Components/Texture/VideoTextureUpdator";
-import ViewportSizeResourceResizer from "./Components/Texture/ViewportSizeResourceResizer";
-import ConstantSizeResourceResizer from "./Components/Texture/ConstantSizeResourceResizer";
-import RenderingTargetComponent from "./Components/RenderingTargetComponent";
+import TextureConverter from "./Converters/TextureConverter";
+import ViewportConverter from "./Converters/ViewportConverter";
 
 export default () => {
     GrimoireInterface.register(async () => {
@@ -95,14 +94,14 @@ export default () => {
         GrimoireInterface.registerNode("color-buffer", ["ColorBufferTextureUpdator"], {}, "texture");
         GrimoireInterface.registerNode("render-buffer", ["RenderBufferUpdator"]);
         GrimoireInterface.registerNode("render-scene", ["RenderScene", "RenderHitArea"], {
-            material: null
+            material: null,
         });
         GrimoireInterface.registerNode("render-quad", ["MaterialContainer", "RenderQuad"], {
-            material: null
+            material: null,
         });
         GrimoireInterface.registerNode("rendering-target", ["RenderingTarget"]);
         DefaultPrimitives.register();
         DefaultMaterial.register();
-        GLExtRequestor.request("OES_texture_float")
+        GLExtRequestor.request("OES_texture_float");
     });
 };

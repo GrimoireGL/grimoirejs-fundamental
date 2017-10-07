@@ -1,9 +1,9 @@
-import IPassRecipe from "./Schema/IPassRecipe";
-import IState from "./Schema/IState";
-import IDynamicStateResolver from "./Schema/IDynamicStateResolver";
+import DefaultDynamicStateResolver from "./Defaults/DefaultDynamicStateResolvers";
 import IMaterialArgument from "./IMaterialArgument";
 import Pass from "./Pass";
-import DefaultDynamicStateResolver from "./Defaults/DefaultDynamicStateResolvers";
+import IDynamicStateResolver from "./Schema/IDynamicStateResolver";
+import IPassRecipe from "./Schema/IPassRecipe";
+import IState from "./Schema/IState";
 export default class GLStateConfigurator {
   private static _glEnableTargets: number[] = [
     WebGLRenderingContext.CULL_FACE,
@@ -18,11 +18,11 @@ export default class GLStateConfigurator {
 
   private static _dynamicStateResolvers: { [key: string]: IDynamicStateResolver } = {...DefaultDynamicStateResolver};
 
-  public static registerDynamicStateResolver(key: string, resolver: IDynamicStateResolver): void {
+  public static registerDynamicStateResolver (key: string, resolver: IDynamicStateResolver): void {
     GLStateConfigurator._dynamicStateResolvers[key] = resolver;
   }
 
-  public static getDynamicStateResolver(pass: Pass): (gl: WebGLRenderingContext, mat: IMaterialArgument) => void {
+  public static getDynamicStateResolver (pass: Pass): (gl: WebGLRenderingContext, mat: IMaterialArgument) => void {
     if (pass.passRecipe.states.dynamicState) {
       const dynamicStates = pass.passRecipe.states.dynamicState;
       const functions = [] as ((gl: WebGLRenderingContext, mat: IMaterialArgument) => void)[];
@@ -42,7 +42,7 @@ export default class GLStateConfigurator {
   /**
    * Configure gl state based on pass recipe
    */
-  public static configureForPass(gl: WebGLRenderingContext, passRecipe: IPassRecipe): void {
+  public static configureForPass (gl: WebGLRenderingContext, passRecipe: IPassRecipe): void {
     const states = passRecipe.states;
     const functions = states.functions;
     if (!states.disable) {
@@ -95,11 +95,11 @@ export default class GLStateConfigurator {
   /**
    * Complement disabling state based on enabled states.
    */
-  public static complementDisableState(state: IState): void {
+  public static complementDisableState (state: IState): void {
     if (!state.disable) {
       state.disable = [];
     }
-    for (let key of GLStateConfigurator._glEnableTargets) {
+    for (const key of GLStateConfigurator._glEnableTargets) {
       if (state.enable.indexOf(key) === -1) {
         state.disable.push(key);
       }

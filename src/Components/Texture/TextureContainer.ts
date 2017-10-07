@@ -1,8 +1,6 @@
-import gr from "grimoirejs";
-import Texture2D from "../../Resource/Texture2D";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import ImageResolver from "../../Asset/ImageResolver";
+import Texture2D from "../../Resource/Texture2D";
 export default class TextureContainer extends Component {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     minFilter: {
@@ -14,16 +12,16 @@ export default class TextureContainer extends Component {
         NEAREST_MIPMAP_NEAREST: WebGLRenderingContext.NEAREST_MIPMAP_NEAREST,
         NEAREST_MIPMAP_LINEAR: WebGLRenderingContext.NEAREST_MIPMAP_LINEAR,
         LINEAR_MIPMAP_NEAREST: WebGLRenderingContext.LINEAR_MIPMAP_NEAREST,
-        LINEAR_MIPMAP_LINEAR: WebGLRenderingContext.LINEAR_MIPMAP_LINEAR
-      }
+        LINEAR_MIPMAP_LINEAR: WebGLRenderingContext.LINEAR_MIPMAP_LINEAR,
+      },
     },
     magFilter: {
       converter: "Enum",
       default: "LINEAR",
       table: {
         LINEAR: WebGLRenderingContext.LINEAR,
-        NEAREST: WebGLRenderingContext.NEAREST
-      }
+        NEAREST: WebGLRenderingContext.NEAREST,
+      },
     },
     wrapS: {
       converter: "Enum",
@@ -31,8 +29,8 @@ export default class TextureContainer extends Component {
       table: {
         REPEAT: WebGLRenderingContext.REPEAT,
         MIRRORED_REPEAT: WebGLRenderingContext.MIRRORED_REPEAT,
-        CLAMP_TO_EDGE: WebGLRenderingContext.CLAMP_TO_EDGE
-      }
+        CLAMP_TO_EDGE: WebGLRenderingContext.CLAMP_TO_EDGE,
+      },
     },
     wrapT: {
       converter: "Enum",
@@ -40,14 +38,14 @@ export default class TextureContainer extends Component {
       table: {
         REPEAT: WebGLRenderingContext.REPEAT,
         MIRRORED_REPEAT: WebGLRenderingContext.MIRRORED_REPEAT,
-        CLAMP_TO_EDGE: WebGLRenderingContext.CLAMP_TO_EDGE
-      }
-    }
+        CLAMP_TO_EDGE: WebGLRenderingContext.CLAMP_TO_EDGE,
+      },
+    },
   };
 
   public texture: Texture2D;
 
-  public $mount(): void {
+  public $mount (): void {
     this.texture = new Texture2D(this.companion.get("gl"));
     this.texture.magFilter = this.getAttribute("magFilter");
     this.texture.minFilter = this.getAttribute("minFilter");
@@ -59,7 +57,7 @@ export default class TextureContainer extends Component {
     this.getAttributeRaw("wrapT").watch(v => this.texture.wrapT = v);
   }
 
-  public $unmount(): void {
+  public $unmount (): void {
     this.texture.destroy();
     this.texture = null;
   }

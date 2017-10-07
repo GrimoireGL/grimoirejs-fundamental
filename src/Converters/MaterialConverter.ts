@@ -1,8 +1,7 @@
-import gr from "grimoirejs";
 import Attribute from "grimoirejs/ref/Node/Attribute";
-import MaterialFactory from "../Material/MaterialFactory";
 import MaterialComponent from "../Components/MaterialComponent";
 import Material from "../Material/Material";
+import MaterialFactory from "../Material/MaterialFactory";
 
 /**
  * マテリアルを指定するためのコンバーター
@@ -11,7 +10,7 @@ import Material from "../Material/Material";
  * 通常、マテリアルを指定するコンポーネントはマテリアルによって、そのコンポーネントが所持する属性が置き換わる。
  * `new(マテリアル)`名で指定した場合、そのコンポーネント自身がマテリアルの属性を管理することになるので注意が必要。
  */
-export default function MaterialConverter(val: any, attr: Attribute): any {
+export default function MaterialConverter (val: any, attr: Attribute): any {
   if (typeof val === "string") {
     const regex = /\s*new\s*\(\s*([a-zA-Z\d\-]+)\s*\)/;
     let regexResult: RegExpExecArray |null;
@@ -19,7 +18,7 @@ export default function MaterialConverter(val: any, attr: Attribute): any {
       (attr.component as any)[attr.declaration["componentBoundTo"]] = null;
       return MaterialFactory.get(attr.companion.get("gl")).instanciate(regexResult[1]);
     } else {
-      const node = attr.tree!(val).first();
+      const node = attr.tree(val).first();
       if (node) {
         const mc = node.getComponent(MaterialComponent);
         (attr.component as any)[attr.declaration["componentBoundTo"]] = mc;

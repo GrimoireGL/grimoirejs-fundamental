@@ -15,7 +15,7 @@ export class VideoResolver {
      */
     public static corsResolvers: ((path: string) => string)[] = [];
 
-    public resolve(path: string): Promise<HTMLVideoElement> {
+    public resolve (path: string): Promise<HTMLVideoElement> {
         return new Promise<HTMLVideoElement>((resolve, reject) => {
             const video = document.createElement("video");
             video.crossOrigin = this._getCORSConfig(path);
@@ -37,7 +37,7 @@ export class VideoResolver {
         });
     }
 
-    private _getCORSConfig(path: string): string {
+    private _getCORSConfig (path: string): string {
         let corsConfig = null;
         for (let i = 0; i < VideoResolver.corsResolvers.length; i++) {
             corsConfig = VideoResolver.corsResolvers[i](path);

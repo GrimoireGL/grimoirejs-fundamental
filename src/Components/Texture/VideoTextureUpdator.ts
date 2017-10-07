@@ -1,32 +1,28 @@
-import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import TextureContainer from "./TextureContainer";
 import VideoResolver from "../../Asset/VideoResolver";
-import LoopManager from "../LoopManagerComponent";
-import BasicComponent from "../BasicComponent";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
 export default class VideoTextureUpdatorComponent extends TextureUpdatorComponentBase {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     src: {
       converter: "String",
-      default: null
+      default: null,
     },
     currentTime: {
       converter: "Number",
-      default: 0
+      default: 0,
     },
     muted: {
       converter: "Boolean",
-      default: true
+      default: true,
     },
     playbackRate: {
       converter: "Number",
-      default: 1
+      default: 1,
     },
     loop: {
       converter: "Boolean",
-      default: true
-    }
+      default: true,
+    },
   };
 
   public flipY: boolean;
@@ -45,8 +41,8 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
 
   public loop: boolean;
 
-  public $mount() {
-    super.$mount();
+  public $awake () {
+    super.$awake();
     this.__bindAttributes();
     this.getAttributeRaw("src").watch((v: string) => {
       if (v !== null) {
@@ -75,7 +71,7 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
     });
   }
 
-  private *_update() {
+  private *_update () {
     while (true) {
       if (this.currentTime !== this.video.currentTime) {
         this.currentTime = this.video.currentTime;
@@ -83,14 +79,14 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
       if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
         this.__texture.update(this.video, {
           premultipliedAlpha: this.premultipliedAlpha,
-          flipY: this.flipY
+          flipY: this.flipY,
         });
       }
       yield 1;
     }
   }
 
-  private async _loadTask(src: string): Promise<void> {
+  private async _loadTask (src: string): Promise<void> {
     this.video = await VideoResolver.resolve(src);
     this.__registerFrameCoroutine(this._update);
     this.video.play();
@@ -98,7 +94,7 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
     this._update();
   }
 
-  private _syncVideoPref(): void {
+  private _syncVideoPref (): void {
     this.video.playbackRate = this.playbackRate;
     this.video.muted = this.muted;
     this.video.loop = this.loop;

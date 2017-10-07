@@ -1,12 +1,12 @@
-import Vector3 from "grimoirejs-math/ref/Vector3";
 import AABB from "grimoirejs-math/ref/AABB";
-import VertexBufferAccessor from "./VertexBufferAccessor";
-import Program from "../Resource/Program";
-import IndexBufferInfo from "./IndexBufferInfo";
+import Vector3 from "grimoirejs-math/ref/Vector3";
 import Buffer from "../Resource/Buffer";
-import GLExtRequestor from "../Resource/GLExtRequestor";
 import IGLInstancedArrayInterface from "../Resource/GLExt/IGLInstancedArrayInterface";
+import GLExtRequestor from "../Resource/GLExtRequestor";
+import Program from "../Resource/Program";
 import HashCalculator from "../Util/HashCalculator";
+import IndexBufferInfo from "./IndexBufferInfo";
+import VertexBufferAccessor from "./VertexBufferAccessor";
 export interface GeometryVertexBufferAccessor extends VertexBufferAccessor {
     bufferIndex: number;
 }
@@ -23,7 +23,7 @@ export default class Geometry {
      * 'Same' DOES NOT mean that these geometries have a buffers containing same elements.
      * But, if there was a accessor named 'A' in one of them, the other one should exist.
      */
-    public get accessorHash(): number {
+    public get accessorHash (): number {
       return this._accessorHashCache;
     }
     /**
@@ -50,7 +50,7 @@ export default class Geometry {
      * @param  {string}   semantics    [description]
      * @return {boolean}                [description]
      */
-    public static bindBufferToAttribute(geometry: Geometry, program: Program, attributeName: string, semantics: string): boolean {
+    public static bindBufferToAttribute (geometry: Geometry, program: Program, attributeName: string, semantics: string): boolean {
         const index = program.findAttributeLocation(attributeName);
         if (index < 0) {
             return false;
@@ -69,7 +69,7 @@ export default class Geometry {
         return true;
     }
 
-    public static drawWithCurrentVertexBuffer(geometry: Geometry, indexName: string, count: number = Number.MAX_VALUE, offset = 0): void {
+    public static drawWithCurrentVertexBuffer (geometry: Geometry, indexName: string, count: number = Number.MAX_VALUE, offset = 0): void {
         const targetIndex = geometry.indices[indexName];
         if (targetIndex === void 0) {
             throw new Error(`Specified index buffer "${indexName}" was not found on this geometry.All of the index buffer available on this geometry is "${Object.keys(geometry.indices)}"`);
@@ -82,17 +82,17 @@ export default class Geometry {
         }
     }
 
-    constructor(public gl: WebGLRenderingContext) {
+    constructor (public gl: WebGLRenderingContext) {
         GLExtRequestor.request("ANGLE_instanced_arrays", true);
         this.instanciator = GLExtRequestor.get(gl).extensions["ANGLE_instanced_arrays"];
     }
 
-    public addAttributes(buffer: number[] | BufferSource, accessors: { [semantcis: string]: VertexBufferAccessor }, usage?: number): void;
-    public addAttributes(buffer: number[] | BufferSource | Buffer, accessors: { [semantics: string]: VertexBufferAccessor }): void;
-    public addAttributes(buffer: Buffer | number[] | BufferSource, accessors: { [semantics: string]: VertexBufferAccessor }, usage: number = WebGLRenderingContext.STATIC_DRAW): void {
-        let index = this.buffers.length;
+    public addAttributes (buffer: number[] | BufferSource, accessors: { [semantcis: string]: VertexBufferAccessor }, usage?: number): void;
+    public addAttributes (buffer: number[] | BufferSource | Buffer, accessors: { [semantics: string]: VertexBufferAccessor }): void;
+    public addAttributes (buffer: Buffer | number[] | BufferSource, accessors: { [semantics: string]: VertexBufferAccessor }, usage: number = WebGLRenderingContext.STATIC_DRAW): void {
+        const index = this.buffers.length;
         let keepBuffer = false;
-        for (let semantic in accessors) {
+        for (const semantic in accessors) {
             const accessor = accessors[semantic] as GeometryVertexBufferAccessor;
             accessor.bufferIndex = index;
             if (accessor.size === void 0) {
@@ -131,9 +131,9 @@ export default class Geometry {
      * @param {number                    =         null}                            count    [description]
      * @param {number                    =         0}                               type     [description]
      */
-    public addIndex(indexName: string, instanceCount: number, buffer: Buffer | number[] | BufferSource, topology?: number, offset?: number, count?: number, type?: number): void;
-    public addIndex(indexName: string, buffer: Buffer | number[] | BufferSource, topology?: number, offset?: number, count?: number, type?: number): void;
-    public addIndex(indexName: string, bufferOrInstanceCount: Buffer | number[] | BufferSource | number, bufferOrTopology: Buffer | number[] | BufferSource | number, offsetOrTopology: number, countOrOffset: number = null, typeOrCount = 0, type?: number): void {
+    public addIndex (indexName: string, instanceCount: number, buffer: Buffer | number[] | BufferSource, topology?: number, offset?: number, count?: number, type?: number): void;
+    public addIndex (indexName: string, buffer: Buffer | number[] | BufferSource, topology?: number, offset?: number, count?: number, type?: number): void;
+    public addIndex (indexName: string, bufferOrInstanceCount: Buffer | number[] | BufferSource | number, bufferOrTopology: Buffer | number[] | BufferSource | number, offsetOrTopology: number, countOrOffset: number = null, typeOrCount = 0, type?: number): void {
         let buffer: Buffer | number[] | BufferSource;
         let topology: number;
         let offset: number;
@@ -157,7 +157,7 @@ export default class Geometry {
         } else {
             buffer = bufferOrInstanceCount;
             topology = bufferOrTopology as number;
-            offset = offsetOrTopology as number;
+            offset = offsetOrTopology;
             count = countOrOffset;
             type = typeOrCount;
             if (typeof topology !== "number") {
@@ -181,26 +181,26 @@ export default class Geometry {
         this.indices[indexName] = {
             byteOffset: offset,
             byteSize: this._indexTypeToByteSize(type),
-            type: type,
-            topology: topology,
-            count: count,
+            type,
+            topology,
+            count,
             index: buffer,
-            instanceCount: instanceCount
+            instanceCount,
         };
     }
 
-    public drawByDefault(indexName: string, attribNames: string[], program: Program, count = Number.MAX_VALUE, offset = 0): void {
+    public drawByDefault (indexName: string, attribNames: string[], program: Program, count = Number.MAX_VALUE, offset = 0): void {
         attribNames.forEach(name => {
             Geometry.bindBufferToAttribute(this, program, name, name);
         });
         Geometry.drawWithCurrentVertexBuffer(this, indexName, count, offset);
     }
 
-    public clone(): Geometry {
+    public clone (): Geometry {
         const geometry = new Geometry(this.gl);
         geometry.buffers = [].concat(this.buffers);
-        geometry.accessors = Object.assign({}, this.accessors);
-        geometry.indices = Object.assign({}, this.indices);
+        geometry.accessors = {...this.accessors};
+        geometry.indices = {...this.indices};
         geometry.aabb = new AABB([this.aabb.pointLBF, this.aabb.pointRTN]);
         return geometry;
     }
@@ -210,7 +210,7 @@ export default class Geometry {
      * @param  {Buffer|BufferSource|number[]} buffer [description]
      * @return {Buffer}                              [description]
      */
-    private _ensureToBeVertexBuffer(buffer: Buffer | BufferSource | number[], usage: number, keepBuffer: boolean): Buffer {
+    private _ensureToBeVertexBuffer (buffer: Buffer | BufferSource | number[], usage: number, keepBuffer: boolean): Buffer {
         if (!(buffer instanceof Buffer)) {
             let bufferSource = buffer;
             if (Array.isArray(bufferSource)) {
@@ -228,7 +228,7 @@ export default class Geometry {
      * @param  {Buffer|BufferSource|number[]} buffer [description]
      * @return {Buffer}                              [description]
      */
-    private _ensureToBeIndexBuffer(buffer: Buffer | BufferSource | number[], type: number): Buffer {
+    private _ensureToBeIndexBuffer (buffer: Buffer | BufferSource | number[], type: number): Buffer {
         if (!(buffer instanceof Buffer)) {
             let bufferSource = buffer;
             if (Array.isArray(bufferSource)) {
@@ -244,7 +244,7 @@ export default class Geometry {
         return buffer;
     }
 
-    private _indexTypeFromCount(count: number): number {
+    private _indexTypeFromCount (count: number): number {
         if (count < 256) {
             return WebGLRenderingContext.UNSIGNED_BYTE;
         } else if (count < 65536) {
@@ -256,7 +256,7 @@ export default class Geometry {
         }
     }
 
-    private _indexTypeToArrayConstructor(type: number): (new (arr: number[]) => ArrayBufferView) {
+    private _indexTypeToArrayConstructor (type: number): (new (arr: number[]) => ArrayBufferView) {
         switch (type) {
             case WebGLRenderingContext.UNSIGNED_BYTE:
                 return Uint8Array;
@@ -269,7 +269,7 @@ export default class Geometry {
         }
     }
 
-    private _indexTypeToByteSize(type: number): number {
+    private _indexTypeToByteSize (type: number): number {
         switch (type) {
             case WebGLRenderingContext.UNSIGNED_BYTE:
                 return 1;
@@ -282,7 +282,7 @@ export default class Geometry {
         }
     }
 
-    private _attribTypeToByteSize(type: number): number {
+    private _attribTypeToByteSize (type: number): number {
         switch (type) {
             case WebGLRenderingContext.FLOAT:
             case WebGLRenderingContext.UNSIGNED_INT:
@@ -296,9 +296,9 @@ export default class Geometry {
         }
     }
 
-    private _recalculateAccsessorHash(): void {
+    private _recalculateAccsessorHash (): void {
       let hashSource = "";
-      for (let key in this.accessors) {
+      for (const key in this.accessors) {
         hashSource += key + "|";
       }
       this._accessorHashCache = HashCalculator.calcHash(hashSource);

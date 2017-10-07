@@ -6,7 +6,7 @@ enum CommentParsingStatus {
   SingleQuotationString,
   DoubleQuatationString,
   MultilineComment,
-  SinglelineComment
+  SinglelineComment,
 }
 
 export default class CommentRemover {
@@ -16,25 +16,25 @@ export default class CommentRemover {
 
   private _afterSlush = false;
 
-  private get _isInComment(): boolean {
+  private get _isInComment (): boolean {
     return this._status === CommentParsingStatus.MultilineComment || this._status === CommentParsingStatus.SinglelineComment;
   }
 
-  public static remove(source: string): string {
+  public static remove (source: string): string {
     const remover = new CommentRemover(source);
     return remover.removedSource;
   }
 
-  constructor(public source: string) {
+  constructor (public source: string) {
     this.removedSource = this._remove();
   }
 
-  private _remove(): string {
+  private _remove (): string {
     let text = "";
     let last;
     for (let i = 0; i < this.source.length; i++) {
-      let c = this.source.charAt(i);
-      let cn = this.source.charAt(i + 1);
+      const c = this.source.charAt(i);
+      const cn = this.source.charAt(i + 1);
       if (c === "\\") {
         this._afterSlush = true;
         i++;
@@ -58,7 +58,7 @@ export default class CommentRemover {
     return text;
   }
 
-  private _defaultParsing(current: string, next: string): void {
+  private _defaultParsing (current: string, next: string): void {
     if (current === "'") {
       this._status = CommentParsingStatus.SingleQuotationString;
     }
@@ -73,7 +73,7 @@ export default class CommentRemover {
     }
   }
 
-  private _checkCommentEnd(last: string, current: string): void {
+  private _checkCommentEnd (last: string, current: string): void {
     if (current === "\n" && this._status === CommentParsingStatus.SinglelineComment) {
       this._status = CommentParsingStatus.Default;
       return;

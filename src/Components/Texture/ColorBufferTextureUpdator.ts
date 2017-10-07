@@ -1,17 +1,11 @@
-import gr from "grimoirejs";
-import Texture2D from "../../Resource/Texture2D";
-import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import TextureSizeCalculator from "../../Util/TextureSizeCalculator";
-import Viewport from "../../Resource/Viewport";
-import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
-import ResizableResourceUpdator from "./ResizableResourceUpdator";
 import RenderingBufferResourceRegistry from "../../Resource/RenderingTarget/RenderingBufferResourceRegistry";
+import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
 export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBase {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
       converter: "String",
-      default: null
+      default: null,
     },
     format: {
       converter: "Enum",
@@ -25,8 +19,8 @@ export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBa
         SRGB_EXT: WebGLRenderingContext["SRGB_EXT"],
         SRGB_ALPHA_EXT: WebGLRenderingContext["SRGB_ALPHA_EXT"],
         DEPTH_COMPONENT: WebGLRenderingContext["DEPTH_COMPONENT"],
-        DEPTH_STENCIL: WebGLRenderingContext["DEPTH_STENCIL"]
-      }
+        DEPTH_STENCIL: WebGLRenderingContext["DEPTH_STENCIL"],
+      },
     },
     type: {
       converter: "Enum",
@@ -38,13 +32,13 @@ export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBa
         UNSIGNED_SHORT_5_5_5_1: WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1,
         UNSIGNED_SHORT: WebGLRenderingContext.UNSIGNED_SHORT,
         UNSIGNED_INT: WebGLRenderingContext.UNSIGNED_INT,
-        FLOAT: WebGLRenderingContext.FLOAT
-      }
-    }
+        FLOAT: WebGLRenderingContext.FLOAT,
+      },
+    },
   };
 
-  public $mount(): void {
-    super.$mount();
+  public $awake (): void {
+    super.$awake();
     const name = this.getAttribute("name");
     const format = this.getAttribute("format");
     const type = this.getAttribute("type");
@@ -54,7 +48,7 @@ export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBa
     this.__texture.update(0, 1, 1, 0, format, type, null);
   }
 
-  public resize(width: number, height: number): void {
+  public resize (width: number, height: number): void {
     const format = this.getAttribute("format");
     const type = this.getAttribute("type");
     this.__texture.update(0, width, height, 0, format, type, null);

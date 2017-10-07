@@ -14,7 +14,7 @@ interface IState {
     frontFace?: number[], // CCW
     lineWidth?: number[],
     polygonOffset?: number[], // (factor, units)
-    scissor?: number[] // (x, y, width, height)
+    scissor?: number[], // (x, y, width, height)
     // stencilFunc?: number[], // TODO Support stencil stuff in future
     // stencilFuncSeparate?: number[],
     // stencilMask?: number[],

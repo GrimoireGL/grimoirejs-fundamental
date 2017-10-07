@@ -1,11 +1,11 @@
-import Shader from "./Shader";
 import HashCalculator from "../Util/HashCalculator";
 import Program from "./Program";
+import Shader from "./Shader";
 
 export default class ManagedProgram extends Program {
   private static _managedPrograms: Map<WebGLRenderingContext, { [hash: number]: ManagedProgram }> = new Map<WebGLRenderingContext, { [hash: number]: ManagedProgram }>();
 
-  public static getProgram(gl: WebGLRenderingContext, shaders: Shader[]): ManagedProgram {
+  public static getProgram (gl: WebGLRenderingContext, shaders: Shader[]): ManagedProgram {
     if (!ManagedProgram._managedPrograms.has(gl)) {
       ManagedProgram._managedPrograms.set(gl, {});
     }
@@ -26,11 +26,11 @@ export default class ManagedProgram extends Program {
 
   private _referenceCount = 0;
 
-  constructor(gl: WebGLRenderingContext, public hash: number) {
+  constructor (gl: WebGLRenderingContext, public hash: number) {
     super(gl);
   }
 
-  public release(): void {
+  public release (): void {
     this._referenceCount--;
     if (this._referenceCount === 0) {
       this.destroy();

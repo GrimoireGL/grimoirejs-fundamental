@@ -1,13 +1,8 @@
-import DrawPriorty from "../SceneRenderer/DrawPriorty";
-import Attribute from "grimoirejs/ref/Node/Attribute";
-import gr from "grimoirejs";
-import ResourceBase from "../Resource/ResourceBase";
-import MaterialComponent from "./MaterialComponent";
-import Material from "../Material/Material";
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import GrimoireInterface from "grimoirejs";
-import BasicComponent from "./BasicComponent";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Material from "../Material/Material";
+import DrawPriorty from "../SceneRenderer/DrawPriorty";
+import MaterialComponent from "./MaterialComponent";
 import MaterialContainerBase from "./MaterialContainerBase";
 
 /**
@@ -23,7 +18,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
     material: {
       converter: "Material",
       default: "new(unlit)",
-      componentBoundTo: "_materialComponent" // When the material was specified with the other material tag, this field would be assigned.
+      componentBoundTo: "_materialComponent", // When the material was specified with the other material tag, this field would be assigned.
     },
     /**
      * 描画順序
@@ -32,28 +27,28 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
      */
     drawOrder: {
       converter: "String",
-      default: "Auto"
+      default: "Auto",
     },
     transparent: {
       converter: "Boolean",
-      default: true
-    }
+      default: true,
+    },
   };
 
-  public static rewriteDefaultMaterial(materialName: string): void {
+  public static rewriteDefaultMaterial (materialName: string): void {
     if (materialName !== MaterialContainerComponent._defaultMaterial) {
       MaterialContainerComponent._defaultMaterial = materialName;
       GrimoireInterface.componentDeclarations.get("MaterialContainer").attributes["material"].default = `new(${materialName})`;
     }
   }
 
-  public static get defaultMaterial(): string {
+  public static get defaultMaterial (): string {
     return this._defaultMaterial;
   }
 
   private static _defaultMaterial = "unlit";
 
-  public getDrawPriorty(depth: number, technique: string): number {
+  public getDrawPriorty (depth: number, technique: string): number {
     if (!this.materialReady && !this.isActive) { // If material was not ready
       return Number.MAX_VALUE;
     }
@@ -93,7 +88,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
 
   private _transparent: boolean;
 
-  public $mount(): void {
+  public $mount (): void {
     this.getAttributeRaw("material").watch(this._onMaterialChanged.bind(this));
     this.__registerAssetLoading(this._onMaterialChanged());
     this.getAttributeRaw("drawOrder").boundTo("_drawOrder");
@@ -103,9 +98,9 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
   /**
    * When the material attribute is changed.
    */
-  private async _onMaterialChanged(): Promise<void> {
+  private async _onMaterialChanged (): Promise<void> {
     const materialPromise = this.getAttribute("material") as Promise<Material>;
-    if (materialPromise === void 0) {
+    if (materialPromise === null) {
       this.useMaterial = false;
       return; // When specified material is null
     }
@@ -124,14 +119,14 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
    * Resolve materials only when the material required from external material component.
    * @return {Promise<void>} [description]
    */
-  private async _prepareExternalMaterial(materialPromise: Promise<Material>): Promise<void> {
+  private async _prepareExternalMaterial (materialPromise: Promise<Material>): Promise<void> {
     const material = await materialPromise; // waiting for material load completion
     this.material = material;
     this.materialArgs = this._materialComponent.materialArgs;
     this.materialReady = true;
   }
 
-  private async _prepareInternalMaterial(materialPromise: Promise<Material>): Promise<void> {
+  private async _prepareInternalMaterial (materialPromise: Promise<Material>): Promise<void> {
     // obtain promise of instanciating material
     if (!materialPromise) {
       return;

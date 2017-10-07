@@ -1,9 +1,8 @@
-import IRenderable from "../SceneRenderer/IRenderable";
-import CameraComponent from "../Components/CameraComponent";
 import Rectangle from "grimoirejs-math/ref/Rectangle";
-import Texture2D from "../Resource/Texture2D";
+import CameraComponent from "../Components/CameraComponent";
 import TransformComponent from "../Components/TransformComponent";
 import Geometry from "../Geometry/Geometry";
+import IRenderable from "../SceneRenderer/IRenderable";
 interface IMaterialArgument {
   indexGroup: string;
   geometry: Geometry;
