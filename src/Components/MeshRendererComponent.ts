@@ -19,23 +19,8 @@ const { vec3 } = GLM;
 export default class MeshRenderer extends Component implements IRenderable {
 
   /**
- * Find scene tag recursively.
- * @param  {GomlNode}       node [the node to searching currently]
- * @return {SceneComponent}      [the scene component found]
- */
-  private static _findContainedScene(node: GomlNode): SceneComponent {
-    if (node.parent) {
-      const scene = node.parent.getComponent(SceneComponent);
-      if (scene) {
-        return scene;
-      } else {
-        return MeshRenderer._findContainedScene(node.parent);
-      }
-    } else {
-      return null;
-    }
-  }
-
+   * no document
+   */
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * 描画に用いる形状データ
@@ -78,6 +63,24 @@ export default class MeshRenderer extends Component implements IRenderable {
     },
   };
 
+  /**
+   * Find scene tag recursively.
+   * @param  {GomlNode}       node [the node to searching currently]
+   * @return {SceneComponent}      [the scene component found]
+   */
+  private static _findContainedScene(node: GomlNode): SceneComponent {
+    if (node.parent) {
+      const scene = node.parent.getComponent(SceneComponent);
+      if (scene) {
+        return scene;
+      } else {
+        return MeshRenderer._findContainedScene(node.parent);
+      }
+    } else {
+      return null;
+    }
+  }
+
   public index: number;
   public renderArgs: { [key: string]: any } = {};
   public geometry: Promise<Geometry>;
@@ -99,24 +102,6 @@ export default class MeshRenderer extends Component implements IRenderable {
     vec3.add(this._priortyCalcCache, camera.transform.globalPosition.rawElements, this.geometryInstance.aabb.Center.rawElements);
     vec3.sub(this._priortyCalcCache, this._priortyCalcCache, this._transformComponent.globalPosition.rawElements);
     return this._materialContainer.getDrawPriorty(vec3.sqrLen(this._priortyCalcCache), technique); // Obtains distance between camera and center of aabb
-  }
-
-  public $awake(): void {
-    this.__bindAttributes();
-    this.getAttributeRaw("geometry").watch(async () => {
-      this.geometryInstance = await this.geometry;
-    }, true);
-  }
-
-  public $mount(): void {
-    this._transformComponent = this.node.getComponent(TransformComponent);
-    this._materialContainer = this.node.getComponent(MaterialContainerComponent);
-    this._containedScene = MeshRenderer._findContainedScene(this.node);
-    this._containedScene.queueRegistory.addRenderable(this);
-  }
-
-  public $unmount(): void {
-    this._containedScene.queueRegistory.removeRenderable(this);
   }
 
   public render(args: IRenderArgument): void {
@@ -145,5 +130,23 @@ export default class MeshRenderer extends Component implements IRenderable {
 
   public setRenderableIndex(index: number): void {
     this.index = index;
+  }
+
+  protected $awake(): void {
+    this.__bindAttributes();
+    this.getAttributeRaw("geometry").watch(async() => {
+      this.geometryInstance = await this.geometry;
+    }, true);
+  }
+
+  protected $mount(): void {
+    this._transformComponent = this.node.getComponent(TransformComponent);
+    this._materialContainer = this.node.getComponent(MaterialContainerComponent);
+    this._containedScene = MeshRenderer._findContainedScene(this.node);
+    this._containedScene.queueRegistory.addRenderable(this);
+  }
+
+  protected $unmount(): void {
+    this._containedScene.queueRegistory.removeRenderable(this);
   }
 }

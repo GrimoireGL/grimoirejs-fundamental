@@ -25,7 +25,14 @@ const primitiveLayout = {
   },
 };
 
+/**
+ * no document
+ */
 export default class DefaultPrimitives {
+
+  /**
+   * no document
+   */
   public static register(): void {
     DefaultPrimitives._registerQuad();
     DefaultPrimitives._registerCube();
@@ -107,7 +114,7 @@ export default class DefaultPrimitives {
         default: 50,
       },
     }, (gl, attrs) => {
-      const div = attrs["divide"];
+      const div = attrs["divide"] as number;
       const geometry = new Geometry(gl);
       const theta = div % 2 !== 0 ? Math.PI / div : 0;
       const vertices = [].concat.apply([], [
@@ -151,8 +158,8 @@ export default class DefaultPrimitives {
         default: 1,
       },
     }, (gl, attrs) => {
-      const hdiv = attrs["divHorizontal"];
-      const vdiv = attrs["divVertical"];
+      const hdiv = attrs["divHorizontal"] as number;
+      const vdiv = attrs["divVertical"] as number;
       const geometry = new Geometry(gl);
       const vertices = [].concat.apply([], [
         GeometryUtility.plane([0, 0, 1], [0, 0, 1], [0, 1, 0], [1, 0, 0], hdiv, vdiv),

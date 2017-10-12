@@ -1,6 +1,6 @@
-import Namespace from "grimoirejs/ref/Core/Namespace";
-import gr from "grimoirejs/ref/Core/GrimoireInterface";
 import Component from "grimoirejs/ref/Core/Component";
+import gr from "grimoirejs/ref/Core/GrimoireInterface";
+import Namespace from "grimoirejs/ref/Core/Namespace";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import CanvasSizeObject from "../Objects/CanvasSizeObject";
 import GLExtRequestor from "../Resource/GLExtRequestor";
@@ -87,7 +87,7 @@ export default class CanvasInitializerComponent extends Component {
   // Ratio of aspect
   private _ratio: number;
 
-  public $awake(): void {
+  protected $awake(): void {
     this._scriptTag = this.companion.get("scriptElement");
     if (this._isContainedInBody(this._scriptTag)) {
       // canvas should be placed siblings of the script tag

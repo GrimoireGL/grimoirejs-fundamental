@@ -2,7 +2,7 @@ import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import IResizeViewportMessage from "../Messages/IResizeViewportMessage";
-import ViewportMouseEvent from "../Objects/ViewportMouseEvent";
+import IViewportMouseEvent from "../Objects/ViewportMouseEvent";
 import CanvasRegionRenderingTarget from "../Resource/RenderingTarget/CanvasRegionRenderingTarget";
 import RenderingTargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
 import Viewport from "../Resource/Viewport";
@@ -63,7 +63,7 @@ export default class RendererComponent extends Component {
 
   private _wasInside = false;
 
-  public $awake(): void {
+  protected $awake(): void {
     // initializing attributes
     this.getAttributeRaw("camera").bindTo("camera");
     this.getAttributeRaw("viewport").watch((v) => {
@@ -82,7 +82,7 @@ export default class RendererComponent extends Component {
     this._initializeMouseHandlers();
   }
 
-  public $mount(): void {
+  protected $mount(): void {
     this._gl = this.companion.get("gl") as WebGLRenderingContext;
     this._canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
     this.getAttributeRaw("handleMouse").watch(a => {
@@ -98,16 +98,16 @@ export default class RendererComponent extends Component {
     this.$resizeCanvas();
   }
 
-  public $unmount(): void {
+  protected $unmount(): void {
     this._disableMouseHandling();
   }
 
-  public $treeInitialized(): void {
+  protected $treeInitialized(): void {
     // This should be called after mounting all of tree nodes in children
     this.$resizeCanvas();
   }
 
-  public $resizeCanvas(): void {
+  protected $resizeCanvas(): void {
     this._viewportCache = this._viewportSizeGenerator(this._canvas);
     this.renderingTarget.setViewport(this._viewportCache);
     const pow2Size = TextureSizeCalculator.getPow2Size(this._viewportCache.Width, this._viewportCache.Height);
@@ -119,7 +119,7 @@ export default class RendererComponent extends Component {
     } as IResizeViewportMessage);
   }
 
-  public $renderViewport(args: { timer: Timer }): void {
+  protected $renderViewport(args: { timer: Timer }): void {
     this.node.broadcastMessage("render", {
       camera: this.camera,
       viewport: this._viewportCache,
@@ -217,9 +217,9 @@ export default class RendererComponent extends Component {
   /**
    * Convert mouse args into viewport mouse event
    * @param  {MouseEvent}         e [description]
-   * @return {ViewportMouseEvent}   [description]
+   * @return {IViewportMouseEvent}   [description]
    */
-  private _toViewportMouseArgs(e: MouseEvent): ViewportMouseEvent {
+  private _toViewportMouseArgs(e: MouseEvent): IViewportMouseEvent {
     const ro = this._getRelativePosition(e);
     const r = this._viewportCache.toLocal(ro[0], ro[1]);
     const n = this._viewportCache.toLocalNormalized(ro[0], ro[1]);
@@ -233,7 +233,7 @@ export default class RendererComponent extends Component {
       canvasY: ro[1],
       canvasNormalizedX: ro[0] / ro[2],
       canvasNormalizedY: ro[1] / ro[3],
-      inside: this._isViewportInside(e)
+      inside: this._isViewportInside(e),
     };
   }
 }

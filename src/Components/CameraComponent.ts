@@ -88,6 +88,24 @@ export default class CameraComponent extends Component {
   private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
   private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
 
+  /**
+   * Find scene tag recursively.
+   * @param  {GomlNode}       node [the node to searching currently]
+   * @return {SceneComponent}      [the scene component found]
+   */
+  private static _findContainedScene(node: GomlNode): SceneComponent {
+    if (node.parent) {
+      const scene = node.parent.getComponent(SceneComponent);
+      if (scene) {
+        return scene;
+      } else {
+        return CameraComponent._findContainedScene(node.parent);
+      }
+    } else {
+      return null;
+    }
+  }
+
   public containedScene: SceneComponent;
 
   public transform: TransformComponent;
@@ -184,59 +202,6 @@ export default class CameraComponent extends Component {
   }
 
   /**
- * Find scene tag recursively.
- * @param  {GomlNode}       node [the node to searching currently]
- * @return {SceneComponent}      [the scene component found]
- */
-  private static _findContainedScene(node: GomlNode): SceneComponent {
-    if (node.parent) {
-      const scene = node.parent.getComponent(SceneComponent);
-      if (scene) {
-        return scene;
-      } else {
-        return CameraComponent._findContainedScene(node.parent);
-      }
-    } else {
-      return null;
-    }
-  }
-
-  public $awake(): void {
-    this.getAttributeRaw("far").watch((v) => {
-      this.Far = v;
-    }, true);
-    this.getAttributeRaw("near").watch((v) => {
-      this.Near = v;
-    }, true);
-    this.getAttributeRaw("fovy").watch((v) => {
-      this.Fovy = v;
-    }, true);
-    this.getAttributeRaw("aspect").watch((v) => {
-      this.Aspect = v;
-    }, true);
-    this.getAttributeRaw("orthoSize").watch((v) => {
-      this.OrthoSize = v;
-    }, true);
-    this.getAttributeRaw("orthogonal").watch((v) => {
-      this.OrthographicMode = v;
-    }, true);
-    this.getAttributeRaw("autoAspect").bindTo("_autoAspect");
-  }
-
-  public $mount(): void {
-    this.transform = this.node.getComponent(TransformComponent);
-    this.containedScene = CameraComponent._findContainedScene(this.node);
-    this.containedScene.queueRegistory.registerQueue(this._renderQueue);
-    this.node.on("transformUpdated", this.updateTransform.bind(this));
-    this.updateTransform();
-  }
-
-  public $unmount(): void {
-    this.containedScene.queueRegistory.unregisterQueue(this._renderQueue);
-    this.containedScene = null;
-  }
-
-  /**
    * Convert global position of transoform to viewport relative position.
    * @param  {TransformComponent} transform The transform to convert position
    * @return {Vector3}                      Viewport relative position
@@ -280,6 +245,41 @@ export default class CameraComponent extends Component {
     vec4.transformMat4(this._upCache.rawElements, CameraComponent._upOrigin.rawElements, transform.globalTransform.rawElements);
     mat4.lookAt(this.__viewMatrix.rawElements, this._eyeCache.rawElements, this._lookAtCache.rawElements, this._upCache.rawElements);
     mat4.mul(this.__projectionViewMatrix.rawElements, this.__projectionMatrix.rawElements, this.__viewMatrix.rawElements);
+  }
+
+  protected $awake(): void {
+    this.getAttributeRaw("far").watch((v) => {
+      this.Far = v;
+    }, true);
+    this.getAttributeRaw("near").watch((v) => {
+      this.Near = v;
+    }, true);
+    this.getAttributeRaw("fovy").watch((v) => {
+      this.Fovy = v;
+    }, true);
+    this.getAttributeRaw("aspect").watch((v) => {
+      this.Aspect = v;
+    }, true);
+    this.getAttributeRaw("orthoSize").watch((v) => {
+      this.OrthoSize = v;
+    }, true);
+    this.getAttributeRaw("orthogonal").watch((v) => {
+      this.OrthographicMode = v;
+    }, true);
+    this.getAttributeRaw("autoAspect").bindTo("_autoAspect");
+  }
+
+  protected $mount(): void {
+    this.transform = this.node.getComponent(TransformComponent);
+    this.containedScene = CameraComponent._findContainedScene(this.node);
+    this.containedScene.queueRegistory.registerQueue(this._renderQueue);
+    this.node.on("transformUpdated", this.updateTransform.bind(this));
+    this.updateTransform();
+  }
+
+  protected $unmount(): void {
+    this.containedScene.queueRegistory.unregisterQueue(this._renderQueue);
+    this.containedScene = null;
   }
 
   private _justifyAspect(args: IRenderArgument): void {

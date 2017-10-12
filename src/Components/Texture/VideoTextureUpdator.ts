@@ -1,7 +1,15 @@
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import VideoResolver from "../../Asset/VideoResolver";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
+
+/**
+ * no document
+ */
 export default class VideoTextureUpdatorComponent extends TextureUpdatorComponentBase {
+
+  /**
+   * no document
+   */
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     src: {
       converter: "String",
@@ -25,23 +33,50 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
     },
   };
 
+  /**
+   * no document
+   */
   public flipY: boolean;
 
+  /**
+   * no document
+   */
   public premultipliedAlpha: boolean;
 
+  /**
+   * no document
+   */
   public src: string;
 
+  /**
+   * no document
+   */
   public video: HTMLVideoElement;
 
+  /**
+   * no document
+   */
   public currentTime: number;
 
+  /**
+   * no document
+   */
   public muted: boolean;
 
+  /**
+   * no document
+   */
   public playbackRate: number;
 
+  /**
+   * no document
+   */
   public loop: boolean;
 
-  public $awake() {
+  /**
+   * no document
+   */
+  protected $awake() {
     super.$awake();
     this.__bindAttributes();
     this.getAttributeRaw("src").watch((v: string) => {

@@ -28,7 +28,7 @@ export default class ResizableResourceUpdator extends BasicComponent {
     throw new Error("Invalid calling of resize function. This should be overrided in extended classes.");
   }
 
-  public $awake(): void {
+  protected $awake(): void {
     const resizer = this.node.getComponent(ResourceResizerComponent);
     if (!resizer) {
       const resizerType = this.getAttribute("resizerType");

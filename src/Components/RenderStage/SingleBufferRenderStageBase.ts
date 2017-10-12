@@ -3,7 +3,13 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
 import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
 import RenderStageBase from "./RenderStageBase";
 
+/**
+ * no document
+ */
 export default class SingleBufferRenderStageBase extends RenderStageBase {
+  /**
+   * no document
+   */
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     out: {
       converter: "RenderingTarget",
@@ -27,26 +33,44 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
     },
   };
 
+  /**
+   * no document
+   */
   public clearColor: Color4;
 
+  /**
+   * no document
+   */
   public clearColorEnabled: boolean;
 
+  /**
+   * no document
+   */
   public clearDepth: number;
 
+  /**
+   * no document
+   */
   public clearDepthEnabled: boolean;
 
+  /**
+   * no document
+   */
   public _out: Promise<IRenderingTarget>;
 
+  /**
+   * no document
+   */
   public out: IRenderingTarget;
 
-  public $awake(): void {
+  protected $awake(): void {
     this.getAttributeRaw("clearColor").bindTo("clearColor");
     this.getAttributeRaw("clearColorEnabled").bindTo("clearColorEnabled");
     this.getAttributeRaw("clearDepthEnabled").bindTo("clearDepthEnabled");
     this.getAttributeRaw("clearDepth").bindTo("clearDepth");
-    this.getAttributeRaw("out").watch((promise: Promise<IRenderingTarget>) => {
+    this.getAttributeRaw("out").watch(async(promise: Promise<IRenderingTarget>) => {
       this._out = promise;
-      promise.then(r => this.out = r);
+      this.out = await promise;
     }, true);
   }
 

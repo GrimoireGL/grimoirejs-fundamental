@@ -20,7 +20,7 @@ export default class RendererManagerComponent extends Component {
      * キャンバスの初期化深度値
      */
     clearDepth: {
-      default: 1.0,
+      default: 1,
       converter: "Number",
     },
     /**
@@ -40,23 +40,6 @@ export default class RendererManagerComponent extends Component {
 
   private _clearDepth: number;
 
-  public $awake(): void {
-    this.getAttributeRaw("bgColor").bindTo("_bgColor");
-    this.getAttributeRaw("clearDepth").bindTo("_clearDepth");
-  }
-
-  public $mount(): void {
-    this.gl = this.companion.get("gl");
-  }
-
-  public $treeInitialized(): void {
-    this.node.getComponent(LoopManagerComponent).register(this.onloop.bind(this), 1000);
-    if (this.getAttribute("complementRenderer") && this.node.getChildrenByNodeName("renderer").length === 0) {
-      this.node.addChildByName("renderer", {});
-    }
-    this._importSortFromHTML();
-  }
-
   public onloop(timer: Timer): void {
     if (this.enabled) {
       const c: Color4 = this._bgColor;
@@ -67,6 +50,23 @@ export default class RendererManagerComponent extends Component {
         timer,
       });
     }
+  }
+
+  protected $awake(): void {
+    this.getAttributeRaw("bgColor").bindTo("_bgColor");
+    this.getAttributeRaw("clearDepth").bindTo("_clearDepth");
+  }
+
+  protected $mount(): void {
+    this.gl = this.companion.get("gl");
+  }
+
+  protected $treeInitialized(): void {
+    this.node.getComponent(LoopManagerComponent).register(this.onloop.bind(this), 1000);
+    if (this.getAttribute("complementRenderer") && this.node.getChildrenByNodeName("renderer").length === 0) {
+      this.node.addChildByName("renderer", {});
+    }
+    this._importSortFromHTML();
   }
 
   private _importSortFromHTML(): void {

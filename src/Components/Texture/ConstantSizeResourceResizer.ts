@@ -14,7 +14,7 @@ export default class ConstantSizeResourceResizer extends ResourceResizerComponen
     },
   };
 
-  public $mount(): void {
+  protected $mount(): void {
     this.getAttributeRaw("resolution").watch(n => {
       const res = n as Vector2;
       this.__resizeResources(res.X, res.Y);

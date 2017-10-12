@@ -45,7 +45,7 @@ export default class TextureContainer extends Component {
 
   public texture: Texture2D;
 
-  public $mount(): void {
+  protected $mount(): void {
     this.texture = new Texture2D(this.companion.get("gl"));
     this.texture.magFilter = this.getAttribute("magFilter");
     this.texture.minFilter = this.getAttribute("minFilter");
@@ -57,7 +57,7 @@ export default class TextureContainer extends Component {
     this.getAttributeRaw("wrapT").watch(v => this.texture.wrapT = v);
   }
 
-  public $unmount(): void {
+  protected $unmount(): void {
     this.texture.destroy();
     this.texture = null;
   }

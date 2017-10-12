@@ -21,19 +21,19 @@ export default class GeometryRegistoryComponent extends Component {
 
   private _geometryResolver: NameResolver<Geometry> = new NameResolver<Geometry>();
 
-  public $awake(): void {
+  public async addGeometry(name: string, geometry: Promise<Geometry> | Geometry): Promise<void> {
+    await this._geometryResolver.register(name, geometry);
+  }
+
+  public async getGeometry(name: string): Promise<Geometry> {
+    return this._geometryResolver.get(name);
+  }
+
+  protected $awake(): void {
     this.companion.set(this.name, this);
     const factory = GeometryFactory.get(this.companion.get("gl"));
     for (const geometry of this.getAttribute("defaultGeometry") as string[]) {
       this.addGeometry(geometry, factory.instanciateAsDefault(geometry));
     }
-  }
-
-  public addGeometry(name: string, geometry: Promise<Geometry> | Geometry): void {
-    this._geometryResolver.register(name, geometry);
-  }
-
-  public getGeometry(name: string): Promise<Geometry> {
-    return this._geometryResolver.get(name);
   }
 }

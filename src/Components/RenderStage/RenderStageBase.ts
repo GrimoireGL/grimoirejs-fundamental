@@ -1,12 +1,22 @@
 import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import ViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
-import ViewportMouseEvent from "../../Objects/ViewportMouseEvent";
+import IViewportMouseEvent from "../../Objects/ViewportMouseEvent";
+
+/**
+ * no document
+ */
 export default class RenderStageBase extends Component {
+  /**
+   * no document
+   */
   public static attributes: { [key: string]: IAttributeDeclaration } = {
 
   };
 
+  /**
+   * no document
+   */
   public rendererDescription: { [key: string]: any } = {
     mouse: {
       coords: {
@@ -21,27 +31,27 @@ export default class RenderStageBase extends Component {
     } as ViewportBaseMouseState,
   };
 
-  public $mousemove(v: ViewportMouseEvent): void {
+  protected $mousemove(v: IViewportMouseEvent): void {
     this._assignMouseState(v);
   }
 
-  public $mouseenter(v: ViewportMouseEvent): void {
+  protected $mouseenter(v: IViewportMouseEvent): void {
     this._assignMouseState(v);
   }
 
-  public $mouseleave(v: ViewportMouseEvent): void {
+  protected $mouseleave(v: IViewportMouseEvent): void {
     this._assignMouseState(v);
   }
 
-  public $mousedown(v: ViewportMouseEvent): void {
+  protected $mousedown(v: IViewportMouseEvent): void {
     this._assignMouseState(v);
   }
 
-  public $mouseup(v: ViewportMouseEvent): void {
+  protected $mouseup(v: IViewportMouseEvent): void {
     this._assignMouseState(v);
   }
 
-  private _assignMouseState(v: ViewportMouseEvent): void {
+  private _assignMouseState(v: IViewportMouseEvent): void {
     const mouseDesc: ViewportBaseMouseState = this.rendererDescription["mouse"];
     mouseDesc.inside = v.inside;
     mouseDesc.coords["viewport"] = [v.viewportX, v.viewportY];
@@ -52,11 +62,11 @@ export default class RenderStageBase extends Component {
     mouseDesc.right = this._isRightButtonPressed(v);
   }
 
-  private _isLeftButtonPressed(v: ViewportMouseEvent): boolean {
+  private _isLeftButtonPressed(v: IViewportMouseEvent): boolean {
     return v.buttons === 1 || (v.buttons === void 0 && v.which === 1);
   }
 
-  private _isRightButtonPressed(v: ViewportMouseEvent): boolean {
+  private _isRightButtonPressed(v: IViewportMouseEvent): boolean {
     return v.buttons === 2 || (v.buttons === void 0 && v.which === 3);
   }
 }

@@ -3,7 +3,13 @@ import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import CameraComponent from "../CameraComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
 
+/**
+ * no document
+ */
 export default class RenderSceneComponent extends SingleBufferRenderStageBase {
+  /**
+   * no document
+   */
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     layer: {
       converter: "String",
@@ -20,28 +26,37 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
     },
   };
 
+  /**
+   * no document
+   */
   public layer: string;
 
+  /**
+   * no document
+   */
   public camera: CameraComponent;
 
+  /**
+   * no document
+   */
   public technique: string;
 
   private _gl: WebGLRenderingContext;
 
   // messages
 
-  public $awake(): void {
+  protected $awake(): void {
     super.$awake();
     this.getAttributeRaw("layer").bindTo("layer");
     this.getAttributeRaw("camera").bindTo("_camera");
     this.getAttributeRaw("technique").bindTo("technique");
   }
 
-  public $mount(): void {
+  protected $mount(): void {
     this._gl = this.companion.get("gl");
   }
 
-  public $render(args: IRenderRendererMessage): void {
+  protected $render(args: IRenderRendererMessage): void {
     const camera = this.camera ? this.camera : args.camera;
     if (!camera) {
       return;

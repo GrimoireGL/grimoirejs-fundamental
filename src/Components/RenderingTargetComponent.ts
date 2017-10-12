@@ -58,7 +58,7 @@ export default class RenderingTargetComponent extends Component {
 
   public renderingTarget: OffscreenRenderingTarget;
 
-  public $mount(): void {
+  protected $mount(): void {
     const name = this.getAttribute("name");
     if (!name) {
       throw new Error("Rendering target must have name");

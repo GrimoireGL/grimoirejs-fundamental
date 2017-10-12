@@ -162,7 +162,7 @@ export default class TransformComponent extends Component {
     return this._cacheVM;
   }
 
-  public $awake(): void {
+  protected $awake(): void {
     // register observers
     this.getAttributeRaw("position").watch((v) => {
       this.notifyUpdateTransform();
@@ -177,7 +177,7 @@ export default class TransformComponent extends Component {
     this.__bindAttributes();
   }
 
-  public $mount(): void {
+  protected $mount(): void {
     this._parentTransform = this.node.parent.getComponent(TransformComponent);
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
@@ -185,7 +185,7 @@ export default class TransformComponent extends Component {
     this._updateTransform();
   }
 
-  public $unmount(): void {
+  protected $unmount(): void {
     if (this._parentTransform) {
       this._parentTransform._children.splice(this._parentTransform._children.indexOf(this), 1);
       this._parentTransform = null;

@@ -5,7 +5,14 @@ import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import GeometryRegistoryComponent from "../GeometryRegistoryComponent";
 import MaterialContainerComponent from "../MaterialContainerComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
+
+/**
+ * no document
+ */
 export default class RenderQuadComponent extends SingleBufferRenderStageBase {
+  /**
+   * no document
+   */
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     indexGroup: {
       default: "default",
@@ -17,8 +24,14 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
     },
   };
 
+  /**
+   * no document
+   */
   public technique: string;
 
+  /**
+   * no document
+   */
   private indexGroup: string;
 
   private _gl: WebGLRenderingContext;
@@ -27,20 +40,20 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
 
   private _materialContainer: MaterialContainerComponent;
 
-  public $awake(): void {
+  protected $awake(): void {
     super.$awake();
     this.getAttributeRaw("indexGroup").bindTo("indexGroup");
     this.getAttributeRaw("technique").bindTo("technique");
   }
 
-  public async $mount(): Promise<void> {
+  protected async $mount(): Promise<void> {
     this._gl = this.companion.get("gl");
     this._materialContainer = this.node.getComponent(MaterialContainerComponent);
     const geometryRegistry = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
     this._geom = await geometryRegistry.getGeometry("quad");
   }
 
-  public $render(args: IRenderRendererMessage): void {
+  protected $render(args: IRenderRendererMessage): void {
     if (!this._materialContainer.materialReady || !this._geom) {
       return;
     }

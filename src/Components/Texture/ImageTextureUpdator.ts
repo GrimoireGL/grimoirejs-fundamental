@@ -2,7 +2,14 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
 import ImageResolver from "../../Asset/ImageResolver";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
 
+/**
+ * no document
+ */
 export default class ImageTextureUpdator extends TextureUpdatorComponentBase {
+
+  /**
+   * no document
+   */
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     src: {
       converter: "String",
@@ -10,13 +17,25 @@ export default class ImageTextureUpdator extends TextureUpdatorComponentBase {
     },
   };
 
+  /**
+   * no document
+   */
   public flipY: boolean;
 
+  /**
+   * no document
+   */
   public premultipliedAlpha: boolean;
 
+  /**
+   * no document
+   */
   public src: string;
 
-  public $awake() {
+  /**
+   * no document
+   */
+  protected $awake() {
     super.$awake();
     this.__bindAttributes();
     this.getAttributeRaw("src").watch((v: string) => {

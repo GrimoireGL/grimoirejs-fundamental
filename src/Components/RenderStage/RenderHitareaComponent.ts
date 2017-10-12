@@ -2,7 +2,7 @@ import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import IResizeViewportMessage from "../../Messages/IResizeViewportMessage";
-import ViewportMouseEvent from "../../Objects/ViewportMouseEvent";
+import IViewportMouseEvent from "../../Objects/ViewportMouseEvent";
 import Framebuffer from "../../Resource/FrameBuffer";
 import RenderBuffer from "../../Resource/RenderBuffer";
 import Texture2D from "../../Resource/Texture2D";
@@ -13,14 +13,31 @@ import TextureSizeCalculator from "../../Util/TextureSizeCalculator";
 import CameraComponent from "../CameraComponent";
 import RenderSceneComponent from "../RenderStage/RenderSceneComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
+
+/**
+ * no document
+ */
 export default class RenderHitareaComponent extends SingleBufferRenderStageBase {
+
+  /**
+   * no document
+   */
   public static attributes: { [key: string]: IAttributeDeclaration } = {
 
   };
+  /**
+   * no document
+   */
   public hitareaTexture: Texture2D;
 
+  /**
+   * no document
+   */
   public hitareaRenderbuffer: RenderBuffer;
 
+  /**
+   * no document
+   */
   public hitareaFBO: Framebuffer;
 
   private _sceneRenderer: RenderSceneComponent;
@@ -41,7 +58,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
 
   private _mouseMoved: boolean;
 
-  public $mount(): void {
+  protected $mount(): void {
     this._sceneRenderer = this.node.getComponent(RenderSceneComponent);
     if (!this._sceneRenderer) {
       throw new Error("The node attaching RenderHitArea should contain RenderScene.");
@@ -56,7 +73,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     }
   }
 
-  public $resizeViewport(args: IResizeViewportMessage): void {
+  protected $resizeViewport(args: IResizeViewportMessage): void {
     const size = TextureSizeCalculator.getPow2Size(args.width, args.height);
     this._bufferViewport = new Viewport(0, 0, size.width, size.height);
     this.hitareaTexture.update(0, size.width, size.height, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE);
@@ -68,7 +85,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     }
   }
 
-  public $render(args: IRenderRendererMessage): void {
+  protected $render(args: IRenderRendererMessage): void {
     if (!this._mouseInside) {
       return;
     }
@@ -103,18 +120,18 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
   }
 
-  public $mousemove(v: ViewportMouseEvent): void {
+  protected $mousemove(v: IViewportMouseEvent): void {
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
   }
 
-  public $mouseenter(v: ViewportMouseEvent): void {
+  protected $mouseenter(v: IViewportMouseEvent): void {
     this._mouseInside = true;
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
   }
 
-  public $mouseleave(v: ViewportMouseEvent): void {
+  protected $mouseleave(v: IViewportMouseEvent): void {
     this._mouseInside = false;
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;

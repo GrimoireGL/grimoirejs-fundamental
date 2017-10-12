@@ -11,6 +11,7 @@ import MaterialContainerBase from "./MaterialContainerBase";
  * 指定されたマテリアルの初期化の管理や、マテリアルによって動的に追加される属性の管理を行います、
  */
 export default class MaterialContainerComponent extends MaterialContainerBase {
+
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * 対象のマテリアル
@@ -34,6 +35,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
       default: true,
     },
   };
+  private static _defaultMaterial = "unlit";
 
   public static rewriteDefaultMaterial(materialName: string): void {
     if (materialName !== MaterialContainerComponent._defaultMaterial) {
@@ -46,7 +48,21 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
     return this._defaultMaterial;
   }
 
-  private static _defaultMaterial = "unlit";
+  public material: Material;
+
+  public materialArgs: { [key: string]: any; } = {};
+
+  public materialReady = false;
+
+  public useMaterial = false;
+
+  private _materialComponent: MaterialComponent;
+
+  private _drawOrder: string;
+
+  private _registeredAttributes: boolean;
+
+  private _transparent: boolean;
 
   public getDrawPriorty(depth: number, technique: string): number {
     if (!this.materialReady && !this.isActive) { // If material was not ready
@@ -66,29 +82,13 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
       throw new Error(`Specified drawing order "${this.material.techniques[technique].drawOrder}" is not defined`);
     }
     if (orderCriteria.descending) {
-      return (1.0 - depth / 10000) * orderCriteria.priorty;
+      return (1 - depth / 10000) * orderCriteria.priorty;
     } else {
       return depth / 10000 * orderCriteria.priorty;
     }
   }
 
-  public material: Material;
-
-  public materialArgs: { [key: string]: any; } = {};
-
-  public materialReady = false;
-
-  public useMaterial = false;
-
-  private _materialComponent: MaterialComponent;
-
-  private _drawOrder: string;
-
-  private _registeredAttributes: boolean;
-
-  private _transparent: boolean;
-
-  public $mount(): void {
+  protected $mount(): void {
     this.getAttributeRaw("material").watch(this._onMaterialChanged.bind(this));
     this.__registerAssetLoading(this._onMaterialChanged());
     this.getAttributeRaw("drawOrder").bindTo("_drawOrder");

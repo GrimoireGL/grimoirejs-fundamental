@@ -75,7 +75,9 @@ basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: Textur
   }
   proxy.uniformTexture2D(name, texture);
 }, (v, p, n, o) => {
-  if (v.attributes["flag"] === void 0) return;
+  if (v.attributes["flag"] === void 0) {
+    return;
+  }
   let used = false;
   if (n) {
     if (n.isFunctionalProxy) {

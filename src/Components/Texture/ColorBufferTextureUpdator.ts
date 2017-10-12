@@ -1,7 +1,15 @@
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import RenderingBufferResourceRegistry from "../../Resource/RenderingTarget/RenderingBufferResourceRegistry";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
+
+/**
+ * no document
+ */
 export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBase {
+
+  /**
+   * no document
+   */
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
       converter: "String",
@@ -37,7 +45,18 @@ export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBa
     },
   };
 
-  public $awake(): void {
+  /**
+   * no document
+   * @param width
+   * @param height
+   */
+  public resize(width: number, height: number): void {
+    const format = this.getAttribute("format");
+    const type = this.getAttribute("type");
+    this.__texture.update(0, width, height, 0, format, type, null);
+  }
+
+  protected $awake(): void {
     super.$awake();
     const name = this.getAttribute("name");
     const format = this.getAttribute("format");
@@ -46,11 +65,5 @@ export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBa
       RenderingBufferResourceRegistry.get(this.companion.get("gl")).setBackbuffer(this.getAttribute("name"), this.__texture);
     }
     this.__texture.update(0, 1, 1, 0, format, type, null);
-  }
-
-  public resize(width: number, height: number): void {
-    const format = this.getAttribute("format");
-    const type = this.getAttribute("type");
-    this.__texture.update(0, width, height, 0, format, type, null);
   }
 }

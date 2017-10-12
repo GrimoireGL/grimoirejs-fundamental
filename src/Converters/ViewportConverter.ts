@@ -20,9 +20,9 @@ export default function ViewportConverter(val: any): any {
   if (val instanceof Rectangle) {
     const vp = new Viewport(val.Left, val.Bottom, val.Width, val.Height);
     return () => vp;
-  }else if (val instanceof Viewport){
+  } else if (val instanceof Viewport) {
     return () => val;
-  }else if (typeof val === "string") {
+  } else if (typeof val === "string") {
     if (val === "auto") {
       return (canvas: HTMLCanvasElement) => new Viewport(0, 0, canvas.width, canvas.height);
     } else {

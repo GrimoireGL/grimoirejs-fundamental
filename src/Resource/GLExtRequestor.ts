@@ -9,9 +9,6 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
 
   public static registryName = "GLExtensionRequestor";
 
-  public static get(gl: WebGLRenderingContext): GLExtRequestor {
-    return this.__get(gl, GLExtRequestor);
-  }
   /**
    * Some of extensions needed to override resolving extensions by this.
    */
@@ -25,10 +22,9 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
    */
   private static _requestedExtensions: ExtensionRequest[] = [];
 
-  public extensions: { [key: string]: any } = {};
-
-  private _readyExtensions: { [key: string]: boolean } = {};
-
+  public static get(gl: WebGLRenderingContext): GLExtRequestor {
+    return this.__get(gl, GLExtRequestor);
+  }
   /**
    * Check specified extension was supported on this device.
    * Note: This method would throw an exception if there was no WebGL context initialized yet.
@@ -43,7 +39,6 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
       return fg.extensions[extName] !== undefined && fg.extensions[extName] !== null;
     }
   }
-
   /**
    * Request extension to use.
    * @param {string} str [description]
@@ -70,6 +65,10 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
     }
     return -1;
   }
+
+  public extensions: { [key: string]: any } = {};
+
+  private _readyExtensions: { [key: string]: boolean } = {};
 
   constructor(public gl: WebGLRenderingContext) {
     super();

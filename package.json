@@ -56,8 +56,8 @@
   },
   "scripts": {
     "prepublish": "npm run build -- --env.prod",
-    "lint": "tslint --project ./ --type-check --exclude ./src/index.ts",
-    "lint:fix": "tslint --project ./ --fix --type-check --exclude ./src/index.ts",
+    "lint": "tslint -c tslint.json --project ./ --type-check --exclude ./src/index.ts",
+    "lint:fix": "tslint -c tslint.json --project ./ --type-check --exclude ./src/index.ts --fix",
     "start": "webpack --watch --progress",
     "test": "tsc --outDir ./lib && babel ./lib --presets es2015 --plugins transform-runtime --out-dir ./lib-es5 && babel ./test --presets es2015 --plugins transform-runtime --out-dir ./test-es5 && ava ./test-es5/**/*Test.js --verbose ",
     "bundle": "webpack --progress --watch",

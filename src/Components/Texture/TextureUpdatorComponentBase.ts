@@ -3,7 +3,14 @@ import Texture2D from "../../Resource/Texture2D";
 import ResizableResourceUpdator from "./ResizableResourceUpdator";
 import TextureContainer from "./TextureContainer";
 
+/**
+ * no document
+ */
 export default class TextureUpdatorComponentBase extends ResizableResourceUpdator {
+
+  /**
+   * no document
+   */
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     flipY: {
       converter: "Boolean",
@@ -20,7 +27,7 @@ export default class TextureUpdatorComponentBase extends ResizableResourceUpdato
     return this.textureComponent.texture;
   }
 
-  public $awake(): void {
+  protected $awake(): void {
     super.$awake();
     this.textureComponent = this.node.getComponent(TextureContainer);
   }

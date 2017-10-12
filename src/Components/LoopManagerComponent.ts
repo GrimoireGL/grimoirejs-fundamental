@@ -27,7 +27,7 @@ export default class LoopManagerComponent extends Component {
 
   private _timer: Timer;
 
-  public $awake(): void {
+  protected $awake(): void {
     this._registerNextLoop =
       window.requestAnimationFrame  // if window.requestAnimationFrame is defined or undefined
         ?
@@ -40,7 +40,7 @@ export default class LoopManagerComponent extends Component {
         };
   }
 
-  public $mount(): void {
+  protected $mount(): void {
     this.getAttributeRaw("loopEnabled").watch((attr) => {
       if (attr) {
         this._begin();

@@ -18,7 +18,7 @@ export default class MaterialComponent extends MaterialContainerBase {
 
   public materialArgs: { [key: string]: any } = {};
 
-  public $mount(): void {
+  protected $mount(): void {
     const typeName = this.getAttribute("type");
     if (typeName && typeof typeName === "string") {
       const materialFactory = MaterialFactory.get(this.companion.get("gl"));
