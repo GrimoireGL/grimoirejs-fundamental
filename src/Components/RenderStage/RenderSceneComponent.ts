@@ -1,4 +1,4 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import CameraComponent from "../CameraComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
@@ -32,9 +32,9 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
 
   public $awake(): void {
     super.$awake();
-    this.getAttributeRaw("layer").boundTo("layer");
-    this.getAttributeRaw("camera").boundTo("_camera");
-    this.getAttributeRaw("technique").boundTo("technique");
+    this.getAttributeRaw("layer").bindTo("layer");
+    this.getAttributeRaw("camera").bindTo("_camera");
+    this.getAttributeRaw("technique").bindTo("technique");
   }
 
   public $mount(): void {

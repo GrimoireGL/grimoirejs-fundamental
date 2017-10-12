@@ -1,4 +1,4 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import ImageResolver from "../../Asset/ImageResolver";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
 

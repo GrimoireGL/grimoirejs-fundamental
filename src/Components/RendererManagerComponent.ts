@@ -1,6 +1,6 @@
 import Color4 from "grimoirejs-math/ref/Color4";
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import MaterialFactory from "../Material/MaterialFactory";
 import Timer from "../Util/Timer";
 import LoopManagerComponent from "./LoopManagerComponent";
@@ -41,8 +41,8 @@ export default class RendererManagerComponent extends Component {
   private _clearDepth: number;
 
   public $awake(): void {
-    this.getAttributeRaw("bgColor").boundTo("_bgColor");
-    this.getAttributeRaw("clearDepth").boundTo("_clearDepth");
+    this.getAttributeRaw("bgColor").bindTo("_bgColor");
+    this.getAttributeRaw("clearDepth").bindTo("_clearDepth");
   }
 
   public $mount(): void {

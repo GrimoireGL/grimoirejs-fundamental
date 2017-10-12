@@ -1,7 +1,7 @@
-import Namespace from "grimoirejs/ref/Base/Namespace";
-import gr from "grimoirejs/ref/Interface/GrimoireInterface";
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Namespace from "grimoirejs/ref/Core/Namespace";
+import gr from "grimoirejs/ref/Core/GrimoireInterface";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import CanvasSizeObject from "../Objects/CanvasSizeObject";
 import GLExtRequestor from "../Resource/GLExtRequestor";
 import Texture2D from "../Resource/Texture2D";
@@ -250,7 +250,7 @@ export default class CanvasInitializerComponent extends Component {
   /**
    * Insert __id__property to be identify rendering contexts
    */
-  private _applyContextId(context: WebGLRenderingContext): WebGLRenderingContextWithId{
+  private _applyContextId(context: WebGLRenderingContext): WebGLRenderingContextWithId {
     const contextWithId = context as WebGLRenderingContextWithId;
     contextWithId.__id__ = Math.random().toString(36).slice(-6); // Generating random string
     return contextWithId;

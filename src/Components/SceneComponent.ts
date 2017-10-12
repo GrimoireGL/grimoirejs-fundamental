@@ -1,5 +1,5 @@
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import ISceneUpdateArgument from "../SceneRenderer/ISceneUpdateArgument";
 import RenderQueueRegistry from "../SceneRenderer/RenderQueueRegistry";
 import Timer from "../Util/Timer";

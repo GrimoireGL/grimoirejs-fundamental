@@ -1,4 +1,4 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import RenderingBufferResourceRegistry from "../../Resource/RenderingTarget/RenderingBufferResourceRegistry";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
 export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBase {

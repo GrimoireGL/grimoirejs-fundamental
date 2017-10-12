@@ -1,5 +1,5 @@
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import IResizeViewportMessage from "../Messages/IResizeViewportMessage";
 import ViewportMouseEvent from "../Objects/ViewportMouseEvent";
@@ -65,7 +65,7 @@ export default class RendererComponent extends Component {
 
   public $awake(): void {
     // initializing attributes
-    this.getAttributeRaw("camera").boundTo("camera");
+    this.getAttributeRaw("camera").bindTo("camera");
     this.getAttributeRaw("viewport").watch((v) => {
       this._viewportSizeGenerator = v;
       this.$resizeCanvas();
@@ -223,7 +223,8 @@ export default class RendererComponent extends Component {
     const ro = this._getRelativePosition(e);
     const r = this._viewportCache.toLocal(ro[0], ro[1]);
     const n = this._viewportCache.toLocalNormalized(ro[0], ro[1]);
-    return {...e,
+    return {
+      ...e,
       viewportX: r[0],
       viewportY: r[1],
       viewportNormalizedX: n[0],
@@ -232,6 +233,7 @@ export default class RendererComponent extends Component {
       canvasY: ro[1],
       canvasNormalizedX: ro[0] / ro[2],
       canvasNormalizedY: ro[1] / ro[3],
-      inside: this._isViewportInside(e)};
+      inside: this._isViewportInside(e)
+    };
   }
 }

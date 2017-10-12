@@ -3,10 +3,10 @@ import Matrix from "grimoirejs-math/ref/Matrix";
 import Quaternion from "grimoirejs-math/ref/Quaternion";
 import Vector3 from "grimoirejs-math/ref/Vector3";
 import Vector4 from "grimoirejs-math/ref/Vector4";
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import CameraComponent from "./CameraComponent";
-const {mat4, vec3, vec4} = GLM;
+const { mat4, vec3, vec4 } = GLM;
 /**
  * シーン中に存在する物体の変形を司るコンポーネント
  * このコンポーネントによって物体の座標や回転量、拡大料などが定義されます。
@@ -121,7 +121,7 @@ export default class TransformComponent extends Component {
   public get globalTransformInverse(): Matrix {
     if (!this._globalTransformInverse) {
       this._globalTransformInverse = Matrix.inverse(this.globalTransform);
-    }else {
+    } else {
       this._updateTransform();
     }
     return this._globalTransformInverse;
@@ -200,7 +200,7 @@ export default class TransformComponent extends Component {
   }
 
   public applyMatrix(mat: Matrix): void {
-    this.setAttribute("scale",  mat.getScaling());
+    this.setAttribute("scale", mat.getScaling());
     this.setAttribute("rotation", mat.getRotation());
     this.setAttribute("position", mat.getTranslation());
   }

@@ -1,4 +1,4 @@
-import Namespace from "grimoirejs/ref/Base/Namespace";
+import Namespace from "grimoirejs/ref/Core/Namespace";
 import Material from "../Material/Material";
 import BasicComponent from "./BasicComponent";
 

@@ -1,4 +1,4 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import VideoResolver from "../../Asset/VideoResolver";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
 export default class VideoTextureUpdatorComponent extends TextureUpdatorComponentBase {

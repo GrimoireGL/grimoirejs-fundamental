@@ -1,5 +1,5 @@
-import {Nullable} from "grimoirejs/ref/Base/Types";
-import Attribute from "grimoirejs/ref/Node/Attribute";
+import { Nullable } from "grimoirejs/ref/Tools/Types";
+import Attribute from "grimoirejs/ref/Core/Attribute";
 import ImageResolver from "../Asset/ImageResolver";
 import TextureContainer from "../Components/Texture/TextureContainer";
 import TextureReference from "../Material/TextureReference";
@@ -67,7 +67,7 @@ export default function TextureConverter(val: any, attr: Attribute): any {
       if (val.complete && val.naturalWidth) {
         tex.update(val);
       } else {
-        val.onload = function() {
+        val.onload = function () {
           tex.update(val);
         };
       }
