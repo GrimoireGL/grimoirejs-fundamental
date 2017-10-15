@@ -65,7 +65,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
   private _transparent: boolean;
 
   public getDrawPriorty(depth: number, technique: string): number {
-    if (!this.materialReady && !this.isActive) { // If material was not ready
+    if (!this.materialReady || !this.isActive) { // If material was not ready
       return Number.MAX_VALUE;
     }
     let orderCriteria;

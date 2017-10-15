@@ -22,8 +22,8 @@ class SortParser {
     }
   }
 
-  private static _parse(source: string): Promise<{ [key: string]: ITechniqueRecipe }> {
-    return new Promise((resolve, reject) => {
+  private static async _parse(source: string): Promise<{ [key: string]: ITechniqueRecipe }> {
+    return new Promise<{ [key: string]: ITechniqueRecipe }>((resolve, reject) => {
       const result: { [key: string]: ITechniqueRecipe; } = {};
       SortTransformUtility.resolveImports(SortTransformUtility.removeComment(source)).then(uncommented => {
         try {

@@ -1,9 +1,10 @@
 import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Timer from "../Util/Timer";
-interface LoopAction {
-  action(timer: Timer): void;
+
+interface ILoopAction {
   priorty: number;
+  action(timer: Timer): void;
 }
 
 /**
@@ -21,11 +22,19 @@ export default class LoopManagerComponent extends Component {
     },
   };
 
-  private _loopActions: LoopAction[] = [];
+  private _loopActions: ILoopAction[] = [];
 
   private _registerNextLoop: () => void;
 
   private _timer: Timer;
+
+  public register(action: (timer: Timer) => void, priorty: number): void {
+    this._loopActions.push({
+      action,
+      priorty,
+    });
+    this._loopActions.sort((a, b) => a.priorty - b.priorty);
+  }
 
   protected $awake(): void {
     this._registerNextLoop =
@@ -51,14 +60,6 @@ export default class LoopManagerComponent extends Component {
       this._timer.fpsRestriction = attr;
     }, true);
     this._timer.internalUpdate();
-  }
-
-  public register(action: (timer: Timer) => void, priorty: number): void {
-    this._loopActions.push({
-      action,
-      priorty,
-    });
-    this._loopActions.sort((a, b) => a.priorty - b.priorty);
   }
 
   private _begin(): void {
