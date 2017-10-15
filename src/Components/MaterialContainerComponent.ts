@@ -100,7 +100,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
    * When the material attribute is changed.
    */
   private async _onMaterialChanged(): Promise<void> {
-    const materialPromise = this.getAttribute("material") as Promise<Material>;
+    const materialPromise = this.getAttribute<Promise<Material>>("material");
     if (materialPromise === null) {
       this.useMaterial = false;
       return; // When specified material is null

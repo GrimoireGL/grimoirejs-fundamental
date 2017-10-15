@@ -2,6 +2,7 @@ import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import OffscreenRenderingTarget from "../Resource/RenderingTarget/OffscreenRenderingTarget";
 import RenderingTrargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
+import CanvasInitializerComponent from "./CanvasInitializerComponent";
 import RenderBufferUpdator from "./Texture/RenderBufferUpdator";
 import TextureContainer from "./Texture/TextureContainer";
 /**
@@ -71,8 +72,8 @@ export default class RenderingTargetComponent extends Component {
       const textures = this.node.getComponentsInChildren(TextureContainer);
       const texture = textures[0].texture;
       const renderBuffer = this.node.getComponentsInChildren(RenderBufferUpdator);
-      this.renderingTarget = new OffscreenRenderingTarget(this.companion.get("gl"), [texture], renderBuffer[0].buffer);
-      RenderingTrargetRegistry.get(this.companion.get("gl")).setRenderingTarget(name, this.renderingTarget);
+      this.renderingTarget = new OffscreenRenderingTarget(this.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL), [texture], renderBuffer[0].buffer);
+      RenderingTrargetRegistry.get(this.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL)).setRenderingTarget(name, this.renderingTarget);
     });
   }
 

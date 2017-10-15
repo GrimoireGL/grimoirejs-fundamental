@@ -1,6 +1,7 @@
 import Attribute from "grimoirejs/ref/Core/Attribute";
 import { Nullable } from "grimoirejs/ref/Tools/Types";
 import ImageResolver from "../Asset/ImageResolver";
+import CanvasInitializerComponent from "../Components/CanvasInitializerComponent";
 import TextureContainer from "../Components/Texture/TextureContainer";
 import TextureReference from "../Material/TextureReference";
 import RenderingBufferResourceRegistry from "../Resource/RenderingTarget/RenderingBufferResourceRegistry";
@@ -46,14 +47,14 @@ export default function TextureConverter(val: any, attr: Attribute): any {
       const param = parseResult.param;
       switch (parseResult.type) {
         case "backbuffer":
-          return new TextureReference((buffers) => RenderingBufferResourceRegistry.get(attr.companion.get("gl")).getBackbuffer(param));
+          return new TextureReference((buffers) => RenderingBufferResourceRegistry.get(attr.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL)).getBackbuffer(param));
         case "query":
           const obtainedTag = attr.tree(param);
           const texture = obtainedTag.first().getComponent(TextureContainer);
           return new TextureReference(() => texture.texture);
       }
     } else {
-      const tex = new Texture2D(attr.companion.get("gl"));
+      const tex = new Texture2D(attr.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL));
       ImageResolver.resolve(val).then(t => {
         tex.update(t);
       });
@@ -63,7 +64,7 @@ export default function TextureConverter(val: any, attr: Attribute): any {
   }
   if (typeof val === "object") {
     if (val instanceof HTMLImageElement) {
-      const tex = new Texture2D(attr.companion.get("gl"));
+      const tex = new Texture2D(attr.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL));
       if (val.complete && val.naturalWidth) {
         tex.update(val);
       } else {
@@ -73,7 +74,7 @@ export default function TextureConverter(val: any, attr: Attribute): any {
       }
       return new TextureReference(tex);
     } else if (val instanceof HTMLCanvasElement) {
-      const tex = new Texture2D(attr.companion.get("gl"));
+      const tex = new Texture2D(attr.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL));
       tex.update(val);
       return new TextureReference(tex);
     }

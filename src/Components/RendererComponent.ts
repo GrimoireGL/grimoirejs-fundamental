@@ -9,6 +9,7 @@ import Viewport from "../Resource/Viewport";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 import Timer from "../Util/Timer";
 import CameraComponent from "./CameraComponent";
+import CanvasInitializerComponent from "./CanvasInitializerComponent";
 export default class RendererComponent extends Component {
   public static componentName = "Renderer";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
@@ -39,7 +40,7 @@ export default class RendererComponent extends Component {
     if (this._viewportCache) {
       return this._viewportCache;
     } else {
-      this._viewportCache = this._viewportSizeGenerator((this.companion.get("gl") as WebGLRenderingContext).canvas);
+      this._viewportCache = this._viewportSizeGenerator((this.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL)).canvas);
       return this._viewportCache;
     }
   }
@@ -77,15 +78,15 @@ export default class RendererComponent extends Component {
     if (!regionName) {
       regionName = "renderer-" + this.node.index;
     }
-    this.renderingTarget = new CanvasRegionRenderingTarget(this.companion.get("gl"));
+    this.renderingTarget = new CanvasRegionRenderingTarget(this.companion.get<WebGLRenderingContext>(CanvasInitializerComponent.COMPANION_KEY_GL));
     this.renderingTarget.setViewport(this.viewport);
-    RenderingTargetRegistry.get(this.companion.get("gl")).setRenderingTarget(regionName, this.renderingTarget);
+    RenderingTargetRegistry.get(this.companion.get<WebGLRenderingContext>(CanvasInitializerComponent.COMPANION_KEY_GL)).setRenderingTarget(regionName, this.renderingTarget);
     this._initializeMouseHandlers();
   }
 
   protected $mount(): void {
-    this._gl = this.companion.get("gl") as WebGLRenderingContext;
-    this._canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
+    this._gl = this.companion.get<WebGLRenderingContext>(CanvasInitializerComponent.COMPANION_KEY_GL);
+    this._canvas = this.companion.get<HTMLCanvasElement>("canvasElement");
     this.getAttributeRaw("handleMouse").watch(a => {
       if (a) {
         this._enableMouseHandling();

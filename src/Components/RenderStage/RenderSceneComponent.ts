@@ -1,6 +1,7 @@
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import CameraComponent from "../CameraComponent";
+import CanvasInitializerComponent from "../CanvasInitializerComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
 
 /**
@@ -54,7 +55,7 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
   }
 
   protected $mount(): void {
-    this._gl = this.companion.get("gl");
+    this._gl = this.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL);
   }
 
   protected $render(args: IRenderRendererMessage): void {

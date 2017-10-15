@@ -3,6 +3,7 @@ import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import MaterialFactory from "../Material/MaterialFactory";
 import Timer from "../Util/Timer";
+import CanvasInitializerComponent from "./CanvasInitializerComponent";
 import LoopManagerComponent from "./LoopManagerComponent";
 /**
  * 全レンダラーを管理するためのコンポーネント
@@ -59,7 +60,7 @@ export default class RendererManagerComponent extends Component {
   }
 
   protected $mount(): void {
-    this.gl = this.companion.get("gl");
+    this.gl = this.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL);
   }
 
   protected $treeInitialized(): void {

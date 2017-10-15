@@ -2,6 +2,7 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
 import Geometry from "../../Geometry/Geometry";
 import IMaterialArgument from "../../Material/IMaterialArgument";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
+import CanvasInitializerComponent from "../CanvasInitializerComponent";
 import GeometryRegistoryComponent from "../GeometryRegistoryComponent";
 import MaterialContainerComponent from "../MaterialContainerComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
@@ -48,9 +49,9 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
   }
 
   protected async $mount(): Promise<void> {
-    this._gl = this.companion.get("gl");
+    this._gl = this.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL);
     this._materialContainer = this.node.getComponent(MaterialContainerComponent);
-    const geometryRegistry = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
+    const geometryRegistry = this.companion.get<GeometryRegistoryComponent>("GeometryRegistory");
     this._geom = await geometryRegistry.getGeometry("quad");
   }
 

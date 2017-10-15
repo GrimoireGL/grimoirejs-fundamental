@@ -114,3 +114,4 @@ yarn.lock
 screens
 docs
 .vscode
+src/metaInfo.ts

@@ -1,12 +1,14 @@
 import Component from "grimoirejs/ref/Core/Component";
 import gr from "grimoirejs/ref/Core/GrimoireInterface";
+import Identity from "grimoirejs/ref/Core/Identity";
 import Namespace from "grimoirejs/ref/Core/Namespace";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { __NAMESPACE__ } from "../metaInfo";
 import CanvasSizeObject from "../Objects/CanvasSizeObject";
 import GLExtRequestor from "../Resource/GLExtRequestor";
 import Texture2D from "../Resource/Texture2D";
 import WebGLRenderingContextWithId from "../Resource/WebGLRenderingContextWithId";
-const ns = Namespace.define("grimoirejs-fundamental");
+const ns = Namespace.define(__NAMESPACE__);
 
 enum ResizeMode {
   Aspect,
@@ -69,6 +71,11 @@ export default class CanvasInitializerComponent extends Component {
     },
   };
 
+  public static COMPANION_KEY_GL = ns.for("gl");
+  public static COMPANION_KEY_CANVAS_ELEMENT = ns.for("canvasElement");
+  public static COMPANION_KEY_GLEXT_REQUESTOR = ns.for("GLExtRequestor");
+  public static COMPANION_KEY_CANVAS_CONTAINER = ns.for("canvasContainer");
+
   /**
    * The canvas managed by this component
    * @type {HTMLCanvasElement}
@@ -122,16 +129,16 @@ export default class CanvasInitializerComponent extends Component {
     window.addEventListener("resize", () => this._onWindowResize());
     this._configureCanvas(this.canvas, scriptTag as HTMLScriptElement);
     const gl = this._getContext(this.canvas);
-    this.companion.set(ns.for("gl"), gl);
-    this.companion.set(ns.for("canvasElement"), this.canvas);
-    this.companion.set(ns.for("GLExtRequestor"), new GLExtRequestor(gl));
+    this.companion.set(CanvasInitializerComponent.COMPANION_KEY_GL, gl);
+    this.companion.set(CanvasInitializerComponent.COMPANION_KEY_CANVAS_ELEMENT, this.canvas);
+    this.companion.set(CanvasInitializerComponent.COMPANION_KEY_GLEXT_REQUESTOR, new GLExtRequestor(gl));
     Texture2D.generateDefaultTexture(gl);
     return this.canvas;
   }
 
   private _resize(supressBroadcast?: boolean): void {
-    const widthRaw = this.getAttribute("width") as CanvasSizeObject;
-    const heightRaw = this.getAttribute("height") as CanvasSizeObject;
+    const widthRaw = this.getAttribute<CanvasSizeObject>("width");
+    const heightRaw = this.getAttribute<CanvasSizeObject>("height");
     this._widthMode = this._asResizeMode(widthRaw);
     this._heightMode = this._asResizeMode(heightRaw);
     if (this._widthMode === this._heightMode && this._widthMode === ResizeMode.Aspect) {
@@ -228,7 +235,7 @@ export default class CanvasInitializerComponent extends Component {
     if (this.getAttribute("containerClass")) {
       this._canvasContainer.className = this.getAttribute("containerClass");
     }
-    this.companion.set(ns.for("canvasContainer"), this._canvasContainer);
+    this.companion.set(CanvasInitializerComponent.COMPANION_KEY_CANVAS_CONTAINER, this._canvasContainer);
     scriptTag.parentElement.insertBefore(this._canvasContainer, scriptTag.nextSibling);
     this._resize(true);
   }

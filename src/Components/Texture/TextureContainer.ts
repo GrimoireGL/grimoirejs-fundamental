@@ -1,6 +1,7 @@
 import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Texture2D from "../../Resource/Texture2D";
+import CanvasInitializerComponent from "../CanvasInitializerComponent";
 export default class TextureContainer extends Component {
   public static componentName = "TextureContainer";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
@@ -47,7 +48,7 @@ export default class TextureContainer extends Component {
   public texture: Texture2D;
 
   protected $mount(): void {
-    this.texture = new Texture2D(this.companion.get("gl"));
+    this.texture = new Texture2D(this.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL));
     this.texture.magFilter = this.getAttribute("magFilter");
     this.texture.minFilter = this.getAttribute("minFilter");
     this.texture.wrapT = this.getAttribute("wrapT");

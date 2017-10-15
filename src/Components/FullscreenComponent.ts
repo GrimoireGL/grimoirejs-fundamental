@@ -1,5 +1,6 @@
 import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import CanvasInitializerComponent from "./CanvasInitializerComponent";
 
 /**
  * フルスクリーン状態を管理するコンポーネント
@@ -57,7 +58,7 @@ export default class FullscreenComponent extends Component {
           console.warn("Specified fullscreenTarget was not found on HTML dom tree");
         }
       } else {
-        this.requestFullscreen(this.companion.get("canvasContainer"));
+        this.requestFullscreen(this.companion.get(CanvasInitializerComponent.COMPANION_KEY_CANVAS_CONTAINER));
       }
     } else {
       this.exitFullscreen();

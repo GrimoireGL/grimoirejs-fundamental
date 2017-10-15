@@ -1,6 +1,7 @@
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import RenderBuffer from "../../Resource/RenderBuffer";
 import RenderingBufferResourceRegistry from "../../Resource/RenderingTarget/RenderingBufferResourceRegistry";
+import CanvasInitializerComponent from "../CanvasInitializerComponent";
 import ResizableResourceUpdator from "./ResizableResourceUpdator";
 
 /**
@@ -34,11 +35,11 @@ export default class RenderBufferUpdatorComponent extends ResizableResourceUpdat
 
   protected $awake(): void {
     super.$awake();
-    this.buffer = new RenderBuffer(this.companion.get("gl"));
+    this.buffer = new RenderBuffer(this.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL));
     this.buffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, 1, 1);
     const name = this.getAttribute("name");
     if (name) {
-      RenderingBufferResourceRegistry.get(this.companion.get("gl")).setDepthBuffer(name, this.buffer);
+      RenderingBufferResourceRegistry.get(this.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL)).setDepthBuffer(name, this.buffer);
     }
   }
 

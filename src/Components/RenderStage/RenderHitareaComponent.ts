@@ -11,6 +11,7 @@ import IRenderable from "../../SceneRenderer/IRenderable";
 import MeshIndexCalculator from "../../Util/MeshIndexCalculator";
 import TextureSizeCalculator from "../../Util/TextureSizeCalculator";
 import CameraComponent from "../CameraComponent";
+import CanvasInitializerComponent from "../CanvasInitializerComponent";
 import RenderSceneComponent from "../RenderStage/RenderSceneComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
 
@@ -64,8 +65,8 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     if (!this._sceneRenderer) {
       throw new Error("The node attaching RenderHitArea should contain RenderScene.");
     }
-    this._gl = this.companion.get("gl");
-    this._canvas = this.companion.get("canvasElement");
+    this._gl = this.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL);
+    this._canvas = this.companion.get(CanvasInitializerComponent.COMPANION_KEY_CANVAS_ELEMENT);
     this.hitareaTexture = new Texture2D(this._gl);
     this.hitareaRenderbuffer = new RenderBuffer(this._gl);
     if (this.hitareaFBO) {

@@ -1,8 +1,14 @@
 import Component from "grimoirejs/ref/Core/Component";
+import Identity from "grimoirejs/ref/Core/Identity";
+import Namespace from "grimoirejs/ref/Core/Namespace";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import NameResolver from "../Asset/NameResolver";
 import Geometry from "../Geometry/Geometry";
 import GeometryFactory from "../Geometry/GeometryFactory";
+import { __NAMESPACE__ } from "../metaInfo";
+import CanvasInitializerComponent from "./CanvasInitializerComponent";
+
+const ns = Namespace.define(__NAMESPACE__);
 
 /**
  * ジオメトリを管理するコンポーネント
@@ -20,6 +26,8 @@ export default class GeometryRegistoryComponent extends Component {
     },
   };
 
+  public static COMPANION_KEY_GEOMETRY_REGISTORY = ns.for(GeometryRegistoryComponent.componentName);
+
   private _geometryResolver: NameResolver<Geometry> = new NameResolver<Geometry>();
 
   public async addGeometry(name: string, geometry: Promise<Geometry> | Geometry): Promise<void> {
@@ -31,9 +39,9 @@ export default class GeometryRegistoryComponent extends Component {
   }
 
   protected $awake(): void {
-    this.companion.set(this.name, this);
-    const factory = GeometryFactory.get(this.companion.get("gl"));
-    for (const geometry of this.getAttribute("defaultGeometry") as string[]) {
+    this.companion.set(GeometryRegistoryComponent.COMPANION_KEY_GEOMETRY_REGISTORY, this);
+    const factory = GeometryFactory.get(this.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL));
+    for (const geometry of this.getAttribute<string[]>("defaultGeometry")) {
       this.addGeometry(geometry, factory.instanciateAsDefault(geometry));
     }
   }

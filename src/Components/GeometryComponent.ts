@@ -2,6 +2,7 @@ import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Geometry from "../Geometry/Geometry";
 import GeometryFactory from "../Geometry/GeometryFactory";
+import CanvasInitializerComponent from "./CanvasInitializerComponent";
 import GeometryRegistory from "./GeometryRegistoryComponent";
 /**
  * ジオメトリを生成するためのコンポーネント
@@ -39,7 +40,7 @@ export default class GeometryComponent extends Component {
   public async $mount(): Promise<void> {
     const type = this.getAttribute("type");
     if (type) {
-      const gf = GeometryFactory.get(this.companion.get("gl"));
+      const gf = GeometryFactory.get(this.companion.get(CanvasInitializerComponent.COMPANION_KEY_GL));
       const attrs = GeometryFactory.factoryArgumentDeclarations[type];
       const geometryArgument = {};
       for (const key in attrs) {
@@ -47,7 +48,7 @@ export default class GeometryComponent extends Component {
         geometryArgument[key] = this.getAttribute(key);
       }
       const generator = gf.instanciate(type, geometryArgument);
-      const gr = this.companion.get("GeometryRegistory") as GeometryRegistory;
+      const gr = this.companion.get<GeometryRegistory>("GeometryRegistory");
       const name = this.getAttribute("name");
       if (!name) {
         throw new Error("Name was not specified");

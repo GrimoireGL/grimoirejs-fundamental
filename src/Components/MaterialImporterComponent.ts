@@ -35,7 +35,7 @@ export default class MaterialImporterComponent extends Component {
     if (!this.getAttribute("typeName") || !this.getAttribute("src")) {
       throw new Error("type or src cannot be null in material importer");
     } else {
-      const typeName = this.getAttribute("typeName") as string;
+      const typeName = this.getAttribute<string>("typeName");
       if (MaterialFactory.getMaterialStatus(typeName) !== NameResolver.UNLOADED) {
         throw new Error(`A material type '${typeName}' is already loaded.`);
       }

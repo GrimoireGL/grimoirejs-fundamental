@@ -1,7 +1,13 @@
 import Component from "grimoirejs/ref/Core/Component";
+import Identity from "grimoirejs/ref/Core/Identity";
+import Namespace from "grimoirejs/ref/Core/Namespace";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import DefaultLoaderChunk from "raw-loader!../Asset/defaultLoader.html";
 import AssetLoader from "../Asset/AssetLoader";
+import { __NAMESPACE__ } from "../metaInfo";
+import CanvasInitializerComponent from "./CanvasInitializerComponent";
+
+const ns = Namespace.define(__NAMESPACE__);
 
 /**
  * アセットの読み込みを司るコンポーネント。ローダーの表示などを司る。
@@ -34,6 +40,8 @@ export default class AssetLoadingManagerComponent extends Component {
     },
   };
 
+  public static COMPANION_KEY_LOADER = ns.for("loader");
+
   public loader: AssetLoader = new AssetLoader();
 
   private _documentResolver: () => void;
@@ -48,9 +56,9 @@ export default class AssetLoadingManagerComponent extends Component {
   }
 
   protected $awake(): void {
-    this.companion.set(this.name.ns.for("loader"), this.loader);
+    this.companion.set(AssetLoadingManagerComponent.COMPANION_KEY_LOADER, this.loader);
     this.loader.register(new Promise((resolve) => { this._documentResolver = resolve; }), this);
-    const canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
+    const canvasContainer = this.companion.get<HTMLDivElement>(CanvasInitializerComponent.COMPANION_KEY_CANVAS_CONTAINER);
     if (!this.getAttribute("enableLoader")) {
       return;
     }
@@ -68,7 +76,7 @@ export default class AssetLoadingManagerComponent extends Component {
     }
     this.node.emit("asset-load-completed");
     this.tree("goml").setAttribute("loopEnabled", true);
-    const canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
+    const canvas = this.companion.get<HTMLCanvasElement>(CanvasInitializerComponent.COMPANION_KEY_CANVAS_ELEMENT);
     canvas.classList.add("gr-resource-loaded-canvas");
   }
 }

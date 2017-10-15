@@ -113,11 +113,11 @@ export default class BasicComponent extends Component {
    */
   protected __registerTimerCoroutine(coroutine: () => IterableIterator<number>, tag?: string | symbol): void {
     // check companion containing coroutine cache
-    let coroutines = this.companion.get("timer-coroutine") as CoroutineRegistry;
+    let coroutines = this.companion.get<CoroutineRegistry>("timer-coroutine");
     if (!coroutines) {
       coroutines = new CoroutineRegistry();
       this.loopManager.register((t: Timer) => coroutines.callCoroutine(t.time, t), 100);
-      this.companion.set(Namespace.define(this.node.name.ns.qualifiedName).for("timer-coroutine"), coroutines);
+      this.companion.set(this.node.name.ns.for("timer-coroutine"), coroutines);
     }
     coroutines.register(this, coroutine, tag);
   }
@@ -127,11 +127,11 @@ export default class BasicComponent extends Component {
    */
   protected __registerFrameCoroutine(coroutine: () => IterableIterator<number>, tag?: string | symbol): void {
     // check companion containing coroutine cache
-    let coroutines = this.companion.get("frame-coroutine") as CoroutineRegistry;
+    let coroutines = this.companion.get<CoroutineRegistry>("frame-coroutine");
     if (!coroutines) {
       coroutines = new CoroutineRegistry();
       this.loopManager.register((t: Timer) => coroutines.callCoroutine(t.frameCount, t), 100);
-      this.companion.set(Namespace.define(this.node.name.ns.qualifiedName).for("frame-coroutine"), coroutines);
+      this.companion.set(this.node.name.ns.for("frame-coroutine"), coroutines);
     }
     coroutines.register(this, coroutine, tag);
   }
@@ -150,14 +150,14 @@ export default class BasicComponent extends Component {
   }
 
   protected __unregisterTimerCoroutine(tag?: string | symbol): void {
-    const coroutines = this.companion.get("timer-coroutine") as CoroutineRegistry;
+    const coroutines = this.companion.get<CoroutineRegistry>("timer-coroutine");
     if (coroutines) {
       coroutines.unregister(this, tag);
     }
   }
 
   protected __unregisterFrameCoroutine(tag?: string | symbol): void {
-    const coroutines = this.companion.get("frame-coroutine") as CoroutineRegistry;
+    const coroutines = this.companion.get<CoroutineRegistry>("frame-coroutine");
     if (coroutines) {
       coroutines.unregister(this, tag);
     }

@@ -3,6 +3,7 @@ import Quaternion from "grimoirejs-math/ref/Quaternion";
 import Vector3 from "grimoirejs-math/ref/Vector3";
 import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import CanvasInitializerComponent from "./CanvasInitializerComponent";
 import TransformComponent from "./TransformComponent";
 
 export default class MouseCameraControlComponent extends Component {
@@ -70,7 +71,7 @@ export default class MouseCameraControlComponent extends Component {
 
   protected $mount(): void {
     this._transform = this.node.getComponent(TransformComponent);
-    const canvasElement = this.companion.get("canvasElement");
+    const canvasElement = this.companion.get<HTMLCanvasElement>(CanvasInitializerComponent.COMPANION_KEY_CANVAS_ELEMENT);
     canvasElement.addEventListener("mousemove", this._listeners.mousemove);
     canvasElement.addEventListener("contextmenu", this._listeners.contextmenu);
     canvasElement.addEventListener("wheel", this._listeners.wheel);
@@ -80,7 +81,7 @@ export default class MouseCameraControlComponent extends Component {
     this._ysum = 0;
   }
   protected $unmount() {
-    const canvasElement = this.companion.get("canvasElement");
+    const canvasElement = this.companion.get<HTMLCanvasElement>(CanvasInitializerComponent.COMPANION_KEY_CANVAS_ELEMENT);
     canvasElement.removeEventListener("mousemove", this._listeners.mousemove);
     canvasElement.removeEventListener("contextmenu", this._listeners.contextmenu);
     canvasElement.removeEventListener("wheel", this._listeners.wheel);

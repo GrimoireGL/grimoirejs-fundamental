@@ -31,7 +31,7 @@ export default class ViewportSizeResourceResizer extends ResourceResizerComponen
   }
 
   protected $resizeViewport(arg: IResizeViewportMessage): void {
-    const scale = this.getAttribute("resolutionScale") as Vector2;
+    const scale = this.getAttribute<Vector2>("resolutionScale");
     this.__resizeResources(arg.width * scale.X, arg.height * scale.Y);
   }
 }
