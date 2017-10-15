@@ -9,6 +9,7 @@ import Timer from "../Util/Timer";
  * このコンポーネントには属性が存在しません。
  */
 export default class SceneComponent extends Component {
+  public static componentName = "Scene";
 
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     // Specify the attributes user can intaract

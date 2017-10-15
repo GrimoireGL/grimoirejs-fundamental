@@ -6,7 +6,8 @@ import ResizableResourceUpdator from "./ResizableResourceUpdator";
 /**
  * no document
  */
-export default class RenderBufferComponent extends ResizableResourceUpdator {
+export default class RenderBufferUpdatorComponent extends ResizableResourceUpdator {
+  public static componentName = "RenderBufferUpdator";
   /**
    * no document
    */

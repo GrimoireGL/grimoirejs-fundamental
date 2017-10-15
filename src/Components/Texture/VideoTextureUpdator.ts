@@ -6,6 +6,7 @@ import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
  * no document
  */
 export default class VideoTextureUpdatorComponent extends TextureUpdatorComponentBase {
+  public static componentName = "VideoTextureUpdator";
 
   /**
    * no document

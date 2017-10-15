@@ -9,6 +9,7 @@ import ResourceResizerComponentBase from "./ResourceResizerComponentBase";
  * This resource resizer will resize these by considering viewport size.
  */
 export default class ViewportSizeResourceResizer extends ResourceResizerComponentBase {
+  public static componentName = "ViewportSizeResourceResizer";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     resolutionScale: {
       converter: "Vector2",

@@ -7,6 +7,7 @@ import MaterialFactory from "../Material/MaterialFactory";
  * マテリアル設定ファイルを読み込むためのコンポーネント
  */
 export default class MaterialImporterComponent extends Component {
+  public static componentName = "MaterialImporter";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * マテリアル名として登録される名前

@@ -3,6 +3,7 @@ import Material from "../Material/Material";
 import MaterialFactory from "../Material/MaterialFactory";
 import MaterialContainerBase from "./MaterialContainerBase";
 export default class MaterialComponent extends MaterialContainerBase {
+  public static componentName = "Material";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     type: {
       converter: "String",

@@ -9,6 +9,7 @@ import TextureContainer from "./Texture/TextureContainer";
  * If there were no child buffer node, this component will instanciate default buffers.
  */
 export default class RenderingTargetComponent extends Component {
+  public static componentName = "RenderingTarget";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
       converter: "String",

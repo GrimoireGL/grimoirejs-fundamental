@@ -6,6 +6,7 @@ import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
  * no document
  */
 export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBase {
+  public static componentName = "ColorBufferTextureUpdator";
 
   /**
    * no document

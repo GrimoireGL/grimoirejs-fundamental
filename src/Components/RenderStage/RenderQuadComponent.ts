@@ -10,6 +10,7 @@ import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
  * no document
  */
 export default class RenderQuadComponent extends SingleBufferRenderStageBase {
+  public static componentName = "RenderQuad";
   /**
    * no document
    */

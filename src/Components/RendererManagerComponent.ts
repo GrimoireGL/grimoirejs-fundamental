@@ -8,6 +8,7 @@ import LoopManagerComponent from "./LoopManagerComponent";
  * 全レンダラーを管理するためのコンポーネント
  */
 export default class RendererManagerComponent extends Component {
+  public static componentName = "RendererManager";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * キャンバスの初期化色

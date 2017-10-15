@@ -18,6 +18,7 @@ import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
  * no document
  */
 export default class RenderHitareaComponent extends SingleBufferRenderStageBase {
+  public static componentName = "RenderHitArea";
 
   /**
    * no document

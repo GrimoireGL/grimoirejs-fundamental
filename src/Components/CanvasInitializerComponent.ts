@@ -19,6 +19,7 @@ enum ResizeMode {
  * このコンポーネントによって、適切な位置に`<canvas>`を初期化してWebGLコンテキストを初期化します。
  */
 export default class CanvasInitializerComponent extends Component {
+  public static componentName = "CanvasInitializer";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * キャンバスタグの横幅を指定します。

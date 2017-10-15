@@ -5,7 +5,6 @@ import WebGLRenderingContextWithId from "./WebGLRenderingContextWithId";
  */
 export default class GLRelatedRegistryBase {
 
-
   private static _glRelatedRegistry: { [id: string]: { [registryName: string]: any } } = {};
 
   /**

@@ -10,6 +10,7 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
  * 最初からtrueに設定して初期状態でキャンバスをフルスクリーン状態にすることはWebAPIの制約上できません。
  */
 export default class FullscreenComponent extends Component {
+  public static componentName = "Fullscreen";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * フルスクリーン状態かどうか

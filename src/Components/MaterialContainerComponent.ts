@@ -11,6 +11,7 @@ import MaterialContainerBase from "./MaterialContainerBase";
  * 指定されたマテリアルの初期化の管理や、マテリアルによって動的に追加される属性の管理を行います、
  */
 export default class MaterialContainerComponent extends MaterialContainerBase {
+  public static componentName = "MaterialContainer";
 
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**

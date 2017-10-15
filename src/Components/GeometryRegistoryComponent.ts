@@ -9,6 +9,7 @@ import GeometryFactory from "../Geometry/GeometryFactory";
  * あまりユーザーが直接操作することはありません。
  */
 export default class GeometryRegistoryComponent extends Component {
+  public static componentName = "GeometryRegistory";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * デフォルトで生成するジオメトリの種類

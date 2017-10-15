@@ -17,7 +17,7 @@ import TransformComponent from "./TransformComponent";
  * また、このコンポーネントの付属するノードに属する`Transoform`によって、カメラの位置や向きが確定されます。
  */
 export default class CameraComponent extends Component {
-
+  public static componentName = "Camera";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * カメラの視野角。

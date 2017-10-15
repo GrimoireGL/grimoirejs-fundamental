@@ -6,6 +6,7 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
 import TransformComponent from "./TransformComponent";
 
 export default class MouseCameraControlComponent extends Component {
+  public static componentName = "MouseCameraControl";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     rotateSpeed: {
       default: 1,

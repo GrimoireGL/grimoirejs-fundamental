@@ -13,6 +13,7 @@ const { mat4, vec3, vec4 } = GLM;
  * シーン中の全ての物体は必ずこのコンポーネントを含まなければなりません。
  */
 export default class TransformComponent extends Component {
+  public static componentName = "Transform";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * この物体の座標

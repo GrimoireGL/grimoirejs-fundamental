@@ -7,6 +7,7 @@ import ResourceResizerComponentBase from "./ResourceResizerComponentBase";
  * This resource resizer will resize by given resolution attribute.
  */
 export default class ConstantSizeResourceResizer extends ResourceResizerComponentBase {
+  public static componentName = "ConstantSizeResourceResizer";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     resolution: {
       converter: "Vector2",

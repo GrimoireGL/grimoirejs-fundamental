@@ -9,6 +9,7 @@ import GeometryRegistory from "./GeometryRegistoryComponent";
  * このコンポーネントは`type`属性に応じて、**動的** に属性が増えることに気をつけてください。
  */
 export default class GeometryComponent extends Component {
+  public static componentName = "Geometry";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * 生成するプリミティブのタイプ

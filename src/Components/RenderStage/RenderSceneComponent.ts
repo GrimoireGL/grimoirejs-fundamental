@@ -7,6 +7,7 @@ import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
  * no document
  */
 export default class RenderSceneComponent extends SingleBufferRenderStageBase {
+  public static componentName = "RenderScene";
   /**
    * no document
    */
