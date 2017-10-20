@@ -19,7 +19,8 @@
     "webgl"
   ],
   "dependencies": {
-    "@types/node": "^8.0.24"
+    "@types/node": "^8.0.24",
+    "trash-cli": "^1.4.0"
   },
   "devDependencies": {
     "@types/xmldom": "^0.1.29",
