@@ -7,6 +7,7 @@ import GLExtRequestor from "./Resource/GLExtRequestor";
 
 import GrimoireInterface from "grimoirejs";
 import AssetLoadingManagerComponent from "./Components/AssetLoadingManagerComponent";
+import BasicComponent from "./Components/BasicComponent";
 import CameraComponent from "./Components/CameraComponent";
 import CanvasInitializerComponent from "./Components/CanvasInitializerComponent";
 import FullscreenComponent from "./Components/FullscreenComponent";
@@ -40,7 +41,7 @@ import TextureConverter from "./Converters/TextureConverter";
 import ViewportConverter from "./Converters/ViewportConverter";
 
 export default () => {
-    GrimoireInterface.register(async() => {
+    GrimoireInterface.register(async () => {
         GrimoireInterface.registerComponent("AssetLoadingManager", AssetLoadingManagerComponent);
         GrimoireInterface.registerComponent("Camera", CameraComponent);
         GrimoireInterface.registerComponent("CanvasInitializer", CanvasInitializerComponent);
@@ -68,6 +69,7 @@ export default () => {
         GrimoireInterface.registerComponent("ViewportSizeResourceResizer", ViewportSizeResourceResizer);
         GrimoireInterface.registerComponent("ConstantSizeResourceResizer", ConstantSizeResourceResizer);
         GrimoireInterface.registerComponent("RenderingTarget", RenderingTargetComponent);
+        GrimoireInterface.registerComponent("BasicComponent", BasicComponent);
 
         GrimoireInterface.registerConverter("CanvasSize", CanvasSizeConverter);
         GrimoireInterface.registerConverter("Geometry", GeometryConverter);

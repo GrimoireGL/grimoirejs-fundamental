@@ -1,18 +1,22 @@
+// tslint:disable:no-var-requires
+// tslint:disable:no-require-imports
 const xmldom = require("xmldom");
-var Module = module.constructor;
-var require0 = Module.prototype.require;
-Module.prototype.require = function(str){
-  if(str.indexOf("raw-loader!") >= 0){
+const Module = module.constructor;
+const require0 = Module.prototype.require;
+Module.prototype.require = function(str) {
+  if (str.indexOf("raw-loader!") >= 0) {
     return "MOCKEDSTRING";
   }
-  return require0.call(this,str);
-}
-global.DOMParser = xmldom.DOMParser;
-global.document = {
-  createElement(){}
-}
+  return require0.call(this, str);
+};
+const mockedWindow = global as any;
+mockedWindow.DOMParser = xmldom.DOMParser;
+mockedWindow.window = mockedWindow;
+mockedWindow.document = {
+  createElement() { },
+};
 
-global.WebGLRenderingContext = {
+mockedWindow.WebGLRenderingContext = {
   ACTIVE_ATTRIBUTES: 35721,
   ACTIVE_ATTRIBUTE_MAX_LENGTH: 35722,
   ACTIVE_TEXTURE: 34016,
@@ -313,11 +317,11 @@ global.WebGLRenderingContext = {
   VERTEX_ATTRIB_ARRAY_TYPE: 34341,
   VERTEX_SHADER: 35633,
   VIEWPORT: 2978,
-  ZERO: 0
+  ZERO: 0,
 };
-global.window = {
-  addEventListener:function(){},
-  postMessage: ()=>{}
+mockedWindow.window = {
+  addEventListener() { },
+  postMessage: () => { },
 };
 require("regenerator-runtime/runtime");
 require("grimoirejs/register");

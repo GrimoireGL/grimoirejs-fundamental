@@ -1,9 +1,9 @@
 import Namespace from "grimoirejs/ref/Base/Namespace";
 import Component from "grimoirejs/ref/Node/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Timer from "../Util/Timer";
 import AssetLoadingManager from "./AssetLoadingManagerComponent";
 import LoopManager from "./LoopManagerComponent";
-
 type TimerCoroutine = GeneratorFunction;
 type CoroutineTuple = { coroutine: Iterator<number>; next: number; container: Component; tag?: string | symbol };
 
@@ -81,6 +81,8 @@ class CoroutineRegistry {
 }
 
 export default class BasicComponent extends Component {
+
+  public static attributes: { [name: string]: IAttributeDeclaration } = {};
   private _loopManagerBackingStore: LoopManager;
 
   private _assetLoadingManagerBackingStore: AssetLoadingManager;
