@@ -61,7 +61,7 @@ const getBuildTask = (fileName, plugins, needPolyfill) => {
       extensions: ['.ts', '.js']
     },
     plugins: plugins,
-    devtool: 'eval-source-map'
+    devtool: 'source-map'
   }
 };
 
