@@ -1,6 +1,6 @@
 import Vector2 from "grimoirejs-math/ref/Vector2";
 import Vector4 from "grimoirejs-math/ref/Vector4";
-import ViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
+import IViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
 import UniformProxy from "../../Resource/UniformProxy";
 import MeshIndexCalculator from "../../Util/MeshIndexCalculator";
 import IMaterialArgument from "../IMaterialArgument";
@@ -58,7 +58,7 @@ UniformResolverRegistry.add("MESH_INDEX", (valInfo: IVariableInfo) => (proxy: Un
 UniformResolverRegistry.add("MOUSE_POSITION", (valInfo: IVariableInfo) => {
   const coords = valInfo.attributes["coord"] || "viewportNormalized";
   return (proxy: UniformProxy, args: IMaterialArgument) => {
-    const mouseDesc = args.rendererDescription["mouse"] as ViewportBaseMouseState;
+    const mouseDesc = args.rendererDescription["mouse"] as IViewportBaseMouseState;
     if (mouseDesc) {
       proxy.uniformVector2(valInfo.name, new Vector2(mouseDesc.coords[coords][0], mouseDesc.coords[coords][1]));
     } else {
@@ -69,7 +69,7 @@ UniformResolverRegistry.add("MOUSE_POSITION", (valInfo: IVariableInfo) => {
 
 UniformResolverRegistry.add("MOUSE_STATE", (valInfo: IVariableInfo) => {
   return (proxy: UniformProxy, args: IMaterialArgument) => {
-    const mouseDesc = args.rendererDescription["mouse"] as ViewportBaseMouseState;
+    const mouseDesc = args.rendererDescription["mouse"] as IViewportBaseMouseState;
     if (mouseDesc) {
       proxy.uniformVector2(valInfo.name, new Vector2(mouseDesc.left ? 1 : 0, mouseDesc.right ? 1 : 0));
     } else {

@@ -163,7 +163,7 @@ export default class BasicComponent extends Component {
     }
   }
 
-  protected __registerAssetLoading<T>(loadingPromise: Promise<T>): Promise<T> {
+  protected async __registerAssetLoading<T>(loadingPromise: Promise<T>): Promise<T> {
     return this.assetLoadingManager.loader.register(loadingPromise, this);
   }
 }

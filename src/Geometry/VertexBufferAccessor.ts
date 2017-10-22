@@ -1,10 +1,8 @@
-import BufferAccessor from "./BufferAccessor";
+import IBufferAccessor from "./BufferAccessor";
 
-interface VertexBufferAccessor extends BufferAccessor {
+export default interface IVertexBufferAccessor extends IBufferAccessor {
   type?: number;
   keepOnBuffer?: boolean;
   normalized?: boolean;
   instancingDivisor?: number; // experimental
 }
-
-export default VertexBufferAccessor;

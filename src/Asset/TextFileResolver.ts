@@ -1,12 +1,12 @@
 import ExternalResourceResolver from "./ExternalResourceResolver";
 export class TextFileResolver extends ExternalResourceResolver<string> {
 
-  public resolve(path: string): Promise<string> {
-    return super.resolve(path, (abs) => {
+  public async resolve(path: string): Promise<string> {
+    return super.resolve(path, async(abs) => {
       if (TextFileResolver.isDataURL(abs)) {
         return Promise.resolve(this._dataUriToText(abs));
       }
-      return new Promise((resolve, reject) => {
+      return new Promise<string>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open("GET", abs);
         xhr.onload = (v) => {
@@ -24,7 +24,7 @@ export class TextFileResolver extends ExternalResourceResolver<string> {
     const splittedUri = dataUrl.split(",");
     const byteString = atob(splittedUri[1]);
     return byteString;
-}
+  }
 }
 
 export default new TextFileResolver();

@@ -1,6 +1,5 @@
-interface CanvasSizeObject {
+export default interface ICanvasSizeObject {
   mode: string;
   size?: number;
   aspect?: number;
 }
-export default CanvasSizeObject;

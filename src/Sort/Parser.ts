@@ -8,10 +8,10 @@ class SortParser {
    */
   private static _parsedCache: { [key: number]: { [key: string]: ITechniqueRecipe } } = {};
 
-  public static parse(source: string): Promise<{ [key: string]: ITechniqueRecipe }> {
+  public static async parse(source: string): Promise<{ [key: string]: ITechniqueRecipe }> {
     const sourceHash = HashCalculator.calcHash(source);
     if (SortParser._parsedCache[sourceHash] !== void 0) { // When specified source was loaded already
-      return new Promise((resolve, reject) => {
+      return new Promise<{ [key: string]: ITechniqueRecipe }>((resolve, reject) => {
         resolve(SortParser._parsedCache[sourceHash]);
       });
     } else {

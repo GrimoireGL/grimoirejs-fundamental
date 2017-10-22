@@ -7,49 +7,49 @@
  */
 export class VideoResolver {
 
-    public static defaultCORSConfig = "anonymous";
+  public static defaultCORSConfig = "anonymous";
 
-    /**
-     * Cors config resolvers.
-     * If all of resolvers returns null, defaultCORSConfig will be used.
-     */
-    public static corsResolvers: ((path: string) => string)[] = [];
+  /**
+   * Cors config resolvers.
+   * If all of resolvers returns null, defaultCORSConfig will be used.
+   */
+  public static corsResolvers: ((path: string) => string)[] = [];
 
-    public resolve(path: string): Promise<HTMLVideoElement> {
-        return new Promise<HTMLVideoElement>((resolve, reject) => {
-            const video = document.createElement("video");
-            video.crossOrigin = this._getCORSConfig(path);
-            video.preload = "auto";
-            video.addEventListener("canplay", () => {
-                resolve(video);
-            });
-            video.addEventListener("canplaythrough", () => {
-                resolve(video);
-            });
-            video.onerror = (e) => {
-                reject(`Error has been occured during loading "${path}"\n${e}`);
-            };
-            video.src = path;
-            video.load();
-            if (video.readyState > 3) {
-                resolve(video);
-            }
-        });
+  public async resolve(path: string): Promise<HTMLVideoElement> {
+    return new Promise<HTMLVideoElement>((resolve, reject) => {
+      const video = document.createElement("video");
+      video.crossOrigin = this._getCORSConfig(path);
+      video.preload = "auto";
+      video.addEventListener("canplay", () => {
+        resolve(video);
+      });
+      video.addEventListener("canplaythrough", () => {
+        resolve(video);
+      });
+      video.onerror = (e) => {
+        reject(`Error has been occured during loading "${path}"\n${e}`);
+      };
+      video.src = path;
+      video.load();
+      if (video.readyState > 3) {
+        resolve(video);
+      }
+    });
+  }
+
+  private _getCORSConfig(path: string): string {
+    let corsConfig = null;
+    for (let i = 0; i < VideoResolver.corsResolvers.length; i++) {
+      corsConfig = VideoResolver.corsResolvers[i](path);
+      if (corsConfig !== null) {
+        break;
+      }
     }
-
-    private _getCORSConfig(path: string): string {
-        let corsConfig = null;
-        for (let i = 0; i < VideoResolver.corsResolvers.length; i++) {
-            corsConfig = VideoResolver.corsResolvers[i](path);
-            if (corsConfig !== null) {
-                break;
-            }
-        }
-        if (corsConfig === null) {
-            corsConfig = VideoResolver.defaultCORSConfig;
-        }
-        return corsConfig;
+    if (corsConfig === null) {
+      corsConfig = VideoResolver.defaultCORSConfig;
     }
+    return corsConfig;
+  }
 }
 
 export default new VideoResolver();

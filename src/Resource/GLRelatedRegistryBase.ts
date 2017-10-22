@@ -1,4 +1,4 @@
-import WebGLRenderingContextWithId from "./WebGLRenderingContextWithId";
+import IWebGLRenderingContextWithId from "./WebGLRenderingContextWithId";
 
 /**
  * Registry of gl related stuff. These instance are singleton for each gl context.
@@ -12,8 +12,8 @@ export default class GLRelatedRegistryBase {
    * @param gl
    * @param ctor
    */
-  protected static __get<T>(gl: WebGLRenderingContext, ctor: { new(gl: WebGLRenderingContext): T, registryName: string }): T {
-    const glWithId = gl as WebGLRenderingContextWithId;
+  protected static __get<T>(gl: WebGLRenderingContext, ctor: { registryName: string, new(gl: WebGLRenderingContext): T }): T {
+    const glWithId = gl as IWebGLRenderingContextWithId;
     if (glWithId.__id__ === void 0) {
       throw new Error("Supplied gl context seems not initialized by Grimoire.js");
     }
@@ -28,7 +28,7 @@ export default class GLRelatedRegistryBase {
     return newInstance;
   }
 
-  protected static __getAll<T>(ctor: { new(gl: WebGLRenderingContext): T, registryName: string }): T[] {
+  protected static __getAll<T>(ctor: { registryName: string, new(gl: WebGLRenderingContext): T }): T[] {
     const result = [] as T[];
     for (const key in GLRelatedRegistryBase._glRelatedRegistry) {
       const contextContainer = GLRelatedRegistryBase._glRelatedRegistry[key];

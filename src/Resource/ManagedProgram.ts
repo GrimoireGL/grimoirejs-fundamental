@@ -13,7 +13,7 @@ export default class ManagedProgram extends Program {
     let hashSource = "";
     shaders = shaders.sort();
     shaders.forEach(s => {
-      hashSource += s.index + ",";
+      hashSource += `${s.index},`;
     });
     const hash = HashCalculator.calcHash(hashSource);
     if (programs[hash] === void 0) {

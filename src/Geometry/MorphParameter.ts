@@ -1,9 +1,9 @@
-import BufferAccessor from "./BufferAccessor";
+import IBufferAccessor from "./BufferAccessor";
 
 /**
  * no document
  */
 export default interface IMorphParameter {
   buffer: Float32Array;
-  accessor: BufferAccessor;
+  accessor: IBufferAccessor;
 }

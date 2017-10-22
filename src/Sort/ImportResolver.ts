@@ -16,8 +16,8 @@ export class ImportResolver extends CacheResolver<string> {
       return regex.test(str) ? ImportResolver._toAbsolute(str) : str;
     });
   }
-  public resolve(path: string): Promise<string> {
-    return super.resolve(path, (abs) => {
+  public async resolve(path: string): Promise<string> {
+    return super.resolve(path, async(abs) => {
       return this._resolve(path);
     });
   }
@@ -30,8 +30,8 @@ export class ImportResolver extends CacheResolver<string> {
     }
   }
 
-  private _fromExternal(path: string): Promise<string> {
-    return new Promise((resolve, reject) => {
+  private async _fromExternal(path: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open("GET", path);
       xhr.onload = (v) => {

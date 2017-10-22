@@ -13,11 +13,11 @@ export default class PassProgram {
    * macros registered dynamically of this programs
    * @return {[type]} [description]
    */
-  public get macros(): {[key: string]: any} {
+  public get macros(): { [key: string]: any } {
     return this._macros;
   }
 
-  public set macros(val: {[key: string]: any}) {
+  public set macros(val: { [key: string]: any }) {
     this._macros = val;
     this.dispose();
   }
@@ -28,30 +28,30 @@ export default class PassProgram {
   public get fragmentShader(): string {
     return this._fsSource;
   }
-
-  public get vertexShader(): string {
-    return this._vsSource;
-  }
   /**
    * Original vertex shader code
    * @param  {string} source [description]
    * @return {[type]}        [description]
    */
-  public set fragmentShader(source: string){
+  public set fragmentShader(source: string) {
     this._fsSource = source;
     this.dispose();
   }
 
-  public set vertexShader(source: string){
+  public get vertexShader(): string {
+    return this._vsSource;
+  }
+
+  public set vertexShader(source: string) {
     this._vsSource = source;
     this.dispose();
   }
 
-  private _programs: {[hash: number]: ManagedProgram} = {};
+  private _programs: { [hash: number]: ManagedProgram } = {};
 
   private _shaders: ManagedShader[] = [];
 
-  constructor(private _gl: WebGLRenderingContext, private _vsSource: string, private _fsSource: string, private _macros: {[key: string]: any} = {}) {
+  constructor(private _gl: WebGLRenderingContext, private _vsSource: string, private _fsSource: string, private _macros: { [key: string]: any } = {}) {
 
   }
   /**
@@ -62,7 +62,7 @@ export default class PassProgram {
   public getProgram(geometry: Geometry): ManagedProgram {
     if (this._programs[geometry.accessorHash]) {
       return this._programs[geometry.accessorHash];
-    }else {
+    } else {
       return this._constructProgram(geometry);
     }
   }
@@ -72,11 +72,11 @@ export default class PassProgram {
    * @param {string}         macroName [description]
    * @param {string|boolean} value     [description]
    */
-  public setMacro(macroName: string, value?: string|boolean): void {
+  public setMacro(macroName: string, value?: string | boolean): void {
     if (this._macros[macroName] !== value) {
       if (typeof value === "boolean") {
         this._macros[macroName] = value ? "" : undefined;
-      }else {
+      } else {
         this._macros[macroName] = value;
       }
       this.dispose();

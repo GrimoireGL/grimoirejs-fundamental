@@ -148,7 +148,7 @@ export default class UniformProxy {
   }
 
   private _passAsArray(variableName: string, index: number, act: (location: WebGLUniformLocation) => void) {
-    const location = this.program.findUniformLocation(variableName + "[" + index + "]");
+    const location = this.program.findUniformLocation(`${variableName}[${index}]`);
     if (location) {
       act(location);
     }

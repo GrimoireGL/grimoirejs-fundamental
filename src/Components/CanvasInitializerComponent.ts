@@ -4,10 +4,10 @@ import Identity from "grimoirejs/ref/Core/Identity";
 import Namespace from "grimoirejs/ref/Core/Namespace";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import { __NAMESPACE__ } from "../metaInfo";
-import CanvasSizeObject from "../Objects/CanvasSizeObject";
+import ICanvasSizeObject from "../Objects/CanvasSizeObject";
 import GLExtRequestor from "../Resource/GLExtRequestor";
 import Texture2D from "../Resource/Texture2D";
-import WebGLRenderingContextWithId from "../Resource/WebGLRenderingContextWithId";
+import IWebGLRenderingContextWithId from "../Resource/WebGLRenderingContextWithId";
 const ns = Namespace.define(__NAMESPACE__);
 
 enum ResizeMode {
@@ -137,8 +137,8 @@ export default class CanvasInitializerComponent extends Component {
   }
 
   private _resize(supressBroadcast?: boolean): void {
-    const widthRaw = this.getAttribute<CanvasSizeObject>("width");
-    const heightRaw = this.getAttribute<CanvasSizeObject>("height");
+    const widthRaw = this.getAttribute<ICanvasSizeObject>("width");
+    const heightRaw = this.getAttribute<ICanvasSizeObject>("height");
     this._widthMode = this._asResizeMode(widthRaw);
     this._heightMode = this._asResizeMode(heightRaw);
     if (this._widthMode === this._heightMode && this._widthMode === ResizeMode.Aspect) {
@@ -211,7 +211,7 @@ export default class CanvasInitializerComponent extends Component {
    * @param  {string  | number}      mode [description]
    * @return {ResizeMode}   [description]
    */
-  private _asResizeMode(cso: CanvasSizeObject): ResizeMode {
+  private _asResizeMode(cso: ICanvasSizeObject): ResizeMode {
     if (cso.mode === "fit") {
       return ResizeMode.Fit;
     } else if (cso.mode === "aspect") {
@@ -240,7 +240,7 @@ export default class CanvasInitializerComponent extends Component {
     this._resize(true);
   }
 
-  private _getContext(canvas: HTMLCanvasElement): WebGLRenderingContextWithId {
+  private _getContext(canvas: HTMLCanvasElement): IWebGLRenderingContextWithId {
     const contextConfig = {
       antialias: this.getAttribute("antialias"),
       preserveDrawingBuffer: this.getAttribute("preserveDrawingBuffer"),
@@ -258,8 +258,8 @@ export default class CanvasInitializerComponent extends Component {
   /**
    * Insert __id__property to be identify rendering contexts
    */
-  private _applyContextId(context: WebGLRenderingContext): WebGLRenderingContextWithId {
-    const contextWithId = context as WebGLRenderingContextWithId;
+  private _applyContextId(context: WebGLRenderingContext): IWebGLRenderingContextWithId {
+    const contextWithId = context as IWebGLRenderingContextWithId;
     contextWithId.__id__ = Math.random().toString(36).slice(-6); // Generating random string
     return contextWithId;
   }

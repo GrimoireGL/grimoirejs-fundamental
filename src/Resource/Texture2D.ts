@@ -15,6 +15,8 @@ type ResizeResult = {
 };
 
 export default class Texture2D extends ResourceBase {
+
+  public static maxTextureSize: number;
   public static defaultTextures: Map<WebGLRenderingContext, Texture2D> = new Map<WebGLRenderingContext, Texture2D>();
 
   private static _resizerCanvas: HTMLCanvasElement = document.createElement("canvas");
@@ -29,8 +31,6 @@ export default class Texture2D extends ResourceBase {
     WebGLRenderingContext.NEAREST_MIPMAP_LINEAR,
     WebGLRenderingContext.NEAREST_MIPMAP_NEAREST,
   ];
-
-  public static maxTextureSize: number;
 
   public static generateDefaultTexture(gl: WebGLRenderingContext): void {
     Texture2D.defaultTextures.set(gl, null); // for preventing called this method recursively by instanciating default texture
@@ -103,7 +103,7 @@ export default class Texture2D extends ResourceBase {
     return this._height;
   }
 
-  public get viewport(): Viewport{
+  public get viewport(): Viewport {
     return new Viewport(0, 0, this.width, this.height);
   }
 

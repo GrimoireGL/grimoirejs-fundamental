@@ -1,6 +1,8 @@
 import GrimoireInterface from "grimoirejs";
+import Namespace from "grimoirejs/ref/Core/Namespace";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Material from "../Material/Material";
+import { __NAMESPACE__ } from "../metaInfo";
 import DrawPriorty from "../SceneRenderer/DrawPriorty";
 import MaterialComponent from "./MaterialComponent";
 import MaterialContainerBase from "./MaterialContainerBase";
@@ -41,7 +43,8 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
   public static rewriteDefaultMaterial(materialName: string): void {
     if (materialName !== MaterialContainerComponent._defaultMaterial) {
       MaterialContainerComponent._defaultMaterial = materialName;
-      GrimoireInterface.componentDeclarations.get("MaterialContainer").attributes["material"].default = `new(${materialName})`;
+      const name = Namespace.define(__NAMESPACE__).for(this.componentName);
+      GrimoireInterface.componentDeclarations.get(name).attributes["material"].default = `new(${materialName})`;
     }
   }
 
@@ -90,7 +93,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
   }
 
   protected $mount(): void {
-    this.getAttributeRaw("material").watch(this._onMaterialChanged.bind(this));
+    this.getAttributeRaw("material").watch(this._onMaterialChanged.bind(this)); // TODO should disable watch if component is not active?
     this.__registerAssetLoading(this._onMaterialChanged());
     this.getAttributeRaw("drawOrder").bindTo("_drawOrder");
     this.getAttributeRaw("transparent").bindTo("_transparent");

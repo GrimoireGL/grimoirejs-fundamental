@@ -66,7 +66,7 @@ export default class RendererManagerComponent extends Component {
   protected $treeInitialized(): void {
     this.node.getComponent(LoopManagerComponent).register(this.onloop.bind(this), 1000);
     if (this.getAttribute("complementRenderer") && this.node.getChildrenByNodeName("renderer").length === 0) {
-      this.node.addChildByName("renderer", {});
+      this.node.addChildByName("renderer");
     }
     this._importSortFromHTML();
   }
@@ -77,7 +77,6 @@ export default class RendererManagerComponent extends Component {
     }
     const scripts = document.getElementsByTagName("script");
     for (let i = 0; i < scripts.length; i++) {
-      i = i;
       const script = scripts.item(i);
       if (script.getAttribute("type") === "text/sort") { // If the script tag is for shader file
         const typeName = script.getAttribute("typeName");

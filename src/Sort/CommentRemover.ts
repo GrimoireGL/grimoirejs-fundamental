@@ -10,6 +10,11 @@ enum CommentParsingStatus {
 }
 
 export default class CommentRemover {
+  public static remove(source: string): string {
+    const remover = new CommentRemover(source);
+    return remover.removedSource;
+  }
+
   public removedSource: string;
 
   private _status: CommentParsingStatus = CommentParsingStatus.Default;
@@ -18,11 +23,6 @@ export default class CommentRemover {
 
   private get _isInComment(): boolean {
     return this._status === CommentParsingStatus.MultilineComment || this._status === CommentParsingStatus.SinglelineComment;
-  }
-
-  public static remove(source: string): string {
-    const remover = new CommentRemover(source);
-    return remover.removedSource;
   }
 
   constructor(public source: string) {
@@ -43,7 +43,6 @@ export default class CommentRemover {
       switch (this._status) {
         case CommentParsingStatus.Default:
           this._defaultParsing(c, cn);
-          break;
       }
       if (!this._isInComment || c === "\n") {
         text += c;

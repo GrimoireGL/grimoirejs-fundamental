@@ -163,6 +163,19 @@ export default class TransformComponent extends Component {
     return this._cacheVM;
   }
 
+  public notifyUpdateTransform(): void {
+    if (!this._updatedTransform) {
+      this._updatedTransform = true;
+      this._children.forEach(c => c.notifyUpdateTransform());
+    }
+  }
+
+  public applyMatrix(mat: Matrix): void {
+    this.setAttribute("scale", mat.getScaling());
+    this.setAttribute("rotation", mat.getRotation());
+    this.setAttribute("position", mat.getTranslation());
+  }
+
   protected $awake(): void {
     // register observers
     this.getAttributeRaw("position").watch((v) => {
@@ -191,19 +204,6 @@ export default class TransformComponent extends Component {
       this._parentTransform._children.splice(this._parentTransform._children.indexOf(this), 1);
       this._parentTransform = null;
     }
-  }
-
-  public notifyUpdateTransform(): void {
-    if (!this._updatedTransform) {
-      this._updatedTransform = true;
-      this._children.forEach(c => c.notifyUpdateTransform());
-    }
-  }
-
-  public applyMatrix(mat: Matrix): void {
-    this.setAttribute("scale", mat.getScaling());
-    this.setAttribute("rotation", mat.getRotation());
-    this.setAttribute("position", mat.getTranslation());
   }
 
   private _updateTransform(noDirectionalUpdate?: boolean): void {

@@ -7,7 +7,7 @@ export default class ExternalResourceResolver<T> extends CacheResolver<T> {
    * @return {boolean}         [description]
    */
   public static isDataURL(dataUrl: string): boolean {
-      return !!dataUrl.match(/^\s*data\:.*;base64/);
+    return !!dataUrl.match(/^\s*data\:.*;base64/);
   }
 
   /**
@@ -21,7 +21,7 @@ export default class ExternalResourceResolver<T> extends CacheResolver<T> {
     }
     const link = document.createElement("a");
     link.href = href;
-    return (link.protocol + "//" + link.host + link.pathname + link.search + link.hash);
+    return `${link.protocol}//${link.host}${link.pathname}${link.search}${link.hash}`;
   }
 
   constructor() {

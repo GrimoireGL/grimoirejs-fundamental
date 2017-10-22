@@ -70,7 +70,7 @@ export default class GeometryFactory extends GLRelatedRegistryBase {
     return geometry;
   }
 
-  public instanciateAsDefault(type: string): Promise<Geometry> {
+  public async instanciateAsDefault(type: string): Promise<Geometry> {
     const decl = GeometryFactory.factoryArgumentDeclarations[type];
     const args: { [key: string]: any } = {};
     for (const attr in decl) {

@@ -1,4 +1,4 @@
-import CanvasSizeObject from "../Objects/CanvasSizeObject";
+import ICanvasSizeObject from "../Objects/CanvasSizeObject";
 /**
  * キャンバスのサイズ用のコンバーター
  * 数値を指定した場合(`100`など)はその値をそのまま返す。
@@ -11,7 +11,7 @@ export default function CanvasSizeConverter(val: any): any {
   if (val === "fit") {
     return {
       mode: "fit",
-    } as CanvasSizeObject;
+    } as ICanvasSizeObject;
   }
   if (typeof val === "string") {
     const matched = /aspect\(([\d+(?.\d*)?]+)\)/.exec(val);
@@ -25,5 +25,5 @@ export default function CanvasSizeConverter(val: any): any {
   return {
     mode: "manual",
     size: Number.parseFloat(val),
-  } as CanvasSizeObject;
+  } as ICanvasSizeObject;
 }

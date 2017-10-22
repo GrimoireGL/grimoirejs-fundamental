@@ -1,6 +1,6 @@
 import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
-import ViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
+import IViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
 import IViewportMouseEvent from "../../Objects/ViewportMouseEvent";
 
 /**
@@ -28,7 +28,7 @@ export default class RenderStageBase extends Component {
       left: false,
       right: false,
       inside: false,
-    } as ViewportBaseMouseState,
+    } as IViewportBaseMouseState,
   };
 
   protected $mousemove(v: IViewportMouseEvent): void {
@@ -52,7 +52,7 @@ export default class RenderStageBase extends Component {
   }
 
   private _assignMouseState(v: IViewportMouseEvent): void {
-    const mouseDesc: ViewportBaseMouseState = this.rendererDescription["mouse"];
+    const mouseDesc: IViewportBaseMouseState = this.rendererDescription["mouse"];
     mouseDesc.inside = v.inside;
     mouseDesc.coords["viewport"] = [v.viewportX, v.viewportY];
     mouseDesc.coords["viewportNormalized"] = [v.viewportNormalizedX, v.viewportNormalizedY];
