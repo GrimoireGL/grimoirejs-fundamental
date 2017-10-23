@@ -51,7 +51,7 @@
     "watch": "^1.0.2",
     "webpack": "^3.5.5",
     "xmldom": "^0.1.27",
-    "yargs": "^8.0.2"
+    "yargs": "^10.0.3"
   },
   "peerDependencies": {
     "grimoirejs": "latest",
