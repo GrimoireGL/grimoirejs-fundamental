@@ -3,6 +3,16 @@
 #ifdef FS
   #define FS_PREC(prec,type) precision prec type;
   #define VS_PREC(prec,type)
+  #ifdef GL_FRAGMENT_PRECISION_HIGH
+    #if GL_FRAGMENT_PRECISION_HIGH > 0
+      #define PREFER_HIGHP highp
+    #else
+      #define PREFER_HIGHP mediump
+    #endif
+  #endif
+  #ifndef GL_FRAGMENT_PRECISION_HIGH
+    #define PREFER_HIGHP mediump
+  #endif
 #endif
 #ifdef VS
 #define VS_PREC(prec,type) precision prec type;

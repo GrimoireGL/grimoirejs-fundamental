@@ -24,7 +24,6 @@ UniformResolverRegistry.add("TIME", (valInfo: IVariableInfo) => {
   switch (unit) {
     case "s":
       divider = 1000;
-      break;
   }
   return (proxy: UniformProxy, args: IMaterialArgument) => {
     proxy.uniformFloat(valInfo.name, (Date.now() / divider) % 100000);
