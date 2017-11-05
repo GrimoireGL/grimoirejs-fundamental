@@ -1,7 +1,0 @@
-<goml bgColor="red">
-  <import-material typeName="macroTest" src="./macroTest.sort"/>
-  <scene>
-    <camera/>
-    <mesh material="new(macroTest)"/>
-  </scene>
-</goml>

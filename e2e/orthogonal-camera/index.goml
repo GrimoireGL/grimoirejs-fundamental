@@ -1,6 +1,0 @@
-<goml>
-  <scene>
-    <camera orthogonal="true" orthoSize="3"/>
-    <mesh geometry="cube" color="blue" rotation="45d,45d,0"/>
-  </scene>
-</goml>

@@ -1,4 +1,5 @@
 import Namespace from "grimoirejs/ref/Base/Namespace";
+import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import Material from "../Material/Material";
 import BasicComponent from "./BasicComponent";
 
@@ -7,11 +8,15 @@ import BasicComponent from "./BasicComponent";
  * Basically used for MaterialComponent and MaterialContainerComponent
  */
 export default class MaterialContainerBase extends BasicComponent {
+
+  protected _lastParameters: { [key: string]: IAttributeDeclaration & { __lastValue?: any } } = {};
+
   /**
    * Expose sepcified parameters as attribute parameters on this component
    * @param {Material} material [description]
    */
-  protected __exposeMaterialParameters(material: Material): void {
+  protected __exposeMaterialParameters(material: Material, keepVariable = true): void {
+    const nextParameters: { [key: string]: IAttributeDeclaration } = {};
     for (const techniqueName in material.techniques) {
       const technique = material.techniques[techniqueName];
       for (const passIndex in technique.passes) {
@@ -23,10 +28,13 @@ export default class MaterialContainerBase extends BasicComponent {
           // Pass variables are registered with nested namespaces as following syntax.
           // ${techniqueName}.pass${passIndex}.${variableName}
           // EX) hitarea.pass0.enabled
+          nextParameters[argumentFQN] = pass.argumentDeclarations[argumentKey];
           this.__addAttribute(argumentFQN, pass.argumentDeclarations[argumentKey]);
           try {
             if (typeof pass.arguments[argumentKey] !== "undefined") {
               this.setAttribute(argumentFQN, pass.arguments[argumentKey]);
+            } else if (keepVariable && this._lastParameters[argumentFQN] !== void 0 && this._lastParameters[argumentFQN].converter === pass.argumentDeclarations[argumentKey].converter) {
+              this.setAttribute(argumentFQN, this._lastParameters[argumentFQN].__lastValue);
             }
             // Register handlers to update pass variables when tag variable was changed
             this.getAttributeRaw(argumentFQN).watch((n, o) => {
@@ -37,6 +45,14 @@ export default class MaterialContainerBase extends BasicComponent {
           }
         }
       }
+    }
+    this._lastParameters = nextParameters;
+  }
+
+  protected __removeExposedMaterialParameters(): void {
+    for (const key in this._lastParameters) {
+      this._lastParameters[key].__lastValue = this.getAttribute(key);
+      this.__removeAttributes(key);
     }
   }
 }

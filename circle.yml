@@ -6,32 +6,17 @@ machine:
   timezone: Asia/Tokyo
   node:
     version: 8.5.0
-  post:
-    - curl -o- -L https://yarnpkg.com/install.sh | bash
-    - sudo pip install awscli
-
-dependencies:
-  cache_directories:
-    - "~/.cache/yarn"
-
-  pre:
-    - yarn --version
-
-  override:
-    - yarn install
-
 test:
   override:
     - npm run build -- --env.prod && npm test
-    - npm run hs & npm run e2e-test
-    - aws s3 cp $CIRCLE_ARTIFACTS/ s3://circleci-grimoire-e2e/ci/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BUILD_NUM --recursive --acl public-read
-    - curl https://grimoire-e2e.herokuapp.com/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PREVIOUS_BUILD_NUM/$CIRCLE_BUILD_NUM?pr=$CI_PULL_REQUEST
+    - sh -x shell/e2e.sh
   post:
     - sh release.sh
-
 deployment:
   deploy:
     branch: master
     commands:
       - npm run doc
-      - aws s3 cp ./docs/ s3://api.grimoire.gl/$CIRCLE_PROJECT_REPONAME --recursive --acl public-read
+      - >-
+        aws s3 cp ./docs/ s3://api.grimoire.gl/$CIRCLE_PROJECT_REPONAME
+        --recursive --acl public-read
