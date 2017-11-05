@@ -106,7 +106,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
     }
     this.useMaterial = true;
     if (this._registeredAttributes) {
-      this.__removeAttributes();
+      this.__removeExposedMaterialParameters();
     }
     if (!this._materialComponent) { // the material must be instanciated by attribute.
       await this._prepareInternalMaterial(materialPromise);
