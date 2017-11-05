@@ -33,7 +33,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "condition-circle": "^1.5.0",
     "cpx": "^1.5.0",
-    "grimoirejs": "^0.19.5",
+    "grimoirejs": "^0.21.1",
     "grimoirejs-cauldron": "^3.1.5",
     "grimoirejs-math": "^1.14.5",
     "http-server": "^0.10.0",
