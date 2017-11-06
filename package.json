@@ -19,7 +19,7 @@
     "webgl"
   ],
   "dependencies": {
-    "@types/node": "^8.0.24",
+    "@types/node": "^8.0.47",
     "trash-cli": "^1.4.0"
   },
   "devDependencies": {
@@ -34,19 +34,19 @@
     "condition-circle": "^1.5.0",
     "cpx": "^1.5.0",
     "grimoirejs": "^0.19.5",
-    "grimoirejs-cauldron": "^3.1.5",
-    "grimoirejs-math": "^1.14.5",
+    "grimoirejs-cauldron": "^3.1.8",
+    "grimoirejs-math": "^1.15.1",
     "http-server": "^0.10.0",
     "raw-loader": "^0.5.1",
     "regenerator-runtime": "^0.11.0",
     "semantic-release": "^7.0.2",
     "sinon": "^3.2.1",
     "ts-loader": "^2.3.3",
-    "tslint": "^5.7.0",
+    "tslint": "^5.8.0",
     "typedoc": "^0.8.0",
-    "typescript": "^2.4.2",
+    "typescript": "^2.6.1",
     "watch": "^1.0.2",
-    "webpack": "^3.5.5",
+    "webpack": "^3.8.1",
     "xmldom": "^0.1.27",
     "yargs": "^8.0.2"
   },
