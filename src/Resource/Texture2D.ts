@@ -206,14 +206,14 @@ export default class Texture2D extends ResourceBase {
     this.valid = true;
   }
 
-  public getRawPixels(): Uint8Array {
+  public getRawPixels(x = 0, y = 0, width = this.width, height = this.height): Uint8Array {
     if (this._type === WebGLRenderingContext.UNSIGNED_BYTE && this._format === WebGLRenderingContext.RGBA) {
-      const buffer = new Uint8Array(this.width * this.height * 4);
+      const buffer = new Uint8Array(width * height * 4);
       const frame = this.gl.createFramebuffer();
       this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, frame);
       this.gl.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, WebGLRenderingContext.TEXTURE_2D, this.texture, 0);
       if (this.gl.checkFramebufferStatus(WebGLRenderingContext.FRAMEBUFFER) === WebGLRenderingContext.FRAMEBUFFER_COMPLETE) {
-        this.gl.readPixels(0, 0, this.width, this.height, this._format, this._type, buffer);
+        this.gl.readPixels(x, y, width, height, this._format, this._type, buffer);
       }
       this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
       return buffer;

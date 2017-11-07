@@ -103,7 +103,7 @@ export default class MeshRenderer extends Component implements IRenderable {
 
     public $awake(): void {
         this.__bindAttributes();
-        this.getAttributeRaw("geometry").watch(async () => {
+        this.getAttributeRaw("geometry").watch(async() => {
             this.geometryInstance = await this.geometry;
         }, true);
     }
