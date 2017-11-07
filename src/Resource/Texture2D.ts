@@ -103,7 +103,7 @@ export default class Texture2D extends ResourceBase {
     return this._height;
   }
 
-  public get viewport(): Viewport{
+  public get viewport(): Viewport {
     return new Viewport(0, 0, this.width, this.height);
   }
 
@@ -155,9 +155,10 @@ export default class Texture2D extends ResourceBase {
     let width: number;
     let level: number;
     if (height === void 0) {
-      uploadConfig = widthOrConfig || {
-        flipY: false,
+      uploadConfig = {
+        flipY: true,
         premultipliedAlpha: false,
+        ...widthOrConfig,
       };
       image = levelOrImage as HTMLImageElement;
     } else {

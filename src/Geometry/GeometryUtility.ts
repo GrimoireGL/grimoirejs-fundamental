@@ -30,7 +30,7 @@ export default class GeometryUtility {
         ret[fi + 5] = normal[2];
 
         ret[fi + 6] = reverse ? 1 - 1 / hdiv * h : 1 / hdiv * h;
-        ret[fi + 7] = 1 - 1 / vdiv * v;
+        ret[fi + 7] = 1 / vdiv * v;
       }
     }
     return ret;
@@ -60,7 +60,7 @@ export default class GeometryUtility {
         }
 
         ret[fi + 6] = 1 / divide * (order + 1 + h);
-        ret[fi + 7] = v === 0 ? 1 : 0;
+        ret[fi + 7] = v === 0 ? 0 : 1;
       }
     }
     return ret;
@@ -174,7 +174,7 @@ export default class GeometryUtility {
       ret[fi + 5] = normal[2];
 
       ret[fi + 6] = 0.5 + 0.5 * s;
-      ret[fi + 7] = 0.5 - 0.5 * c;
+      ret[fi + 7] = 0.5 + 0.5 * c;
     }
     return ret;
   }
@@ -212,7 +212,7 @@ export default class GeometryUtility {
         ret[8 * (vdiv * i + j) + 4] = ret[8 * (vdiv * i + j) + 1] / d;
         ret[8 * (vdiv * i + j) + 5] = ret[8 * (vdiv * i + j) + 2] / d;
         ret[8 * (vdiv * i + j) + 6] = 1 - j / (hdiv - 1);
-        ret[8 * (vdiv * i + j) + 7] = 1 - i / (vdiv - 1);
+        ret[8 * (vdiv * i + j) + 7] = i / (vdiv - 1);
       }
     }
     return ret;
@@ -225,15 +225,15 @@ export default class GeometryUtility {
         ret[8 * (vdiv * i + j) + 0] = center[0]
           + Math.sin(Math.PI * i / (vdiv - 1)) * (right[0] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[0] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          -  up[0] * Math.cos(Math.PI * i / (vdiv - 1));
+          - up[0] * Math.cos(Math.PI * i / (vdiv - 1));
         ret[8 * (vdiv * i + j) + 1] = center[1]
-          +  Math.sin(Math.PI * i / (vdiv - 1)) * (right[1] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
+          + Math.sin(Math.PI * i / (vdiv - 1)) * (right[1] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[1] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          -  up[1] * Math.cos(Math.PI * i / (vdiv - 1));
+          - up[1] * Math.cos(Math.PI * i / (vdiv - 1));
         ret[8 * (vdiv * i + j) + 2] = center[2]
-          +  Math.sin(Math.PI * i / (vdiv - 1)) * (right[2] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
+          + Math.sin(Math.PI * i / (vdiv - 1)) * (right[2] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[2] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
-          -  up[2] * Math.cos(Math.PI * i / (vdiv - 1));
+          - up[2] * Math.cos(Math.PI * i / (vdiv - 1));
         const d = Math.pow(
           ret[8 * (vdiv * i + j) + 0] * ret[8 * (vdiv * i + j) + 0] +
           ret[8 * (vdiv * i + j) + 1] * ret[8 * (vdiv * i + j) + 1] +
@@ -242,7 +242,7 @@ export default class GeometryUtility {
         ret[8 * (vdiv * i + j) + 4] = ret[8 * (vdiv * i + j) + 1] / d;
         ret[8 * (vdiv * i + j) + 5] = ret[8 * (vdiv * i + j) + 2] / d;
         ret[8 * (vdiv * i + j) + 6] = 1 - j / (hdiv - 1);
-        ret[8 * (vdiv * i + j) + 7] = 1 - i / (vdiv - 1);
+        ret[8 * (vdiv * i + j) + 7] = i / (vdiv - 1);
       }
     }
     return ret;
