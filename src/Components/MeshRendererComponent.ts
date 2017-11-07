@@ -93,7 +93,7 @@ export default class MeshRenderer extends Component implements IRenderable {
     private _priortyCalcCache = new Float32Array(3);
 
     public getRenderingPriorty(camera: CameraComponent, technique: string): number {
-        if (!this.geometryInstance) {
+        if (!this.geometryInstance || !this._materialContainer.material.techniques[technique]) {
             return Number.NEGATIVE_INFINITY;
         }
         vec3.add(this._priortyCalcCache, camera.transform.globalPosition.rawElements, this.geometryInstance.aabb.Center.rawElements);
@@ -103,7 +103,7 @@ export default class MeshRenderer extends Component implements IRenderable {
 
     public $awake(): void {
         this.__bindAttributes();
-        this.getAttributeRaw("geometry").watch(async() => {
+        this.getAttributeRaw("geometry").watch(async () => {
             this.geometryInstance = await this.geometry;
         }, true);
     }
