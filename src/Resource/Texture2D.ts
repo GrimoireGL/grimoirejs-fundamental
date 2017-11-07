@@ -224,7 +224,7 @@ export default class Texture2D extends ResourceBase {
 
   public applyDraw(): void {
     if (this._drawerContext) {
-      this.update(this._drawerContext.canvas);
+      this.update(this._drawerContext.canvas, { flipY: false });
     }
   }
 

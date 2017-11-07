@@ -110,6 +110,10 @@ export default class CanvasInitializerComponent extends Component {
     });
   }
 
+  public notifySizeChanged(): void {
+    this._onWindowResize();
+  }
+
   /**
    * Generate canvas element
    * @param  {Element}           parent [description]
@@ -154,13 +158,13 @@ export default class CanvasInitializerComponent extends Component {
   private _onWindowResize(supressBroadcast?: boolean): void {
     const size = this._getParentSize();
     if (this._widthMode === ResizeMode.Fit) {
-      this._applyManualWidth(size.width, supressBroadcast);
+      this._applyManualWidth(size[0], supressBroadcast);
     }
     if (this._heightMode === ResizeMode.Fit) {
-      if (size.height === 0 && gr.debug) {
+      if (size[1] === 0 && gr.debug) {
         console.warn("Canvas height parameter specified as fit and height of parent element is 0.\n This is possibly the reason you haven't set css to html or body element.");
       }
-      this._applyManualHeight(size.height, supressBroadcast);
+      this._applyManualHeight(size[1], supressBroadcast);
     }
   }
 
@@ -192,10 +196,20 @@ export default class CanvasInitializerComponent extends Component {
     }
   }
 
-  private _getParentSize(): ClientRect {
+  private _getParentSize(): number[] {
     const parent = this._canvasContainer.parentElement;
-    const boundingBox = parent.getBoundingClientRect();
-    return boundingBox;
+    const cs = getComputedStyle(parent);
+
+    const paddingX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+    const paddingY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+
+    const borderX = parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth);
+    const borderY = parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
+
+    // Element width and height minus padding and border
+    const elementWidth = parent.offsetWidth - paddingX - borderX;
+    const elementHeight = parent.offsetHeight - paddingY - borderY;
+    return [elementWidth, elementHeight];
   }
 
   /**
@@ -250,7 +264,7 @@ export default class CanvasInitializerComponent extends Component {
   /**
    * Insert __id__property to be identify rendering contexts
    */
-  private _applyContextId(context: WebGLRenderingContext): WebGLRenderingContextWithId{
+  private _applyContextId(context: WebGLRenderingContext): WebGLRenderingContextWithId {
     const contextWithId = context as WebGLRenderingContextWithId;
     contextWithId.__id__ = Math.random().toString(36).slice(-6); // Generating random string
     return contextWithId;
