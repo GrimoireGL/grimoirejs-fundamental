@@ -1,5 +1,5 @@
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
-import ResourceBase from "./ResourceBase";
+import GLResource from "./GLResource";
 import Viewport from "./Viewport";
 type ImageSource = HTMLVideoElement | HTMLCanvasElement | HTMLImageElement | ImageData;
 
@@ -14,7 +14,7 @@ type ResizeResult = {
   height: number,
 };
 
-export default class Texture2D extends ResourceBase {
+export default class Texture2D extends GLResource<WebGLTexture> {
   public static defaultTextures: Map<WebGLRenderingContext, Texture2D> = new Map<WebGLRenderingContext, Texture2D>();
 
   private static _resizerCanvas: HTMLCanvasElement = document.createElement("canvas");
@@ -38,8 +38,6 @@ export default class Texture2D extends ResourceBase {
     texture.update(0, 1, 1, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0]));
     Texture2D.defaultTextures.set(gl, texture);
   }
-
-  public readonly texture: WebGLTexture;
 
   public get magFilter(): number {
     return this._magFilter;
@@ -139,17 +137,16 @@ export default class Texture2D extends ResourceBase {
   private _type: number;
 
   constructor(gl: WebGLRenderingContext) {
-    super(gl);
+    super(gl, gl.createTexture());
     if (!Texture2D.maxTextureSize) {
       Texture2D.maxTextureSize = gl.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE);
     }
-    this.texture = gl.createTexture();
   }
 
   public update(level: number, width: number, height: number, border: number, format: number, type: number, pxiels?: ArrayBufferView, config?: ImageUploadConfig): void;
   public update(image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement, config?: ImageUploadConfig): void;
   public update(levelOrImage: any, widthOrConfig: any, height?: number, border?: number, format?: number, type?: number, pixels?: ArrayBufferView, config?: ImageUploadConfig): void {
-    this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.texture);
+    this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.resourceReference);
     let uploadConfig: ImageUploadConfig;
     let image: HTMLImageElement;
     let width: number;
@@ -211,7 +208,7 @@ export default class Texture2D extends ResourceBase {
       const buffer = new Uint8Array(width * height * 4);
       const frame = this.gl.createFramebuffer();
       this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, frame);
-      this.gl.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, WebGLRenderingContext.TEXTURE_2D, this.texture, 0);
+      this.gl.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, WebGLRenderingContext.TEXTURE_2D, this.resourceReference, 0);
       if (this.gl.checkFramebufferStatus(WebGLRenderingContext.FRAMEBUFFER) === WebGLRenderingContext.FRAMEBUFFER_COMPLETE) {
         this.gl.readPixels(x, y, width, height, this._format, this._type, buffer);
       }
@@ -230,7 +227,7 @@ export default class Texture2D extends ResourceBase {
 
   public register(registerNumber: number): void {
     this.gl.activeTexture(WebGLRenderingContext.TEXTURE0 + registerNumber);
-    this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.texture);
+    this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.resourceReference);
     if (this._texParameterChanged) {
       this._updateTexParameter();
     }
@@ -238,7 +235,7 @@ export default class Texture2D extends ResourceBase {
 
   public destroy(): void {
     super.destroy();
-    this.gl.deleteTexture(this.texture);
+    this.gl.deleteTexture(this.resourceReference);
   }
 
   private _justifyResource(image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): ResizeResult {
@@ -326,7 +323,7 @@ export default class Texture2D extends ResourceBase {
 
   private _ensureMipmap(): void {
     if (Texture2D._filtersNeedsMipmap.indexOf(this.magFilter) >= 0 || Texture2D._filtersNeedsMipmap.indexOf(this.minFilter) >= 0) {
-      this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.texture);
+      this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.resourceReference);
       this.gl.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
     }
   }

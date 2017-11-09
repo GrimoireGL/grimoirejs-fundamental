@@ -1,8 +1,6 @@
-import ResourceBase from "./ResourceBase";
+import GLResource from "./GLResource";
 
-export default class Buffer extends ResourceBase {
-  public readonly buffer: WebGLBuffer;
-
+export default class Buffer extends GLResource<WebGLBuffer> {
   /**
    * If this flag was true, buffer instance will keep Float32Array on class field.
    */
@@ -19,8 +17,7 @@ export default class Buffer extends ResourceBase {
   private _bufferSource: BufferSource = null;
 
   constructor(gl: WebGLRenderingContext, public readonly target: number = WebGLRenderingContext.ARRAY_BUFFER, public usage: number = WebGLRenderingContext.STATIC_DRAW) {
-    super(gl);
-    this.buffer = gl.createBuffer();
+    super(gl, gl.createBuffer());
   }
 
   public update(length: number): void;
@@ -46,12 +43,12 @@ export default class Buffer extends ResourceBase {
   }
 
   public bind(): void {
-    this.gl.bindBuffer(this.target, this.buffer);
+    this.gl.bindBuffer(this.target, this.resourceReference);
   }
 
   public destroy(): void {
     super.destroy();
     this._bufferSource = null;
-    this.gl.deleteBuffer(this.buffer);
+    this.gl.deleteBuffer(this.resourceReference);
   }
 }
