@@ -7,6 +7,23 @@ import IRenderingTarget from "./IRenderingTarget";
  * Render target contains texture and render buffer
  */
 export default class OffscreenRenderTarget implements IRenderingTarget {
+    public readonly fbo: FrameBuffer;
+
+    public get texture(): Texture2D {
+        return this.textures[0];
+    }
+
+    constructor(public gl: WebGLRenderingContext, public textures: Texture2D[], public depthBuffer?: RenderBuffer) {
+        if (textures.length === 0) {
+            throw new Error("Textures must contain 1 texture at least");
+        }
+        this.fbo = new FrameBuffer(gl);
+        for (let i = 0; i < textures.length; i++) {
+            this.fbo.update(this.textures[i], 0, i);
+        }
+        this.fbo.update(depthBuffer);
+    }
+
     public beforeDraw(clearFlag: number, color: number[], depth: number): void {
         this.bind();
         if (clearFlag !== 0) {
@@ -39,20 +56,4 @@ export default class OffscreenRenderTarget implements IRenderingTarget {
         this.fbo.bind();
     }
 
-    public readonly fbo: FrameBuffer;
-
-    public get texture(): Texture2D {
-        return this.textures[0];
-    }
-
-    constructor(public gl: WebGLRenderingContext, public textures: Texture2D[], public depthBuffer?: RenderBuffer) {
-        if (textures.length === 0) {
-            throw new Error("Textures must contain 1 texture at least");
-        }
-        this.fbo = new FrameBuffer(gl);
-        for (let i = 0; i < textures.length; i++) {
-            this.fbo.update(this.textures[i], 0, i);
-        }
-        this.fbo.update(depthBuffer);
-    }
 }

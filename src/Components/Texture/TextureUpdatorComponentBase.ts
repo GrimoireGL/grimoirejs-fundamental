@@ -7,7 +7,7 @@ export default class TextureUpdatorComponentBase extends ResizableResourceUpdato
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         flipY: {
             converter: "Boolean",
-            default: false,
+            default: true,
         },
         premultipliedAlpha: {
             converter: "Boolean",

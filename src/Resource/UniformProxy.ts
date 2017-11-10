@@ -148,6 +148,7 @@ export default class UniformProxy {
   }
 
   private _passAsArray(variableName: string, index: number, act: (location: WebGLUniformLocation) => void) {
+    // tslint:disable-next-line:prefer-template
     const location = this.program.findUniformLocation(variableName + "[" + index + "]");
     if (location) {
       act(location);
