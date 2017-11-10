@@ -16,7 +16,7 @@ export default class GLStateConfigurator {
     WebGLRenderingContext.SAMPLE_ALPHA_TO_COVERAGE,
     WebGLRenderingContext.SAMPLE_COVERAGE];
 
-  private static _dynamicStateResolvers: { [key: string]: IDynamicStateResolver } = {...DefaultDynamicStateResolver};
+  private static _dynamicStateResolvers: { [key: string]: IDynamicStateResolver } = { ...DefaultDynamicStateResolver };
 
   public static registerDynamicStateResolver(key: string, resolver: IDynamicStateResolver): void {
     GLStateConfigurator._dynamicStateResolvers[key] = resolver;
@@ -80,9 +80,6 @@ export default class GLStateConfigurator {
     }
     if (functions.frontFace) {
       gl.frontFace(functions.frontFace[0]);
-    }
-    if (functions.lineWidth) {
-      gl.lineWidth(functions.lineWidth[0]);
     }
     if (functions.polygonOffset) {
       gl.polygonOffset(functions.polygonOffset[0], functions.polygonOffset[1]);

@@ -145,6 +145,8 @@ export default class SortTransformUtility {
         frontFace: [WebGLRenderingContext.CCW],
         depthRange: [0, 1],
         depthFunc: [WebGLRenderingContext.LESS],
+        depthMask: [true],
+        colorMask: [true, true, true, true],
       },
       dynamicState: [],
     };
