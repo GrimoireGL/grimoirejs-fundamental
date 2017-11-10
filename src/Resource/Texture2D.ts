@@ -1,35 +1,15 @@
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 import GLResource from "./GLResource";
+import GLUtility from "./GLUtility";
+import Texture from "./Texture";
 import Viewport from "./Viewport";
-type ImageSource = HTMLVideoElement | HTMLCanvasElement | HTMLImageElement | ImageData;
-
 export type ImageUploadConfig = {
   flipY?: boolean,
   premultipliedAlpha?: boolean,
 };
 
-type ResizeResult = {
-  result: ImageSource,
-  width: number,
-  height: number,
-};
-
-export default class Texture2D extends GLResource<WebGLTexture> {
+export default class Texture2D extends Texture {
   public static defaultTextures: Map<WebGLRenderingContext, Texture2D> = new Map<WebGLRenderingContext, Texture2D>();
-
-  private static _resizerCanvas: HTMLCanvasElement = document.createElement("canvas");
-
-  /**
-   * ミップマップの更新が必要なフィルタ
-   * @type {number[]}
-   */
-  private static _filtersNeedsMipmap: number[] = [
-    WebGLRenderingContext.LINEAR_MIPMAP_LINEAR,
-    WebGLRenderingContext.LINEAR_MIPMAP_NEAREST,
-    WebGLRenderingContext.NEAREST_MIPMAP_LINEAR,
-    WebGLRenderingContext.NEAREST_MIPMAP_NEAREST,
-  ];
-
   public static maxTextureSize: number;
 
   public static generateDefaultTexture(gl: WebGLRenderingContext): void {
@@ -137,7 +117,7 @@ export default class Texture2D extends GLResource<WebGLTexture> {
   private _type: number;
 
   constructor(gl: WebGLRenderingContext) {
-    super(gl, gl.createTexture());
+    super(gl);
     if (!Texture2D.maxTextureSize) {
       Texture2D.maxTextureSize = gl.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE);
     }
@@ -175,7 +155,7 @@ export default class Texture2D extends GLResource<WebGLTexture> {
     this.gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, uploadConfig.flipY ? 1 : 0);
     this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, uploadConfig.premultipliedAlpha ? 1 : 0);
     if (height === void 0) { // something image was specified
-      const resizedResource = this._justifyResource(image);
+      const resizedResource = this.__justifyResource(image);
       this._width = resizedResource.width;
       this._height = resizedResource.height;
       this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, resizedResource.result);
@@ -203,20 +183,8 @@ export default class Texture2D extends GLResource<WebGLTexture> {
     this.valid = true;
   }
 
-  public getRawPixels(x = 0, y = 0, width = this.width, height = this.height): Uint8Array {
-    if (this._type === WebGLRenderingContext.UNSIGNED_BYTE && this._format === WebGLRenderingContext.RGBA) {
-      const buffer = new Uint8Array(width * height * 4);
-      const frame = this.gl.createFramebuffer();
-      this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, frame);
-      this.gl.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, WebGLRenderingContext.TEXTURE_2D, this.resourceReference, 0);
-      if (this.gl.checkFramebufferStatus(WebGLRenderingContext.FRAMEBUFFER) === WebGLRenderingContext.FRAMEBUFFER_COMPLETE) {
-        this.gl.readPixels(x, y, width, height, this._format, this._type, buffer);
-      }
-      this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
-      return buffer;
-    } else {
-      throw new Error("Unsupported");
-    }
+  public getRawPixels<T extends ArrayBufferView = ArrayBufferView>(x = 0, y = 0, width = this.width, height = this.height): T {
+    return this.__getRawPixels<T>(this._type, this._format, x, y, width, height);
   }
 
   public applyDraw(): void {
@@ -233,86 +201,6 @@ export default class Texture2D extends GLResource<WebGLTexture> {
     }
   }
 
-  public destroy(): void {
-    super.destroy();
-    this.gl.deleteTexture(this.resourceReference);
-  }
-
-  private _justifyResource(image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): ResizeResult {
-    if (image instanceof HTMLImageElement) {
-      return this._justifyImage(image);
-    } else if (image instanceof HTMLCanvasElement) {
-      return this._justifyCanvas(image);
-    } else if (image instanceof HTMLVideoElement) {
-      return this._justifyVideo(image);
-    } else {
-      throw new Error("Unsupported resource type");
-    }
-  }
-
-  // There should be more effective way to resize texture
-  private _justifyImage(img: HTMLImageElement): ResizeResult {
-    const w = img.naturalWidth, h = img.naturalHeight;
-    const size = TextureSizeCalculator.getPow2Size(w, h);
-    if (w !== size.width || h !== size.height) {
-      const canv = Texture2D._resizerCanvas;
-      canv.height = size.height;
-      canv.width = size.width;
-      canv.getContext("2d").drawImage(img, 0, 0, w, h, 0, 0, size.width, size.height);
-      return {
-        result: canv,
-        height: canv.height,
-        width: canv.width,
-      };
-    }
-    return {
-      result: img,
-      width: w,
-      height: h,
-    };
-  }
-
-  private _justifyCanvas(canvas: HTMLCanvasElement): ResizeResult {
-    const w = canvas.width;
-    const h = canvas.height;
-    const size = TextureSizeCalculator.getPow2Size(w, h);
-    if (w !== size.width || h !== size.height) {
-      canvas.width = size.width;
-      canvas.height = size.height;
-      return {
-        result: canvas,
-        width: canvas.width,
-        height: canvas.height,
-      };
-    }
-    return {
-      result: canvas,
-      width: canvas.width,
-      height: canvas.height,
-    };
-  }
-
-  private _justifyVideo(video: HTMLVideoElement): ResizeResult {
-    const w = video.videoWidth, h = video.videoHeight;
-    const size = TextureSizeCalculator.getPow2Size(w, h); // largest 2^n integer that does not exceed s
-    if (w !== size.width || h !== size.height) {
-      const canv = Texture2D._resizerCanvas;
-      canv.height = size.height;
-      canv.width = size.width;
-      canv.getContext("2d").drawImage(video, 0, 0, w, h, 0, 0, size.width, size.height);
-      return {
-        result: canv,
-        width: w,
-        height: h,
-      };
-    }
-    return {
-      result: video,
-      width: w,
-      height: h,
-    };
-  }
-
   private _updateTexParameter(): void {
     this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, this._minFilter);
     this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, this._magFilter);
@@ -322,7 +210,7 @@ export default class Texture2D extends GLResource<WebGLTexture> {
   }
 
   private _ensureMipmap(): void {
-    if (Texture2D._filtersNeedsMipmap.indexOf(this.magFilter) >= 0 || Texture2D._filtersNeedsMipmap.indexOf(this.minFilter) >= 0) {
+    if (this.__needMipmap(this.minFilter)) {
       this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.resourceReference);
       this.gl.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
     }
@@ -331,7 +219,8 @@ export default class Texture2D extends GLResource<WebGLTexture> {
   private _updateDrawingContextWithCurrent(): void {
     const imageData = this.drawerContext.createImageData(this.width, this.height);
     const buffer = this.getRawPixels();
-    for (let i = 0; i < buffer.length; i++) {
+    const bufferSize = this.width * this.height * GLUtility.formatToElementCount(this._format);
+    for (let i = 0; i < bufferSize; i++) {
       imageData.data[i] = buffer[i];
     }
     this.drawerContext.putImageData(imageData, 0, 0);
