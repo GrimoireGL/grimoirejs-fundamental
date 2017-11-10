@@ -119,6 +119,6 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
      * @param minFilter min filter type
      */
     protected __needMipmap(minFilter: number): boolean {
-        return Texture._filtersNeedsMipmap.includes(minFilter);
+        return Texture._filtersNeedsMipmap.indexOf(minFilter) > -1;
     }
 }
