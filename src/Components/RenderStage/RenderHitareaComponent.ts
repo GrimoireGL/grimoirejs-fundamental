@@ -81,9 +81,8 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     this._bufferViewport.configure(this._gl);
     // clear buffer if needed
     this._gl.clearColor(0, 0, 0, 0);
-    this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
     this._gl.clearDepth(1);
-    this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
+    this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);
     // draw for mesh indices
     camera.renderScene({
       renderer: this._sceneRenderer, // TODO
