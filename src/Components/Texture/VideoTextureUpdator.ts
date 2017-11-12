@@ -71,18 +71,30 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
     });
   }
 
+  public resize(width: number, height: number): void {
+    if (this.video) {
+      this.video.width = width;
+      this.video.height = height;
+      this.tryUpdateCurrentFrame();
+    }
+  }
+
   private *_update() {
     while (true) {
       if (this.currentTime !== this.video.currentTime) {
         this.currentTime = this.video.currentTime;
       }
-      if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
-        this.__texture.update(this.video, {
-          premultipliedAlpha: this.premultipliedAlpha,
-          flipY: this.flipY,
-        });
-      }
+      this.tryUpdateCurrentFrame();
       yield 1;
+    }
+  }
+
+  private tryUpdateCurrentFrame() {
+    if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
+      this.__texture.update(this.video, {
+        premultipliedAlpha: this.premultipliedAlpha,
+        flipY: this.flipY,
+      });
     }
   }
 

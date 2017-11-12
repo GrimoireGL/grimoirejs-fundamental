@@ -1,3 +1,4 @@
+import GrimoireJS from "grimoirejs";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import ViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
@@ -21,6 +22,8 @@ export default class RenderStageBase extends Component {
         } as ViewportBaseMouseState,
     };
 
+    public metadata: { [key: string]: any } = {};
+
     public $mousemove(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
@@ -39,6 +42,20 @@ export default class RenderStageBase extends Component {
 
     public $mouseup(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
+    }
+
+    protected __beforeRender(): boolean {
+        if (GrimoireJS.debug && !!window["spector"]) {
+            let metas = "";
+            for (const key in this.metadata) {
+                if (this.metadata[key] === undefined) {
+                    continue;
+                }
+                metas += `${key}=${this.metadata[key]}|`;
+            }
+            window["spector"].setMarker(`Renderer|${metas}`);
+        }
+        return true;
     }
 
     private _assignMouseState(v: ViewportMouseEvent): void {

@@ -1,3 +1,4 @@
+import grimoirejs from "grimoirejs";
 import GLM from "grimoirejs-math/ref/GLM";
 import Component from "grimoirejs/ref/Node/Component";
 import GomlNode from "grimoirejs/ref/Node/GomlNode";
@@ -139,6 +140,9 @@ export default class MeshRenderer extends Component implements IRenderable {
             technique: args.technique,
             renderable: this,
         } as IMaterialArgument;
+        if (grimoirejs.debug && window["spector"]) {
+            window["spector"].setMarker(`Mesh renderer:${this.node.id}`);
+        }
         this._materialContainer.material.draw(renderArgs);
         this.node.emit("render", args);
     }
