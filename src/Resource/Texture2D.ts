@@ -19,52 +19,6 @@ export default class Texture2D extends Texture {
     Texture2D.defaultTextures.set(gl, texture);
   }
 
-  public get magFilter(): number {
-    return this._magFilter;
-  }
-
-  public set magFilter(filter: number) {
-    if (this._magFilter !== filter) {
-      this._texParameterChanged = true;
-      this._magFilter = filter;
-      this._ensureMipmap();
-    }
-  }
-
-  public get minFilter(): number {
-    return this._minFilter;
-  }
-
-  public set minFilter(filter: number) {
-    if (this._minFilter !== filter) {
-      this._texParameterChanged = true;
-      this._minFilter = filter;
-      this._ensureMipmap();
-    }
-  }
-
-  public get wrapS(): number {
-    return this._wrapS;
-  }
-
-  public set wrapS(filter: number) {
-    if (this._wrapS !== filter) {
-      this._texParameterChanged = true;
-      this._wrapS = filter;
-    }
-  }
-
-  public get wrapT(): number {
-    return this._wrapT;
-  }
-
-  public set wrapT(filter: number) {
-    if (this._wrapT !== filter) {
-      this._texParameterChanged = true;
-      this._wrapT = filter;
-    }
-  }
-
   /**
    * Width of this texture
    * @return {number} [description]
@@ -96,17 +50,7 @@ export default class Texture2D extends Texture {
     return this._drawerContext;
   }
 
-  private _texParameterChanged = true;
-
   private _drawerContext: CanvasRenderingContext2D;
-
-  private _magFilter: number = WebGLRenderingContext.LINEAR;
-
-  private _minFilter: number = WebGLRenderingContext.LINEAR;
-
-  private _wrapS: number = WebGLRenderingContext.REPEAT;
-
-  private _wrapT: number = WebGLRenderingContext.REPEAT;
 
   private _format: number = WebGLRenderingContext.UNSIGNED_BYTE;
 
@@ -117,7 +61,7 @@ export default class Texture2D extends Texture {
   private _type: number;
 
   constructor(gl: WebGLRenderingContext) {
-    super(gl);
+    super(gl, WebGLRenderingContext.TEXTURE_2D);
     if (!Texture2D.maxTextureSize) {
       Texture2D.maxTextureSize = gl.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE);
     }
@@ -179,7 +123,7 @@ export default class Texture2D extends Texture {
         this._type = type;
       }
     }
-    this._ensureMipmap();
+    this.__ensureMipmap();
     this.valid = true;
   }
 
@@ -190,29 +134,6 @@ export default class Texture2D extends Texture {
   public applyDraw(): void {
     if (this._drawerContext) {
       this.update(this._drawerContext.canvas, { flipY: false });
-    }
-  }
-
-  public register(registerNumber: number): void {
-    this.gl.activeTexture(WebGLRenderingContext.TEXTURE0 + registerNumber);
-    this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.resourceReference);
-    if (this._texParameterChanged) {
-      this._updateTexParameter();
-    }
-  }
-
-  private _updateTexParameter(): void {
-    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, this._minFilter);
-    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, this._magFilter);
-    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, this._wrapS);
-    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, this._wrapT);
-    this._texParameterChanged = false;
-  }
-
-  private _ensureMipmap(): void {
-    if (this.__needMipmap(this.minFilter)) {
-      this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.resourceReference);
-      this.gl.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
     }
   }
 
