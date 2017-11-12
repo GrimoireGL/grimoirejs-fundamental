@@ -15,7 +15,7 @@ export default class ResizableResourceUpdator extends BasicComponent {
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         resizerType: {
             converter: "String",
-            default: "ViewportSize",
+            default: "Constant",
         },
     };
 
