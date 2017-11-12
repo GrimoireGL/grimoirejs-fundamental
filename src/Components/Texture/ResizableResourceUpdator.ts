@@ -25,7 +25,8 @@ export default class ResizableResourceUpdator extends BasicComponent {
      * @param height
      */
     public resize(width: number, height: number): void {
-        throw new Error("Invalid calling of resize function. This should be overrided in extended classes.");
+        // Nothing to do here. Resize features are depends on what resouces are managed by for each classes.
+        // These should be considered by the classes override this class.
     }
 
     public $awake(): void {

@@ -16,6 +16,8 @@ export default class ImageTextureUpdator extends TextureUpdatorComponentBase {
 
   public src: string;
 
+  private _resolvedImage: HTMLImageElement;
+
   public $awake() {
     super.$awake();
     this.__bindAttributes();
@@ -26,9 +28,22 @@ export default class ImageTextureUpdator extends TextureUpdatorComponentBase {
     }, true);
   }
 
+  public resize(width: number, height: number): void {
+    if (this._resolvedImage) {
+      this._resolvedImage.width = width;
+      this._resolvedImage.height = height;
+      this._updateTexture();
+    }
+  }
+
   private async _loadTask(src: string): Promise<void> {
     const image = await ImageResolver.resolve(src);
-    this.__texture.update(image, {
+    this._resolvedImage = image;
+    this._updateTexture();
+  }
+
+  private _updateTexture(): void {
+    this.__texture.update(this._resolvedImage, {
       premultipliedAlpha: this.premultipliedAlpha,
       flipY: this.flipY,
     });

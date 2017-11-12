@@ -1,3 +1,4 @@
+import GrimoireJS from "grimoirejs";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";

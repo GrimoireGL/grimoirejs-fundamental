@@ -1,6 +1,3 @@
-if (!WebGLRenderingContext.ONE) {
-  throw new Error("WebGLRenderingContext constant can not be retrived!");
-}
 const gl = WebGLRenderingContext;
 export default {
   vec2: gl.FLOAT_VEC2,
