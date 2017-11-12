@@ -41,7 +41,7 @@ import TextureConverter from "./Converters/TextureConverter";
 import ViewportConverter from "./Converters/ViewportConverter";
 
 export default () => {
-    GrimoireInterface.register(async () => {
+    GrimoireInterface.register(async() => {
         GrimoireInterface.registerComponent("AssetLoadingManager", AssetLoadingManagerComponent);
         GrimoireInterface.registerComponent("Camera", CameraComponent);
         GrimoireInterface.registerComponent("CanvasInitializer", CanvasInitializerComponent);
@@ -93,8 +93,12 @@ export default () => {
         GrimoireInterface.registerNode("video-texture", ["VideoTextureUpdator"], {}, "texture");
         GrimoireInterface.registerNode("material", ["Material"]);
         GrimoireInterface.registerNode("import-material", ["MaterialImporter"]);
-        GrimoireInterface.registerNode("color-buffer", ["ColorBufferTextureUpdator"], {}, "texture");
-        GrimoireInterface.registerNode("render-buffer", ["RenderBufferUpdator"]);
+        GrimoireInterface.registerNode("color-buffer", ["ColorBufferTextureUpdator"], {
+            resizerType: "ViewportSize",
+        }, "texture");
+        GrimoireInterface.registerNode("render-buffer", ["RenderBufferUpdator"], {
+            resizerType: "ViewportSize",
+        });
         GrimoireInterface.registerNode("render-scene", ["RenderScene", "RenderHitArea"], {
             material: null,
         });
