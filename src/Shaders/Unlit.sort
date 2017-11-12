@@ -24,6 +24,7 @@
     #ifndef USE_TEXTURE
       gl_FragColor = baseColor;
     #endif
+    gl_FragColor.rgb = vec3(1.0) - gl_FragColor.rgb;
   }
   #endif
 }
