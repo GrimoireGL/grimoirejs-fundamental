@@ -173,8 +173,6 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
         };
     }
 
-
-
     private _ensureCanvasPOT(canvas: HTMLCanvasElement): IResizeResult {
         const w = canvas.width;
         const h = canvas.height;

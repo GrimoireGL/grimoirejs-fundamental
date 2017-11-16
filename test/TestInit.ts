@@ -13,7 +13,11 @@ const mockedWindow = global as any;
 mockedWindow.DOMParser = xmldom.DOMParser;
 mockedWindow.window = mockedWindow;
 mockedWindow.document = {
-  createElement() { },
+  createElement() {
+    return {
+      getContext: () => null,
+    };
+  },
 };
 
 mockedWindow.WebGLRenderingContext = {
