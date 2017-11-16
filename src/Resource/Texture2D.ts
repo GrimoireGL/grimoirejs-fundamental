@@ -19,52 +19,6 @@ export default class Texture2D extends Texture {
     Texture2D.defaultTextures.set(gl, texture);
   }
 
-  public get magFilter(): number {
-    return this._magFilter;
-  }
-
-  public set magFilter(filter: number) {
-    if (this._magFilter !== filter) {
-      this._texParameterChanged = true;
-      this._magFilter = filter;
-      this._ensureMipmap();
-    }
-  }
-
-  public get minFilter(): number {
-    return this._minFilter;
-  }
-
-  public set minFilter(filter: number) {
-    if (this._minFilter !== filter) {
-      this._texParameterChanged = true;
-      this._minFilter = filter;
-      this._ensureMipmap();
-    }
-  }
-
-  public get wrapS(): number {
-    return this._wrapS;
-  }
-
-  public set wrapS(filter: number) {
-    if (this._wrapS !== filter) {
-      this._texParameterChanged = true;
-      this._wrapS = filter;
-    }
-  }
-
-  public get wrapT(): number {
-    return this._wrapT;
-  }
-
-  public set wrapT(filter: number) {
-    if (this._wrapT !== filter) {
-      this._texParameterChanged = true;
-      this._wrapT = filter;
-    }
-  }
-
   /**
    * Width of this texture
    * @return {number} [description]
@@ -91,33 +45,19 @@ export default class Texture2D extends Texture {
       c.width = this._width;
       c.height = this.height;
       this._drawerContext = c.getContext("2d");
-      this._updateDrawingContextWithCurrent();
+      this.updateDrawerCanvas();
     }
     return this._drawerContext;
   }
 
-  private _texParameterChanged = true;
-
   private _drawerContext: CanvasRenderingContext2D;
-
-  private _magFilter: number = WebGLRenderingContext.LINEAR;
-
-  private _minFilter: number = WebGLRenderingContext.LINEAR;
-
-  private _wrapS: number = WebGLRenderingContext.REPEAT;
-
-  private _wrapT: number = WebGLRenderingContext.REPEAT;
-
-  private _format: number = WebGLRenderingContext.UNSIGNED_BYTE;
 
   private _width: number;
 
   private _height: number;
 
-  private _type: number;
-
   constructor(gl: WebGLRenderingContext) {
-    super(gl);
+    super(gl, WebGLRenderingContext.TEXTURE_2D);
     if (!Texture2D.maxTextureSize) {
       Texture2D.maxTextureSize = gl.getParameter(WebGLRenderingContext.MAX_TEXTURE_SIZE);
     }
@@ -141,88 +81,69 @@ export default class Texture2D extends Texture {
     } else {
       level = levelOrImage as number;
       width = widthOrConfig as number;
-      uploadConfig = config || {
-        flipY: false,
+      uploadConfig = {
+        flipY: true,
         premultipliedAlpha: false,
+        ...config,
       };
     }
-    if (uploadConfig.flipY === void 0) {
-      uploadConfig.flipY = false;
-    }
-    if (uploadConfig.premultipliedAlpha === void 0) {
-      uploadConfig.premultipliedAlpha = false;
-    }
+    // tslint:disable:no-parameter-reassignment
     this.gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, uploadConfig.flipY ? 1 : 0);
     this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, uploadConfig.premultipliedAlpha ? 1 : 0);
     if (height === void 0) { // something image was specified
-      const resizedResource = this.__justifyResource(image);
+      const resizedResource = this.__ensurePOT(image);
       this._width = resizedResource.width;
       this._height = resizedResource.height;
-      this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, resizedResource.result);
-      this._type = WebGLRenderingContext.UNSIGNED_BYTE;
-      this._format = WebGLRenderingContext.RGBA;
+      this.gl.texImage2D(this.textureType, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, resizedResource.result);
+      this.__type = WebGLRenderingContext.UNSIGNED_BYTE;
+      this.__format = WebGLRenderingContext.RGBA;
     } else {
       if (pixels === void 0) {
         pixels = null;
       }
       if (width === 0 || height === 0) { // Edge browser cannot accept a texture with 0 size
-        this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, level, WebGLRenderingContext.RGBA, 1, 1, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0]));
-        this._type = WebGLRenderingContext.UNSIGNED_BYTE;
-        this._width = 1;
-        this._height = 1;
-        this._format = WebGLRenderingContext.RGBA;
-      } else {
-        this._width = width;
-        this._height = height;
-        this.gl.texImage2D(WebGLRenderingContext.TEXTURE_2D, level, format, width, height, border, format, type, pixels);
-        this._format = format;
-        this._type = type;
+        width = 1;
+        height = 1;
+        format = WebGLRenderingContext.RGB;
+        type = WebGLRenderingContext.UNSIGNED_BYTE;
+        pixels = new Uint8Array([0, 0, 0]);
       }
+      this._width = width;
+      this._height = height;
+      this.gl.texImage2D(this.textureType, level, format, width, height, border, format, type, pixels);
+      this.__format = format;
+      this.__type = type;
     }
-    this._ensureMipmap();
+    this.__ensureMipmap();
     this.valid = true;
   }
 
-  public getRawPixels<T extends ArrayBufferView = ArrayBufferView>(x = 0, y = 0, width = this.width, height = this.height): T {
-    return this.__getRawPixels<T>(this._type, this._format, x, y, width, height);
-  }
-
-  public applyDraw(): void {
-    if (this._drawerContext) {
-      this.update(this._drawerContext.canvas, { flipY: false });
-    }
-  }
-
-  public register(registerNumber: number): void {
-    this.gl.activeTexture(WebGLRenderingContext.TEXTURE0 + registerNumber);
-    this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.resourceReference);
-    if (this._texParameterChanged) {
-      this._updateTexParameter();
-    }
-  }
-
-  private _updateTexParameter(): void {
-    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MIN_FILTER, this._minFilter);
-    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_MAG_FILTER, this._magFilter);
-    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_S, this._wrapS);
-    this.gl.texParameteri(WebGLRenderingContext.TEXTURE_2D, WebGLRenderingContext.TEXTURE_WRAP_T, this._wrapT);
-    this._texParameterChanged = false;
-  }
-
-  private _ensureMipmap(): void {
-    if (this.__needMipmap(this.minFilter)) {
-      this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.resourceReference);
-      this.gl.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
-    }
-  }
-
-  private _updateDrawingContextWithCurrent(): void {
+  public updateDrawerCanvas(): void {
     const imageData = this.drawerContext.createImageData(this.width, this.height);
     const buffer = this.getRawPixels();
-    const bufferSize = this.width * this.height * GLUtility.formatToElementCount(this._format);
+    const bufferSize = this.width * this.height * GLUtility.formatToElementCount(this.format);
     for (let i = 0; i < bufferSize; i++) {
       imageData.data[i] = buffer[i];
     }
     this.drawerContext.putImageData(imageData, 0, 0);
+    this.drawerContext.setTransform(1, 0, 0, -1, 0, this.height);
+    this.drawerContext.drawImage(this.drawerContext.canvas, 0, 0);
+  }
+
+  public getRawPixels<T extends ArrayBufferView = ArrayBufferView>(x = 0, y = 0, width = this.width, height = this.height): T {
+    return this.__getRawPixels<T>(this.type, this.format, x, y, width, height, WebGLRenderingContext.TEXTURE_2D);
+  }
+
+  public applyDraw(): void {
+    if (this._drawerContext) {
+      this.update(this._drawerContext.canvas);
+    }
+  }
+
+  protected __ensureMipmap(): void {
+    if (this.__needMipmap(this.minFilter)) {
+      this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.resourceReference);
+      this.gl.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
+    }
   }
 }
