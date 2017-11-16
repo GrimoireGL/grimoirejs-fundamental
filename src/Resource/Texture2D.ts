@@ -45,7 +45,7 @@ export default class Texture2D extends Texture {
       c.width = this._width;
       c.height = this.height;
       this._drawerContext = c.getContext("2d");
-      this._updateDrawingContextWithCurrent();
+      this.updateDrawerCanvas();
     }
     return this._drawerContext;
   }
@@ -81,16 +81,11 @@ export default class Texture2D extends Texture {
     } else {
       level = levelOrImage as number;
       width = widthOrConfig as number;
-      uploadConfig = config || {
-        flipY: false,
+      uploadConfig = {
+        flipY: true,
         premultipliedAlpha: false,
+        ...config,
       };
-    }
-    if (uploadConfig.flipY === void 0) {
-      uploadConfig.flipY = false;
-    }
-    if (uploadConfig.premultipliedAlpha === void 0) {
-      uploadConfig.premultipliedAlpha = false;
     }
     // tslint:disable:no-parameter-reassignment
     this.gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, uploadConfig.flipY ? 1 : 0);
@@ -123,13 +118,25 @@ export default class Texture2D extends Texture {
     this.valid = true;
   }
 
+  public updateDrawerCanvas(): void {
+    const imageData = this.drawerContext.createImageData(this.width, this.height);
+    const buffer = this.getRawPixels();
+    const bufferSize = this.width * this.height * GLUtility.formatToElementCount(this.format);
+    for (let i = 0; i < bufferSize; i++) {
+      imageData.data[i] = buffer[i];
+    }
+    this.drawerContext.putImageData(imageData, 0, 0);
+    this.drawerContext.setTransform(1, 0, 0, -1, 0, this.height);
+    this.drawerContext.drawImage(this.drawerContext.canvas, 0, 0);
+  }
+
   public getRawPixels<T extends ArrayBufferView = ArrayBufferView>(x = 0, y = 0, width = this.width, height = this.height): T {
     return this.__getRawPixels<T>(this.type, this.format, x, y, width, height, WebGLRenderingContext.TEXTURE_2D);
   }
 
   public applyDraw(): void {
     if (this._drawerContext) {
-      this.update(this._drawerContext.canvas, { flipY: false });
+      this.update(this._drawerContext.canvas);
     }
   }
 
@@ -138,15 +145,5 @@ export default class Texture2D extends Texture {
       this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.resourceReference);
       this.gl.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
     }
-  }
-
-  private _updateDrawingContextWithCurrent(): void {
-    const imageData = this.drawerContext.createImageData(this.width, this.height);
-    const buffer = this.getRawPixels();
-    const bufferSize = this.width * this.height * GLUtility.formatToElementCount(this.format);
-    for (let i = 0; i < bufferSize; i++) {
-      imageData.data[i] = buffer[i];
-    }
-    this.drawerContext.putImageData(imageData, 0, 0);
   }
 }
