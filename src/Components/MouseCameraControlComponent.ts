@@ -46,7 +46,7 @@ export default class MouseCameraControlComponent extends Component {
   private _lastCenter: Vector3 = null;
 
   private _lastScreenPos: { x: number, y: number } = null;
-  private _lastTouchScale = 1;
+  private _lastPinchDistance = null;
 
   private _initialDirection: Vector3;
   private _initialRotation: Quaternion;
@@ -82,7 +82,6 @@ export default class MouseCameraControlComponent extends Component {
     canvasElement.addEventListener("wheel", this._listeners.wheel);
 
     this._lastScreenPos = null;
-    this._lastTouchScale = 1;
     this._xsum = 0;
     this._ysum = 0;
   }
@@ -138,15 +137,19 @@ export default class MouseCameraControlComponent extends Component {
     if (!this.isActive) {
       return;
     }
-    this._lastTouchScale = 1;
+    if (m.touches.length >= 2) {
+      this._lastPinchDistance =
+        ((m.touches[0].pageX - m.touches[1].pageX) ** 2 +
+        (m.touches[0].pageY - m.touches[1].pageY) ** 2) ** 0.5;
+    }
     this._lastScreenPos = null;
+    m.preventDefault();
   }
 
   private _touchEnd(m: TouchEvent): void {
     if (!this.isActive) {
       return;
     }
-    this._lastTouchScale = 1;
   }
 
   private _mouseMove(m: MouseEvent): void {
@@ -175,9 +178,8 @@ export default class MouseCameraControlComponent extends Component {
     }
     switch (m.touches.length) {
       case 1:
-        // TouchEvent type definition is buggy (pageX is not found)
-        const x: number = (m as any).pageX;
-        const y: number = (m as any).pageY;
+        const x: number = m.touches[0].pageX;
+        const y: number = m.touches[0].pageY;
         if (this._lastScreenPos === null) {
           this._lastScreenPos = { x, y };
           return;
@@ -190,10 +192,11 @@ export default class MouseCameraControlComponent extends Component {
         if (this.getAttribute("preventScroll")) {
           m.preventDefault();
         }
-        // TouchEvent type definition is buggy (pageX is not found)
-        const scale: number = (m as any).scale;
-        this._zoom((this._lastTouchScale - scale) * 100);
-        this._lastTouchScale = scale;
+        const scale =
+          ((m.touches[0].pageX - m.touches[1].pageX) ** 2 +
+          (m.touches[0].pageY - m.touches[1].pageY) ** 2) ** 0.5;
+        this._zoom((this._lastPinchDistance - scale) * 0.5);
+        this._lastPinchDistance = scale;
         break;
       default:
     }
