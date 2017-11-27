@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/xmldom": "^0.1.29",
-    "ava": "^0.22.0",
+    "ava": "^0.24.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
