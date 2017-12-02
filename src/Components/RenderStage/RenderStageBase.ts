@@ -44,6 +44,14 @@ export default class RenderStageBase extends Component {
         this._assignMouseState(v);
     }
 
+    public $click(v: ViewportMouseEvent): void {
+        return;
+    }
+
+    public $dblclick(v: ViewportMouseEvent): void {
+        return;
+    }
+
     protected __beforeRender(): boolean {
         if (GrimoireJS.debug && !!window["spector"]) {
             let metas = "";
