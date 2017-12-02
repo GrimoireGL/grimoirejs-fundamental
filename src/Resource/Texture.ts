@@ -9,9 +9,9 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
     private static _resizerContext = Texture._resizerCanvas.getContext("2d");
 
     /**
-    * ミップマップの更新が必要なフィルタ
-    * @type {number[]}
-    */
+     * Filters requires updating of mipmap
+     * @type {number[]}
+     */
     private static _filtersNeedsMipmap: number[] = [
         WebGLRenderingContext.LINEAR_MIPMAP_LINEAR,
         WebGLRenderingContext.LINEAR_MIPMAP_NEAREST,
