@@ -137,6 +137,18 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     }
   }
 
+  public $mousedown(v: ViewportMouseEvent): void {
+    if (this._lastRenderable instanceof Component) {
+      this._lastRenderable.node.emit("mousedown", this._lastRenderable);
+    }
+  }
+
+  public $mouseup(v: ViewportMouseEvent): void {
+    if (this._lastRenderable instanceof Component) {
+      this._lastRenderable.node.emit("mouseup", this._lastRenderable);
+    }
+  }
+
   /**
    * Update current mesh index. Emit events if need.
    * @param index
