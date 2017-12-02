@@ -18,11 +18,11 @@
     "grimoirejs",
     "webgl"
   ],
-  "dependencies": {
-    "@types/node": "^8.0.47",
-    "trash-cli": "^1.4.0"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "deflate-js": "^0.2.3",
+    "@types/node": "^8.0.47",
+    "trash-cli": "^1.4.0",
     "@types/xmldom": "^0.1.29",
     "ava": "^0.22.0",
     "babel-cli": "^6.26.0",
