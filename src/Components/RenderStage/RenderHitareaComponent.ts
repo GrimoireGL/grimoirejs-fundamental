@@ -125,6 +125,18 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     this._lastRenderable = null;
   }
 
+  public $click(v: ViewportMouseEvent): void {
+    if (this._lastRenderable instanceof Component) {
+      this._lastRenderable.node.emit("click", this._lastRenderable);
+    }
+  }
+
+  public $dblclick(v: ViewportMouseEvent): void {
+    if (this._lastRenderable instanceof Component) {
+      this._lastRenderable.node.emit("dblclick", this._lastRenderable);
+    }
+  }
+
   /**
    * Update current mesh index. Emit events if need.
    * @param index

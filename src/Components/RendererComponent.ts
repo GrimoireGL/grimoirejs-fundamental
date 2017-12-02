@@ -61,6 +61,10 @@ export default class RendererComponent extends Component {
 
   private _mouseUpHandler: (e: MouseEvent) => void;
 
+  private _mouseClickHandler: (e: MouseEvent) => void;
+
+  private _dblClickHandler: (e: MouseEvent) => void;
+
   private _wasInside = false;
 
   public $awake(): void {
@@ -155,6 +159,12 @@ export default class RendererComponent extends Component {
       }
       this._wasInside = false;
     };
+    this._mouseClickHandler = (e: MouseEvent) => {
+      this._sendMouseEvent("click", e);
+    };
+    this._dblClickHandler = (e: MouseEvent) => {
+      this._sendMouseEvent("dblclick", e);
+    };
     this._mouseDownHandler = (e: MouseEvent) => {
       if (this._isViewportInside(e)) {
         this._sendMouseEvent("mousedown", e);
@@ -173,6 +183,8 @@ export default class RendererComponent extends Component {
     this._canvas.addEventListener("mouseenter", this._mouseEnterHandler);
     this._canvas.addEventListener("mousedown", this._mouseDownHandler);
     this._canvas.addEventListener("mouseup", this._mouseUpHandler);
+    this._canvas.addEventListener("click", this._mouseClickHandler);
+    this._canvas.addEventListener("dblclick", this._dblClickHandler);
   }
 
   private _disableMouseHandling(): void {
@@ -181,6 +193,8 @@ export default class RendererComponent extends Component {
     this._canvas.removeEventListener("mouseenter", this._mouseEnterHandler);
     this._canvas.removeEventListener("mousedown", this._mouseDownHandler);
     this._canvas.removeEventListener("mouseup", this._mouseUpHandler);
+    this._canvas.removeEventListener("click", this._mouseClickHandler);
+    this._canvas.removeEventListener("dblclick", this._dblClickHandler);
   }
 
   private _sendMouseEvent(eventName: string, e: MouseEvent): void {
@@ -223,7 +237,8 @@ export default class RendererComponent extends Component {
     const ro = this._getRelativePosition(e);
     const r = this._viewportCache.toLocal(ro[0], ro[1]);
     const n = this._viewportCache.toLocalNormalized(ro[0], ro[1]);
-    return {...e,
+    return {
+      ...e,
       viewportX: r[0],
       viewportY: r[1],
       viewportNormalizedX: n[0],
@@ -232,6 +247,7 @@ export default class RendererComponent extends Component {
       canvasY: ro[1],
       canvasNormalizedX: ro[0] / ro[2],
       canvasNormalizedY: ro[1] / ro[3],
-      inside: this._isViewportInside(e)};
+      inside: this._isViewportInside(e),
+    };
   }
 }
