@@ -1,0 +1,23 @@
+  @Pass{
+    FS_PREC(mediump,float)
+    varying vec3 vPosition;
+    #ifdef VS
+    attribute vec3 position;
+    uniform mat4 _matIP;
+    @CAMERA_TRANSFORM
+    uniform mat4 camM;
+    void main(){
+      mat4 inverseProjection = _matIP;
+      mat4 inverseModelview = camM;
+      vec3 unprojected = (inverseProjection * vec4(position,1)).xyz;
+      vPosition = (inverseModelview * vec4(unprojected,0)).xyz;
+      gl_Position = vec4(position,1);
+    }
+    #endif
+    #ifdef FS
+    uniform samplerCube src;
+      void main(){
+        gl_FragColor = textureCube(src,vPosition);
+      }
+    #endif
+  }

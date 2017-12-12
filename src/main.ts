@@ -38,6 +38,7 @@ import GeometryConverter from "./Converters/GeometryConverter";
 import MaterialConverter from "./Converters/MaterialConverter";
 import RenderingTargetConverter from "./Converters/RenderingTargetConverter";
 import TextureConverter from "./Converters/TextureConverter";
+import TextureCubeConverter from "./Converters/TextureCubeConverter";
 import ViewportConverter from "./Converters/ViewportConverter";
 
 export default () => {
@@ -74,8 +75,11 @@ export default () => {
         GrimoireInterface.registerConverter("CanvasSize", CanvasSizeConverter);
         GrimoireInterface.registerConverter("Geometry", GeometryConverter);
         GrimoireInterface.registerConverter("Material", MaterialConverter);
+        // TODO: remove Texture as deprecated Texture converter
+        // Use Texture2D converter instead
         GrimoireInterface.registerConverter("Texture", TextureConverter);
         GrimoireInterface.registerConverter("Texture2D", TextureConverter);
+        GrimoireInterface.registerConverter("TextureCube", TextureCubeConverter);
         GrimoireInterface.registerConverter("Viewport", ViewportConverter);
         GrimoireInterface.registerConverter("Node", NodeConverter);
         GrimoireInterface.registerConverter(PositionConverter);
@@ -86,6 +90,10 @@ export default () => {
         GrimoireInterface.registerNode("object", ["Transform"]);
         GrimoireInterface.registerNode("camera", ["Camera"], { position: "0,0,10" }, "object");
         GrimoireInterface.registerNode("mesh", ["MaterialContainer", "MeshRenderer"], {}, "object");
+        GrimoireInterface.registerNode("skybox", [], {
+            geometry: "quad",
+            material: "new(skybox)",
+        }, "mesh");
         GrimoireInterface.registerNode("renderer", ["Renderer"]);
         GrimoireInterface.registerNode("geometry", ["Geometry"]);
         GrimoireInterface.registerNode("texture", ["TextureContainer"]);

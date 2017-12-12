@@ -1,7 +1,9 @@
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 import GLResource from "./GLResource";
 import GLUtility from "./GLUtility";
+import ImageSource from "./ImageSource";
 import IResizeResult from "./IResizeResult";
+import ITextureUploadConfig from "./ITextureUploadConfig";
 export default abstract class Texture extends GLResource<WebGLTexture> {
 
     private static _resizerCanvas: HTMLCanvasElement = document.createElement("canvas");
@@ -96,9 +98,31 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
     }
 
     public register(registerNumber: number): void {
+        // TODO: (performance) disable texture after use?
+        // Or reduce calling of activate texture
         this.gl.activeTexture(WebGLRenderingContext.TEXTURE0 + registerNumber);
         this.gl.bindTexture(this.textureType, this.resourceReference);
         this.__applyTexParameter();
+    }
+
+    protected __prepareTextureUpload(uploadConfig: ITextureUploadConfig): void {
+        this.gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, uploadConfig.flipY ? 1 : 0);
+        this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, uploadConfig.premultipliedAlpha ? 1 : 0);
+    }
+
+    /**
+     * Simply update texture. This method can resize source if need.
+     * @param target
+     * @param source
+     * @param format
+     * @param level
+     */
+    protected __updateWithSourceImage(target: number, source: ImageSource, format = WebGLRenderingContext.RGBA, level = 0): IResizeResult {
+        const resizedResource = this.__ensurePOT(source);
+        this.gl.texImage2D(target, level, format, format, WebGLRenderingContext.UNSIGNED_BYTE, resizedResource.result);
+        this.__type = WebGLRenderingContext.UNSIGNED_BYTE;
+        this.__format = format;
+        return resizedResource;
     }
 
     protected __getRawPixels<T extends ArrayBufferView = ArrayBufferView>(type: number, format: number, x = 0, y = 0, width: number, height: number, from: number): T {
@@ -119,7 +143,14 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
      * If speciefied resource was NPOT, resize specified resource to POT.
      * @param image
      */
-    protected __ensurePOT(image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): IResizeResult {
+    protected __ensurePOT(image: ImageSource): IResizeResult {
+        if (image instanceof ImageData) {
+            const context = document.createElement("canvas").getContext("2d");
+            context.canvas.width = image.width;
+            context.canvas.height = image.height;
+            context.putImageData(image, 0, 0);
+            image = context.canvas;
+        }
         if (image instanceof HTMLImageElement) {
             return this._ensureImagePOT(image);
         } else if (image instanceof HTMLCanvasElement) {
@@ -131,7 +162,12 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
         }
     }
 
-    protected abstract __ensureMipmap(): void;
+    protected __ensureMipmap(): void {
+        if (this.__needMipmap(this.minFilter)) {
+            this.gl.bindTexture(this.textureType, this.resourceReference);
+            this.gl.generateMipmap(this.textureType);
+        }
+    }
 
     /**
      * Check specified min filter requires mip map or not.

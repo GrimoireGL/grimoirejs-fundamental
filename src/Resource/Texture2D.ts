@@ -1,13 +1,10 @@
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 import GLResource from "./GLResource";
 import GLUtility from "./GLUtility";
+import ImageSource from "./ImageSource";
+import ITextureUploadConfig from "./ITextureUploadConfig";
 import Texture from "./Texture";
 import Viewport from "./Viewport";
-export type ImageUploadConfig = {
-  flipY?: boolean,
-  premultipliedAlpha?: boolean,
-};
-
 export default class Texture2D extends Texture {
   public static defaultTextures: Map<WebGLRenderingContext, Texture2D> = new Map<WebGLRenderingContext, Texture2D>();
   public static maxTextureSize: number;
@@ -63,12 +60,12 @@ export default class Texture2D extends Texture {
     }
   }
 
-  public update(level: number, width: number, height: number, border: number, format: number, type: number, pxiels?: ArrayBufferView, config?: ImageUploadConfig): void;
-  public update(image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement, config?: ImageUploadConfig): void;
-  public update(levelOrImage: any, widthOrConfig: any, height?: number, border?: number, format?: number, type?: number, pixels?: ArrayBufferView, config?: ImageUploadConfig): void {
+  public update(level: number, width: number, height: number, border: number, format: number, type: number, pxiels?: ArrayBufferView, config?: ITextureUploadConfig): void;
+  public update(image: ImageSource, config?: ITextureUploadConfig): void;
+  public update(levelOrImage: any, widthOrConfig: any, height?: number, border?: number, format?: number, type?: number, pixels?: ArrayBufferView, config?: ITextureUploadConfig): void {
     this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.resourceReference);
-    let uploadConfig: ImageUploadConfig;
-    let image: HTMLImageElement;
+    let uploadConfig: ITextureUploadConfig;
+    let image: ImageSource;
     let width: number;
     let level: number;
     if (height === void 0) {
@@ -77,7 +74,7 @@ export default class Texture2D extends Texture {
         premultipliedAlpha: false,
         ...widthOrConfig,
       };
-      image = levelOrImage as HTMLImageElement;
+      image = levelOrImage as ImageSource;
     } else {
       level = levelOrImage as number;
       width = widthOrConfig as number;
@@ -87,16 +84,10 @@ export default class Texture2D extends Texture {
         ...config,
       };
     }
-    // tslint:disable:no-parameter-reassignment
-    this.gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, uploadConfig.flipY ? 1 : 0);
-    this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, uploadConfig.premultipliedAlpha ? 1 : 0);
     if (height === void 0) { // something image was specified
-      const resizedResource = this.__ensurePOT(image);
-      this._width = resizedResource.width;
-      this._height = resizedResource.height;
-      this.gl.texImage2D(this.textureType, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, resizedResource.result);
-      this.__type = WebGLRenderingContext.UNSIGNED_BYTE;
-      this.__format = WebGLRenderingContext.RGBA;
+      const resizeInfo = this.__updateWithSourceImage(this.gl.TEXTURE_2D, image);
+      this._width = resizeInfo.width;
+      this._height = resizeInfo.height;
     } else {
       if (pixels === void 0) {
         pixels = null;
@@ -137,13 +128,6 @@ export default class Texture2D extends Texture {
   public applyDraw(): void {
     if (this._drawerContext) {
       this.update(this._drawerContext.canvas);
-    }
-  }
-
-  protected __ensureMipmap(): void {
-    if (this.__needMipmap(this.minFilter)) {
-      this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.resourceReference);
-      this.gl.generateMipmap(WebGLRenderingContext.TEXTURE_2D);
     }
   }
 }
