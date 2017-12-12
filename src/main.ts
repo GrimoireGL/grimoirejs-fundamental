@@ -44,7 +44,7 @@ import TextureCubeConverter from "./Converters/TextureCubeConverter";
 import ViewportConverter from "./Converters/ViewportConverter";
 
 export default () => {
-    GrimoireInterface.register(async() => {
+    GrimoireInterface.register(async () => {
         GrimoireInterface.registerComponent("AssetLoadingManager", AssetLoadingManagerComponent);
         GrimoireInterface.registerComponent("Camera", CameraComponent);
         GrimoireInterface.registerComponent("CubemapCamera", CubemapCameraComponent);
@@ -93,7 +93,11 @@ export default () => {
         GrimoireInterface.registerNode("scene", ["Scene"]);
         GrimoireInterface.registerNode("object", ["Transform"]);
         GrimoireInterface.registerNode("camera", ["Camera"], { position: "0,0,10" }, "object");
-        GrimoireInterface.registerNode("cube-camera", ["CubemapCamera"], {}, "object");
+        GrimoireInterface.registerNode("cube-camera", ["CubemapCamera"], {
+            aspect: 1,
+            autoAspect: false,
+            fovy: "90d",
+        }, "object", ["aspect", "autoAspect"]);
         GrimoireInterface.registerNode("mesh", ["MaterialContainer", "MeshRenderer"], {}, "object");
         GrimoireInterface.registerNode("skybox", [], {
             geometry: "quad",

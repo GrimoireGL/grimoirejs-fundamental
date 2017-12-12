@@ -93,6 +93,7 @@ export default class RenderCubemapComponent extends RenderStageBase {
                 rendererDescription: this.rendererDescription,
             });
         }
+        this._gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
     }
 
     private _updateFramebuffers(out: TextureCube, useDepth: boolean): void {
