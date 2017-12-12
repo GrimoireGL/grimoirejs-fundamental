@@ -10,6 +10,7 @@ import AssetLoadingManagerComponent from "./Components/AssetLoadingManagerCompon
 import BasicComponent from "./Components/BasicComponent";
 import CameraComponent from "./Components/CameraComponent";
 import CanvasInitializerComponent from "./Components/CanvasInitializerComponent";
+import CubemapCameraComponent from "./Components/CubemapCameraComponent";
 import FullscreenComponent from "./Components/FullscreenComponent";
 import GeometryComponent from "./Components/GeometryComponent";
 import GeometryRegistoryComponent from "./Components/GeometryRegistoryComponent";
@@ -22,6 +23,7 @@ import MouseCameraControlComponent from "./Components/MouseCameraControlComponen
 import RendererComponent from "./Components/RendererComponent";
 import RendererManagerComponent from "./Components/RendererManagerComponent";
 import RenderingTargetComponent from "./Components/RenderingTargetComponent";
+import RenderCubemapComponent from "./Components/RenderStage/RenderCubemapComponent";
 import RenderQuadComponent from "./Components/RenderStage/RenderQuadComponent";
 import RenderSceneComponent from "./Components/RenderStage/RenderSceneComponent";
 import SceneComponent from "./Components/SceneComponent";
@@ -45,6 +47,7 @@ export default () => {
     GrimoireInterface.register(async() => {
         GrimoireInterface.registerComponent("AssetLoadingManager", AssetLoadingManagerComponent);
         GrimoireInterface.registerComponent("Camera", CameraComponent);
+        GrimoireInterface.registerComponent("CubemapCamera", CubemapCameraComponent);
         GrimoireInterface.registerComponent("CanvasInitializer", CanvasInitializerComponent);
         GrimoireInterface.registerComponent("Fullscreen", FullscreenComponent);
         GrimoireInterface.registerComponent("Geometry", GeometryComponent);
@@ -59,6 +62,7 @@ export default () => {
         GrimoireInterface.registerComponent("Renderer", RendererComponent);
         GrimoireInterface.registerComponent("RendererManager", RendererManagerComponent);
         GrimoireInterface.registerComponent("RenderQuad", RenderQuadComponent);
+        GrimoireInterface.registerComponent("RenderCubemap", RenderCubemapComponent);
         GrimoireInterface.registerComponent("RenderScene", RenderSceneComponent);
         GrimoireInterface.registerComponent("Scene", SceneComponent);
         GrimoireInterface.registerComponent("ColorBufferTextureUpdator", ColorBufferTextureUpdator);
@@ -89,6 +93,7 @@ export default () => {
         GrimoireInterface.registerNode("scene", ["Scene"]);
         GrimoireInterface.registerNode("object", ["Transform"]);
         GrimoireInterface.registerNode("camera", ["Camera"], { position: "0,0,10" }, "object");
+        GrimoireInterface.registerNode("cube-camera", ["CubemapCamera"], {}, "object");
         GrimoireInterface.registerNode("mesh", ["MaterialContainer", "MeshRenderer"], {}, "object");
         GrimoireInterface.registerNode("skybox", [], {
             geometry: "quad",
@@ -108,6 +113,9 @@ export default () => {
             resizerType: "ViewportSize",
         });
         GrimoireInterface.registerNode("render-scene", ["RenderScene", "RenderHitArea"], {
+            material: null,
+        });
+        GrimoireInterface.registerNode("render-cubemap", ["RenderCubemap"], {
             material: null,
         });
         GrimoireInterface.registerNode("render-quad", ["MaterialContainer", "RenderQuad"], {

@@ -88,6 +88,24 @@ export default class CameraComponent extends Component {
     private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
     private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
 
+    /**
+     * Find scene tag recursively.
+     * @param  {GomlNode}       node [the node to searching currently]
+     * @return {SceneComponent}      [the scene component found]
+     */
+    private static _findContainedScene(node: GomlNode): SceneComponent {
+        if (node.parent) {
+            const scene = node.parent.getComponent(SceneComponent);
+            if (scene) {
+                return scene;
+            } else {
+                return CameraComponent._findContainedScene(node.parent);
+            }
+        } else {
+            return null;
+        }
+    }
+
     public containedScene: SceneComponent;
 
     public transform: TransformComponent;
@@ -183,24 +201,6 @@ export default class CameraComponent extends Component {
         return this._autoAspect;
     }
 
-    /**
-   * Find scene tag recursively.
-   * @param  {GomlNode}       node [the node to searching currently]
-   * @return {SceneComponent}      [the scene component found]
-   */
-    private static _findContainedScene(node: GomlNode): SceneComponent {
-        if (node.parent) {
-            const scene = node.parent.getComponent(SceneComponent);
-            if (scene) {
-                return scene;
-            } else {
-                return CameraComponent._findContainedScene(node.parent);
-            }
-        } else {
-            return null;
-        }
-    }
-
     public $awake(): void {
         this.getAttributeRaw("far").watch((v) => {
             this.Far = v;
@@ -273,13 +273,17 @@ export default class CameraComponent extends Component {
     }
 
     public updateTransform(): void {
-        const transform = this.transform;
-        vec3.transformMat4(this._eyeCache.rawElements, Vector3.Zero.rawElements, transform.globalTransform.rawElements);
-        vec4.transformMat4(this._lookAtCache.rawElements, CameraComponent._frontOrigin.rawElements, transform.globalTransform.rawElements);
+        const cameraTransform = this.__getCameraTransformMatrix();
+        vec3.transformMat4(this._eyeCache.rawElements, Vector3.Zero.rawElements, cameraTransform.rawElements);
+        vec4.transformMat4(this._lookAtCache.rawElements, CameraComponent._frontOrigin.rawElements, cameraTransform.rawElements);
         vec3.add(this._lookAtCache.rawElements, this._lookAtCache.rawElements, this._eyeCache.rawElements);
-        vec4.transformMat4(this._upCache.rawElements, CameraComponent._upOrigin.rawElements, transform.globalTransform.rawElements);
+        vec4.transformMat4(this._upCache.rawElements, CameraComponent._upOrigin.rawElements, cameraTransform.rawElements);
         mat4.lookAt(this.__viewMatrix.rawElements, this._eyeCache.rawElements, this._lookAtCache.rawElements, this._upCache.rawElements);
         mat4.mul(this.__projectionViewMatrix.rawElements, this.__projectionMatrix.rawElements, this.__viewMatrix.rawElements);
+    }
+
+    protected __getCameraTransformMatrix(): Matrix {
+        return this.transform.globalTransform;
     }
 
     private _justifyAspect(args: IRenderArgument): void {
