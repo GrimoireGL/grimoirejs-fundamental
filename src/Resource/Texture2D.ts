@@ -69,21 +69,14 @@ export default class Texture2D extends Texture {
     let width: number;
     let level: number;
     if (height === void 0) {
-      uploadConfig = {
-        flipY: true,
-        premultipliedAlpha: false,
-        ...widthOrConfig,
-      };
+      uploadConfig = widthOrConfig;
       image = levelOrImage as ImageSource;
     } else {
       level = levelOrImage as number;
       width = widthOrConfig as number;
-      uploadConfig = {
-        flipY: true,
-        premultipliedAlpha: false,
-        ...config,
-      };
+      uploadConfig = config;
     }
+    this.__prepareTextureUpload(uploadConfig);
     if (height === void 0) { // something image was specified
       const resizeInfo = this.__updateWithSourceImage(this.gl.TEXTURE_2D, image);
       this._width = resizeInfo.width;

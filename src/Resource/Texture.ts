@@ -1,3 +1,4 @@
+import GLConstantUtility from "../Util/GLConstantUtility";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 import GLResource from "./GLResource";
 import GLUtility from "./GLUtility";
@@ -10,24 +11,13 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
 
     private static _resizerContext = Texture._resizerCanvas.getContext("2d");
 
-    /**
-     * Filters requires updating of mipmap
-     * @type {number[]}
-     */
-    private static _filtersNeedsMipmap: number[] = [
-        WebGLRenderingContext.LINEAR_MIPMAP_LINEAR,
-        WebGLRenderingContext.LINEAR_MIPMAP_NEAREST,
-        WebGLRenderingContext.NEAREST_MIPMAP_LINEAR,
-        WebGLRenderingContext.NEAREST_MIPMAP_NEAREST,
-    ];
-
     public get magFilter(): number {
         return this._magFilter;
     }
 
     public set magFilter(filter: number) {
         if (this._magFilter !== filter) {
-            this._texParameterChanged = true;
+            this.__texParameterChanged = true;
             this._magFilter = filter;
         }
     }
@@ -38,7 +28,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
 
     public set minFilter(filter: number) {
         if (this._minFilter !== filter) {
-            this._texParameterChanged = true;
+            this.__texParameterChanged = true;
             this._minFilter = filter;
             this.__ensureMipmap();
         }
@@ -50,7 +40,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
 
     public set wrapS(filter: number) {
         if (this._wrapS !== filter) {
-            this._texParameterChanged = true;
+            this.__texParameterChanged = true;
             this._wrapS = filter;
         }
     }
@@ -61,7 +51,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
 
     public set wrapT(filter: number) {
         if (this._wrapT !== filter) {
-            this._texParameterChanged = true;
+            this.__texParameterChanged = true;
             this._wrapT = filter;
         }
     }
@@ -78,7 +68,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
 
     protected __type: number = WebGLRenderingContext.UNSIGNED_BYTE;
 
-    private _texParameterChanged = true;
+    protected __texParameterChanged = true;
 
     private _magFilter: number = WebGLRenderingContext.LINEAR;
 
@@ -90,6 +80,14 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
 
     constructor(gl: WebGLRenderingContext, public textureType: number) {
         super(gl, gl.createTexture());
+    }
+
+    /**
+     * Should be called after rendering into this texture.
+     * This must be called before used as resource in next rendering.
+     */
+    public afterRender(): void {
+        this.__ensureMipmap(); // recalculate mipmap if needed
     }
 
     public destroy(): void {
@@ -105,7 +103,16 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
         this.__applyTexParameter();
     }
 
+    protected __complementTextureUploadConfig(config: ITextureUploadConfig): ITextureUploadConfig {
+        return {
+            flipY: true,
+            premultipliedAlpha: false,
+            ...config,
+        };
+    }
+
     protected __prepareTextureUpload(uploadConfig: ITextureUploadConfig): void {
+        uploadConfig = this.__complementTextureUploadConfig(uploadConfig);
         this.gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, uploadConfig.flipY ? 1 : 0);
         this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, uploadConfig.premultipliedAlpha ? 1 : 0);
     }
@@ -163,32 +170,26 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
     }
 
     protected __ensureMipmap(): void {
-        if (this.__needMipmap(this.minFilter)) {
+        if (GLConstantUtility.isUsingMipmap(this.minFilter)) {
             this.gl.bindTexture(this.textureType, this.resourceReference);
             this.gl.generateMipmap(this.textureType);
         }
     }
 
     /**
-     * Check specified min filter requires mip map or not.
-     * @param minFilter min filter type
-     */
-    protected __needMipmap(minFilter: number): boolean {
-        return Texture._filtersNeedsMipmap.indexOf(minFilter) > -1;
-    }
-
-    /**
      * Apply texParameteri parameters before updating texture
+     * Return true if texture parameter need to updated(When __texParameterChanged flag is true)
      */
-    protected __applyTexParameter(): void {
-        if (!this._texParameterChanged) {
-            return;
+    protected __applyTexParameter(): boolean {
+        if (!this.__texParameterChanged) {
+            return false;
         }
         this.gl.texParameteri(this.textureType, WebGLRenderingContext.TEXTURE_MIN_FILTER, this._minFilter);
         this.gl.texParameteri(this.textureType, WebGLRenderingContext.TEXTURE_MAG_FILTER, this._magFilter);
         this.gl.texParameteri(this.textureType, WebGLRenderingContext.TEXTURE_WRAP_S, this._wrapS);
         this.gl.texParameteri(this.textureType, WebGLRenderingContext.TEXTURE_WRAP_T, this._wrapT);
-        this._texParameterChanged = false;
+        this.__texParameterChanged = false;
+        return true;
     }
 
     // There should be more effective way to resize texture

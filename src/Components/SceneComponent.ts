@@ -14,6 +14,12 @@ export default class SceneComponent extends Component {
     // Specify the attributes user can intaract
   };
 
+  private static _sceneDescriptionCreationHandlers: ((sd: { [key: string]: any }, scene: SceneComponent) => void)[] = [];
+
+  public static onSceneDescriptionCreation(handler: (sd: { [key: string]: any }, scene: SceneComponent) => void): void {
+    SceneComponent._sceneDescriptionCreationHandlers.push(handler);
+  }
+
   public sceneDescription: { [key: string]: any };
 
   public queueRegistory: RenderQueueRegistry = new RenderQueueRegistry();
@@ -23,12 +29,6 @@ export default class SceneComponent extends Component {
    * @type {number}
    */
   private _lastUpdateIndex: number;
-
-  private static _sceneDescriptionCreationHandlers: ((sd: { [key: string]: any }, scene: SceneComponent) => void)[] = [];
-
-  public static onSceneDescriptionCreation(handler: (sd: { [key: string]: any }, scene: SceneComponent) => void): void {
-    SceneComponent._sceneDescriptionCreationHandlers.push(handler);
-  }
 
   public $mount(): void {
     this.sceneDescription = {};

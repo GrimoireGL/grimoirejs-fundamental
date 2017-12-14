@@ -21,9 +21,6 @@ export default class FrameBuffer extends GLResource<WebGLFramebuffer> {
         level = 0;
       }
       this.gl.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0 + bindIndex, WebGLRenderingContext.TEXTURE_2D, boundTo.resourceReference, level);
-      if (this.gl.checkFramebufferStatus(WebGLRenderingContext.FRAMEBUFFER) !== WebGLRenderingContext.FRAMEBUFFER_COMPLETE) {
-        throw new Error("INCOMPLETE framebuffer");
-      }
     } else if (boundTo instanceof RenderBuffer) {
       const registerTarget: number = typeof level === "undefined" ? WebGLRenderingContext.DEPTH_ATTACHMENT : level;
       this.gl.framebufferRenderbuffer(WebGLRenderingContext.FRAMEBUFFER, registerTarget, WebGLRenderingContext.RENDERBUFFER, boundTo.resourceReference);
@@ -39,6 +36,7 @@ export default class FrameBuffer extends GLResource<WebGLFramebuffer> {
       }
       this.gl.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0 + cubemapBind, level, boundTo.resourceReference, bindIndex);
     }
+    this._checkFBOStatus();
     this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
   }
 
@@ -49,5 +47,11 @@ export default class FrameBuffer extends GLResource<WebGLFramebuffer> {
   public destroy(): void {
     super.destroy();
     this.gl.deleteFramebuffer(this.resourceReference);
+  }
+
+  private _checkFBOStatus(): void {
+    if (this.gl.checkFramebufferStatus(WebGLRenderingContext.FRAMEBUFFER) !== WebGLRenderingContext.FRAMEBUFFER_COMPLETE) {
+      throw new Error("INCOMPLETE framebuffer");
+    }
   }
 }

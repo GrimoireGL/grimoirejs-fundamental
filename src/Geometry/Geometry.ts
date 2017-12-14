@@ -4,7 +4,7 @@ import Buffer from "../Resource/Buffer";
 import IGLInstancedArrayInterface from "../Resource/GLExt/IGLInstancedArrayInterface";
 import GLExtRequestor from "../Resource/GLExtRequestor";
 import Program from "../Resource/Program";
-import GLConstantConverter from "../Util/GLConstantConverter";
+import GLConstantUtility from "../Util/GLConstantUtility";
 import HashCalculator from "../Util/HashCalculator";
 import IndexBufferInfo from "./IndexBufferInfo";
 import VertexBufferAccessor from "./VertexBufferAccessor";
@@ -103,7 +103,7 @@ export default class Geometry {
                 accessor.type = WebGLRenderingContext.FLOAT;
             }
             if (accessor.stride === void 0) {
-                accessor.stride = accessor.size * GLConstantConverter.getElementByteSize(accessor.type);
+                accessor.stride = accessor.size * GLConstantUtility.getElementByteSize(accessor.type);
             }
             if (accessor.offset === void 0) {
                 accessor.offset = 0;
@@ -176,12 +176,12 @@ export default class Geometry {
             }
         }
         if (type === 0) {
-            type = GLConstantConverter.getSuitableElementTypeFromCount(count);
+            type = GLConstantUtility.getSuitableElementTypeFromCount(count);
         }
         buffer = this._ensureToBeIndexBuffer(buffer, type);
         this.indices[indexName] = {
             byteOffset: offset,
-            byteSize: GLConstantConverter.getElementByteSize(type),
+            byteSize: GLConstantUtility.getElementByteSize(type),
             type,
             topology,
             count,
@@ -233,7 +233,7 @@ export default class Geometry {
         if (!(buffer instanceof Buffer)) {
             let bufferSource = buffer;
             if (Array.isArray(bufferSource)) {
-                bufferSource = new (GLConstantConverter.getTypedArrayConstructorFromElementType(type))(bufferSource);
+                bufferSource = new (GLConstantUtility.getTypedArrayConstructorFromElementType(type))(bufferSource);
             }
             buffer = new Buffer(this.gl, WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, WebGLRenderingContext.STATIC_DRAW);
             buffer.update(bufferSource);

@@ -1,10 +1,12 @@
+import default from "grimoirejs/ref/Interface/GomlInterfaceImpl";
+
 /**
  * Provides utility methods for converting constants like
  * * Buffer element type and typed array constructor
  * * Buffer element type and Buffer element byte size
  *  ...
  */
-export default class GLConstantConverter {
+export default class GLConstantUtility {
     /**
      * Get size of GL element type
      * @param type gl.FLOAT,gl.UNSIGNED_BYTE,gl_BYTE...
@@ -79,7 +81,7 @@ export default class GLConstantConverter {
         const wgc = WebGLRenderingContext;
         const types = [wgc.UNSIGNED_BYTE, wgc.BYTE, wgc.UNSIGNED_SHORT, wgc.SHORT, wgc.UNSIGNED_INT, wgc.INT, wgc.FLOAT];
         for (let i = 0; i < types.length; i++) {
-            if (GLConstantConverter.getTypedArrayConstructorFromElementType(types[i]) === ctor) {
+            if (GLConstantUtility.getTypedArrayConstructorFromElementType(types[i]) === ctor) {
                 return types[i];
             }
         }
@@ -94,10 +96,41 @@ export default class GLConstantConverter {
         const wgc = WebGLRenderingContext;
         const types = [wgc.UNSIGNED_BYTE, wgc.UNSIGNED_SHORT, wgc.UNSIGNED_INT];
         for (let i = 0; i < types.length; i++) {
-            if (count <= GLConstantConverter.getMaxElementCountOfIndex(types[i])) {
+            if (count <= GLConstantUtility.getMaxElementCountOfIndex(types[i])) {
                 return types[i];
             }
         }
         throw new Error(`Suitable element type was not found since ${count} is too large for WebGL buffer`);
+    }
+
+    /**
+     * Count element of specified gl format.
+     * @param format
+     */
+    public static getElementCount(format: number): number {
+        switch (format) {
+            case WebGLRenderingContext.RGBA:
+                return 4;
+            case WebGLRenderingContext.RGB:
+                return 3;
+            default:
+                throw new Error(`Format ${format} is unknown`);
+        }
+    }
+
+    /**
+     * Returns specified filter using mipmap or not
+     * @param filter
+     */
+    public static isUsingMipmap(filter: number): boolean {
+        switch (filter) {
+            case WebGLRenderingContext.LINEAR_MIPMAP_LINEAR:
+            case WebGLRenderingContext.LINEAR_MIPMAP_NEAREST:
+            case WebGLRenderingContext.NEAREST_MIPMAP_LINEAR:
+            case WebGLRenderingContext.NEAREST_MIPMAP_NEAREST:
+                return true;
+            default:
+                return false;
+        }
     }
 }

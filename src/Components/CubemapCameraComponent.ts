@@ -6,10 +6,10 @@ import IElementOfCubemapDirection from "../Resource/IElementOfCubemapDirection";
 import CameraComponent from "./CameraComponent";
 export default class CubemapCameraComponent extends CameraComponent {
     public static cubemapDirections: IElementOfCubemapDirection<Quaternion> = {
-        posX: Quaternion.angleAxis(-Math.PI / 2, Vector3.YUnit),
-        negX: Quaternion.angleAxis(Math.PI / 2, Vector3.YUnit),
-        posY: Quaternion.angleAxis(-Math.PI / 2, Vector3.XUnit),
-        negY: Quaternion.angleAxis(Math.PI / 2, Vector3.XUnit),
+        posX: Quaternion.angleAxis(Math.PI / 2, Vector3.YUnit),
+        negX: Quaternion.angleAxis(-Math.PI / 2, Vector3.YUnit),
+        posY: Quaternion.angleAxis(Math.PI / 2, Vector3.XUnit),
+        negY: Quaternion.angleAxis(-Math.PI / 2, Vector3.XUnit),
         posZ: Quaternion.angleAxis(0, Vector3.YUnit),
         negZ: Quaternion.angleAxis(-Math.PI, Vector3.YUnit),
     };
@@ -24,7 +24,7 @@ export default class CubemapCameraComponent extends CameraComponent {
 
     public set direction(direction: string) {
         this._direction = direction;
-        this._cubeTransform = Matrix.rotationQuaternion(CubemapCameraComponent.cubemapDirections[direction]);
+        this._cubeTransform = Matrix.rotationQuaternion(CubemapCameraComponent.cubemapDirections[direction]).multiplyWith(Matrix.scale(new Vector3(1, -1, 1)));
         this.updateTransform();
     }
 

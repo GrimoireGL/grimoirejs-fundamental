@@ -1,3 +1,4 @@
+import Color4 from "grimoirejs-math/ref/Color4";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import FrameBuffer from "../../Resource/FrameBuffer";
@@ -34,6 +35,22 @@ export default class RenderCubemapComponent extends RenderStageBase {
             converter: "Component",
             target: "CubemapCamera",
         },
+        clearColor: {
+            default: "#0000",
+            converter: "Color4",
+        },
+        clearColorEnabled: {
+            default: true,
+            converter: "Boolean",
+        },
+        clearDepthEnabled: {
+            default: true,
+            converter: "Boolean",
+        },
+        clearDepth: {
+            default: 1,
+            converter: "Number",
+        },
     };
 
     public indexGroup: string;
@@ -47,6 +64,14 @@ export default class RenderCubemapComponent extends RenderStageBase {
     public camera: CubemapCameraComponent;
 
     public layer: string;
+
+    public clearColor: Color4;
+
+    public clearColorEnabled: boolean;
+
+    public clearDepth: number;
+
+    public clearDepthEnabled: boolean;
 
     private _gl: WebGLRenderingContext;
 
@@ -75,11 +100,21 @@ export default class RenderCubemapComponent extends RenderStageBase {
         this.camera.updateContainedScene(args.timer);
         // TODO: treat as attribute
         this._gl.viewport(0, 0, this.out.width, this.out.height);
-        this._gl.clearColor(1, 0, 1, 1);
+        let clearFlag = 0;
+        if (this.clearColorEnabled) {
+            this._gl.clearColor.apply(this._gl, this.clearColor.rawElements);
+            clearFlag |= WebGLRenderingContext.COLOR_BUFFER_BIT;
+        }
+        if (this.clearDepthEnabled) {
+            this._gl.clearDepth(this.clearDepth);
+            clearFlag |= WebGLRenderingContext.DEPTH_BUFFER_BIT;
+        }
         for (const direction in TextureCube.imageDirections) {
             const fb = this._framebuffers[direction] as FrameBuffer;
             fb.bind();
-            this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);
+            if (clearFlag) {
+                this._gl.clear(clearFlag);
+            }
             this._gl.flush();
             this.camera.direction = direction;
             this.camera.renderScene({
