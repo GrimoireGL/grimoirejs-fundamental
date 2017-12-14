@@ -11,6 +11,7 @@ import BasicComponent from "./Components/BasicComponent";
 import CameraComponent from "./Components/CameraComponent";
 import CanvasInitializerComponent from "./Components/CanvasInitializerComponent";
 import CubemapCameraComponent from "./Components/CubemapCameraComponent";
+import CubeRenderingTargetComponent from "./Components/CubeRenderingTargetComponent";
 import FullscreenComponent from "./Components/FullscreenComponent";
 import GeometryComponent from "./Components/GeometryComponent";
 import GeometryRegistoryComponent from "./Components/GeometryRegistoryComponent";
@@ -46,7 +47,7 @@ import TextureCubeConverter from "./Converters/TextureCubeConverter";
 import ViewportConverter from "./Converters/ViewportConverter";
 
 export default () => {
-    GrimoireInterface.register(async () => {
+    GrimoireInterface.register(async() => {
         GrimoireInterface.registerComponent("AssetLoadingManager", AssetLoadingManagerComponent);
         GrimoireInterface.registerComponent("Camera", CameraComponent);
         GrimoireInterface.registerComponent("CubemapCamera", CubemapCameraComponent);
@@ -78,6 +79,7 @@ export default () => {
         GrimoireInterface.registerComponent("ViewportSizeResourceResizer", ViewportSizeResourceResizer);
         GrimoireInterface.registerComponent("ConstantSizeResourceResizer", ConstantSizeResourceResizer);
         GrimoireInterface.registerComponent("RenderingTarget", RenderingTargetComponent);
+        GrimoireInterface.registerComponent("CubeRenderingTarget", CubeRenderingTargetComponent);
         GrimoireInterface.registerComponent("BasicComponent", BasicComponent);
 
         GrimoireInterface.registerConverter("CanvasSize", CanvasSizeConverter);
@@ -134,6 +136,7 @@ export default () => {
             material: null,
         });
         GrimoireInterface.registerNode("rendering-target", ["RenderingTarget"]);
+        GrimoireInterface.registerNode("cube-rendering-target", ["CubeRenderingTarget"]);
         DefaultPrimitives.register();
         DefaultMaterial.register();
         GLExtRequestor.request("OES_texture_float");

@@ -11,7 +11,7 @@ import TextureCubeContainer from "./Texture/TextureCubeContainer";
  * Register specified buffer to rendering target.
  * If there were no child buffer node, this component will instanciate default buffers.
  */
-export default class RenderingTargetComponent extends RenderingTargetComponentBase<OffscreenCubemapRenderTarget> {
+export default class CubeRenderingTargetComponent extends RenderingTargetComponentBase<OffscreenCubemapRenderTarget> {
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         colorBufferFormat: {
             converter: "Enum",
