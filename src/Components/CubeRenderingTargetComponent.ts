@@ -1,15 +1,17 @@
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import OffscreenCubemapRenderTarget from "../Resource/RenderingTarget/OffscreenCubemapRenderingTarget";
 import OffscreenRenderingTarget from "../Resource/RenderingTarget/OffscreenRenderingTarget";
 import RenderingTrargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
 import RenderingTargetComponentBase from "./RenderingTargetComponentBase";
 import RenderBufferUpdator from "./Texture/RenderBufferUpdator";
 import TextureContainer from "./Texture/TextureContainer";
+import TextureCubeContainer from "./Texture/TextureCubeContainer";
 /**
  * Register specified buffer to rendering target.
  * If there were no child buffer node, this component will instanciate default buffers.
  */
-export default class RenderingTargetComponent extends RenderingTargetComponentBase<OffscreenRenderingTarget> {
+export default class RenderingTargetComponent extends RenderingTargetComponentBase<OffscreenCubemapRenderTarget> {
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         colorBufferFormat: {
             converter: "Enum",
@@ -52,11 +54,11 @@ export default class RenderingTargetComponent extends RenderingTargetComponentBa
             default: "ViewportSize",
         },
     };
-    protected __instanciateRenderingTarget(gl: WebGLRenderingContext): OffscreenRenderingTarget {
-        const textures = this.node.getComponentsInChildren(TextureContainer);
+    protected __instanciateRenderingTarget(gl: WebGLRenderingContext): OffscreenCubemapRenderTarget {
+        const textures = this.node.getComponentsInChildren(TextureCubeContainer);
         const texture = textures[0].texture;
         const renderBuffer = this.node.getComponentsInChildren(RenderBufferUpdator);
-        return new OffscreenRenderingTarget(this.companion.get("gl"), [texture], renderBuffer[0].buffer);
+        return new OffscreenCubemapRenderTarget(this.companion.get("gl"), texture, renderBuffer[0].buffer);
     }
 
     /**
@@ -64,7 +66,7 @@ export default class RenderingTargetComponent extends RenderingTargetComponentBa
      * @param name
      */
     protected __instanciateDefaultBuffers(name: string): void {
-        this.node.addChildByName("color-buffer", {
+        this.node.addChildByName("color-buffer-cube", {
             name,
             format: this.getAttribute("colorBufferFormat"),
             type: this.getAttribute("colorBufferType"),

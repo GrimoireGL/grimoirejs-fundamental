@@ -4,8 +4,10 @@ import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import FrameBuffer from "../../Resource/FrameBuffer";
 import IElementOfCubemapDirection from "../../Resource/IElementOfCubemapDirection";
 import RenderBuffer from "../../Resource/RenderBuffer";
+import ICubemapRenderingTarget from "../../Resource/RenderingTarget/ICubemapRenderingTarget";
 import TextureCube from "../../Resource/TextureCube";
 import Viewport from "../../Resource/Viewport";
+import GLConstantUtility from "../../Util/GLConstantUtility";
 import CubemapCameraComponent from "../CubemapCameraComponent";
 import RenderStageBase from "./RenderStageBase";
 export default class RenderCubemapComponent extends RenderStageBase {
@@ -24,11 +26,7 @@ export default class RenderCubemapComponent extends RenderStageBase {
         },
         out: {
             default: null,
-            converter: "TextureCube",
-        },
-        useDepth: {
-            default: false,
-            converter: "Boolean",
+            converter: "RenderingTarget",
         },
         camera: {
             default: "cube-camera",
@@ -57,9 +55,7 @@ export default class RenderCubemapComponent extends RenderStageBase {
 
     public technique: string;
 
-    public out: TextureCube;
-
-    public useDepth: boolean;
+    public out: ICubemapRenderingTarget;
 
     public camera: CubemapCameraComponent;
 
@@ -75,19 +71,9 @@ export default class RenderCubemapComponent extends RenderStageBase {
 
     private _gl: WebGLRenderingContext;
 
-    private _framebuffers: IElementOfCubemapDirection<FrameBuffer>;
-
-    private _renderBuffer: RenderBuffer;
-
     public $mount(): void {
         this.__bindAttributes();
         this._gl = this.companion.get("gl");
-        this.getAttributeRaw("out").watch((out: TextureCube) => {
-            this._updateFramebuffers(out, this.useDepth);
-        });
-        this.getAttributeRaw("useDepth").watch((useDepth: boolean) => {
-            this._updateFramebuffers(this.out, useDepth);
-        }, true);
     }
 
     public $render(args: IRenderRendererMessage): void {
@@ -98,30 +84,14 @@ export default class RenderCubemapComponent extends RenderStageBase {
             return;
         }
         this.camera.updateContainedScene(args.timer);
-        // TODO: treat as attribute
-        this._gl.viewport(0, 0, this.out.width, this.out.height);
-        let clearFlag = 0;
-        if (this.clearColorEnabled) {
-            this._gl.clearColor.apply(this._gl, this.clearColor.rawElements);
-            clearFlag |= WebGLRenderingContext.COLOR_BUFFER_BIT;
-        }
-        if (this.clearDepthEnabled) {
-            this._gl.clearDepth(this.clearDepth);
-            clearFlag |= WebGLRenderingContext.DEPTH_BUFFER_BIT;
-        }
         for (const direction in TextureCube.imageDirections) {
-            const fb = this._framebuffers[direction] as FrameBuffer;
-            fb.bind();
-            if (clearFlag) {
-                this._gl.clear(clearFlag);
-            }
-            this._gl.flush();
+            this.out.beforeDraw(GLConstantUtility.createClearFilter(this.clearColorEnabled, this.clearDepthEnabled), this.clearColor.rawElements as number[], this.clearDepth, direction);
             this.camera.direction = direction;
             this.camera.renderScene({
                 renderer: this,
                 camera: this.camera,
                 layer: this.layer,
-                viewport: new Viewport(0, 0, this.out.width, this.out.height),
+                viewport: this.out.getViewport(),
                 timer: args.timer,
                 technique: this.technique,
                 sceneDescription: {},
@@ -129,28 +99,5 @@ export default class RenderCubemapComponent extends RenderStageBase {
             });
         }
         this._gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
-    }
-
-    private _updateFramebuffers(out: TextureCube, useDepth: boolean): void {
-        if (out) {
-            if (!this._framebuffers) {
-                this._framebuffers = {} as any;
-            }
-            for (const direction in TextureCube.imageDirections) {
-                if (!this._framebuffers[direction]) {
-                    this._framebuffers[direction] = new FrameBuffer(this._gl);
-                }
-                const fb = (this._framebuffers[direction] as FrameBuffer);
-                fb.setMetadata("direction", direction);
-                fb.update(out, TextureCube.imageDirections[direction]);
-                if (useDepth) {
-                    if (!this._renderBuffer) {
-                        this._renderBuffer = new RenderBuffer(this._gl);
-                        this._renderBuffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, out.width, out.height);
-                    }
-                    fb.update(this._renderBuffer);
-                }
-            }
-        }
     }
 }

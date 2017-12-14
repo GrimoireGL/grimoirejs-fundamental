@@ -25,7 +25,7 @@ export default class TextureResizerComponentBase extends Component {
      */
     protected __resizeResources(width: number, height: number): void {
         if (this.getAttribute("keepPow2Size")) {
-            let newSize = TextureSizeCalculator.getPow2Size(width, height);
+            const newSize = TextureSizeCalculator.getPow2Size(width, height);
             width = newSize.width;
             height = newSize.height;
         }

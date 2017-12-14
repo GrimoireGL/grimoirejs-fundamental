@@ -17,6 +17,7 @@ import QueryParser from "../Util/QueryParser";
  * * `HTMLImageElement`・・・必要がある場合リサイズされた上で利用される。(自動的に2の累乗に変換される)
  * * `HTMLCanvasElement`・・・必要がある場合リサイズされた上で利用される。(自動的に2の累乗に変換される)
  */
+// TODO: remove Texture reference
 export default function TextureConverter(val: any, attr: Attribute): any {
   if (val instanceof Texture2D) {
     return new TextureReference(val);
@@ -26,7 +27,7 @@ export default function TextureConverter(val: any, attr: Attribute): any {
     const parseResult = QueryParser.parseFunctionalQuery(val, "url");
     switch (parseResult[0]) {
       case "backbuffer":
-        return new TextureReference(() => RenderingBufferResourceRegistry.get(attr.companion.get("gl")).getBackbuffer(parseResult[1]));
+        return new TextureReference(() => RenderingBufferResourceRegistry.get(attr.companion.get("gl")).getBackbuffer(parseResult[1]) as Texture2D);
       case "query":
         const obtainedTag = attr.tree(parseResult[1]);
         const texture = obtainedTag.first().getComponent(TextureContainer);

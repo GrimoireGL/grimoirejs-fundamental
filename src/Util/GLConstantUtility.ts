@@ -1,5 +1,3 @@
-import default from "grimoirejs/ref/Interface/GomlInterfaceImpl";
-
 /**
  * Provides utility methods for converting constants like
  * * Buffer element type and typed array constructor
@@ -132,5 +130,16 @@ export default class GLConstantUtility {
             default:
                 return false;
         }
+    }
+
+    public static createClearFilter(clearColor?: boolean, clearDepth?: boolean): number {
+        let result = 0;
+        if (clearColor) {
+            result |= WebGLRenderingContext.COLOR_BUFFER_BIT;
+        }
+        if (clearDepth) {
+            result |= WebGLRenderingContext.DEPTH_BUFFER_BIT;
+        }
+        return result;
     }
 }

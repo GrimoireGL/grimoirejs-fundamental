@@ -27,11 +27,13 @@ import RenderCubemapComponent from "./Components/RenderStage/RenderCubemapCompon
 import RenderQuadComponent from "./Components/RenderStage/RenderQuadComponent";
 import RenderSceneComponent from "./Components/RenderStage/RenderSceneComponent";
 import SceneComponent from "./Components/SceneComponent";
+import ColorBufferTextureCubeUpdator from "./Components/Texture/ColorBufferTextureCubeUpdator";
 import ColorBufferTextureUpdator from "./Components/Texture/ColorBufferTextureUpdator";
 import ConstantSizeResourceResizer from "./Components/Texture/ConstantSizeResourceResizer";
 import ImageTextureUpdator from "./Components/Texture/ImageTextureUpdator";
 import RenderBufferUpdator from "./Components/Texture/RenderBufferUpdator";
 import TextureContainer from "./Components/Texture/TextureContainer";
+import TextureCubeContainer from "./Components/Texture/TextureCubeContainer";
 import VideoTextureUpdator from "./Components/Texture/VideoTextureUpdator";
 import ViewportSizeResourceResizer from "./Components/Texture/ViewportSizeResourceResizer";
 import TransformComponent from "./Components/TransformComponent";
@@ -66,7 +68,9 @@ export default () => {
         GrimoireInterface.registerComponent("RenderScene", RenderSceneComponent);
         GrimoireInterface.registerComponent("Scene", SceneComponent);
         GrimoireInterface.registerComponent("ColorBufferTextureUpdator", ColorBufferTextureUpdator);
+        GrimoireInterface.registerComponent("ColorBufferTextureCubeUpdator", ColorBufferTextureCubeUpdator);
         GrimoireInterface.registerComponent("TextureContainer", TextureContainer);
+        GrimoireInterface.registerComponent("TextureCubeContainer", TextureCubeContainer);
         GrimoireInterface.registerComponent("Transform", TransformComponent);
         GrimoireInterface.registerComponent("RenderHitArea", RenderHitArea);
         GrimoireInterface.registerComponent("ImageTextureUpdator", ImageTextureUpdator);
@@ -106,6 +110,7 @@ export default () => {
         GrimoireInterface.registerNode("renderer", ["Renderer"]);
         GrimoireInterface.registerNode("geometry", ["Geometry"]);
         GrimoireInterface.registerNode("texture", ["TextureContainer"]);
+        GrimoireInterface.registerNode("texture-cube", ["TextureCubeContainer"]);
         GrimoireInterface.registerNode("image-texture", ["ImageTextureUpdator"], {}, "texture");
         GrimoireInterface.registerNode("video-texture", ["VideoTextureUpdator"], {}, "texture");
         GrimoireInterface.registerNode("material", ["Material"]);
@@ -113,6 +118,9 @@ export default () => {
         GrimoireInterface.registerNode("color-buffer", ["ColorBufferTextureUpdator"], {
             resizerType: "ViewportSize",
         }, "texture");
+        GrimoireInterface.registerNode("color-buffer-cube", ["ColorBufferTextureCubeUpdator"], {
+            resizerType: "ViewportSize",
+        }, "texture-cube");
         GrimoireInterface.registerNode("render-buffer", ["RenderBufferUpdator"], {
             resizerType: "ViewportSize",
         });
