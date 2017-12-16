@@ -10,7 +10,7 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
       default: "default",
     },
     camera: {
-      default: null,
+      default: "camera",
       converter: "Component",
       target: "Camera",
     },
@@ -34,10 +34,10 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
     super.$awake();
     this.metadata.type = "scene";
     this.getAttributeRaw("layer").boundTo("layer");
-    this.getAttributeRaw("camera").boundTo("_camera");
     this.getAttributeRaw("technique").boundTo("technique");
     this.getAttributeRaw("camera").watch((cam: CameraComponent) => {
       this.metadata.camera = cam ? cam.node.id : null;
+      this.camera = cam;
     }, true);
     this.getAttributeRaw("technique").watch((t: string) => {
       this.metadata.technique = t;
