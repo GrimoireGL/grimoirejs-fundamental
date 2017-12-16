@@ -3,9 +3,10 @@ import Quaternion from "grimoirejs-math/ref/Quaternion";
 import Vector3 from "grimoirejs-math/ref/Vector3";
 import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
-import TransformComponent from "./TransformComponent";
+import Transform from "./TransformComponent";
 
 export default class MouseCameraControlComponent extends Component {
+  public static componentName = "MouseCameraControl";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     rotateSpeed: {
       default: 1,
@@ -40,7 +41,7 @@ export default class MouseCameraControlComponent extends Component {
   public moveSpeed: number;
   public center: Vector3;
   public distance: number;
-  private _transform: TransformComponent;
+  private _transform: Transform;
   private _updated = false;
 
   private _lastCenter: Vector3 = null;
@@ -72,7 +73,7 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   protected $mount(): void {
-    this._transform = this.node.getComponent(TransformComponent);
+    this._transform = this.node.getComponent(Transform);
     const canvasElement = this.companion.get("canvasElement");
     canvasElement.addEventListener("mousemove", this._listeners.mousemove);
     canvasElement.addEventListener("touchmove", this._listeners.touchmove);

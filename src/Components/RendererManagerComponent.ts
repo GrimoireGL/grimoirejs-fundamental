@@ -3,11 +3,12 @@ import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import MaterialFactory from "../Material/MaterialFactory";
 import Timer from "../Util/Timer";
-import LoopManagerComponent from "./LoopManagerComponent";
+import LoopManager from "./LoopManagerComponent";
 /**
  * 全レンダラーを管理するためのコンポーネント
  */
-export default class RendererManagerComponent extends Component {
+export default class RendererManager extends Component {
+  public static componentName = "RendererManager";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * キャンバスの初期化色
@@ -50,7 +51,7 @@ export default class RendererManagerComponent extends Component {
   }
 
   protected $treeInitialized(): void {
-    this.node.getComponent(LoopManagerComponent).register(this.onloop.bind(this), 1000);
+    this.node.getComponent(LoopManager).register(this.onloop.bind(this), 1000);
     if (this.getAttribute("complementRenderer") && this.node.getChildrenByNodeName("renderer").length === 0) {
       this.node.addChildByName("renderer", {});
     }
@@ -70,7 +71,7 @@ export default class RendererManagerComponent extends Component {
   }
 
   private _importSortFromHTML(): void {
-    if (RendererManagerComponent._sortImportedFromHTML) {
+    if (RendererManager._sortImportedFromHTML) {
       return;
     }
     const scripts = document.getElementsByTagName("script");
@@ -89,6 +90,6 @@ export default class RendererManagerComponent extends Component {
         }
       }
     }
-    RendererManagerComponent._sortImportedFromHTML = true;
+    RendererManager._sortImportedFromHTML = true;
   }
 }

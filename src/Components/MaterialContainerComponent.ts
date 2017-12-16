@@ -10,7 +10,8 @@ import MaterialContainerBase from "./MaterialContainerBase";
  * このコンポーネントは将来的に`MeshRenderer`と統合されます。
  * 指定されたマテリアルの初期化の管理や、マテリアルによって動的に追加される属性の管理を行います、
  */
-export default class MaterialContainerComponent extends MaterialContainerBase {
+export default class MaterialContainer extends MaterialContainerBase {
+  public static componentName = "MaterialContainer";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * 対象のマテリアル
@@ -36,8 +37,8 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
   };
 
   public static rewriteDefaultMaterial(materialName: string): void {
-    if (materialName !== MaterialContainerComponent._defaultMaterial) {
-      MaterialContainerComponent._defaultMaterial = materialName;
+    if (materialName !== MaterialContainer._defaultMaterial) {
+      MaterialContainer._defaultMaterial = materialName;
       GrimoireInterface.componentDeclarations.get("MaterialContainer").attributes["material"].default = `new(${materialName})`;
     }
   }

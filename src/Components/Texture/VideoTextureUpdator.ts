@@ -2,7 +2,8 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
 import VideoResolver from "../../Asset/VideoResolver";
 import Texture2D from "../../Resource/Texture2D";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
-export default class VideoTextureUpdatorComponent extends TextureUpdatorComponentBase<Texture2D> {
+export default class VideoTextureUpdator extends TextureUpdatorComponentBase<Texture2D> {
+  public static componentName = "VideoTextureUpdator";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     src: {
       converter: "String",

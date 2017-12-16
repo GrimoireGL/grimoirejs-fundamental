@@ -8,6 +8,7 @@ import BasicComponent from "./BasicComponent";
  * Basically used for MaterialComponent and MaterialContainerComponent
  */
 export default class MaterialContainerBase extends BasicComponent {
+  public static componentName = "MaterialContainerBase";
 
   protected _lastParameters: { [key: string]: IAttributeDeclaration & { __lastValue?: any } } = {};
 

@@ -4,6 +4,7 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
 import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
 import RenderStageBase from "./RenderStageBase";
 export default class SingleBufferRenderStageBase extends RenderStageBase {
+    public static componentName = "SingleBufferRenderStageBase";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         out: {
             converter: "RenderingTarget",

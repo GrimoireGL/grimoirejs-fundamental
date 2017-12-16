@@ -9,15 +9,15 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
 import IRenderArgument from "../SceneRenderer/IRenderArgument";
 import RenderQueue from "../SceneRenderer/RenderQueue";
 import Timer from "../Util/Timer";
-import SceneComponent from "./SceneComponent";
-import TransformComponent from "./TransformComponent";
+import Scene from "./SceneComponent";
+import Transform from "./TransformComponent";
 /**
  * シーンを描画するカメラのコンポーネント
  * このコンポーネントによって、透視射影や正方射影などの歪みを調整します。
  * また、このコンポーネントの付属するノードに属する`Transoform`によって、カメラの位置や向きが確定されます。
  */
 export default class CameraComponent extends Component {
-
+    public static componentName = "Camera";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         /**
          * カメラの視野角。
@@ -88,9 +88,9 @@ export default class CameraComponent extends Component {
     private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
     private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
 
-    public containedScene: SceneComponent;
+    public containedScene: Scene;
 
-    public transform: TransformComponent;
+    public transform: Transform;
     /**
      * Far clip distance
      */
@@ -142,8 +142,8 @@ export default class CameraComponent extends Component {
                 this._recalculateProjection();
             }));
         this._recalculateProjection();
-        this.transform = this.node.getComponent(TransformComponent);
-        this.containedScene = this.node.getComponentInAncestor(SceneComponent);
+        this.transform = this.node.getComponent(Transform);
+        this.containedScene = this.node.getComponentInAncestor(Scene);
         this.containedScene.queueRegistory.registerQueue(this._renderQueue);
         this.node.on("transformUpdated", this.updateTransform.bind(this));
         this.updateTransform();
@@ -156,19 +156,19 @@ export default class CameraComponent extends Component {
 
     /**
      * Convert global position of transoform to viewport relative position.
-     * @param  {TransformComponent} transform The transform to convert position
+     * @param  {Transform} transform The transform to convert position
      * @return {Vector3}                      Viewport relative position
      */
-    public getViewportRelativePosition(transform: TransformComponent): Vector3;
+    public getViewportRelativePosition(transform: Transform): Vector3;
     /**
      * Convert specified world position to viewport relative position.
      * @param  {Vector3} worldPos [description]
      * @return {Vector3}          [description]
      */
     public getViewportRelativePosition(worldPos: Vector3): Vector3;
-    public getViewportRelativePosition(input: Vector3 | TransformComponent): Vector3 {
+    public getViewportRelativePosition(input: Vector3 | Transform): Vector3 {
         let inputVector;
-        if (input instanceof TransformComponent) {
+        if (input instanceof Transform) {
             inputVector = input.globalPosition;
         } else {
             inputVector = input;

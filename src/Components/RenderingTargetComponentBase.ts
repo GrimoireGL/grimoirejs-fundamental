@@ -3,6 +3,7 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
 import IRenderingTarget from "../Resource/RenderingTarget/IRenderingTarget";
 import RenderingTrargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
 export default class RenderingTargetComponentBase<T extends IRenderingTarget> extends Component {
+    public static componentName = "RenderingTargetComponentBase";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         name: {
             converter: "String",

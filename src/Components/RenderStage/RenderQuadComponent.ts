@@ -4,9 +4,10 @@ import Geometry from "../../Geometry/Geometry";
 import IMaterialArgument from "../../Material/IMaterialArgument";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import GeometryRegistoryComponent from "../GeometryRegistoryComponent";
-import MaterialContainerComponent from "../MaterialContainerComponent";
+import MaterialContainer from "../MaterialContainerComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
 export default class RenderQuadComponent extends SingleBufferRenderStageBase {
+  public static componentName = "RenderQuadComponent";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     indexGroup: {
       default: "default",
@@ -26,7 +27,7 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
 
   private _geom: Geometry;
 
-  private _materialContainer: MaterialContainerComponent;
+  private _materialContainer: MaterialContainer;
 
   protected $awake(): void {
     super.$awake();
@@ -40,7 +41,7 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
 
   public async $mount(): Promise<void> {
     this._gl = this.companion.get("gl");
-    this._materialContainer = this.node.getComponent(MaterialContainerComponent);
+    this._materialContainer = this.node.getComponent(MaterialContainer);
     const geometryRegistry = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
     this._geom = await geometryRegistry.getGeometry("quad");
   }

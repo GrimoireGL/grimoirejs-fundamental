@@ -7,6 +7,7 @@ import AssetLoader from "../Asset/AssetLoader";
  * アセットの読み込みを司るコンポーネント。ローダーの表示などを司る。
  */
 export default class AssetLoadingManagerComponent extends Component {
+  public static componentName = "AssetLoadingManager";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * ローディング状況(読み取り専用)

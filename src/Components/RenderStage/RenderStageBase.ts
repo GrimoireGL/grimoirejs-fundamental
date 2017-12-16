@@ -4,6 +4,7 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
 import ViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
 import ViewportMouseEvent from "../../Objects/ViewportMouseEvent";
 export default class RenderStageBase extends Component {
+    public static componentName = "RenderStageBase";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
 
     };

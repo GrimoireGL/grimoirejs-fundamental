@@ -3,6 +3,7 @@ import RenderingBufferResourceRegistry from "../../Resource/RenderingTarget/Rend
 import Texture2D from "../../Resource/Texture2D";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
 export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBase<Texture2D> {
+  public static componentName = "ColorBufferTextureUpdator";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
       converter: "String",

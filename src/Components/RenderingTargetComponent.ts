@@ -9,7 +9,8 @@ import TextureContainer from "./Texture/TextureContainer";
  * Register specified buffer to rendering target.
  * If there were no child buffer node, this component will instanciate default buffers.
  */
-export default class RenderingTargetComponent extends RenderingTargetComponentBase<OffscreenRenderingTarget> {
+export default class RenderingTarget extends RenderingTargetComponentBase<OffscreenRenderingTarget> {
+    public static componentName = "RenderingTarget";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         colorBufferFormat: {
             converter: "Enum",

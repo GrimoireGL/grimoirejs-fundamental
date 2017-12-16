@@ -13,7 +13,8 @@ const { mat4, vec3, vec4 } = GLM;
  * このコンポーネントによって物体の座標や回転量、拡大料などが定義されます。
  * シーン中の全ての物体は必ずこのコンポーネントを含まなければなりません。
  */
-export default class TransformComponent extends HierarchycalComponentBase {
+export default class Transform extends HierarchycalComponentBase {
+  public static componentName = "Transform";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * この物体の座標
@@ -66,14 +67,14 @@ export default class TransformComponent extends HierarchycalComponentBase {
    * The children transform should be notified when this transform was updated.
    * @type {TransformComponent[]}
    */
-  private _children: TransformComponent[] = [];
+  private _children: Transform[] = [];
 
   /**
    * The reference to parent TransformComponent.
    * When this object is root object of contained scene, this value should be null.
    * @type {TransformComponent}
    */
-  private _parentTransform: TransformComponent;
+  private _parentTransform: Transform;
 
   /**
    * Calculation cache to
@@ -180,7 +181,7 @@ export default class TransformComponent extends HierarchycalComponentBase {
 
   protected $mount(): void {
     super.$mount();
-    this._parentTransform = this.node.parent.getComponent(TransformComponent);
+    this._parentTransform = this.node.parent.getComponent(Transform);
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
     }
@@ -237,9 +238,9 @@ export default class TransformComponent extends HierarchycalComponentBase {
   }
 
   private _updateDirections(): void {
-    vec4.transformMat4(this._forward.rawElements, TransformComponent._forwardBase.rawElements, this.globalTransform.rawElements);
-    vec4.transformMat4(this._up.rawElements, TransformComponent._upBase.rawElements, this.globalTransform.rawElements);
-    vec4.transformMat4(this._right.rawElements, TransformComponent._rightBase.rawElements, this.globalTransform.rawElements);
+    vec4.transformMat4(this._forward.rawElements, Transform._forwardBase.rawElements, this.globalTransform.rawElements);
+    vec4.transformMat4(this._up.rawElements, Transform._upBase.rawElements, this.globalTransform.rawElements);
+    vec4.transformMat4(this._right.rawElements, Transform._rightBase.rawElements, this.globalTransform.rawElements);
   }
 
   private _updateGlobalProperty(): void {

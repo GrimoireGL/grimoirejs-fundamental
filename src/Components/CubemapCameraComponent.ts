@@ -5,6 +5,7 @@ import Vector3 from "grimoirejs-math/ref/Vector3";
 import IElementOfCubemapDirection from "../Resource/IElementOfCubemapDirection";
 import CameraComponent from "./CameraComponent";
 export default class CubemapCameraComponent extends CameraComponent {
+    public static componentName = "CubemapCameraComponent";
     public static cubemapDirections: IElementOfCubemapDirection<Quaternion> = {
         posX: Quaternion.angleAxis(Math.PI / 2, Vector3.YUnit),
         negX: Quaternion.angleAxis(-Math.PI / 2, Vector3.YUnit),

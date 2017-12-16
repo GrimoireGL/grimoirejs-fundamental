@@ -3,6 +3,7 @@ import RenderBuffer from "../../Resource/RenderBuffer";
 import RenderingBufferResourceRegistry from "../../Resource/RenderingTarget/RenderingBufferResourceRegistry";
 import ResizableResourceUpdator from "./ResizableResourceUpdator";
 export default class RenderBufferComponent extends ResizableResourceUpdator {
+  public static componentName = "RenderBufferComponent";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
       converter: "String",

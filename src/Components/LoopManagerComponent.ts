@@ -9,7 +9,8 @@ interface LoopAction {
 /**
  * 全体のループを管理しているコンポーネント。あまり直接ユーザーがいじることはありません。
  */
-export default class LoopManagerComponent extends Component {
+export default class LoopManager extends Component {
+  public static componentName = "LoopManager";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     loopEnabled: {
       default: false,

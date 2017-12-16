@@ -7,7 +7,8 @@ import MaterialFactory from "../Material/MaterialFactory";
 /**
  * Provides custom material importing
  */
-export default class MaterialImporterComponent extends Component {
+export default class MaterialImporter extends Component {
+  public static componentName = "MaterialImporter";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * Name to be registered as new material

@@ -8,9 +8,9 @@ import IMaterialArgument from "../Material/IMaterialArgument";
 import IRenderable from "../SceneRenderer/IRenderable";
 import IRenderArgument from "../SceneRenderer/IRenderArgument";
 import CameraComponent from "./CameraComponent";
-import MaterialContainerComponent from "./MaterialContainerComponent";
-import SceneComponent from "./SceneComponent";
-import TransformComponent from "./TransformComponent";
+import MaterialContainer from "./MaterialContainerComponent";
+import Scene from "./SceneComponent";
+import Transform from "./TransformComponent";
 const { vec3 } = GLM;
 
 /**
@@ -18,15 +18,15 @@ const { vec3 } = GLM;
  * このメッシュが、対象となるノードの`Transform`や描画に用いる`Camera`、マテリアルなどを考慮して実際のレンダリングを行います。
  */
 export default class MeshRenderer extends Component implements IRenderable {
-
+    public static componentName = "MeshRenderer";
     /**
    * Find scene tag recursively.
    * @param  {GomlNode}       node [the node to searching currently]
-   * @return {SceneComponent}      [the scene component found]
+   * @return {Scene}      [the scene component found]
    */
-    private static _findContainedScene(node: GomlNode): SceneComponent {
+    private static _findContainedScene(node: GomlNode): Scene {
         if (node.parent) {
-            const scene = node.parent.getComponent(SceneComponent);
+            const scene = node.parent.getComponent(Scene);
             if (scene) {
                 return scene;
             } else {
@@ -87,9 +87,9 @@ export default class MeshRenderer extends Component implements IRenderable {
     private layer: string;
     private drawOffset: number;
     private drawCount: number;
-    private _materialContainer: MaterialContainerComponent;
-    private _transformComponent: TransformComponent;
-    private _containedScene: SceneComponent;
+    private _materialContainer: MaterialContainer;
+    private _transformComponent: Transform;
+    private _containedScene: Scene;
 
     private _priortyCalcCache = new Float32Array(3);
 
@@ -110,8 +110,8 @@ export default class MeshRenderer extends Component implements IRenderable {
     }
 
     protected $mount(): void {
-        this._transformComponent = this.node.getComponent(TransformComponent);
-        this._materialContainer = this.node.getComponent(MaterialContainerComponent);
+        this._transformComponent = this.node.getComponent(Transform);
+        this._materialContainer = this.node.getComponent(MaterialContainer);
         this._containedScene = MeshRenderer._findContainedScene(this.node);
         this._containedScene.queueRegistory.addRenderable(this);
     }

@@ -10,6 +10,7 @@ import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 import Timer from "../Util/Timer";
 import CameraComponent from "./CameraComponent";
 export default class RendererComponent extends Component {
+  public static componentName = "Renderer";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     regionName: {
       converter: "String",

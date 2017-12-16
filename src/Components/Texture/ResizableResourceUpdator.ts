@@ -7,6 +7,7 @@ import ViewportSizeResourceResizer from "./ViewportSizeResourceResizer";
  * Abstract class of ResizableResource container.
  */
 export default class ResizableResourceUpdator extends BasicComponent {
+    public static componentName = "ResizableResourceUpdator";
     public static resizers: { [key: string]: typeof ResourceResizerComponent } = {
         ViewportSize: ViewportSizeResourceResizer,
         Constant: ConstantSizeResourceResizer,

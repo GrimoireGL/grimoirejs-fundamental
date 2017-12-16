@@ -9,14 +9,14 @@ import HierarchycalComponentBase from "./HierarchicalComponentBase";
  * 特定のシーン内に関連する処理を行うためのコンポーネント
  * このコンポーネントには属性が存在しません。
  */
-export default class SceneComponent extends HierarchycalComponentBase {
-
+export default class Scene extends HierarchycalComponentBase {
+  public static componentName = "Scene";
   public static attributes: { [key: string]: IAttributeDeclaration } = {};
 
-  private static _sceneDescriptionCreationHandlers: ((sd: { [key: string]: any }, scene: SceneComponent) => void)[] = [];
+  private static _sceneDescriptionCreationHandlers: ((sd: { [key: string]: any }, scene: Scene) => void)[] = [];
 
-  public static onSceneDescriptionCreation(handler: (sd: { [key: string]: any }, scene: SceneComponent) => void): void {
-    SceneComponent._sceneDescriptionCreationHandlers.push(handler);
+  public static onSceneDescriptionCreation(handler: (sd: { [key: string]: any }, scene: Scene) => void): void {
+    Scene._sceneDescriptionCreationHandlers.push(handler);
   }
 
   public sceneDescription: { [key: string]: any };
@@ -32,7 +32,7 @@ export default class SceneComponent extends HierarchycalComponentBase {
   protected $mount(): void {
     super.$mount();
     this.sceneDescription = {};
-    SceneComponent._sceneDescriptionCreationHandlers.forEach(v => v(this.sceneDescription, this));
+    Scene._sceneDescriptionCreationHandlers.forEach(v => v(this.sceneDescription, this));
   }
 
   protected $unmount(): void {

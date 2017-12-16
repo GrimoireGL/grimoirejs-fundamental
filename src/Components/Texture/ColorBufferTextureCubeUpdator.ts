@@ -3,6 +3,7 @@ import RenderingBufferResourceRegistry from "../../Resource/RenderingTarget/Rend
 import TextureCube from "../../Resource/TextureCube";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
 export default class ColorBufferTextureCubeUpdator extends TextureUpdatorComponentBase<TextureCube> {
+    public static componentName = "ColorBufferTextureCubeUpdator";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         name: {
             converter: "String",

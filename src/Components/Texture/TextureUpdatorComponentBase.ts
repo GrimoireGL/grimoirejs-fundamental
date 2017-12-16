@@ -6,6 +6,7 @@ import TextureContainer from "./TextureContainer";
 import TextureContainerBase from "./TextureContainerBase";
 
 export default class TextureUpdatorComponentBase<T extends Texture> extends ResizableResourceUpdator {
+    public static componentName = "TextureUpdatorComponentBase";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         flipY: {
             converter: "Boolean",

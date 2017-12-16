@@ -11,6 +11,7 @@ import GLConstantUtility from "../../Util/GLConstantUtility";
 import CubemapCameraComponent from "../CubemapCameraComponent";
 import RenderStageBase from "./RenderStageBase";
 export default class RenderCubemapComponent extends RenderStageBase {
+    public static componentName = "RenderCubemapComponent";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         indexGroup: {
             default: "default",

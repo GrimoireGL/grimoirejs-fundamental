@@ -7,6 +7,7 @@ import ResizableResourceUpdator from "./ResizableResourceUpdator";
  * Base class of texture resizer
  */
 export default class TextureResizerComponentBase extends Component {
+    public static componentName = "TextureResizerComponentBase";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         keepPow2Size: {
             converter: "Boolean",

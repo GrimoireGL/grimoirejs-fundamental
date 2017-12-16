@@ -15,6 +15,7 @@ import CameraComponent from "../CameraComponent";
 import RenderSceneComponent from "../RenderStage/RenderSceneComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
 export default class RenderHitareaComponent extends SingleBufferRenderStageBase {
+  public static componentName = "RenderHitareaComponent";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
 
   };

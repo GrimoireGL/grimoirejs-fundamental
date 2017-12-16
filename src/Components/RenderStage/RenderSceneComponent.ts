@@ -4,6 +4,7 @@ import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import CameraComponent from "../CameraComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
 export default class RenderSceneComponent extends SingleBufferRenderStageBase {
+  public static componentName = "RenderSceneComponent";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     layer: {
       converter: "String",

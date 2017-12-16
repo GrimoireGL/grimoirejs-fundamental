@@ -4,6 +4,7 @@ import Texture2D from "../../Resource/Texture2D";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
 
 export default class ImageTextureUpdator extends TextureUpdatorComponentBase<Texture2D> {
+  public static componentName = "ImageTextureUpdator";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     src: {
       converter: "String",

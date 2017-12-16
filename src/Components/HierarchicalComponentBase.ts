@@ -2,6 +2,7 @@ import Component from "grimoirejs/ref/Core/Component";
 import HierachicalDescription from "../SceneRenderer/HierachicalDescription";
 
 export default class HierarchycalComponentBase extends Component {
+    public static componentName = "HierarchycalComponentBase";
     public hierarchicalDescription: HierachicalDescription
         = new HierachicalDescription((node) => {
             // resolve parent hierarchy description

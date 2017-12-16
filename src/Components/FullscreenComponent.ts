@@ -9,7 +9,8 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
  * また、`fullscreen`属性は必ず マウスのイベントなどのユーザーのインタラクションを伴うイベントからの呼び出しで **動的に** trueにされる必要があります。
  * 最初からtrueに設定して初期状態でキャンバスをフルスクリーン状態にすることはWebAPIの制約上できません。
  */
-export default class FullscreenComponent extends Component {
+export default class Fullscreen extends Component {
+  public static componentName = "Fullscreen";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * フルスクリーン状態かどうか
