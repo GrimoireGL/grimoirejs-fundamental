@@ -1,4 +1,4 @@
-import { Nullable } from "grimoirejs/ref/Base/Types";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
 import GLConstantUtility from "../Util/GLConstantUtility";
 import ICubemapSource from "./ICubemapSource";
 import IElementOfCubemapDirection from "./IElementOfCubemapDirection";

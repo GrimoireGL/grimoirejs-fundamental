@@ -9,7 +9,7 @@ checkout:
 machine:
   timezone: Asia/Tokyo
   node:
-    version: 8.5.0
+    version: 9.3.0
 test:
   override:
     - npm run build -- --env.prod && npm test

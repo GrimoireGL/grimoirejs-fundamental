@@ -1,5 +1,5 @@
 import EEObject from "grimoirejs/ref/Base/EEObject";
-import Component from "grimoirejs/ref/Node/Component";
+import Component from "grimoirejs/ref/Core/Component";
 type AssetLoadingInfoTuple = {
   promise: Promise<any>,
   component: Component,

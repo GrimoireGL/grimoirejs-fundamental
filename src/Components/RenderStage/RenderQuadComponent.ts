@@ -1,5 +1,5 @@
 import GrimoireJS from "grimoirejs";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Geometry from "../../Geometry/Geometry";
 import IMaterialArgument from "../../Material/IMaterialArgument";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
@@ -31,8 +31,8 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
   protected $awake(): void {
     super.$awake();
     this.metadata.type = "Quad";
-    this.getAttributeRaw("indexGroup").boundTo("indexGroup");
-    this.getAttributeRaw("technique").boundTo("technique");
+    this.getAttributeRaw("indexGroup").bindTo("indexGroup");
+    this.getAttributeRaw("technique").bindTo("technique");
     this.getAttributeRaw("technique").watch((t: string) => {
       this.metadata.technique = t;
     }, true);

@@ -1,5 +1,5 @@
-import Attribute from "grimoirejs/ref/Node/Attribute";
-import GomlNode from "grimoirejs/ref/Node/GomlNode";
+import Attribute from "grimoirejs/ref/Core/Attribute";
+import GomlNode from "grimoirejs/ref/Core/GomlNode";
 
 /**
  * 座標を取得するためのコンバーター

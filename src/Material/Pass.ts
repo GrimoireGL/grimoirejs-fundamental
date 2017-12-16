@@ -1,4 +1,4 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Geometry from "../Geometry/Geometry";
 import ManagedProgram from "../Resource/ManagedProgram";
 import GLStateConfigurator from "./GLStateConfigurator";
@@ -82,7 +82,7 @@ export default class Pass {
       } else if (macro.target === "refer") {
         this.program.setMacro(macro.macroName, macro.value + "");
         macroRegister.watch(macro.macroName, (val, immediate) => {
-            this.program.setMacro(macro.macroName, val);
+          this.program.setMacro(macro.macroName, val);
         }, true);
       }
     }

@@ -1,6 +1,6 @@
-import Namespace from "grimoirejs/ref/Base/Namespace";
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Namespace from "grimoirejs/ref/Core/Namespace";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Timer from "../Util/Timer";
 import AssetLoadingManager from "./AssetLoadingManagerComponent";
 import LoopManager from "./LoopManagerComponent";
@@ -145,7 +145,7 @@ export default class BasicComponent extends Component {
    */
   protected __invoke(method: (timer: Timer) => void, timeInMillis: number): void {
     const _that = this;
-    this.__registerTimerCoroutine(function*() {
+    this.__registerTimerCoroutine(function* () {
       const timer = yield timeInMillis;
       method.call(_that, timer as Timer);
     });

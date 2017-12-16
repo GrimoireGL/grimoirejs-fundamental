@@ -1,5 +1,5 @@
 import Vector2 from "grimoirejs-math/ref/Vector2";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import ResourceResizerComponentBase from "./ResourceResizerComponentBase";
 
 /**

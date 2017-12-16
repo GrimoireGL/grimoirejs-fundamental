@@ -1,4 +1,4 @@
-import Component from "grimoirejs/ref/Node/Component";
+import Component from "grimoirejs/ref/Core/Component";
 import CameraComponent from "../Components/CameraComponent";
 import Material from "../Material/Material";
 import Viewport from "../Resource/Viewport";

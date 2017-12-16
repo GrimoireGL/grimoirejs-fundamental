@@ -1,4 +1,4 @@
-import GomlNode from "grimoirejs/ref/Node/GomlNode";
+import GomlNode from "grimoirejs/ref/Core/GomlNode";
 /**
  * Resolve description of specified parameter considering hierarchy
  */

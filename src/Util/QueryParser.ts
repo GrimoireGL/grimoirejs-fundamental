@@ -1,4 +1,4 @@
-import { Nullable } from "grimoirejs/ref/Base/Types";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
 
 /**
  * Parser for query used in converter

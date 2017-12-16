@@ -1,4 +1,4 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import BasicComponent from "../BasicComponent";
 import ConstantSizeResourceResizer from "./ConstantSizeResourceResizer";
 import ResourceResizerComponent from "./ResourceResizerComponentBase";

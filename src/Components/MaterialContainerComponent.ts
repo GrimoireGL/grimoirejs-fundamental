@@ -1,5 +1,5 @@
 import GrimoireInterface from "grimoirejs";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Material from "../Material/Material";
 import DrawPriorty from "../SceneRenderer/DrawPriorty";
 import MaterialComponent from "./MaterialComponent";
@@ -91,8 +91,8 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
   protected $mount(): void {
     this.getAttributeRaw("material").watch(this._onMaterialChanged.bind(this));
     this.__registerAssetLoading(this._onMaterialChanged());
-    this.getAttributeRaw("drawOrder").boundTo("_drawOrder");
-    this.getAttributeRaw("transparent").boundTo("_transparent");
+    this.getAttributeRaw("drawOrder").bindTo("_drawOrder");
+    this.getAttributeRaw("transparent").bindTo("_transparent");
   }
 
   /**
