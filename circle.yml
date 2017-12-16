@@ -9,7 +9,7 @@ machine:
 test:
   override:
     - npm run build -- --env.prod && npm test
-    - sh -x shell/e2e.sh
+    - sh -x common/e2e.sh
   post:
     - sh release.sh
 deployment:
