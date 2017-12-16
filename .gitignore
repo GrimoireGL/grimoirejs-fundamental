@@ -116,3 +116,4 @@ docs
 .vscode
 test-lib
 .grimoire
+package-lock.json
