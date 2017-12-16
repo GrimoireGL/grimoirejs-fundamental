@@ -21,7 +21,7 @@ export default class GeometryRegistoryComponent extends Component {
 
   private _geometryResolver: NameResolver<Geometry> = new NameResolver<Geometry>();
 
-  public $awake(): void {
+  protected $awake(): void {
     this.companion.set(this.name, this);
     const factory = GeometryFactory.get(this.companion.get("gl"));
     for (const geometry of this.getAttribute("defaultGeometry") as string[]) {

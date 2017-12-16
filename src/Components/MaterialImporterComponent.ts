@@ -25,7 +25,7 @@ export default class MaterialImporterComponent extends Component {
     },
   };
 
-  public $awake(): void {
+  protected $awake(): void {
     this.getAttributeRaw("typeName").watch(() => {
       console.warn("Changeing 'typeName' on MaterialImporter makes no sense. This change won't affect anything.");
     });

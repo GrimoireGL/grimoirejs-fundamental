@@ -38,7 +38,7 @@ export default class ColorBufferTextureCubeUpdator extends TextureUpdatorCompone
         },
     };
 
-    public $awake(): void {
+    protected $awake(): void {
         super.$awake();
         const name = this.getAttribute("name");
         const format = this.getAttribute("format");

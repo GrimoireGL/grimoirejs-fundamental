@@ -29,13 +29,13 @@ export default class SceneComponent extends HierarchycalComponentBase {
    */
   private _lastUpdateIndex: number;
 
-  public $mount(): void {
+  protected $mount(): void {
     super.$mount();
     this.sceneDescription = {};
     SceneComponent._sceneDescriptionCreationHandlers.forEach(v => v(this.sceneDescription, this));
   }
 
-  public $unmount(): void {
+  protected $unmount(): void {
     super.$unmount();
   }
 

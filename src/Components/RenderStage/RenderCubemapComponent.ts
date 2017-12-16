@@ -71,12 +71,12 @@ export default class RenderCubemapComponent extends RenderStageBase {
 
     private _gl: WebGLRenderingContext;
 
-    public $mount(): void {
+    protected $mount(): void {
         this.__bindAttributes();
         this._gl = this.companion.get("gl");
     }
 
-    public $renderRenderStage(args: IRenderRendererMessage): void {
+    protected $renderRenderStage(args: IRenderRendererMessage): void {
         if (!this.__beforeRender()) {
             return;
         }

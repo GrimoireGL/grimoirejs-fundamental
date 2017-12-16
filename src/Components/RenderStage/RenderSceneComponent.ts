@@ -30,7 +30,7 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
 
   // messages
 
-  public $awake(): void {
+  protected $awake(): void {
     super.$awake();
     this.metadata.type = "scene";
     this.getAttributeRaw("layer").boundTo("layer");
@@ -47,11 +47,11 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
     }, true);
   }
 
-  public $mount(): void {
+  protected $mount(): void {
     this._gl = this.companion.get("gl");
   }
 
-  public $renderRenderStage(args: IRenderRendererMessage): void {
+  protected $renderRenderStage(args: IRenderRendererMessage): void {
     if (!this.camera) {
       return;
     }

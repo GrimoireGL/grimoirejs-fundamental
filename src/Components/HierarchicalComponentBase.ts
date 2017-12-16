@@ -13,11 +13,11 @@ export default class HierarchycalComponentBase extends Component {
             }
         });
 
-    public $mount(): void {
+    protected $mount(): void {
         this.hierarchicalDescription.link(this.node);
     }
 
-    public $unmount(): void {
+    protected $unmount(): void {
         this.hierarchicalDescription.unlink();
     }
 }

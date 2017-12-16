@@ -12,7 +12,7 @@ export default class RenderingTargetComponentBase<T extends IRenderingTarget> ex
 
     public renderingTarget: T;
 
-    public $mount(): void {
+    protected $mount(): void {
         const name = this.getAttribute("name");
         if (!name) {
             throw new Error("Rendering target must have name");

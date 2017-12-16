@@ -40,16 +40,16 @@ export default class RendererManagerComponent extends Component {
 
   private _clearDepth: number;
 
-  public $awake(): void {
+  protected $awake(): void {
     this.getAttributeRaw("bgColor").boundTo("_bgColor");
     this.getAttributeRaw("clearDepth").boundTo("_clearDepth");
   }
 
-  public $mount(): void {
+  protected $mount(): void {
     this.gl = this.companion.get("gl");
   }
 
-  public $treeInitialized(): void {
+  protected $treeInitialized(): void {
     this.node.getComponent(LoopManagerComponent).register(this.onloop.bind(this), 1000);
     if (this.getAttribute("complementRenderer") && this.node.getChildrenByNodeName("renderer").length === 0) {
       this.node.addChildByName("renderer", {});

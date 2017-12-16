@@ -19,7 +19,7 @@ export default class ImageTextureUpdator extends TextureUpdatorComponentBase<Tex
 
   private _resolvedImage: HTMLImageElement;
 
-  public $awake() {
+  protected $awake() {
     super.$awake();
     this.__bindAttributes();
     this.getAttributeRaw("src").watch((v: string) => {

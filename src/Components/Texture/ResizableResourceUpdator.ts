@@ -29,7 +29,7 @@ export default class ResizableResourceUpdator extends BasicComponent {
         // These should be considered by the classes override this class.
     }
 
-    public $awake(): void {
+    protected $awake(): void {
         const resizer = this.node.getComponent(ResourceResizerComponent);
         if (!resizer) {
             const resizerType = this.getAttribute("resizerType");

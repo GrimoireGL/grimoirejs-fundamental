@@ -42,7 +42,7 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
 
   public loop: boolean;
 
-  public $awake() {
+  protected $awake() {
     super.$awake();
     this.__bindAttributes();
     this.getAttributeRaw("src").watch((v: string) => {

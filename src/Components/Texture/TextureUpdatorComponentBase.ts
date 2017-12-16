@@ -22,7 +22,7 @@ export default class TextureUpdatorComponentBase<T extends Texture> extends Resi
         return this.textureComponent.texture;
     }
 
-    public $awake(): void {
+    protected $awake(): void {
         super.$awake();
         this.textureComponent = this.node.getComponent(TextureContainerBase);
     }

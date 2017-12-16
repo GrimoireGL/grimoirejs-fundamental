@@ -59,7 +59,7 @@ export default class MouseCameraControlComponent extends Component {
 
   private _listeners: any;
 
-  public $awake(): void {
+  protected $awake(): void {
     this.__bindAttributes();
     this._listeners = {
       mousemove: this._mouseMove.bind(this),
@@ -71,7 +71,7 @@ export default class MouseCameraControlComponent extends Component {
     };
   }
 
-  public $mount(): void {
+  protected $mount(): void {
     this._transform = this.node.getComponent(TransformComponent);
     const canvasElement = this.companion.get("canvasElement");
     canvasElement.addEventListener("mousemove", this._listeners.mousemove);
@@ -85,7 +85,7 @@ export default class MouseCameraControlComponent extends Component {
     this._xsum = 0;
     this._ysum = 0;
   }
-  public $unmount() {
+  protected $unmount() {
     const canvasElement = this.companion.get("canvasElement");
     canvasElement.removeEventListener("mousemove", this._listeners.mousemove);
     canvasElement.removeEventListener("touchmove", this._listeners.touchmove);
@@ -95,7 +95,7 @@ export default class MouseCameraControlComponent extends Component {
     canvasElement.removeEventListener("wheel", this._listeners.wheel);
   }
 
-  public $initialized() {
+  protected $initialized() {
     const look = Vector3.normalize(this.center.subtractWith(this._transform.position));
     const g = Quaternion.fromToRotation(this._transform.forward, look).normalize();
     this._transform.rotation = g;
@@ -108,7 +108,7 @@ export default class MouseCameraControlComponent extends Component {
       this.distance = this._transform.position.subtractWith(this.center).magnitude;
     }
   }
-  public $update() {
+  protected $update() {
     if (this.isActive && this._updated || !this._lastCenter || !this.center.equalWith(this._lastCenter)) {
       this._updated = false;
       this._lastCenter = this.center;
@@ -140,7 +140,7 @@ export default class MouseCameraControlComponent extends Component {
     if (m.touches.length >= 2) {
       this._lastPinchDistance =
         ((m.touches[0].pageX - m.touches[1].pageX) ** 2 +
-        (m.touches[0].pageY - m.touches[1].pageY) ** 2) ** 0.5;
+          (m.touches[0].pageY - m.touches[1].pageY) ** 2) ** 0.5;
     }
     this._lastScreenPos = null;
     m.preventDefault();
@@ -194,7 +194,7 @@ export default class MouseCameraControlComponent extends Component {
         }
         const scale =
           ((m.touches[0].pageX - m.touches[1].pageX) ** 2 +
-          (m.touches[0].pageY - m.touches[1].pageY) ** 2) ** 0.5;
+            (m.touches[0].pageY - m.touches[1].pageY) ** 2) ** 0.5;
         this._zoom((this._lastPinchDistance - scale) * 0.5);
         this._lastPinchDistance = scale;
         break;

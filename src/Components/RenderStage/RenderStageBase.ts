@@ -24,31 +24,31 @@ export default class RenderStageBase extends Component {
 
     public metadata: { [key: string]: any } = {};
 
-    public $mousemove(v: ViewportMouseEvent): void {
+    protected $mousemove(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $mouseenter(v: ViewportMouseEvent): void {
+    protected $mouseenter(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $mouseleave(v: ViewportMouseEvent): void {
+    protected $mouseleave(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $mousedown(v: ViewportMouseEvent): void {
+    protected $mousedown(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $mouseup(v: ViewportMouseEvent): void {
+    protected $mouseup(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $click(v: ViewportMouseEvent): void {
+    protected $click(v: ViewportMouseEvent): void {
         return;
     }
 
-    public $dblclick(v: ViewportMouseEvent): void {
+    protected $dblclick(v: ViewportMouseEvent): void {
         return;
     }
 

@@ -88,7 +88,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
 
   private _transparent: boolean;
 
-  public $mount(): void {
+  protected $mount(): void {
     this.getAttributeRaw("material").watch(this._onMaterialChanged.bind(this));
     this.__registerAssetLoading(this._onMaterialChanged());
     this.getAttributeRaw("drawOrder").boundTo("_drawOrder");

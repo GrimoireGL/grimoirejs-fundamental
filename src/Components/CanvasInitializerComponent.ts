@@ -87,7 +87,7 @@ export default class CanvasInitializerComponent extends Component {
   // Ratio of aspect
   private _ratio: number;
 
-  public $awake(): void {
+  protected $awake(): void {
     this._scriptTag = this.companion.get("scriptElement");
     if (this._isContainedInBody(this._scriptTag)) {
       // canvas should be placed siblings of the script tag

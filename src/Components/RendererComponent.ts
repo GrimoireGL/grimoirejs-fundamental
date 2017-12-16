@@ -60,7 +60,7 @@ export default class RendererComponent extends Component {
 
   private _wasInside = false;
 
-  public $awake(): void {
+  protected $awake(): void {
     // initializing attributes
     this.getAttributeRaw("viewport").watch((v) => {
       this._viewportSizeGenerator = v;
@@ -78,7 +78,7 @@ export default class RendererComponent extends Component {
     this._initializeMouseHandlers();
   }
 
-  public $mount(): void {
+  protected $mount(): void {
     this._gl = this.companion.get("gl") as WebGLRenderingContext;
     this._canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
     this.getAttributeRaw("handleMouse").watch(a => {
@@ -94,16 +94,16 @@ export default class RendererComponent extends Component {
     this.$resizeCanvas();
   }
 
-  public $unmount(): void {
+  protected $unmount(): void {
     this._disableMouseHandling();
   }
 
-  public $treeInitialized(): void {
+  protected $treeInitialized(): void {
     // This should be called after mounting all of tree nodes in children
     this.$resizeCanvas();
   }
 
-  public $resizeCanvas(): void {
+  protected $resizeCanvas(): void {
     this._viewportCache = this._viewportSizeGenerator(this._canvas);
     this.renderingTarget.setViewport(this._viewportCache);
     const pow2Size = TextureSizeCalculator.getPow2Size(this._viewportCache.Width, this._viewportCache.Height);
@@ -115,7 +115,7 @@ export default class RendererComponent extends Component {
     } as IResizeViewportMessage);
   }
 
-  public $renderRenderer(args: { timer: Timer }): void {
+  protected $renderRenderer(args: { timer: Timer }): void {
     this.node.broadcastMessage("renderRenderStage", {
       timer: args.timer,
     } as IRenderRendererMessage);

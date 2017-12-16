@@ -53,7 +53,7 @@ export default class TextureContainerBase<T extends Texture> extends Component {
 
     public wrapT: number;
 
-    public $mount(): void {
+    protected $mount(): void {
         this.__bindAttributes();
         this.texture = this.__createTexture(this.companion.get("gl"));
         this.__applyParameters();
@@ -63,7 +63,7 @@ export default class TextureContainerBase<T extends Texture> extends Component {
         this.getAttributeRaw("wrapT").watch(() => this.__applyParameters());
     }
 
-    public $destroy(): void {
+    protected $destroy(): void {
         this.texture.destroy();
         this.texture = null;
     }

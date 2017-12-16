@@ -135,7 +135,7 @@ export default class CameraComponent extends Component {
     private _lookAtCache: Vector3 = Vector3.Zero;
     private _upCache: Vector3 = Vector3.Zero;
 
-    public $mount(): void {
+    protected $mount(): void {
         this.__bindAttributes();
         ["far", "near", "fovy", "aspect", "orthoSize", "orthogonal", "autoAspect"]
             .forEach(att => this.node.getAttributeRaw(att).watch(v => {
@@ -149,7 +149,7 @@ export default class CameraComponent extends Component {
         this.updateTransform();
     }
 
-    public $unmount(): void {
+    protected $unmount(): void {
         this.containedScene.queueRegistory.unregisterQueue(this._renderQueue);
         this.containedScene = null;
     }

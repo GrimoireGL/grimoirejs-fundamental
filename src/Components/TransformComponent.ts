@@ -163,7 +163,7 @@ export default class TransformComponent extends HierarchycalComponentBase {
     return this._cacheVM;
   }
 
-  public $awake(): void {
+  protected $awake(): void {
     // register observers
     this.getAttributeRaw("position").watch((v) => {
       this.notifyUpdateTransform();
@@ -178,7 +178,7 @@ export default class TransformComponent extends HierarchycalComponentBase {
     this.__bindAttributes();
   }
 
-  public $mount(): void {
+  protected $mount(): void {
     super.$mount();
     this._parentTransform = this.node.parent.getComponent(TransformComponent);
     if (this._parentTransform) {
@@ -187,7 +187,7 @@ export default class TransformComponent extends HierarchycalComponentBase {
     this._updateTransform();
   }
 
-  public $unmount(): void {
+  protected $unmount(): void {
     super.$unmount();
     if (this._parentTransform) {
       this._parentTransform._children.splice(this._parentTransform._children.indexOf(this), 1);

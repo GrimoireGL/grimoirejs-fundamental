@@ -42,7 +42,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
 
   private _mouseMoved: boolean;
 
-  public $mount(): void {
+  protected $mount(): void {
     this._sceneRenderer = this.node.getComponent(RenderSceneComponent);
     if (!this._sceneRenderer) {
       throw new Error("The node attaching RenderHitArea should contain RenderScene.");
@@ -57,7 +57,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     }
   }
 
-  public $resizeViewport(args: IResizeViewportMessage): void {
+  protected $resizeViewport(args: IResizeViewportMessage): void {
     const size = TextureSizeCalculator.getPow2Size(args.width, args.height);
     this._bufferViewport = new Viewport(0, 0, size.width, size.height);
     this.hitareaTexture.update(0, size.width, size.height, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE);
@@ -69,7 +69,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     }
   }
 
-  public $renderRenderStage(args: IRenderRendererMessage): void {
+  protected $renderRenderStage(args: IRenderRendererMessage): void {
     if (!this._mouseInside) {
       return;
     }
@@ -103,18 +103,18 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
   }
 
-  public $mousemove(v: ViewportMouseEvent): void {
+  protected $mousemove(v: ViewportMouseEvent): void {
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
   }
 
-  public $mouseenter(v: ViewportMouseEvent): void {
+  protected $mouseenter(v: ViewportMouseEvent): void {
     this._mouseInside = true;
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
   }
 
-  public $mouseleave(v: ViewportMouseEvent): void {
+  protected $mouseleave(v: ViewportMouseEvent): void {
     this._mouseInside = false;
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
@@ -124,25 +124,25 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     this._lastRenderable = null;
   }
 
-  public $click(v: ViewportMouseEvent): void {
+  protected $click(v: ViewportMouseEvent): void {
     if (this._lastRenderable instanceof Component) {
       this._lastRenderable.node.emit("click", this._lastRenderable);
     }
   }
 
-  public $dblclick(v: ViewportMouseEvent): void {
+  protected $dblclick(v: ViewportMouseEvent): void {
     if (this._lastRenderable instanceof Component) {
       this._lastRenderable.node.emit("dblclick", this._lastRenderable);
     }
   }
 
-  public $mousedown(v: ViewportMouseEvent): void {
+  protected $mousedown(v: ViewportMouseEvent): void {
     if (this._lastRenderable instanceof Component) {
       this._lastRenderable.node.emit("mousedown", this._lastRenderable);
     }
   }
 
-  public $mouseup(v: ViewportMouseEvent): void {
+  protected $mouseup(v: ViewportMouseEvent): void {
     if (this._lastRenderable instanceof Component) {
       this._lastRenderable.node.emit("mouseup", this._lastRenderable);
     }

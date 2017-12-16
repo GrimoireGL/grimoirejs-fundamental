@@ -102,21 +102,21 @@ export default class MeshRenderer extends Component implements IRenderable {
         return this._materialContainer.getDrawPriorty(vec3.sqrLen(this._priortyCalcCache), technique); // Obtains distance between camera and center of aabb
     }
 
-    public $awake(): void {
+    protected $awake(): void {
         this.__bindAttributes();
-        this.getAttributeRaw("geometry").watch(async() => {
+        this.getAttributeRaw("geometry").watch(async () => {
             this.geometryInstance = await this.geometry;
         }, true);
     }
 
-    public $mount(): void {
+    protected $mount(): void {
         this._transformComponent = this.node.getComponent(TransformComponent);
         this._materialContainer = this.node.getComponent(MaterialContainerComponent);
         this._containedScene = MeshRenderer._findContainedScene(this.node);
         this._containedScene.queueRegistory.addRenderable(this);
     }
 
-    public $unmount(): void {
+    protected $unmount(): void {
         this._containedScene.queueRegistory.removeRenderable(this);
     }
 

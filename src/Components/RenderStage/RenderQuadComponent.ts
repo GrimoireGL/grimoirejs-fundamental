@@ -28,7 +28,7 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
 
   private _materialContainer: MaterialContainerComponent;
 
-  public $awake(): void {
+  protected $awake(): void {
     super.$awake();
     this.metadata.type = "Quad";
     this.getAttributeRaw("indexGroup").boundTo("indexGroup");
@@ -45,7 +45,7 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
     this._geom = await geometryRegistry.getGeometry("quad");
   }
 
-  public $renderRenderStage(args: IRenderRendererMessage): void {
+  protected $renderRenderStage(args: IRenderRendererMessage): void {
     if (!this._materialContainer.materialReady || !this._geom) {
       return;
     }
