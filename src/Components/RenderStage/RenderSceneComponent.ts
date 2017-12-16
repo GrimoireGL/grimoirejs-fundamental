@@ -51,7 +51,7 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
     this._gl = this.companion.get("gl");
   }
 
-  public $render(args: IRenderRendererMessage): void {
+  public $renderRenderStage(args: IRenderRendererMessage): void {
     if (!this.camera) {
       return;
     }

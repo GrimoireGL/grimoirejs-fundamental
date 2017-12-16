@@ -2,10 +2,9 @@ import CameraComponent from "../Components/CameraComponent";
 import Material from "../Material/Material";
 import Viewport from "../Resource/Viewport";
 import Timer from "../Util/Timer";
+// RendererComponent=>($renderRenderStage) => RenderStages
+// RenderStages => (CameraComponent#renderScene) =>
 interface IRendnerRendererMessage {
-  viewport: Viewport;
-  material?: Material;
-  materialArgs?: { [key: string]: Material; };
   timer: Timer;
 }
 

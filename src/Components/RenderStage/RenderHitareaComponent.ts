@@ -69,7 +69,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     }
   }
 
-  public $render(args: IRenderRendererMessage): void {
+  public $renderRenderStage(args: IRenderRendererMessage): void {
     if (!this._mouseInside) {
       return;
     }
@@ -88,7 +88,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
       renderer: this._sceneRenderer, // TODO
       camera: this._sceneRenderer.camera,
       layer: this._sceneRenderer.layer,
-      viewport: args.viewport,
+      viewport: this._sceneRenderer.out.getViewport(),
       timer: args.timer,
       technique: "hitarea",
       sceneDescription: {},

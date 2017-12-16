@@ -45,7 +45,7 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
     this._geom = await geometryRegistry.getGeometry("quad");
   }
 
-  public $render(args: IRenderRendererMessage): void {
+  public $renderRenderStage(args: IRenderRendererMessage): void {
     if (!this._materialContainer.materialReady || !this._geom) {
       return;
     }

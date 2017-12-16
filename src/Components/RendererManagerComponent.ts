@@ -63,7 +63,7 @@ export default class RendererManagerComponent extends Component {
       this.gl.clearColor(c.R, c.G, c.B, c.A);
       this.gl.clearDepth(this._clearDepth);
       this.gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);
-      this.node.broadcastMessage(1, "renderViewport", {
+      this.node.broadcastMessage(1, "renderRenderer", {
         timer,
       });
     }

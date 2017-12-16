@@ -76,7 +76,7 @@ export default class RenderCubemapComponent extends RenderStageBase {
         this._gl = this.companion.get("gl");
     }
 
-    public $render(args: IRenderRendererMessage): void {
+    public $renderRenderStage(args: IRenderRendererMessage): void {
         if (!this.__beforeRender()) {
             return;
         }

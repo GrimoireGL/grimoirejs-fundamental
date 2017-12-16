@@ -115,9 +115,8 @@ export default class RendererComponent extends Component {
     } as IResizeViewportMessage);
   }
 
-  public $renderViewport(args: { timer: Timer }): void {
-    this.node.broadcastMessage("render", {
-      viewport: this._viewportCache,
+  public $renderRenderer(args: { timer: Timer }): void {
+    this.node.broadcastMessage("renderRenderStage", {
       timer: args.timer,
     } as IRenderRendererMessage);
   }
