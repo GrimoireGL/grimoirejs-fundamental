@@ -29,15 +29,15 @@ export default class Material {
     public clone(): Material {
         const cloned = new Material(this.gl, this.techniqueRecipes);
         for (const techniqueKey in this.techniques) {
-          const technique = this.techniques[techniqueKey];
-          const destTechnique = cloned.techniques[techniqueKey];
-          for (const passIndex in technique.passes) {
-            const pass = technique.passes[passIndex];
-            const destPass = destTechnique.passes[passIndex];
-            for (const argument in pass.arguments) {
-              destPass[argument] = pass[argument];
+            const technique = this.techniques[techniqueKey];
+            const destTechnique = cloned.techniques[techniqueKey];
+            for (const passIndex in technique.passes) {
+                const pass = technique.passes[passIndex];
+                const destPass = destTechnique.passes[passIndex];
+                for (const argument in pass.arguments) {
+                    destPass[argument] = pass[argument];
+                }
             }
-          }
         }
         return cloned;
     }

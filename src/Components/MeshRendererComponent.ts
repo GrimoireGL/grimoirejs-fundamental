@@ -128,6 +128,7 @@ export default class MeshRenderer extends Component implements IRenderable {
             return; // material is not instanciated yet.
         }
         const renderArgs = {
+            hierarchicalDescription: this._transformComponent.hierarchicalDescription,
             indexGroup: this.indexGroup,
             geometry: this.geometryInstance,
             camera: args.camera,

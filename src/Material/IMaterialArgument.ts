@@ -2,6 +2,7 @@ import Rectangle from "grimoirejs-math/ref/Rectangle";
 import CameraComponent from "../Components/CameraComponent";
 import TransformComponent from "../Components/TransformComponent";
 import Geometry from "../Geometry/Geometry";
+import HierachicalDescription from "../SceneRenderer/HierachicalDescription";
 import IRenderable from "../SceneRenderer/IRenderable";
 interface IMaterialArgument {
   indexGroup: string;
@@ -15,6 +16,7 @@ interface IMaterialArgument {
   drawCount?: number;
   technique: string;
   renderable?: IRenderable;
+  hierarchicalDescription?: HierachicalDescription;
 }
 
 export default IMaterialArgument;

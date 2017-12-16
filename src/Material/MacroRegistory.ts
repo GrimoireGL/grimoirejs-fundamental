@@ -12,7 +12,7 @@ export default class MacroRegistory {
   /**
    * Handlers functions for changing macro.
    */
-  private _observers: {[macroName: string]: ((value: string, isImmediateCall: boolean) => void)[]} = {};
+  private _observers: { [macroName: string]: ((value: string, isImmediateCall: boolean) => void)[] } = {};
 
   constructor() {
     for (const key in DefaultMacro) {
@@ -47,7 +47,7 @@ export default class MacroRegistory {
     const macro = this._macro[key];
     if (macro === null) {
       return "";
-    }else {
+    } else {
       return macro;
     }
   }
