@@ -131,7 +131,11 @@ export default class GLConstantUtility {
                 return false;
         }
     }
-
+    /**
+     * Create filter argument of gl.clear from clear flags.
+     * @param clearColor
+     * @param clearDepth
+     */
     public static createClearFilter(clearColor?: boolean, clearDepth?: boolean): number {
         let result = 0;
         if (clearColor) {

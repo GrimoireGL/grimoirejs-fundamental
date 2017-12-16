@@ -15,11 +15,6 @@ export default class RendererComponent extends Component {
       converter: "String",
       default: null,
     },
-    camera: {
-      converter: "Component",
-      default: "camera",
-      target: "Camera",
-    },
     viewport: {
       converter: "Viewport",
       default: "auto",
@@ -29,8 +24,6 @@ export default class RendererComponent extends Component {
       default: true,
     },
   };
-
-  public camera: CameraComponent;
 
   public renderingTarget: CanvasRegionRenderingTarget;
 
@@ -69,7 +62,6 @@ export default class RendererComponent extends Component {
 
   public $awake(): void {
     // initializing attributes
-    this.getAttributeRaw("camera").boundTo("camera");
     this.getAttributeRaw("viewport").watch((v) => {
       this._viewportSizeGenerator = v;
       this.$resizeCanvas();
@@ -125,7 +117,6 @@ export default class RendererComponent extends Component {
 
   public $renderViewport(args: { timer: Timer }): void {
     this.node.broadcastMessage("render", {
-      camera: this.camera,
       viewport: this._viewportCache,
       timer: args.timer,
     } as IRenderRendererMessage);

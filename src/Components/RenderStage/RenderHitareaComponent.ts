@@ -73,8 +73,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     if (!this._mouseInside) {
       return;
     }
-    const camera = this._sceneRenderer.camera || args.camera;
-    if (!camera) {
+    if (!this._sceneRenderer.camera) {
       return;
     }
     this.hitareaFBO.bind();
@@ -85,9 +84,9 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     this._gl.clearDepth(1);
     this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
     // draw for mesh indices
-    camera.renderScene({
+    this._sceneRenderer.camera.renderScene({
       renderer: this._sceneRenderer, // TODO
-      camera,
+      camera: this._sceneRenderer.camera,
       layer: this._sceneRenderer.layer,
       viewport: args.viewport,
       timer: args.timer,
@@ -99,7 +98,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     this._gl.flush();
     // pick pointer pixel
     this._gl.readPixels(this._lastPosition[0] * this._bufferViewport.Width, this._lastPosition[1] * this._bufferViewport.Height, 1, 1, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._readCache);
-    this._updateCurrentIndex(MeshIndexCalculator.fromColor(this._readCache), camera);
+    this._updateCurrentIndex(MeshIndexCalculator.fromColor(this._readCache), this._sceneRenderer.camera);
     // reset bound frame buffer
     this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
   }

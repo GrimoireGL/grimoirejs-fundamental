@@ -6,13 +6,14 @@ import Vector4 from "grimoirejs-math/ref/Vector4";
 import Component from "grimoirejs/ref/Node/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
 import CameraComponent from "./CameraComponent";
+import HierarchycalComponentBase from "./HierarchicalComponentBase";
 const { mat4, vec3, vec4 } = GLM;
 /**
  * シーン中に存在する物体の変形を司るコンポーネント
  * このコンポーネントによって物体の座標や回転量、拡大料などが定義されます。
  * シーン中の全ての物体は必ずこのコンポーネントを含まなければなりません。
  */
-export default class TransformComponent extends Component {
+export default class TransformComponent extends HierarchycalComponentBase {
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * この物体の座標
@@ -178,6 +179,7 @@ export default class TransformComponent extends Component {
   }
 
   public $mount(): void {
+    super.$mount();
     this._parentTransform = this.node.parent.getComponent(TransformComponent);
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
@@ -186,6 +188,7 @@ export default class TransformComponent extends Component {
   }
 
   public $unmount(): void {
+    super.$unmount();
     if (this._parentTransform) {
       this._parentTransform._children.splice(this._parentTransform._children.indexOf(this), 1);
       this._parentTransform = null;

@@ -52,17 +52,16 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
   }
 
   public $render(args: IRenderRendererMessage): void {
-    const camera = this.camera ? this.camera : args.camera;
-    if (!camera) {
+    if (!this.camera) {
       return;
     }
     if (!this.__beforeRender()) {
       return;
     }
-    camera.updateContainedScene(args.timer);
-    camera.renderScene({
+    this.camera.updateContainedScene(args.timer);
+    this.camera.renderScene({
       renderer: this,
-      camera,
+      camera: this.camera,
       layer: this.layer,
       viewport: this.out.getViewport(),
       timer: args.timer,
