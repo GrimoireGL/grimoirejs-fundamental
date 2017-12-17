@@ -144,13 +144,13 @@ export default class CameraComponent extends Component {
         this._recalculateProjection();
         this.transform = this.node.getComponent(Transform);
         this.containedScene = this.node.getComponentInAncestor(Scene);
-        this.containedScene.queueRegistory.registerQueue(this._renderQueue);
+        this.containedScene.queueRegistry.registerQueue(this._renderQueue);
         this.node.on("transformUpdated", this.updateTransform.bind(this));
         this.updateTransform();
     }
 
     protected $unmount(): void {
-        this.containedScene.queueRegistory.unregisterQueue(this._renderQueue);
+        this.containedScene.queueRegistry.unregisterQueue(this._renderQueue);
         this.containedScene = null;
     }
 

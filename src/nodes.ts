@@ -6,7 +6,7 @@ export default {
    * `<canvas>`の設定(`width`や`height`)またはフルスクリーンなどのコンポーネントを含む。
    */
   goml: {
-    components: ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "RendererManager", "Fullscreen"],
+    components: ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistry", "RendererManager", "Fullscreen"],
   },
   /**
    * ある3D空間上のモデルの配置やカメラの設定などの場面の設定を含むためのノード

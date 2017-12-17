@@ -161,7 +161,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
       }
       this._lastRenderable = null;
     } else {
-      const r = camera.containedScene.queueRegistory.getByIndex(index - 1);
+      const r = camera.containedScene.queueRegistry.getByIndex(index - 1);
       if (this._lastRenderable !== r) {
         if (this._lastRenderable instanceof Component) {
           this._lastRenderable.node.emit("mouseleave", this._lastRenderable);

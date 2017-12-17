@@ -14,7 +14,7 @@ import CubemapCameraComponent from "./Components/CubemapCameraComponent";
 import CubeRenderingTargetComponent from "./Components/CubeRenderingTargetComponent";
 import Fullscreen from "./Components/FullscreenComponent";
 import GeometryComponent from "./Components/GeometryComponent";
-import GeometryRegistoryComponent from "./Components/GeometryRegistoryComponent";
+import GeometryRegistryComponent from "./Components/GeometryRegistryComponent";
 import LoopManager from "./Components/LoopManagerComponent";
 import Material from "./Components/MaterialComponent";
 import MaterialContainer from "./Components/MaterialContainerComponent";
@@ -45,42 +45,46 @@ import RenderingTargetConverter from "./Converters/RenderingTargetConverter";
 import TextureConverter from "./Converters/TextureConverter";
 import TextureCubeConverter from "./Converters/TextureCubeConverter";
 import ViewportConverter from "./Converters/ViewportConverter";
+import MeshRenderer from "./Components/MeshRendererComponent";
+import Geometry from "./Geometry/Geometry";
+import MaterialComponent from "./Components/MaterialComponent";
+import RenderHitareaComponent from "./Components/RenderStage/RenderHitareaComponent";
 
 export default () => {
     GrimoireInterface.register(async () => {
-        GrimoireInterface.registerComponent("AssetLoadingManager", AssetLoadingManagerComponent);
-        GrimoireInterface.registerComponent("Camera", CameraComponent);
-        GrimoireInterface.registerComponent("CubemapCamera", CubemapCameraComponent);
-        GrimoireInterface.registerComponent("CanvasInitializer", CanvasInitializerComponent);
-        GrimoireInterface.registerComponent("Fullscreen", Fullscreen);
-        GrimoireInterface.registerComponent("Geometry", GeometryComponent);
-        GrimoireInterface.registerComponent("GeometryRegistory", GeometryRegistoryComponent);
-        GrimoireInterface.registerComponent("LoopManager", LoopManager);
-        GrimoireInterface.registerComponent("Material", Material);
-        GrimoireInterface.registerComponent("MaterialContainer", MaterialContainer);
-        GrimoireInterface.registerComponent("MaterialImporter", MaterialImporter);
-        GrimoireInterface.registerComponent("MeshRenderer", MeshRendererComponent);
-        GrimoireInterface.registerComponent("MouseCameraControl", MouseCameraControlComponent);
-        GrimoireInterface.registerComponent("RenderBufferUpdator", RenderBufferUpdator);
-        GrimoireInterface.registerComponent("Renderer", RendererComponent);
-        GrimoireInterface.registerComponent("RendererManager", RendererManager);
-        GrimoireInterface.registerComponent("RenderQuad", RenderQuadComponent);
-        GrimoireInterface.registerComponent("RenderCubemap", RenderCubemapComponent);
-        GrimoireInterface.registerComponent("RenderScene", RenderSceneComponent);
-        GrimoireInterface.registerComponent("Scene", Scene);
-        GrimoireInterface.registerComponent("ColorBufferTextureUpdator", ColorBufferTextureUpdator);
-        GrimoireInterface.registerComponent("ColorBufferTextureCubeUpdator", ColorBufferTextureCubeUpdator);
-        GrimoireInterface.registerComponent("TextureContainer", TextureContainer);
-        GrimoireInterface.registerComponent("TextureCubeContainer", TextureCubeContainer);
-        GrimoireInterface.registerComponent("Transform", Transform);
-        GrimoireInterface.registerComponent("RenderHitArea", RenderHitArea);
-        GrimoireInterface.registerComponent("ImageTextureUpdator", ImageTextureUpdator);
-        GrimoireInterface.registerComponent("VideoTextureUpdator", VideoTextureUpdator);
-        GrimoireInterface.registerComponent("ViewportSizeResourceResizer", ViewportSizeResourceResizer);
-        GrimoireInterface.registerComponent("ConstantSizeResourceResizer", ConstantSizeResourceResizer);
-        GrimoireInterface.registerComponent("RenderingTarget", RenderingTarget);
-        GrimoireInterface.registerComponent("CubeRenderingTarget", CubeRenderingTargetComponent);
-        GrimoireInterface.registerComponent("BasicComponent", BasicComponent);
+        GrimoireInterface.registerComponent(AssetLoadingManagerComponent);
+        GrimoireInterface.registerComponent(CameraComponent);
+        GrimoireInterface.registerComponent(CubemapCameraComponent);
+        GrimoireInterface.registerComponent(CanvasInitializerComponent);
+        GrimoireInterface.registerComponent(Fullscreen);
+        GrimoireInterface.registerComponent(GeometryComponent);
+        GrimoireInterface.registerComponent(GeometryRegistryComponent);
+        GrimoireInterface.registerComponent(LoopManager);
+        GrimoireInterface.registerComponent(Material);
+        GrimoireInterface.registerComponent(MaterialContainer);
+        GrimoireInterface.registerComponent(MaterialImporter);
+        GrimoireInterface.registerComponent(MeshRendererComponent);
+        GrimoireInterface.registerComponent(MouseCameraControlComponent);
+        GrimoireInterface.registerComponent(RenderBufferUpdator);
+        GrimoireInterface.registerComponent(RendererComponent);
+        GrimoireInterface.registerComponent(RendererManager);
+        GrimoireInterface.registerComponent(RenderQuadComponent);
+        GrimoireInterface.registerComponent(RenderCubemapComponent);
+        GrimoireInterface.registerComponent(RenderSceneComponent);
+        GrimoireInterface.registerComponent(Scene);
+        GrimoireInterface.registerComponent(ColorBufferTextureUpdator);
+        GrimoireInterface.registerComponent(ColorBufferTextureCubeUpdator);
+        GrimoireInterface.registerComponent(TextureContainer);
+        GrimoireInterface.registerComponent(TextureCubeContainer);
+        GrimoireInterface.registerComponent(Transform);
+        GrimoireInterface.registerComponent(RenderHitArea);
+        GrimoireInterface.registerComponent(ImageTextureUpdator);
+        GrimoireInterface.registerComponent(VideoTextureUpdator);
+        GrimoireInterface.registerComponent(ViewportSizeResourceResizer);
+        GrimoireInterface.registerComponent(ConstantSizeResourceResizer);
+        GrimoireInterface.registerComponent(RenderingTarget);
+        GrimoireInterface.registerComponent(CubeRenderingTargetComponent);
+        GrimoireInterface.registerComponent(BasicComponent);
 
         GrimoireInterface.registerConverter("CanvasSize", CanvasSizeConverter);
         GrimoireInterface.registerConverter("Geometry", GeometryConverter);
@@ -95,48 +99,48 @@ export default () => {
         GrimoireInterface.registerConverter(PositionConverter);
         GrimoireInterface.registerConverter("RenderingTarget", RenderingTargetConverter);
 
-        GrimoireInterface.registerNode("goml", ["CanvasInitializer", "LoopManager", "AssetLoadingManager", "GeometryRegistory", "RendererManager", "Fullscreen"]);
-        GrimoireInterface.registerNode("scene", ["Scene"]);
-        GrimoireInterface.registerNode("object", ["Transform"]);
-        GrimoireInterface.registerNode("camera", ["Camera"], { position: "0,0,10" }, "object");
-        GrimoireInterface.registerNode("cube-camera", ["CubemapCamera"], {
+        GrimoireInterface.registerNode("goml", [CanvasInitializerComponent, LoopManager, AssetLoadingManagerComponent, GeometryRegistryComponent, RendererManager, Fullscreen]);
+        GrimoireInterface.registerNode("scene", [Scene]);
+        GrimoireInterface.registerNode("object", [Transform]);
+        GrimoireInterface.registerNode("camera", [CameraComponent], { position: "0,0,10" }, "object");
+        GrimoireInterface.registerNode("cube-camera", [CubemapCameraComponent], {
             aspect: 1,
             autoAspect: false,
             fovy: "90d",
         }, "object", ["aspect", "autoAspect"]);
-        GrimoireInterface.registerNode("mesh", ["MaterialContainer", "MeshRenderer"], {}, "object");
+        GrimoireInterface.registerNode("mesh", [MaterialContainer, MeshRenderer], {}, "object");
         GrimoireInterface.registerNode("skybox", [], {
             geometry: "quad",
             material: "new(skybox)",
         }, "mesh");
-        GrimoireInterface.registerNode("renderer", ["Renderer"]);
-        GrimoireInterface.registerNode("geometry", ["Geometry"]);
-        GrimoireInterface.registerNode("texture", ["TextureContainer"]);
-        GrimoireInterface.registerNode("texture-cube", ["TextureCubeContainer"]);
-        GrimoireInterface.registerNode("image-texture", ["ImageTextureUpdator"], {}, "texture");
-        GrimoireInterface.registerNode("video-texture", ["VideoTextureUpdator"], {}, "texture");
-        GrimoireInterface.registerNode("material", ["Material"]);
-        GrimoireInterface.registerNode("import-material", ["MaterialImporter"]);
-        GrimoireInterface.registerNode("color-buffer", ["ColorBufferTextureUpdator"], {
+        GrimoireInterface.registerNode("renderer", [RendererComponent]);
+        GrimoireInterface.registerNode("geometry", [GeometryComponent]);
+        GrimoireInterface.registerNode("texture", [TextureContainer]);
+        GrimoireInterface.registerNode("texture-cube", [TextureCubeContainer]);
+        GrimoireInterface.registerNode("image-texture", [ImageTextureUpdator], {}, "texture");
+        GrimoireInterface.registerNode("video-texture", [VideoTextureUpdator], {}, "texture");
+        GrimoireInterface.registerNode("material", [MaterialComponent]);
+        GrimoireInterface.registerNode("import-material", [MaterialImporter]);
+        GrimoireInterface.registerNode("color-buffer", [ColorBufferTextureUpdator], {
             resizerType: "ViewportSize",
         }, "texture");
-        GrimoireInterface.registerNode("color-buffer-cube", ["ColorBufferTextureCubeUpdator"], {
+        GrimoireInterface.registerNode("color-buffer-cube", [ColorBufferTextureCubeUpdator], {
             resizerType: "ViewportSize",
         }, "texture-cube");
-        GrimoireInterface.registerNode("render-buffer", ["RenderBufferUpdator"], {
+        GrimoireInterface.registerNode("render-buffer", [RenderBufferUpdator], {
             resizerType: "ViewportSize",
         });
-        GrimoireInterface.registerNode("render-scene", ["RenderScene", "RenderHitArea"], {
+        GrimoireInterface.registerNode("render-scene", [RenderSceneComponent, RenderHitareaComponent], {
             material: null,
         });
-        GrimoireInterface.registerNode("render-cubemap", ["RenderCubemap"], {
+        GrimoireInterface.registerNode("render-cubemap", [RenderCubemapComponent], {
             material: null,
         });
-        GrimoireInterface.registerNode("render-quad", ["MaterialContainer", "RenderQuad"], {
+        GrimoireInterface.registerNode("render-quad", [MaterialContainer, RenderQuadComponent], {
             material: null,
         });
-        GrimoireInterface.registerNode("rendering-target", ["RenderingTarget"]);
-        GrimoireInterface.registerNode("cube-rendering-target", ["CubeRenderingTarget"]);
+        GrimoireInterface.registerNode("rendering-target", [RenderingTarget]);
+        GrimoireInterface.registerNode("cube-rendering-target", [CubeRenderingTargetComponent]);
         DefaultPrimitives.register();
         DefaultMaterial.register();
         GLExtRequestor.request("OES_texture_float");

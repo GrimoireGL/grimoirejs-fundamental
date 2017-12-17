@@ -2,7 +2,7 @@ import Component from "grimoirejs/ref/Core/Component";
 import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Geometry from "../Geometry/Geometry";
 import GeometryFactory from "../Geometry/GeometryFactory";
-import GeometryRegistory from "./GeometryRegistoryComponent";
+import GeometryRegistry from "./GeometryRegistryComponent";
 /**
  * ジオメトリを生成するためのコンポーネント
  * `type`属性に指定されたタイプのジオメトリを生成して、`name`属性に指定された名前で利用できる形にして登録します。
@@ -47,7 +47,7 @@ export default class GeometryComponent extends Component {
                 geometryArgument[key] = this.getAttribute(key);
             }
             const generator = gf.instanciate(type, geometryArgument);
-            const gr = this.companion.get("GeometryRegistory") as GeometryRegistory;
+            const gr = this.companion.get("GeometryRegistry") as GeometryRegistry;
             const name = this.getAttribute("name");
             if (!name) {
                 throw new Error("Name was not specified");

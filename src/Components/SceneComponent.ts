@@ -21,7 +21,7 @@ export default class Scene extends HierarchycalComponentBase {
 
   public sceneDescription: { [key: string]: any };
 
-  public queueRegistory: RenderQueueRegistry = new RenderQueueRegistry();
+  public queueRegistry: RenderQueueRegistry = new RenderQueueRegistry();
 
   /**
    * The index of loop executed last time.

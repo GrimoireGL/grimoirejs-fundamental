@@ -113,11 +113,11 @@ export default class MeshRenderer extends Component implements IRenderable {
         this._transformComponent = this.node.getComponent(Transform);
         this._materialContainer = this.node.getComponent(MaterialContainer);
         this._containedScene = MeshRenderer._findContainedScene(this.node);
-        this._containedScene.queueRegistory.addRenderable(this);
+        this._containedScene.queueRegistry.addRenderable(this);
     }
 
     protected $unmount(): void {
-        this._containedScene.queueRegistory.removeRenderable(this);
+        this._containedScene.queueRegistry.removeRenderable(this);
     }
 
     public render(args: IRenderArgument): void {

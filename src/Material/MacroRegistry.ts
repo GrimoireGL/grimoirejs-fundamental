@@ -2,7 +2,7 @@ import DefaultMacro from "./Defaults/DefaultMacro";
 /**
  * Manage macros which would be appended head of all shaders grimoire.js would load.
  */
-export default class MacroRegistory {
+export default class MacroRegistry {
 
   /**
    * The map of macro.
