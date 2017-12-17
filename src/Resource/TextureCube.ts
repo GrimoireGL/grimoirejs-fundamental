@@ -13,12 +13,12 @@ export default class TextureCube extends Texture {
     public static defaultTextures: Map<WebGLRenderingContext, TextureCube> = new Map<WebGLRenderingContext, TextureCube>();
 
     public static imageDirections: IElementOfCubemapDirection<number> = {
-        posX: WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X,
-        negX: WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X,
-        posY: WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y,
-        negY: WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y,
-        posZ: WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z,
-        negZ: WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+        PX: WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X,
+        NX: WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X,
+        PY: WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y,
+        NY: WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+        PZ: WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z,
+        NZ: WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z,
     };
 
     /**
@@ -31,7 +31,7 @@ export default class TextureCube extends Texture {
             const cube = new TextureCube(gl);
             const source = new Uint8Array([0, 0, 0, 0]);
             cube.updateDirectly(1, 1, {
-                posX: source, posY: source, posZ: source, negX: source, negY: source, negZ: source,
+                PX: source, PY: source, PZ: source, NX: source, NY: source, NZ: source,
             });
             defaultTexture = cube;
             TextureCube.defaultTextures.set(gl, defaultTexture);
@@ -60,7 +60,7 @@ export default class TextureCube extends Texture {
      */
     public updateWithResource(source: ICubemapSource, uploadConfig?: ITextureUploadConfig): void {
         this.gl.bindTexture(this.textureType, this.resourceReference);
-        this.__prepareTextureUpload(uploadConfig);
+        this.__prepareTextureUpload(uploadConfig, { flipY: false, premultipliedAlpha: false });
         for (const key in TextureCube.imageDirections) {
             const resize = this.__updateWithSourceImage(TextureCube.imageDirections[key], source[key]);
             this.width = resize.width;

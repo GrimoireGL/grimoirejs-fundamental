@@ -1,4 +1,5 @@
   @Pass{
+    #extension GL_EXT_shader_texture_lod : enable
     FS_PREC(mediump,float)
     varying vec3 vPosition;
     #ifdef VS
@@ -15,9 +16,12 @@
     }
     #endif
     #ifdef FS
+
     uniform samplerCube src;
+
+    uniform vec2 lod;
       void main(){
-        gl_FragColor = textureCube(src,vPosition);
+        gl_FragColor = textureCubeLodEXT(src,vPosition,lod.x);
       }
     #endif
   }

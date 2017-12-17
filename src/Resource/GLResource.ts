@@ -28,6 +28,7 @@ abstract class GLResource<T> {
     }
     this._valid = val;
     if (this._valid) {
+      this.__onValid();
       this._validResolve(this);
     } else {
       this.validPromise = new Promise((resolve) => {
@@ -66,6 +67,10 @@ abstract class GLResource<T> {
 
   public destroy(): void {
     this.destroyed = true;
+  }
+
+  protected __onValid(): void {
+    return;
   }
 }
 

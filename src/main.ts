@@ -49,6 +49,7 @@ import MeshRenderer from "./Components/MeshRendererComponent";
 import Geometry from "./Geometry/Geometry";
 import MaterialComponent from "./Components/MaterialComponent";
 import RenderHitareaComponent from "./Components/RenderStage/RenderHitareaComponent";
+import SkyboxManager from "./Components/SkyboxManager";
 
 export default () => {
     GrimoireInterface.register(async () => {
@@ -85,6 +86,7 @@ export default () => {
         GrimoireInterface.registerComponent(RenderingTarget);
         GrimoireInterface.registerComponent(CubeRenderingTargetComponent);
         GrimoireInterface.registerComponent(BasicComponent);
+        GrimoireInterface.registerComponent(SkyboxManager);
 
         GrimoireInterface.registerConverter("CanvasSize", CanvasSizeConverter);
         GrimoireInterface.registerConverter("Geometry", GeometryConverter);
@@ -109,7 +111,7 @@ export default () => {
             fovy: "90d",
         }, "object", ["aspect", "autoAspect"]);
         GrimoireInterface.registerNode("mesh", [MaterialContainer, MeshRenderer], {}, "object");
-        GrimoireInterface.registerNode("skybox", [], {
+        GrimoireInterface.registerNode("skybox", [SkyboxManager], {
             geometry: "quad",
             material: "new(skybox)",
         }, "mesh");

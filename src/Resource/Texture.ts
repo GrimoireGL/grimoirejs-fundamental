@@ -72,7 +72,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
 
     private _magFilter: number = WebGLRenderingContext.LINEAR;
 
-    private _minFilter: number = WebGLRenderingContext.LINEAR;
+    private _minFilter: number = WebGLRenderingContext.LINEAR_MIPMAP_NEAREST;
 
     private _wrapS: number = WebGLRenderingContext.REPEAT;
 
@@ -96,6 +96,9 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
     }
 
     public register(registerNumber: number): void {
+        if (!this.valid) {
+            return;
+        }
         // TODO: (performance) disable texture after use?
         // Or reduce calling of activate texture
         this.gl.activeTexture(WebGLRenderingContext.TEXTURE0 + registerNumber);
@@ -103,16 +106,11 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
         this.__applyTexParameter();
     }
 
-    protected __complementTextureUploadConfig(config: ITextureUploadConfig): ITextureUploadConfig {
-        return {
-            flipY: true,
-            premultipliedAlpha: false,
-            ...config,
+    protected __prepareTextureUpload(uploadConfig: ITextureUploadConfig, complement = { flipY: true, premultipliedAlpha: false }): void {
+        uploadConfig = {
+            ...complement,
+            ...uploadConfig
         };
-    }
-
-    protected __prepareTextureUpload(uploadConfig: ITextureUploadConfig): void {
-        uploadConfig = this.__complementTextureUploadConfig(uploadConfig);
         this.gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, uploadConfig.flipY ? 1 : 0);
         this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, uploadConfig.premultipliedAlpha ? 1 : 0);
     }
@@ -170,7 +168,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
     }
 
     protected __ensureMipmap(): void {
-        if (GLConstantUtility.isUsingMipmap(this.minFilter)) {
+        if (this.valid && GLConstantUtility.isUsingMipmap(this.minFilter)) {
             this.gl.bindTexture(this.textureType, this.resourceReference);
             this.gl.generateMipmap(this.textureType);
         }
@@ -188,8 +186,13 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
         this.gl.texParameteri(this.textureType, WebGLRenderingContext.TEXTURE_MAG_FILTER, this._magFilter);
         this.gl.texParameteri(this.textureType, WebGLRenderingContext.TEXTURE_WRAP_S, this._wrapS);
         this.gl.texParameteri(this.textureType, WebGLRenderingContext.TEXTURE_WRAP_T, this._wrapT);
+        this.__ensureMipmap();
         this.__texParameterChanged = false;
         return true;
+    }
+
+    protected __onValid(): void {
+        this.__ensureMipmap();
     }
 
     // There should be more effective way to resize texture

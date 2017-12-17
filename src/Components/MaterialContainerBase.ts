@@ -48,6 +48,7 @@ export default class MaterialContainerBase extends BasicComponent {
       }
     }
     this._lastParameters = nextParameters;
+    this.node.emit("material-parameter-updated", nextParameters);
   }
 
   protected __removeExposedMaterialParameters(): void {

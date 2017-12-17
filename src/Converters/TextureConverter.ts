@@ -47,13 +47,9 @@ export default function TextureConverter(val: any, attr: Attribute): any {
   if (typeof val === "object") {
     if (val instanceof HTMLImageElement) {
       const tex = new Texture2D(attr.companion.get("gl"));
-      if (val.complete && val.naturalWidth) {
+      ImageResolver.waitForImageLoaded(val).then(() => {
         tex.update(val);
-      } else {
-        val.onload = function () {
-          tex.update(val);
-        };
-      }
+      });
       return new TextureReference(tex);
     } else if (val instanceof HTMLCanvasElement) {
       const tex = new Texture2D(attr.companion.get("gl"));
