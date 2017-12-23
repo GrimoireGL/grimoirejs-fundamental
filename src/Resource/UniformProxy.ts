@@ -129,9 +129,11 @@ export default class UniformProxy {
 
   public uniformTexture2D(variableName: string, val: Texture2D): void {
     if (val.valid) {
-      val.register(this._currentTextureRegister);
-      this.uniformInt(variableName, this._currentTextureRegister);
-      this._currentTextureRegister++;
+      this._pass(variableName, (l) => {
+        val.register(this._currentTextureRegister);
+        this._gl.uniform1i(l, this._currentTextureRegister);
+        this._currentTextureRegister++;
+      });
     } else {
       console.warn(`The texture assigned to '${variableName}' is not valid.`);
     }
@@ -139,9 +141,11 @@ export default class UniformProxy {
 
   public uniformTextureCube(variableName: string, val: TextureCube): void {
     if (val && val.valid) {
-      val.register(this._currentTextureRegister);
-      this.uniformInt(variableName, this._currentTextureRegister);
-      this._currentTextureRegister++;
+      this._pass(variableName, (l) => {
+        val.register(this._currentTextureRegister);
+        this._gl.uniform1i(l, this._currentTextureRegister);
+        this._currentTextureRegister++;
+      });
     } else {
       console.warn(`The texture assigned to '${variableName}' is not valid.`);
     }

@@ -19,7 +19,7 @@ export default class Scene extends HierarchycalComponentBase {
     Scene._sceneDescriptionCreationHandlers.push(handler);
   }
 
-  public sceneDescription: { [key: string]: any };
+  public sceneDescription: { [key: string]: any } = {};
 
   public queueRegistry: RenderQueueRegistry = new RenderQueueRegistry();
 
@@ -31,7 +31,6 @@ export default class Scene extends HierarchycalComponentBase {
 
   protected $mount(): void {
     super.$mount();
-    this.sceneDescription = {};
     Scene._sceneDescriptionCreationHandlers.forEach(v => v(this.sceneDescription, this));
   }
 

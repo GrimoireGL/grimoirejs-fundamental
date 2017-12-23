@@ -96,7 +96,7 @@ export default class Pass {
     const p = this.program.getProgram(args.geometry);
     p.use();
     this._uniformResolvers.resolve(p.uniforms, args);
-    GLStateConfigurator.configureForPass(this._gl, this.passRecipe); // configure for gl states
+    GLStateConfigurator.get(this._gl).configureForPass(this.passRecipe); // configure for gl states
     this._dynamicStateResolver(this._gl, args);
     // draw actually
     for (const key in this.passRecipe.attributes) {

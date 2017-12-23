@@ -4,6 +4,7 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
 import MaterialFactory from "../Material/MaterialFactory";
 import Timer from "../Util/Timer";
 import LoopManager from "./LoopManagerComponent";
+import GLStateConfigurator from "../Material/GLStateConfigurator";
 /**
  * 全レンダラーを管理するためのコンポーネント
  */
@@ -61,7 +62,9 @@ export default class RendererManager extends Component {
   public onloop(timer: Timer): void {
     if (this.enabled) {
       const c: Color4 = this._bgColor;
-      this.gl.clearColor(c.R, c.G, c.B, c.A);
+      const gc = GLStateConfigurator.get(this.gl);
+      gc.applyIfChanged("clearColor", c.R, c.G, c.B, c.A);
+      gc.applyIfChanged("clearDepth", this._clearDepth);
       this.gl.clearDepth(this._clearDepth);
       this.gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);
       this.node.broadcastMessage(1, "renderRenderer", {

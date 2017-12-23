@@ -25,4 +25,8 @@ export default class CanvasRegionRenderingTarget extends CanvasRenderingTarget {
         const vp = this.getViewport();
         this.gl.scissor(vp.Left, vp.Bottom, vp.Width, vp.Height);
     }
+
+    protected __endClearScissor(): void {
+        this.gl.disable(WebGLRenderingContext.SCISSOR_TEST);
+    }
 }

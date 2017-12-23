@@ -5,8 +5,11 @@ export default class HierarchycalComponentBase extends Component {
     public static componentName = "HierarchycalComponentBase";
     public hierarchicalDescription: HierachicalDescription
         = new HierachicalDescription((node) => {
+            if (!node.parent) {
+                return null;
+            }
             // resolve parent hierarchy description
-            const h = node.getComponent(HierarchycalComponentBase);
+            const h = node.parent.getComponent(HierarchycalComponentBase);
             if (h) {
                 return h.hierarchicalDescription;
             } else {

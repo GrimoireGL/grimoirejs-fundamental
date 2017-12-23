@@ -14,6 +14,7 @@ import TextureSizeCalculator from "../../Util/TextureSizeCalculator";
 import CameraComponent from "../CameraComponent";
 import RenderSceneComponent from "../RenderStage/RenderSceneComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
+import GLStateConfigurator from "../../Material/GLStateConfigurator";
 export default class RenderHitareaComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderHitareaComponent";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
@@ -80,10 +81,10 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     this.hitareaFBO.bind();
     this._bufferViewport.configure(this._gl);
     // clear buffer if needed
-    this._gl.clearColor(0, 0, 0, 0);
-    this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
-    this._gl.clearDepth(1);
-    this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
+    const gc = GLStateConfigurator.get(this._gl);
+    gc.applyIfChanged("clearColor", 0, 0, 0, 0);
+    gc.applyIfChanged("clearDepth", 1);
+    this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT | WebGLRenderingContext.COLOR_BUFFER_BIT);
     // draw for mesh indices
     this._sceneRenderer.camera.renderScene({
       renderer: this._sceneRenderer, // TODO

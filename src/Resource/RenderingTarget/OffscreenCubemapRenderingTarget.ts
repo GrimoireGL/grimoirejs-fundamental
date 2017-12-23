@@ -4,6 +4,7 @@ import Texture2D from "../Texture2D";
 import TextureCube from "../TextureCube";
 import Viewport from "../Viewport";
 import ICubemapRenderingTarget from "./ICubemapRenderingTarget";
+import GLStateConfigurator from "../../Material/GLStateConfigurator";
 /**
  * Render target contains cubemap and render buffer
  */
@@ -25,14 +26,15 @@ export default class OffscreenCubemapRenderTarget implements ICubemapRenderingTa
             throw new Error("Parameter direction have not specified");
         }
         this.bind(direction);
+        const gc = GLStateConfigurator.get(this.gl);
         if (clearFlag !== 0) {
             let clearTarget = 0;
             if ((clearFlag & WebGLRenderingContext.COLOR_BUFFER_BIT) !== 0 && color) {
-                this.gl.clearColor.apply(this.gl, color);
+                gc.applyIfChanged("clearColor", color[0], color[1], color[2], color[3]);
                 clearTarget |= WebGLRenderingContext.COLOR_BUFFER_BIT;
             }
             if ((clearFlag & WebGLRenderingContext.DEPTH_BUFFER_BIT) !== 0 && depth !== null && this.depthBuffer) {
-                this.gl.clearDepth(depth);
+                gc.applyIfChanged("clearDepth", depth);
                 clearTarget |= WebGLRenderingContext.DEPTH_BUFFER_BIT;
             }
             if (clearTarget !== 0) {

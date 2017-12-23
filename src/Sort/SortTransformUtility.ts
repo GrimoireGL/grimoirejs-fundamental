@@ -147,6 +147,7 @@ export default class SortTransformUtility {
         depthFunc: [WebGLRenderingContext.LESS],
         depthMask: [true],
         colorMask: [true, true, true, true],
+        polygonOffset: [0, 0]
       },
       dynamicState: [],
     };

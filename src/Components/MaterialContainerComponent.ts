@@ -18,7 +18,7 @@ export default class MaterialContainer extends MaterialContainerBase {
      */
     material: {
       converter: "Material",
-      default: "new(unlit)",
+      default: "new(basic-shading)",
       componentBoundTo: "_materialComponent", // When the material was specified with the other material tag, this field would be assigned.
     },
     /**
