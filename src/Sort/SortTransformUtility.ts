@@ -163,6 +163,16 @@ export default class SortTransformUtility {
     return result;
   }
 
+  public static parseExtensions(source: string): string[] {
+    const regex = /@Extension\(([\sa-zA-Z_0-9]*)\)/g;
+    let regexResult;
+    const result = [];
+    while ((regexResult = regex.exec(source))) {
+      result.push(regexResult[1].trim());
+    }
+    return result;
+  }
+
   public static asValidJSON(json: string): string {
     const regex = /([\{,]\s*)([a-zA-Z0-9_]+)(\s*\:)/gm;
     const result = json.replace(regex, '$1"$2"$3');

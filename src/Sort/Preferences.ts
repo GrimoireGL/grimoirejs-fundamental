@@ -105,6 +105,9 @@ export default {
   ReferMacro() {
     return;
   },
+  Extension() {
+    return;
+  },
   DynamicState(state: IState, args: string[]) {
     if (!args.length) {
       throw new Error("DynamicState require at least 1 argument for specifying state resolver");

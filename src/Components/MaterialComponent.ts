@@ -17,8 +17,6 @@ export default class MaterialComponent extends MaterialContainerBase {
 
     public ready: boolean;
 
-    public materialArgs: { [key: string]: any } = {};
-
     protected $mount(): void {
         const typeName = this.getAttribute("type");
         if (typeName && typeof typeName === "string") {

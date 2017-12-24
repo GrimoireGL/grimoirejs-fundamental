@@ -10,6 +10,7 @@ import IPassRecipe from "./Schema/IPassRecipe";
 import Technique from "./Technique";
 import UniformResolverContainer from "./UniformResolverContainer";
 import UniformResolverRegistry from "./UniformResolverRegistry";
+import GLExtRequestor from "../Resource/GLExtRequestor";
 /**
  * Pass provides single draw call for a geometry.
  * Containing arguments of uniform variables and gl state configruations for each drawing call.
@@ -60,7 +61,7 @@ export default class Pass {
     const factory = MaterialFactory.get(this._gl);
     const macroRegister = factory.macro;
     this._dynamicStateResolver = GLStateConfigurator.getDynamicStateResolver(this);
-    this.program = new PassProgram(this._gl, passRecipe.vertex, passRecipe.fragment);
+    this.program = new PassProgram(this._gl, passRecipe.vertex, passRecipe.fragment, passRecipe.extensions);
     // register macro
     for (const key in passRecipe.macros) {
       const macro = passRecipe.macros[key];

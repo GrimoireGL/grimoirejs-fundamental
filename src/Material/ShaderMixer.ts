@@ -10,14 +10,14 @@ export default class ShaderMixer {
    * @param  {string}  code   shader body(Raw glsl)
    * @return {string}         generated shader code
    */
-  public static generate(type: number, macros: { [key: string]: string }, code: string, geometry: Geometry): string {
+  public static generate(type: number, macros: { [key: string]: string }, code: string, geometry: Geometry, extensions: string[], supportedExtensions: string[]): string {
     let shaderTypeMacro;
     if (type === WebGLRenderingContext.VERTEX_SHADER) {
       shaderTypeMacro = "#define VS\n";
     } else {
       shaderTypeMacro = "#define FS\n";
     }
-    return `${shaderTypeMacro}${this._precisionCode(geometry.gl)}${ShaderMixer._geometryToAttributeUsedFlags(geometry)}${ShaderMixer._macroCode(macros)}${header}\n/*****BEGINNING OF USER CODE******/\n${code}`;
+    return `${this._getExtensionCode(extensions, supportedExtensions)}${shaderTypeMacro}${this._precisionCode(geometry.gl)}${ShaderMixer._geometryToAttributeUsedFlags(geometry)}${ShaderMixer._macroCode(macros)}${header}\n/*****BEGINNING OF USER CODE******/\n${code}`;
   }
 
   private static _macroCode(macros: { [key: string]: string }): string {
@@ -30,6 +30,14 @@ export default class ShaderMixer {
     }
     return macroCode;
   }
+
+  private static _getExtensionCode(extensions: string[], supportedExtensions: string[]): string {
+    let result = "";
+    extensions.forEach(e => result += `#extension GL_${e} : enable\n`);
+    supportedExtensions.forEach(e => result += `#define ${e}_ENABLED\n`);
+    return result;
+  }
+
 
   private static _geometryToAttributeUsedFlags(geometry: Geometry): string {
     let macroCode = "";

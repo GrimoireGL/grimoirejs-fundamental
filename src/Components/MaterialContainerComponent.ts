@@ -75,8 +75,6 @@ export default class MaterialContainer extends MaterialContainerBase {
 
   public material: Material;
 
-  public materialArgs: { [key: string]: any; } = {};
-
   public materialReady = false;
 
   public useMaterial = false;
@@ -123,7 +121,6 @@ export default class MaterialContainer extends MaterialContainerBase {
   private async _prepareExternalMaterial(materialPromise: Promise<Material>): Promise<void> {
     const material = await materialPromise; // waiting for material load completion
     this.material = material;
-    this.materialArgs = this._materialComponent.materialArgs;
     this.materialReady = true;
   }
 
