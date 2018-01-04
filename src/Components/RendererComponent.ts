@@ -192,7 +192,7 @@ export default class RendererComponent extends Component {
     if (!this.isActive) {
       return;
     }
-    this.node.emit(eventName);
+    this.node.emit(eventName, e);
     this.node.broadcastMessage(eventName, this._toViewportMouseArgs(e));
   }
 
