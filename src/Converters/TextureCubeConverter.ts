@@ -28,6 +28,20 @@ export default function TextureCubeConverter(val: any, attr: Attribute): any {
                                 resources[key] = i;
                             });
                         }
+                        break;
+                    case 7:
+                        let i = 1;
+                        for (let key in TextureCube.imageDirections) {
+                            const res = ImageResolver.resolve(parseResult[i].replace("$DIR", key));
+                            waitFor.push(res);
+                            res.then(img => {
+                                resources[key] = img;
+                            });
+                            i++;
+                        }
+                        break;
+                    default:
+                        return null;
                 }
                 Promise.all(waitFor).then(() => {
                     cubeTexture.updateWithResource(resources);
