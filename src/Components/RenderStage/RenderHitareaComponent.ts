@@ -21,7 +21,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
   public static componentName = "RenderHitareaComponent";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     hitareaBuffer: {
-      converter: "RenderingTargte",
+      converter: "RenderingTargtet",
       default: null
     }
   };
