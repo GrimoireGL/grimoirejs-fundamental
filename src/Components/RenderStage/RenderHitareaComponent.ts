@@ -15,16 +15,18 @@ import CameraComponent from "../CameraComponent";
 import RenderSceneComponent from "../RenderStage/RenderSceneComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
 import GLStateConfigurator from "../../Material/GLStateConfigurator";
+import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
+import RenderingTarget from "../RenderingTargetComponent";
 export default class RenderHitareaComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderHitareaComponent";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
-
+    hitareaBuffer: {
+      converter: "RenderingTargte",
+      default: null
+    }
   };
-  public hitareaTexture: Texture2D;
 
-  public hitareaRenderbuffer: RenderBuffer;
-
-  public hitareaFBO: Framebuffer;
+  public hitareaBuffer: IRenderingTarget;
 
   private _sceneRenderer: RenderSceneComponent;
 
@@ -38,36 +40,24 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
 
   private _readCache: Uint8Array = new Uint8Array(4);
 
-  private _bufferViewport: Viewport;
-
   private _lastRenderable: IRenderable;
 
   private _mouseMoved: boolean;
 
-  protected $mount(): void {
+
+  protected async $mount(): Promise<void> {
+    this.__bindAttributes();
     this._sceneRenderer = this.node.getComponent(RenderSceneComponent);
     if (!this._sceneRenderer) {
       throw new Error("The node attaching RenderHitArea should contain RenderScene.");
     }
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
-    this.hitareaTexture = new Texture2D(this._gl);
-    this.hitareaRenderbuffer = new RenderBuffer(this._gl);
-    if (this.hitareaFBO) {
-      this.hitareaFBO.destroy();
-      this.hitareaFBO = null;
-    }
-  }
-
-  protected $resizeViewport(args: IResizeViewportMessage): void {
-    const size = TextureSizeCalculator.getPow2Size(args.width, args.height);
-    this._bufferViewport = new Viewport(0, 0, size.width, size.height);
-    this.hitareaTexture.update(0, size.width, size.height, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE);
-    this.hitareaRenderbuffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, size.width, size.height);
-    if (!this.hitareaFBO) {
-      this.hitareaFBO = new Framebuffer(this._gl);
-      this.hitareaFBO.update(this.hitareaTexture);
-      this.hitareaFBO.update(this.hitareaRenderbuffer);
+    this.hitareaBuffer = await this.getAttribute<Promise<IRenderingTarget>>("hitareaBuffer");
+    if (!this.hitareaBuffer) {
+      // Generate default hitarea buffer
+      const node = this.node.parent.addChildByName("rendering-target", { name: `hitarea-buffer-${this._sceneRenderer.id}` });
+      this.hitareaBuffer = node.getComponent(RenderingTarget).renderingTarget;
     }
   }
 
@@ -75,19 +65,13 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     if (!this._mouseInside) {
       return;
     }
-    if (!this._sceneRenderer.camera) {
+    if (!this._sceneRenderer.camera || !this.hitareaBuffer) {
       return;
     }
-    this.hitareaFBO.bind();
-    this._bufferViewport.configure(this._gl);
-    // clear buffer if needed
-    const gc = GLStateConfigurator.get(this._gl);
-    gc.applyIfChanged("clearColor", 0, 0, 0, 0);
-    gc.applyIfChanged("clearDepth", 1);
-    this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT | WebGLRenderingContext.COLOR_BUFFER_BIT);
+    this.hitareaBuffer.beforeDraw(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT, [0, 0, 0, 0], 1);
     // draw for mesh indices
     this._sceneRenderer.camera.renderScene({
-      renderer: this._sceneRenderer, // TODO
+      renderer: this,
       camera: this._sceneRenderer.camera,
       layer: this._sceneRenderer.layer,
       viewport: this._sceneRenderer.out.getViewport(),
@@ -99,7 +83,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     });
     this._gl.flush();
     // pick pointer pixel
-    this._gl.readPixels(this._lastPosition[0] * this._bufferViewport.Width, this._lastPosition[1] * this._bufferViewport.Height, 1, 1, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._readCache);
+    this._gl.readPixels(this._lastPosition[0] * this.hitareaBuffer.getBufferWidth(), this._lastPosition[1] * this.hitareaBuffer.getBufferHeight(), 1, 1, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._readCache);
     this._updateCurrentIndex(MeshIndexCalculator.fromColor(this._readCache), this._sceneRenderer.camera);
     // reset bound frame buffer
     this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);

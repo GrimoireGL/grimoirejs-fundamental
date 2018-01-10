@@ -3,6 +3,9 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import CameraComponent from "../CameraComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
+/**
+ * Render a scene specified by camera.
+ */
 export default class RenderSceneComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderSceneComponent";
   public static attributes: { [key: string]: IAttributeDeclaration } = {

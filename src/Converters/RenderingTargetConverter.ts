@@ -22,6 +22,7 @@ export default async function RenderingTargetConverter(val: any, attr: Attribute
             }
             throw new Error(`Specified rendering target "${val}" was not found.`);
         }
+    } else if (val === null) {
+        return null;
     }
-    return null;
 }
