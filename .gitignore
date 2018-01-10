@@ -117,3 +117,4 @@ docs
 test-lib
 .grimoire
 package-lock.json
+src/metaInfo.ts
