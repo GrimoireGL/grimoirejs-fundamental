@@ -46,7 +46,6 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
 
 
   protected async $mount(): Promise<void> {
-    this.__bindAttributes();
     this._sceneRenderer = this.node.getComponent(RenderSceneComponent);
     if (!this._sceneRenderer) {
       throw new Error("The node attaching RenderHitArea should contain RenderScene.");
