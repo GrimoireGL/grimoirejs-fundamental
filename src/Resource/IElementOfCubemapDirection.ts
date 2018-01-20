@@ -5,4 +5,5 @@ export default interface IElementOfCubemapDirection<T> {
     NY: T;
     PZ: T;
     NZ: T;
+    [key: string]: T;
 }

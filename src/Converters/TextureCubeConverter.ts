@@ -13,7 +13,7 @@ export default function TextureCubeConverter(val: any, attr: Attribute): any {
     if (val instanceof TextureCube) {
         return val;
     } else if (typeof val === "string") {
-        const cubeTexture = new TextureCube(attr.companion.get("gl"));
+        const cubeTexture = new TextureCube(attr.companion!.get("gl")!);
         const parseResult = QueryParser.parseFunctionalQuery(val, "erect");
         switch (parseResult[0]) {
             case "cube": // Parse resource as equirectangular

@@ -1,4 +1,4 @@
-import { Attribute } from "grimoirejs/ref/Core/Attribute";
+import { Attribute, StandardAttribute, LazyAttribute } from "grimoirejs/ref/Core/Attribute";
 import GomlNode from "grimoirejs/ref/Core/GomlNode";
 
 /**
@@ -13,22 +13,19 @@ export default {
     return true;
   },
   convert(val: any, attr: Attribute) {
-    if (val === null) {
-      return null;
-    }
     if (attr.convertContext._lastVal === val) {
       return attr.convertContext._node.getAttribute("position");
     } else {
       attr.convertContext._lastVal = null;
       try { // TODO: remove try cache after fixed grimoirejs-math.
-        const vec = Attribute.convert("Vector3", attr, val);
+        const vec = StandardAttribute.convert("Vector3", attr as LazyAttribute, val);
         if (vec) {
           return vec;
         }
       } catch (e) {
 
       }
-      attr.convertContext._node = Attribute.convert("Node", attr, val) as GomlNode;
+      attr.convertContext._node = StandardAttribute.convert("Node", attr as LazyAttribute, val) as GomlNode;
       if (attr.convertContext._node) {
         attr.convertContext._lastVal = val;
         return attr.convertContext._node.getAttribute("position"); // TODO should not use getAttribute on node

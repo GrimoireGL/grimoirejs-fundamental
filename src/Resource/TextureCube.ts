@@ -62,7 +62,7 @@ export default class TextureCube extends Texture {
         this.gl.bindTexture(this.textureType, this.resourceReference);
         this.__prepareTextureUpload(uploadConfig, { flipY: false, premultipliedAlpha: false });
         for (const key in TextureCube.imageDirections) {
-            const resize = this.__updateWithSourceImage(TextureCube.imageDirections[key], source[key]);
+            const resize = this.__updateWithSourceImage((TextureCube.imageDirections as any)[key], (source as any)[key]);
             this.width = resize.width;
             this.height = resize.height;
         }
@@ -78,7 +78,7 @@ export default class TextureCube extends Texture {
         this.width = width;
         this.height = height;
         for (const dir in TextureCube.imageDirections) {
-            this.gl.texImage2D(TextureCube.imageDirections[dir], level, format, width, height, 0, format, type, buffers[dir] || new Uint8Array(width * height * GLConstantUtility.getElementCount(format)));
+            this.gl.texImage2D((TextureCube.imageDirections as any)[dir], level, format, width, height, 0, format, type, (buffers as any)[dir] || new Uint8Array(width * height * GLConstantUtility.getElementCount(format)));
         }
         this.__ensureMipmap();
         this.valid = true;

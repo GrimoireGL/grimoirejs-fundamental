@@ -5,6 +5,7 @@ import ImageSource from "./ImageSource";
 import ITextureUploadConfig from "./ITextureUploadConfig";
 import Texture from "./Texture";
 import Viewport from "./Viewport";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
 export default class Texture2D extends Texture {
   public static defaultTextures: Map<WebGLRenderingContext, Texture2D> = new Map<WebGLRenderingContext, Texture2D>();
   public static maxTextureSize: number;
@@ -60,9 +61,9 @@ export default class Texture2D extends Texture {
     }
   }
 
-  public update(level: number, width: number, height: number, border: number, format: number, type: number, pxiels?: ArrayBufferView, config?: ITextureUploadConfig): void;
+  public update(level: number, width: number, height: number, border: number, format: number, type: number, pxiels?: Nullable<ArrayBufferView>, config?: ITextureUploadConfig): void;
   public update(image: ImageSource, config?: ITextureUploadConfig): void;
-  public update(levelOrImage: any, widthOrConfig: any, height?: number, border?: number, format?: number, type?: number, pixels?: ArrayBufferView, config?: ITextureUploadConfig): void {
+  public update(levelOrImage: any, widthOrConfig: any, height?: number, border?: number, format?: number, type?: number, pixels?: Nullable<ArrayBufferView>, config?: ITextureUploadConfig): void {
     this.gl.bindTexture(WebGLRenderingContext.TEXTURE_2D, this.resourceReference);
     let uploadConfig: ITextureUploadConfig;
     let image: ImageSource;
@@ -74,29 +75,29 @@ export default class Texture2D extends Texture {
     } else {
       level = levelOrImage as number;
       width = widthOrConfig as number;
-      uploadConfig = config;
+      uploadConfig = config!;
     }
     this.__prepareTextureUpload(uploadConfig);
     if (height === void 0) { // something image was specified
-      const resizeInfo = this.__updateWithSourceImage(this.gl.TEXTURE_2D, image);
+      const resizeInfo = this.__updateWithSourceImage(this.gl.TEXTURE_2D, image!);
       this._width = resizeInfo.width;
       this._height = resizeInfo.height;
     } else {
       if (pixels === void 0) {
         pixels = null;
       }
-      if (width === 0 || height === 0) { // Edge browser cannot accept a texture with 0 size
+      if (width! === 0 || height === 0) { // Edge browser cannot accept a texture with 0 size
         width = 1;
         height = 1;
         format = WebGLRenderingContext.RGB;
         type = WebGLRenderingContext.UNSIGNED_BYTE;
         pixels = new Uint8Array([0, 0, 0]);
       }
-      this._width = width;
+      this._width = width!;
       this._height = height;
-      this.gl.texImage2D(this.textureType, level, format, width, height, border, format, type, pixels);
-      this.__format = format;
-      this.__type = type;
+      this.gl.texImage2D(this.textureType, level!, format!, width!, height, border!, format!, type!, pixels);
+      this.__format = format!;
+      this.__type = type!;
     }
     this.__ensureMipmap();
     this.valid = true;
@@ -107,7 +108,7 @@ export default class Texture2D extends Texture {
     const buffer = this.getRawPixels();
     const bufferSize = this.width * this.height * GLUtility.formatToElementCount(this.format);
     for (let i = 0; i < bufferSize; i++) {
-      imageData.data[i] = buffer[i];
+      imageData.data[i] = (buffer as any)[i];
     }
     this.drawerContext.putImageData(imageData, 0, 0);
     this.drawerContext.setTransform(1, 0, 0, -1, 0, this.height);
