@@ -1,5 +1,5 @@
 import { Nullable } from "grimoirejs/ref/Tool/Types";
-import Attribute from "grimoirejs/ref/Core/Attribute";
+import { Attribute } from "grimoirejs/ref/Core/Attribute";
 import ImageResolver from "../Asset/ImageResolver";
 import TextureContainer from "../Components/Texture/TextureContainer";
 import TextureReference from "../Material/TextureReference";

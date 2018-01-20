@@ -1,4 +1,4 @@
-import Attribute from "grimoirejs/ref/Core/Attribute";
+import { Attribute } from "grimoirejs/ref/Core/Attribute";
 import GomlNode from "grimoirejs/ref/Core/GomlNode";
 
 export default function NodeConverter(val: any, attr: Attribute): any {
