@@ -65,7 +65,7 @@ export default class NameResolver<T> {
                 }
                 this._resolvers[name] = generator;
                 const resolved = await generator;
-                this._resolvers[name] = void 0;
+                delete this._resolvers[name];
                 this._callHandlers(name, resolved);
                 this._resolved[name] = resolved;
                 return resolved;
@@ -107,6 +107,6 @@ export default class NameResolver<T> {
     }
 
     private _isPromise(generator: Promise<T> | T): generator is Promise<T> {
-        return (typeof generator["then"] === "function");
+        return (typeof (generator as ["then"] === "function");
     }
 }

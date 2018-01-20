@@ -8,8 +8,19 @@ import GLConstantUtility from "../Util/GLConstantUtility";
 import HashCalculator from "../Util/HashCalculator";
 import IndexBufferInfo from "./IndexBufferInfo";
 import VertexBufferAccessor from "./VertexBufferAccessor";
+
+export type Undef<T> = undefined | T;
+export type Options<T> = {
+    [key in keyof T]: T[key]
+};
+
 export interface GeometryVertexBufferAccessor extends VertexBufferAccessor {
     bufferIndex: number;
+}
+
+export interface VertexBufferUploadOptions {
+    usage: number;
+    keepOnBuffer: boolean;
 }
 /**
  * The geometry class for managing buffer resource
@@ -88,37 +99,14 @@ export default class Geometry {
         this.instanciator = GLExtRequestor.get(gl).extensions["ANGLE_instanced_arrays"];
     }
 
-    public addAttributes(buffer: number[] | BufferSource, accessors: { [semantcis: string]: VertexBufferAccessor }, usage?: number): void;
-    public addAttributes(buffer: number[] | BufferSource | Buffer, accessors: { [semantics: string]: VertexBufferAccessor }): void;
-    public addAttributes(buffer: Buffer | number[] | BufferSource, accessors: { [semantics: string]: VertexBufferAccessor }, usage: number = WebGLRenderingContext.STATIC_DRAW): void {
+    public addAttributes(buffer: number[] | BufferSource | Buffer, accessors: { [semantcis: string]: VertexBufferAccessor }, opt: Options<VertexBufferUploadOptions>): void {
         const index = this.buffers.length;
-        let keepBuffer = false;
         for (const semantic in accessors) {
             const accessor = accessors[semantic] as GeometryVertexBufferAccessor;
-            accessor.bufferIndex = index;
-            if (accessor.size === void 0) {
-                throw new Error(`Accessor specified with the semantics "${semantic}" is not containing size as paranmeter.`);
-            }
-            if (accessor.type === void 0) {
-                accessor.type = WebGLRenderingContext.FLOAT;
-            }
-            if (accessor.stride === void 0) {
-                accessor.stride = accessor.size * GLConstantUtility.getElementByteSize(accessor.type);
-            }
-            if (accessor.offset === void 0) {
-                accessor.offset = 0;
-            }
-            if (accessor.normalized === void 0) {
-                accessor.normalized = false;
-            }
-            if (accessor.keepOnBuffer === void 0) {
-                // If target semantic was named 'POSITION', default option for keeping buffer is true.
-                accessor.keepOnBuffer = semantic === "POSITION";
-            }
-            keepBuffer = keepBuffer || !!accessor.keepOnBuffer;
+            Geometry._ensureValidVertexBufferAccessor(accessor, index, semantic, opt.keepOnBuffer);
             this.accessors[semantic] = accessor;
         }
-        buffer = this._ensureToBeVertexBuffer(buffer, usage, keepBuffer);
+        buffer = this._ensureToBeVertexBuffer(buffer, opt.usage, opt.keepOnBuffer);
         this.buffers.push(buffer);
         this._recalculateAccsessorHash();
     }
@@ -252,4 +240,25 @@ export default class Geometry {
         }
         this._accessorHashCache = HashCalculator.calcHash(hashSource);
     }
+
+    private static _ensureValidVertexBufferAccessor(accessor: GeometryVertexBufferAccessor, index: number, semantic: string, keepBuffer: boolean) {
+        accessor.bufferIndex = index;
+        if (accessor.size === void 0) {
+            throw new Error(`Accessor specified with the semantics "${semantic}" is not containing size as paranmeter.`);
+        }
+        accessor = {
+            type: WebGLRenderingContext.FLOAT,
+            stride: accessor.size * GLConstantUtility.getElementByteSize(accessor.type),
+            offset: 0,
+            normalized: false,
+            keepOnBuffer: semantic === "POSITION",
+            ...accessor
+        };
+        return accessor;
+    }
+
+    private static _ensureValidVertexBufferUploadOptions(opt: VertexBufferUploadOptions): VertexBufferUploadOptions {
+
+    }
 }
+

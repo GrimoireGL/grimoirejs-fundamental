@@ -1,5 +1,6 @@
 import EEObject from "grimoirejs/ref/Base/EEObject";
 import Component from "grimoirejs/ref/Core/Component";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
 type AssetLoadingInfoTuple = {
   promise: Promise<any>,
   component: Component,
@@ -43,9 +44,9 @@ class AssetLoader extends EEObject {
   /**
    * Register an promise to be waited until finished.
    */
-  public async register<T>(promise: Promise<T>, component: Component): Promise<T> {
+  public async register<T>(promise: Promise<T>, component: Component): Promise<Nullable<T>> {
     this.registerCount++;
-    let result: T = null;
+    let result: Nullable<T> = null;
     try {
       result = await promise;
       this.loadCount++;
