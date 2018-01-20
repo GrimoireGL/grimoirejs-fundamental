@@ -5,12 +5,19 @@ import Vector3 from "grimoirejs-math/ref/Vector3";
 import Vector4 from "grimoirejs-math/ref/Vector4";
 import Component from "grimoirejs/ref/Core/Component";
 import GomlNode from "grimoirejs/ref/Core/GomlNode";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderArgument from "../SceneRenderer/IRenderArgument";
 import RenderQueue from "../SceneRenderer/RenderQueue";
 import Timer from "../Util/Timer";
 import Scene from "./SceneComponent";
 import Transform from "./TransformComponent";
+import { NumberConverter } from "grimoirejs/ref/Converter/NumberConverter";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
+import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
+
+export { IConverterDeclaration, IStandardConverterDeclaration };
+
 /**
  * シーンを描画するカメラのコンポーネント
  * このコンポーネントによって、透視射影や正方射影などの歪みを調整します。
@@ -18,7 +25,7 @@ import Transform from "./TransformComponent";
  */
 export default class CameraComponent extends Component {
     public static componentName = "Camera";
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
+    public static attributes = {
         /**
          * カメラの視野角。
          * orthogonal属性がtrueである場合この属性は無視されます。
@@ -33,7 +40,7 @@ export default class CameraComponent extends Component {
          */
         near: {
             default: 0.01,
-            converter: "Number",
+            converter: NumberConverter,
         },
         /**
          * カメラに映る最も遠い距離です。
@@ -46,7 +53,7 @@ export default class CameraComponent extends Component {
          */
         far: {
             default: 100,
-            converter: "Number",
+            converter: NumberConverter,
         },
         /**
          * カメラのアスペクト比
@@ -54,7 +61,7 @@ export default class CameraComponent extends Component {
          */
         aspect: {
             default: 1.6,
-            converter: "Number",
+            converter: NumberConverter,
         },
         /**
          * アスペクト比の自動調整が有効か否か
@@ -62,7 +69,7 @@ export default class CameraComponent extends Component {
          */
         autoAspect: {
             default: true,
-            converter: "Boolean",
+            converter: BooleanConverter,
         },
         /**
          * 正射影時の横の基準サイズ
@@ -71,7 +78,7 @@ export default class CameraComponent extends Component {
          */
         orthoSize: {
             default: 100,
-            converter: "Number",
+            converter: NumberConverter,
         },
         /**
          * このカメラが正射影かどうか
@@ -81,14 +88,14 @@ export default class CameraComponent extends Component {
          */
         orthogonal: {
             default: false,
-            converter: "Boolean",
+            converter: BooleanConverter,
         },
     };
 
     private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
     private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
 
-    public containedScene: Scene;
+    public containedScene: Nullable<Scene>;
 
     public transform: Transform;
     /**
@@ -115,12 +122,12 @@ export default class CameraComponent extends Component {
     /**
      * Orthogonal mode or not
      */
-    public orthogonal;
+    public orthogonal: boolean;
 
     /**
      * Automatically adjust aspect ratio by viewport
      */
-    public autoAspect;
+    public autoAspect: boolean;
 
     public readonly viewMatrix: Matrix = new Matrix();
     public readonly projectionMatrix: Matrix = new Matrix();
@@ -137,20 +144,28 @@ export default class CameraComponent extends Component {
 
     protected $mount(): void {
         this.__bindAttributes();
-        ["far", "near", "fovy", "aspect", "orthoSize", "orthogonal", "autoAspect"]
-            .forEach(att => this.node.getAttributeRaw(att).watch(v => {
-                this._recalculateProjection();
-            }));
+        this.getAttributeRaw(CameraComponent.attributes.far)!.watch(_ => this._recalculateProjection());
+        this.getAttributeRaw(CameraComponent.attributes.near)!.watch(_ => this._recalculateProjection());
+        this.getAttributeRaw(CameraComponent.attributes.fovy)!.watch(_ => this._recalculateProjection());
+        this.getAttributeRaw(CameraComponent.attributes.aspect)!.watch(_ => this._recalculateProjection());
+        this.getAttributeRaw(CameraComponent.attributes.orthoSize)!.watch(_ => this._recalculateProjection());
+        this.getAttributeRaw(CameraComponent.attributes.orthogonal)!.watch(_ => this._recalculateProjection());
+        this.getAttributeRaw(CameraComponent.attributes.autoAspect)!.watch(_ => this._recalculateProjection());
+
         this._recalculateProjection();
-        this.transform = this.node.getComponent(Transform);
+        const transform = this.node.getComponent(Transform);
+        if (!transform) {
+            throw new Error("Transform component is not found.")
+        }
+        this.transform = transform;
         this.containedScene = this.node.getComponentInAncestor(Scene);
-        this.containedScene.queueRegistry.registerQueue(this._renderQueue);
+        this.containedScene!.queueRegistry.registerQueue(this._renderQueue);
         this.node.on("transformUpdated", this.updateTransform.bind(this));
         this.updateTransform();
     }
 
     protected $unmount(): void {
-        this.containedScene.queueRegistry.unregisterQueue(this._renderQueue);
+        this.containedScene!.queueRegistry.unregisterQueue(this._renderQueue);
         this.containedScene = null;
     }
 
