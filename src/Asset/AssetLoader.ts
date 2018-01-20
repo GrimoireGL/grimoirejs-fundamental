@@ -9,7 +9,7 @@ type AssetLoadingInfoTuple = {
 /**
  * Provides managing all promise on initializing resources.
  */
-class AssetLoader extends EEObject {
+export default class AssetLoader extends EEObject {
   /**
    * Promise count registered.
    * @type {number}
@@ -44,11 +44,11 @@ class AssetLoader extends EEObject {
   /**
    * Register an promise to be waited until finished.
    */
-  public async register<T>(promise: Promise<T>, component: Component): Promise<Nullable<T>> {
+  public async register<T>(promise: Promise<T>, component: Component): Promise<T> {
     this.registerCount++;
     let result: Nullable<T> = null;
     try {
-      result = await promise;
+      const result = await promise;
       this.loadCount++;
     } catch (e) {
       console.error(`Failed to resolve asset loading promise.\n\nLoading fired by: ${component.name.fqn}\nAttached node:${component.node.name.fqn}\n${e}`);
@@ -56,7 +56,7 @@ class AssetLoader extends EEObject {
     }
     this.completeCount++;
     this._checkLoadCompleted();
-    return result;
+    return result!;
   }
 
   /**
@@ -69,4 +69,3 @@ class AssetLoader extends EEObject {
     }
   }
 }
-export default AssetLoader;
