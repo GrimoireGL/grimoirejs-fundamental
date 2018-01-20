@@ -42,7 +42,8 @@ export default class Fullscreen extends Component {
   private _fullscreen = false;
 
   protected $awake(): void {
-    this.getAttributeRaw(Fullscreen.attributes.fullscreen)!.watch((attr) => {
+    this.getAttributeRaw(Fullscreen.attributes.fullscreen)!.watch(attr => {
+      attr = !!attr;
       if (this._fullscreen === attr) {
         return;
       }
@@ -53,7 +54,7 @@ export default class Fullscreen extends Component {
 
   private _switchFullscreen(): void {
     if (this._fullscreen) {
-      const target = this.getAttribute("fullscreenTarget");
+      const target = this.getAttribute(Fullscreen.attributes.fullscreenTarget);
       if (target) {
         const queriedTarget = document.querySelectorAll(target);
         if (queriedTarget[0]) {
@@ -62,7 +63,7 @@ export default class Fullscreen extends Component {
           console.warn("Specified fullscreenTarget was not found on HTML dom tree");
         }
       } else {
-        this.requestFullscreen(this.companion.get("canvasContainer"));
+        this.requestFullscreen(this.companion.get("canvasContainer")!);
       }
     } else {
       this.exitFullscreen();
@@ -70,29 +71,31 @@ export default class Fullscreen extends Component {
   }
 
   private requestFullscreen(target: Element): void {
-    if (target.webkitRequestFullscreen) {
-      target.webkitRequestFullscreen(); // Chrome15+, Safari5.1+, Opera15+
-    } else if (target["mozRequestFullScreen"]) {
-      target["mozRequestFullScreen"](); // FF10+
-    } else if (target["msRequestFullscreen"]) {
-      target["msRequestFullscreen"](); // IE11+
-    } else if (target.requestFullscreen) {
-      target.requestFullscreen(); // HTML5 Fullscreen API仕様
+    const targetany = target as any;
+    if (targetany.webkitRequestFullscreen) {
+      targetany.webkitRequestFullscreen(); // Chrome15+, Safari5.1+, Opera15+
+    } else if (targetany["mozRequestFullScreen"]) {
+      targetany["mozRequestFullScreen"](); // FF10+
+    } else if (targetany["msRequestFullscreen"]) {
+      targetany["msRequestFullscreen"](); // IE11+
+    } else if (targetany.requestFullscreen) {
+      targetany.requestFullscreen(); // HTML5 Fullscreen API仕様
     } else {
-      console.error("ご利用のブラウザはフルスクリーン操作に対応していません");
+      console.error("Your browser is not supporting full screen feature. Use modern browsers instead.");
       return;
     }
   }
   /*フルスクリーン終了用ファンクション*/
   private exitFullscreen(): void {
+    const doc = document as any;
     if (document.webkitCancelFullScreen) {
       document.webkitCancelFullScreen(); // Chrome15+, Safari5.1+, Opera15+
-    } else if (document["mozCancelFullScreen"]) {
-      document["mozCancelFullScreen"](); // FF10+
-    } else if (document["msExitFullscreen"]) {
-      document["msExitFullscreen"](); // IE11+
-    } else if (document["cancelFullScreen"]) {
-      document["cancelFullScreen"](); // Gecko:FullScreenAPI仕様
+    } else if (doc["mozCancelFullScreen"]) {
+      doc["mozCancelFullScreen"](); // FF10+
+    } else if (doc["msExitFullscreen"]) {
+      doc["msExitFullscreen"](); // IE11+
+    } else if (doc["cancelFullScreen"]) {
+      doc["cancelFullScreen"](); // Gecko:FullScreenAPI仕様
     } else if (document.exitFullscreen) {
       document.exitFullscreen(); // HTML5 Fullscreen API仕様
     }
