@@ -1,8 +1,9 @@
 import Rectangle from "grimoirejs-math/ref/Rectangle";
 import Viewport from "../Resource/Viewport";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
 function _toPixel(parentSize: number, rep: string): number {
   const regex = /(\d+)\s*%/;
-  let regexResult: RegExpExecArray;
+  let regexResult: Nullable<RegExpExecArray>;
   if ((regexResult = regex.exec(rep))) {
     const percentage = Number.parseFloat(regexResult[1]);
     return Math.floor(parentSize * percentage * 0.01);
@@ -20,9 +21,9 @@ export default function ViewportConverter(val: any): any {
   if (val instanceof Rectangle) {
     const vp = new Viewport(val.Left, val.Bottom, val.Width, val.Height);
     return () => vp;
-  }else if (val instanceof Viewport){
+  } else if (val instanceof Viewport) {
     return () => val;
-  }else if (typeof val === "string") {
+  } else if (typeof val === "string") {
     if (val === "auto") {
       return (canvas: HTMLCanvasElement) => new Viewport(0, 0, canvas.width, canvas.height);
     } else {

@@ -15,11 +15,12 @@ export default class RenderBufferComponent extends ResizableResourceUpdator {
 
   protected $awake(): void {
     super.$awake();
-    this.buffer = new RenderBuffer(this.companion.get("gl"));
+    const gl = this.companion.get("gl")!;
+    this.buffer = new RenderBuffer(gl);
     this.buffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, 1, 1);
     const name = this.getAttribute("name");
     if (name) {
-      RenderingBufferResourceRegistry.get(this.companion.get("gl")).setDepthBuffer(name, this.buffer);
+      RenderingBufferResourceRegistry.get(gl).setDepthBuffer(name, this.buffer);
     }
   }
 

@@ -81,8 +81,8 @@ export default class MorphGeometry extends Geometry {
 
     private _calculateWeights(semantics: string, index: number): number {
         let result = this._morphBaseAttribute[semantics].buffer[index];
-        for (let i = 0; i < this.lastWeights.length; i++) {
-            result += this.lastWeights[i] * this.morphParameters[semantics][i].buffer[index];
+        for (let i = 0; i < this.lastWeights!.length; i++) {
+            result += this.lastWeights![i] * this.morphParameters[semantics][i].buffer[index];
         }
         return result;
     }

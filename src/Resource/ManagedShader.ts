@@ -22,7 +22,7 @@ export default class ManagedShader extends Shader {
     if (!ManagedShader._managedShaders.has(gl)) {
       ManagedShader._managedShaders.set(gl, {});
     }
-    const shaders = ManagedShader._managedShaders.get(gl);
+    const shaders = ManagedShader._managedShaders.get(gl)!;
     const hash = HashCalculator.calcHash(shader + type);
     if (shaders[hash] === void 0) {
       shaders[hash] = new ManagedShader(gl, type, shader, hash);
@@ -47,7 +47,8 @@ export default class ManagedShader extends Shader {
     this._referenceCount--;
     if (this._referenceCount === 0) {
       this.destroy();
-      ManagedShader._managedShaders.get(this.gl)[this.hash] = void 0;
+      const ms = ManagedShader._managedShaders.get(this.gl)!;
+      delete ms[this.hash];
     }
   }
 }

@@ -47,7 +47,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
 
 
   protected async $mount(): Promise<void> {
-    this._sceneRenderer = this.node.getComponent(RenderSceneComponent);
+    this._sceneRenderer = this.node.getComponent(RenderSceneComponent)!;
     if (!this._sceneRenderer) {
       throw new Error("The node attaching RenderHitArea should contain RenderScene.");
     }
@@ -57,7 +57,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     if (!this.hitareaBuffer) {
       // Generate default hitarea buffer
       const node = this.node.parent!.addChildByName("rendering-target", { name: `hitarea-buffer-${this._sceneRenderer.id}` });
-      this.hitareaBuffer = node.getComponent(RenderingTarget).renderingTarget;
+      this.hitareaBuffer = node.getComponent(RenderingTarget)!.renderingTarget;
     }
   }
 

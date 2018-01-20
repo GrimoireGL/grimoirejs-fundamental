@@ -106,7 +106,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
         this.__applyTexParameter();
     }
 
-    protected __prepareTextureUpload(uploadConfig: ITextureUploadConfig, complement = { flipY: true, premultipliedAlpha: false }): void {
+    protected __prepareTextureUpload(uploadConfig?: ITextureUploadConfig, complement = { flipY: true, premultipliedAlpha: false }): void {
         uploadConfig = {
             ...complement,
             ...uploadConfig

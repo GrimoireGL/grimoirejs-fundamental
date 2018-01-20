@@ -25,6 +25,10 @@ export default class TextureUpdatorComponentBase<T extends Texture> extends Resi
 
     protected $awake(): void {
         super.$awake();
-        this.textureComponent = this.node.getComponent(TextureContainerBase);
+        const tc = this.node.getComponent(TextureContainerBase);
+        if (!tc) {
+            throw new Error(`Texture updater should have TextureContainerBase in same ndoe`);
+        }
+        this.textureComponent = tc;
     }
 }

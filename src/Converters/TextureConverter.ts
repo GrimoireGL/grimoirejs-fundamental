@@ -27,17 +27,23 @@ export default function TextureConverter(val: any, attr: Attribute): any {
     const parseResult = QueryParser.parseFunctionalQuery(val, "url");
     switch (parseResult[0]) {
       case "backbuffer":
-        return new TextureReference(() => RenderingBufferResourceRegistry.get(attr.companion.get("gl")).getBackbuffer(parseResult[1]) as Texture2D);
+        return new TextureReference(() => RenderingBufferResourceRegistry.get(attr.companion!.get("gl")!).getBackbuffer(parseResult[1]) as Texture2D);
       case "query":
-        const obtainedTag = attr.tree(parseResult[1]);
-        const texture = obtainedTag.first().getComponent(TextureContainer);
+        const obtainedTag = attr.tree!(parseResult[1]);
+        if (!obtainedTag) {
+          throw new Error(`Specified query '${parseResult[1]}' returned empty quering result.`);
+        }
+        const texture = obtainedTag.first()!.getComponent(TextureContainer);
+        if (!texture) {
+          throw new Error(`Specified tag '${parseResult[1]}' should have TextureContainer component`);
+        }
         return new TextureReference(() => texture.texture);
       case "url":
-        const tex = new Texture2D(attr.companion.get("gl"));
+        const tex = new Texture2D(attr.companion!.get("gl")!);
         ImageResolver.resolve(val).then(t => {
           tex.update(t);
         });
-        attr.companion.get("loader").register(tex.validPromise);
+        attr.companion!.get("loader").register(tex.validPromise);
         return new TextureReference(tex);
       case "video":
         throw new Error("video(url) is deprecated syntax. Use video-texture tag and refer it with query()");
@@ -46,13 +52,13 @@ export default function TextureConverter(val: any, attr: Attribute): any {
   }
   if (typeof val === "object") {
     if (val instanceof HTMLImageElement) {
-      const tex = new Texture2D(attr.companion.get("gl"));
+      const tex = new Texture2D(attr.companion!.get("gl")!);
       ImageResolver.waitForImageLoaded(val).then(() => {
         tex.update(val);
       });
       return new TextureReference(tex);
     } else if (val instanceof HTMLCanvasElement) {
-      const tex = new Texture2D(attr.companion.get("gl"));
+      const tex = new Texture2D(attr.companion!.get("gl")!);
       tex.update(val);
       return new TextureReference(tex);
     }

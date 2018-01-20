@@ -92,7 +92,7 @@ export default class CameraComponent extends Component {
     private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
     private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
 
-    public containedScene: Nullable<Scene>;
+    public containedScene: Scene;
 
     public transform: Transform;
     /**
@@ -155,15 +155,19 @@ export default class CameraComponent extends Component {
             throw new Error("Transform component is not found.")
         }
         this.transform = transform;
-        this.containedScene = this.node.getComponentInAncestor(Scene);
-        this.containedScene!.queueRegistry.registerQueue(this._renderQueue);
+        const containedScene = this.node.getComponentInAncestor(Scene);
+        if (!containedScene) {
+            throw new Error(`Camera must be contained in a scene.`);
+        }
+        this.containedScene = containedScene;
+        this.containedScene.queueRegistry.registerQueue(this._renderQueue);
         this.node.on("transformUpdated", this.updateTransform.bind(this));
         this.updateTransform();
     }
 
     protected $unmount(): void {
         this.containedScene!.queueRegistry.unregisterQueue(this._renderQueue);
-        this.containedScene = null;
+        delete this.containedScene
     }
 
     /**

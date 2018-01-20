@@ -8,7 +8,7 @@ import Geometry from "../Geometry/Geometry";
  */
 export default function GeometryConverter(val: any, attr: Attribute): any {
   if (typeof val === "string") {
-    const Registry = attr.companion.get("GeometryRegistry") as GeometryRegistry;
+    const Registry = attr.companion!.get("GeometryRegistry") as GeometryRegistry;
     return Registry.getGeometry(val);
   } else if (val instanceof Geometry) {
     return Promise.resolve(val);

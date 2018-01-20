@@ -2,6 +2,7 @@ import GLResource from "./GLResource";
 import ResourceCache from "./ResourceCache";
 import Shader from "./Shader";
 import UniformProxy from "./UniformProxy";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
 
 /**
  * Manages WebGLProgram related stuff.
@@ -14,7 +15,7 @@ export default class Program extends GLResource<WebGLProgram> {
    */
   public uniforms: UniformProxy;
 
-  private _uniformLocations: { [variableName: string]: WebGLUniformLocation } = {};
+  private _uniformLocations: { [variableName: string]: Nullable<WebGLUniformLocation> } = {};
 
   private _attributeLocations: { [variableName: string]: number } = {};
 
@@ -39,7 +40,7 @@ export default class Program extends GLResource<WebGLProgram> {
   public update(shaders: Shader[]): void {
     if (this.valid) {
       // detach all attached shaders previously
-      const preciousShaders = this.gl.getAttachedShaders(this.resourceReference);
+      const preciousShaders = this.gl.getAttachedShaders(this.resourceReference)!;
       preciousShaders.forEach(s => this.gl.detachShader(this.resourceReference, s));
     }
     this._uniformLocations = {}; // reset location caches
@@ -95,7 +96,7 @@ export default class Program extends GLResource<WebGLProgram> {
    * @param  {string}               variableName [description]
    * @return {WebGLUniformLocation}              [description]
    */
-  public findUniformLocation(variableName: string): WebGLUniformLocation {
+  public findUniformLocation(variableName: string): WebGLUniformLocation | null {
     const location = this._uniformLocations[variableName];
     if (location === void 0) { // if cache is not available
       return this._uniformLocations[variableName] = this.gl.getUniformLocation(this.resourceReference, variableName);
