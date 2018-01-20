@@ -1,5 +1,10 @@
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
+
+export { IConverterDeclaration, IStandardConverterDeclaration };
 
 /**
  * フルスクリーン状態を管理するコンポーネント
@@ -11,7 +16,7 @@ import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaratio
  */
 export default class Fullscreen extends Component {
   public static componentName = "Fullscreen";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
     /**
      * フルスクリーン状態かどうか
      *
@@ -20,7 +25,7 @@ export default class Fullscreen extends Component {
      * したがって、GOMLで初期状態からこのフラグをtrueにすることはできません。
      */
     fullscreen: {
-      converter: "Boolean",
+      converter: BooleanConverter,
       default: false,
     },
     /**
@@ -29,7 +34,7 @@ export default class Fullscreen extends Component {
      * nullが指定された場合、キャンバスの親要素が用いられます。
      */
     fullscreenTarget: {
-      converter: "String",
+      converter: StringConverter,
       default: null,
     },
   };
@@ -37,7 +42,7 @@ export default class Fullscreen extends Component {
   private _fullscreen = false;
 
   protected $awake(): void {
-    this.getAttributeRaw("fullscreen").watch((attr) => {
+    this.getAttributeRaw(Fullscreen.attributes.fullscreen)!.watch((attr) => {
       if (this._fullscreen === attr) {
         return;
       }
