@@ -9,7 +9,7 @@ export default class ManagedProgram extends Program {
     if (!ManagedProgram._managedPrograms.has(gl)) {
       ManagedProgram._managedPrograms.set(gl, {});
     }
-    const programs = ManagedProgram._managedPrograms.get(gl);
+    const programs = ManagedProgram._managedPrograms.get(gl)!;
     let hashSource = "";
     shaders = shaders.sort();
     shaders.forEach(s => {
@@ -34,7 +34,8 @@ export default class ManagedProgram extends Program {
     this._referenceCount--;
     if (this._referenceCount === 0) {
       this.destroy();
-      ManagedProgram._managedPrograms.get(this.gl)[this.hash] = void 0;
+      const pm = ManagedProgram._managedPrograms.get(this.gl)!;
+      delete pm[this.hash];
     }
   }
 }

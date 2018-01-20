@@ -8,7 +8,7 @@ export default class FrameBuffer extends GLResource<WebGLFramebuffer> {
     super(gl, gl.createFramebuffer()!);
   }
 
-  public update(boundTo: TextureCube, direction: number, level?: number, attachTo?: number);
+  public update(boundTo: TextureCube, direction: number, level?: number, attachTo?: number): void;
   public update(boundTo: RenderBuffer, attachTo?: number): void;
   public update(boundTo: Texture2D, level?: number, bindIndex?: number): void;
   public update(boundTo: Texture2D | RenderBuffer | TextureCube, level?: number, bindIndex?: number, cubemapBind?: number): void {
