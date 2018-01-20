@@ -3,7 +3,7 @@ import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclar
 import Geometry from "../Geometry/Geometry";
 import GeometryFactory from "../Geometry/GeometryFactory";
 import GeometryRegistry from "./GeometryRegistryComponent";
-import Attribute from "grimoirejs/ref/Core/Attribute";
+import { Attribute } from "grimoirejs/ref/Core/Attribute";
 /**
  * ジオメトリを生成するためのコンポーネント
  * `type`属性に指定されたタイプのジオメトリを生成して、`name`属性に指定された名前で利用できる形にして登録します。

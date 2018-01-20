@@ -1,4 +1,4 @@
-import Attribute from "grimoirejs/ref/Core/Attribute";
+import { Attribute } from "grimoirejs/ref/Core/Attribute";
 import GeometryRegistry from "../Components/GeometryRegistryComponent";
 import Geometry from "../Geometry/Geometry";
 

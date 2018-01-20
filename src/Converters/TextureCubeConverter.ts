@@ -1,4 +1,4 @@
-import Attribute from "grimoirejs/ref/Core/Attribute";
+import { Attribute } from "grimoirejs/ref/Core/Attribute";
 import TextureCube from "../Resource/TextureCube";
 import QueryParser from "../Util/QueryParser";
 import ImageResolver from "../Asset/ImageResolver";
