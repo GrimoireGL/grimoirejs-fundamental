@@ -3,7 +3,7 @@ import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclar
 import Texture from "../../Resource/Texture";
 export default class TextureContainerBase<T extends Texture> extends Component {
     public static componentName = "TextureContainerBase";
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
+    public static attributes = {
         minFilter: {
             converter: "Enum",
             default: "LINEAR",
@@ -56,21 +56,21 @@ export default class TextureContainerBase<T extends Texture> extends Component {
 
     protected $mount(): void {
         this.__bindAttributes();
-        this.texture = this.__createTexture(this.companion.get("gl"));
+        this.texture = this.__createTexture(this.companion.get("gl")!);
         this.__applyParameters();
-        this.getAttributeRaw("magFilter").watch(() => this.__applyParameters());
-        this.getAttributeRaw("minFilter").watch(() => this.__applyParameters());
-        this.getAttributeRaw("wrapS").watch(() => this.__applyParameters());
-        this.getAttributeRaw("wrapT").watch(() => this.__applyParameters());
+        this.getAttributeRaw(TextureContainerBase.attributes.magFilter)!.watch(() => this.__applyParameters());
+        this.getAttributeRaw(TextureContainerBase.attributes.minFilter)!.watch(() => this.__applyParameters());
+        this.getAttributeRaw(TextureContainerBase.attributes.wrapS)!.watch(() => this.__applyParameters());
+        this.getAttributeRaw(TextureContainerBase.attributes.wrapT)!.watch(() => this.__applyParameters());
     }
 
     protected $destroy(): void {
         this.texture.destroy();
-        this.texture = null;
+        delete this.texture;
     }
 
     protected __createTexture(gl: WebGLRenderingContext): T {
-        return null;
+        throw new Error(`This method should be overriden. But called directly.`);
     }
 
     protected __applyParameters(): void {

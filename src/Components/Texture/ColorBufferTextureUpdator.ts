@@ -18,10 +18,10 @@ export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBa
         ALPHA: WebGLRenderingContext.ALPHA,
         LUMINANCE: WebGLRenderingContext.LUMINANCE,
         LUMINANCE_ALPHA: WebGLRenderingContext.LUMINANCE_ALPHA,
-        SRGB_EXT: WebGLRenderingContext["SRGB_EXT"],
-        SRGB_ALPHA_EXT: WebGLRenderingContext["SRGB_ALPHA_EXT"],
-        DEPTH_COMPONENT: WebGLRenderingContext["DEPTH_COMPONENT"],
-        DEPTH_STENCIL: WebGLRenderingContext["DEPTH_STENCIL"],
+        SRGB_EXT: (WebGLRenderingContext as any)["SRGB_EXT"],
+        SRGB_ALPHA_EXT: (WebGLRenderingContext as any)["SRGB_ALPHA_EXT"],
+        DEPTH_COMPONENT: WebGLRenderingContext.DEPTH_COMPONENT,
+        DEPTH_STENCIL: WebGLRenderingContext.DEPTH_STENCIL,
       },
     },
     type: {
@@ -45,7 +45,7 @@ export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBa
     const format = this.getAttribute("format");
     const type = this.getAttribute("type");
     if (name) {
-      RenderingBufferResourceRegistry.get(this.companion.get("gl")).setBackbuffer(this.getAttribute("name"), this.__texture);
+      RenderingBufferResourceRegistry.get(this.companion.get("gl")!).setBackbuffer(this.getAttribute("name"), this.__texture);
     }
     this.__texture.update(0, 1, 1, 0, format, type, null);
   }
