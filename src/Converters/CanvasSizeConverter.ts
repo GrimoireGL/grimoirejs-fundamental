@@ -36,3 +36,5 @@ export const CanvasSizeConverter = {
     };
   },
 };
+
+export default CanvasSizeConverter;

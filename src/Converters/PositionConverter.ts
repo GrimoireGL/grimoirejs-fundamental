@@ -6,7 +6,7 @@ import GomlNode from "grimoirejs/ref/Core/GomlNode";
  * Vector3コンバーターの受け取り売る値もしくは、任意のシーン中のノードへのクエリを受け取る。
  * クエリを受け取った場合は、そのクエリの示す対象の物体の座標が用いられる。
  */
-export default {
+export const PositionConverter = {
   name: "Position",
   lazy: true,
   verify(attr: Attribute) {
@@ -33,3 +33,5 @@ export default {
     }
   },
 };
+
+export default PositionConverter;
