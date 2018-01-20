@@ -10,7 +10,7 @@ export default class Texture2D extends Texture {
   public static maxTextureSize: number;
 
   public static generateDefaultTexture(gl: WebGLRenderingContext): void {
-    Texture2D.defaultTextures.set(gl, null); // for preventing called this method recursively by instanciating default texture
+    Texture2D.defaultTextures.set(gl, null!); // for preventing called this method recursively by instanciating default texture
     const texture = new Texture2D(gl);
     texture.update(0, 1, 1, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 0]));
     Texture2D.defaultTextures.set(gl, texture);

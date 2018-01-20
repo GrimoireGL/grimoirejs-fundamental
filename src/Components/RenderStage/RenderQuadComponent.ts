@@ -44,7 +44,7 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
   }
 
   public async $mount(): Promise<void> {
-    this._gl = this.companion.get("gl");
+    this._gl = this.companion.get("gl")!;
     this._materialContainer = this.node.getComponent(MaterialContainer);
     const geometryRegistry = this.companion.get("GeometryRegistry") as GeometryRegistryComponent;
     this._geom = await geometryRegistry.getGeometry("quad");
