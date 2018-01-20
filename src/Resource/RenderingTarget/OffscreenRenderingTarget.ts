@@ -22,7 +22,9 @@ export default class OffscreenRenderTarget implements IRenderingTarget {
         for (let i = 0; i < textures.length; i++) {
             this.fbo.update(this.textures[i], 0, i);
         }
-        this.fbo.update(depthBuffer);
+        if (depthBuffer) {
+            this.fbo.update(depthBuffer);
+        }
     }
 
     public beforeDraw(clearFlag: number, color: number[], depth: number): void {

@@ -1,4 +1,4 @@
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Geometry from "../Geometry/Geometry";
 import ManagedProgram from "../Resource/ManagedProgram";
 import GLStateConfigurator from "./GLStateConfigurator";

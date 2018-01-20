@@ -11,6 +11,9 @@ export default class QueryParser {
         if (regexResult) {
             return [regexResult[1], ...QueryParser.collectArgsWithDefault(regexResult[2].split(","), defaultArgs)];
         } else {
+            if (!defaultFunc) {
+                throw new Error(`'${query}' is not valid. You might need to specify operation as function`);
+            }
             return [defaultFunc, ...QueryParser.collectArgsWithDefault(query.split(","), defaultArgs)];
         }
     }

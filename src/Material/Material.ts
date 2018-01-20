@@ -35,7 +35,7 @@ export default class Material {
                 const pass = technique.passes[passIndex];
                 const destPass = destTechnique.passes[passIndex];
                 for (const argument in pass.arguments) {
-                    destPass[argument] = pass[argument];
+                    destPass.arguments[argument] = pass.arguments[argument];
                 }
             }
         }

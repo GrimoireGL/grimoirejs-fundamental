@@ -39,7 +39,7 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
     public static async addSORTMaterial(typeName: string, source: string): Promise<(factory: MaterialFactory) => Material> {
         return this.materialGeneratorResolver.register(typeName, (async () => {
             const techniques = await SortParser.parse(source);
-            return (factory) => {
+            return (factory: MaterialFactory) => {
                 return new Material(factory.gl, techniques);
             };
         })());
@@ -55,7 +55,7 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
         return this.materialGeneratorResolver.register(typeName, (async () => {
             const source = await TextFileResolver.resolve(url);
             const techniques = await SortParser.parse(source);
-            return (factory) => {
+            return (factory: MaterialFactory) => {
                 return new Material(factory.gl, techniques);
             };
         })());

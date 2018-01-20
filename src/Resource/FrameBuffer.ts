@@ -5,7 +5,7 @@ import TextureCube from "./TextureCube";
 
 export default class FrameBuffer extends GLResource<WebGLFramebuffer> {
   constructor(gl: WebGLRenderingContext) {
-    super(gl, gl.createFramebuffer());
+    super(gl, gl.createFramebuffer()!);
   }
 
   public update(boundTo: TextureCube, direction: number, level?: number, attachTo?: number);

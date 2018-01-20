@@ -56,6 +56,9 @@ UniformResolverRegistry.add("CAMERA_TRANSFORM", (valInfo: IVariableInfo) => (pro
 });
 
 UniformResolverRegistry.add("MESH_INDEX", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
+  if (!args.renderable) {
+    throw new Error("Renderable must be speicified to use MESH_INDEX");
+  }
   const index = args.renderable.index;
   proxy.uniformVector4(valInfo.name, MeshIndexCalculator.fromIndex(index));
 });

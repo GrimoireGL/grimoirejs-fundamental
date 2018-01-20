@@ -106,7 +106,8 @@ export default class NameResolver<T> {
         delete this._handlers[name];
     }
 
+    // TODO:(type) Should be migrated to core
     private _isPromise(generator: Promise<T> | T): generator is Promise<T> {
-        return (typeof (generator as ["then"] === "function");
+        return (typeof (generator as any)["then"] === "function");
     }
 }

@@ -57,19 +57,19 @@ export default class GLStateConfigurator extends GLRelatedRegistryBase {
     for (let i = 0; i < states.enable.length; i++) {
       this.applyGLFlagIfChanged(states.enable[i], true);
     }
-    for (let i = 0; i < states.disable.length; i++) {
-      this.applyGLFlagIfChanged(states.disable[i], false);
+    for (let i = 0; i < states.disable!.length; i++) {
+      this.applyGLFlagIfChanged(states.disable![i], false);
     }
-    this.applyIfChanged("blendColor", functions.blendColor[0], functions.blendColor[1], functions.blendColor[2], functions.blendColor[3]);
-    this.applyIfChanged("blendEquationSeparate", functions.blendEquationSeparate[0], functions.blendEquationSeparate[1]);
-    this.applyIfChanged("blendFuncSeparate", functions.blendFuncSeparate[0], functions.blendFuncSeparate[1], functions.blendFuncSeparate[2], functions.blendFuncSeparate[3]);
-    this.applyIfChanged("colorMask", functions.colorMask[0], functions.colorMask[1], functions.colorMask[2], functions.colorMask[3]);
-    this.applyIfChanged("cullFace", functions.cullFace[0]);
-    this.applyIfChanged("depthFunc", functions.depthFunc[0]);
-    this.applyIfChanged("depthMask", functions.depthMask[0]);
-    this.applyIfChanged("depthRange", functions.depthRange[0], functions.depthRange[1]);
-    this.applyIfChanged("frontFace", functions.frontFace[0]);
-    this.applyIfChanged("polygonOffset", functions.polygonOffset[0], functions.polygonOffset[1]);
+    this.applyIfChanged("blendColor", functions.blendColor![0], functions.blendColor![1], functions.blendColor![2], functions.blendColor![3]);
+    this.applyIfChanged("blendEquationSeparate", functions.blendEquationSeparate![0], functions.blendEquationSeparate![1]);
+    this.applyIfChanged("blendFuncSeparate", functions.blendFuncSeparate![0], functions.blendFuncSeparate![1], functions.blendFuncSeparate![2], functions.blendFuncSeparate![3]);
+    this.applyIfChanged("colorMask", functions.colorMask![0], functions.colorMask![1], functions.colorMask![2], functions.colorMask![3]);
+    this.applyIfChanged("cullFace", functions.cullFace![0]);
+    this.applyIfChanged("depthFunc", functions.depthFunc![0]);
+    this.applyIfChanged("depthMask", functions.depthMask![0]);
+    this.applyIfChanged("depthRange", functions.depthRange![0], functions.depthRange![1]);
+    this.applyIfChanged("frontFace", functions.frontFace![0]);
+    this.applyIfChanged("polygonOffset", functions.polygonOffset![0], functions.polygonOffset![1]);
   }
 
   /**
@@ -94,20 +94,20 @@ export default class GLStateConfigurator extends GLRelatedRegistryBase {
     super();
   }
 
-  public applyIfChanged(func: "clearColor", r: number, g: number, b: number, a: number);
-  public applyIfChanged(func: "clearDepth", d: number);
-  public applyIfChanged(func: "blendColor", r: number, g: number, b: number, a: number);
-  public applyIfChanged(func: "blendEquationSeparate", c1: number, a1: number);
-  public applyIfChanged(func: "blendFuncSeparate", c1: number, c2: number, a1: number, a2: number);
-  public applyIfChanged(func: "colorMask", r: boolean, g: boolean, b: boolean, a: boolean);
-  public applyIfChanged(func: "cullFace", cullDir: number);
-  public applyIfChanged(func: "depthFunc", funcParam: number);
-  public applyIfChanged(func: "depthMask", mask: boolean);
-  public applyIfChanged(func: "depthRange", min: number, max: number);
-  public applyIfChanged(func: "frontFace", front: number);
-  public applyIfChanged(func: "polygonOffset", offset: number, offset2: number);
-  public applyIfChanged(func: "scissor", x: number, y: number, w: number, h: number);
-  public applyIfChanged(func: string, ...args: any[]) {
+  public applyIfChanged(func: "clearColor", r: number, g: number, b: number, a: number): void;
+  public applyIfChanged(func: "clearDepth", d: number): void;
+  public applyIfChanged(func: "blendColor", r: number, g: number, b: number, a: number): void;
+  public applyIfChanged(func: "blendEquationSeparate", c1: number, a1: number): void;
+  public applyIfChanged(func: "blendFuncSeparate", c1: number, c2: number, a1: number, a2: number): void;
+  public applyIfChanged(func: "colorMask", r: boolean, g: boolean, b: boolean, a: boolean): void;
+  public applyIfChanged(func: "cullFace", cullDir: number): void;
+  public applyIfChanged(func: "depthFunc", funcParam: number): void;
+  public applyIfChanged(func: "depthMask", mask: boolean): void;
+  public applyIfChanged(func: "depthRange", min: number, max: number): void;
+  public applyIfChanged(func: "frontFace", front: number): void;
+  public applyIfChanged(func: "polygonOffset", offset: number, offset2: number): void;
+  public applyIfChanged(func: "scissor", x: number, y: number, w: number, h: number): void;
+  public applyIfChanged(func: string, ...args: any[]): void {
     if (this._argCache[func] === undefined) {
       this._argCache[func] = [];
     }
@@ -119,7 +119,7 @@ export default class GLStateConfigurator extends GLRelatedRegistryBase {
       }
     }
     if (changed) { // If there were no change between last change
-      this.gl[func].apply(this.gl, args);
+      (this.gl as any)[func].apply(this.gl, args);
       this._argCache[func] = args;
     }
   }

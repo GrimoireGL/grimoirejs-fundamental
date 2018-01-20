@@ -9,7 +9,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
 
     private static _resizerCanvas: HTMLCanvasElement = document.createElement("canvas");
 
-    private static _resizerContext = Texture._resizerCanvas.getContext("2d");
+    private static _resizerContext = Texture._resizerCanvas.getContext("2d")!;
 
     public get magFilter(): number {
         return this._magFilter;
@@ -79,7 +79,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
     private _wrapT: number = WebGLRenderingContext.REPEAT;
 
     constructor(gl: WebGLRenderingContext, public textureType: number) {
-        super(gl, gl.createTexture());
+        super(gl, gl.createTexture()!);
     }
 
     /**
@@ -150,7 +150,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
      */
     protected __ensurePOT(image: ImageSource): IResizeResult {
         if (image instanceof ImageData) {
-            const context = document.createElement("canvas").getContext("2d");
+            const context = document.createElement("canvas").getContext("2d")!;
             context.canvas.width = image.width;
             context.canvas.height = image.height;
             context.putImageData(image, 0, 0);

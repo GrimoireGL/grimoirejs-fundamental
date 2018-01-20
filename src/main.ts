@@ -98,7 +98,7 @@ export default () => {
         GrimoireInterface.registerConverter("TextureCube", TextureCubeConverter);
         GrimoireInterface.registerConverter("Viewport", ViewportConverter);
         GrimoireInterface.registerConverter("Node", NodeConverter);
-        GrimoireInterface.registerConverter(PositionConverter);
+        GrimoireInterface.registerConverter("Position", PositionConverter);
         GrimoireInterface.registerConverter("RenderingTarget", RenderingTargetConverter);
 
         GrimoireInterface.registerNode("goml", [CanvasInitializerComponent, LoopManager, AssetLoadingManagerComponent, GeometryRegistryComponent, RendererManager, Fullscreen]);

@@ -19,7 +19,7 @@ export default class Program extends GLResource<WebGLProgram> {
   private _attributeLocations: { [variableName: string]: number } = {};
 
   constructor(gl: WebGLRenderingContext) {
-    super(gl, gl.createProgram());
+    super(gl, gl.createProgram()!);
     this.uniforms = new UniformProxy(this);
   }
 

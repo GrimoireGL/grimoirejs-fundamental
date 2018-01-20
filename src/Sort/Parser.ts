@@ -16,7 +16,7 @@ class SortParser {
       });
     } else {
       return SortParser._parse(source).then(v => {
-        SortParser._parsedCache[source] = v;
+        SortParser._parsedCache[sourceHash] = v;
         return v;
       });
     }
