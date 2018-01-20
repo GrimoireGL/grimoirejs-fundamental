@@ -41,14 +41,7 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
     public out: IRenderingTarget;
 
     protected $awake(): void {
-        this.getAttributeRaw("clearColor").bindTo("clearColor");
-        this.getAttributeRaw("clearColorEnabled").bindTo("clearColorEnabled");
-        this.getAttributeRaw("clearDepthEnabled").bindTo("clearDepthEnabled");
-        this.getAttributeRaw("clearDepth").bindTo("clearDepth");
-        this.getAttributeRaw("out").watch((promise: Promise<IRenderingTarget>) => {
-            this._out = promise;
-            promise.then(r => this.out = r);
-        }, true);
+        this.__bindAttributes();
     }
 
     /**

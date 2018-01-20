@@ -52,7 +52,7 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
   }
 
   protected $mount(): void {
-    this._gl = this.companion.get("gl");
+    this._gl = this.companion.get("gl")!;
   }
 
   protected $renderRenderStage(args: IRenderRendererMessage): void {

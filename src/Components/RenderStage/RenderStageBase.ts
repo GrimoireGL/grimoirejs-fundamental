@@ -54,7 +54,7 @@ export default class RenderStageBase extends Component {
     }
 
     protected __beforeRender(): boolean {
-        if (GrimoireJS.debug && !!window["spector"]) {
+        if (GrimoireJS.debug && !!(window as any)["spector"]) {
             let metas = "";
             for (const key in this.metadata) {
                 if (this.metadata[key] === undefined) {
@@ -62,7 +62,7 @@ export default class RenderStageBase extends Component {
                 }
                 metas += `${key}=${this.metadata[key]}|`;
             }
-            window["spector"].setMarker(`Renderer|${metas}`);
+            (window as any)["spector"].setMarker(`Renderer|${metas}`);
         }
         return true;
     }
