@@ -9,7 +9,7 @@ export default class HierachicalDescription {
     private _parent: Nullable<HierachicalDescription> = null;
 
     constructor(
-        public resolver?: (node: GomlNode) => HierachicalDescription
+        public resolver?: (node: GomlNode) => Nullable<HierachicalDescription>
     ) { }
 
     public link(node: GomlNode): void {

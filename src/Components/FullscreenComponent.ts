@@ -4,8 +4,6 @@ import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
 
-export { IConverterDeclaration, IStandardConverterDeclaration };
-
 /**
  * フルスクリーン状態を管理するコンポーネント
  * Grimoire.jsによって管理されているキャンバス(正確にはその親のコンテナ)のフルスクリーン状態等を管理します。

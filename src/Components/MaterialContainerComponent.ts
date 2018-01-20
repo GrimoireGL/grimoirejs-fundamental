@@ -4,6 +4,9 @@ import Material from "../Material/Material";
 import DrawPriorty from "../SceneRenderer/DrawPriorty";
 import MaterialComponent from "./MaterialComponent";
 import MaterialContainerBase from "./MaterialContainerBase";
+import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 
 /**
  * マテリアルとマテリアルへの属性を管理するためのコンポーネント
@@ -12,7 +15,7 @@ import MaterialContainerBase from "./MaterialContainerBase";
  */
 export default class MaterialContainer extends MaterialContainerBase {
   public static componentName = "MaterialContainer";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
     /**
      * 対象のマテリアル
      */
@@ -27,11 +30,11 @@ export default class MaterialContainer extends MaterialContainerBase {
      * デフォルトの状態では、マテリアルから読み込んだ描画順序設定を用います
      */
     drawOrder: {
-      converter: "String",
+      converter: StringConverter,
       default: "Auto",
     },
     transparent: {
-      converter: "Boolean",
+      converter: BooleanConverter,
       default: true,
     },
   };

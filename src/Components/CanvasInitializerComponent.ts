@@ -11,7 +11,6 @@ import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs
 import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import { CanvasSizeConverter } from "../Converters/CanvasSizeConverter";
 const ns = Namespace.define("grimoirejs-fundamental");
-export { IConverterDeclaration, IStandardConverterDeclaration };
 
 /**
  * キャンバスの初期化及び設定を司るコンポーネント

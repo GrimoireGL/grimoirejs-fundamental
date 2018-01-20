@@ -1,6 +1,9 @@
 import Component from "grimoirejs/ref/Core/Component";
 import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Timer from "../Util/Timer";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
+import { NumberConverter } from "grimoirejs/ref/Converter/NumberConverter";
+import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
 interface LoopAction {
   action(timer: Timer): void;
   priorty: number;
@@ -11,14 +14,14 @@ interface LoopAction {
  */
 export default class LoopManager extends Component {
   public static componentName = "LoopManager";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
     loopEnabled: {
       default: false,
-      converter: "Boolean",
+      converter: BooleanConverter,
     },
     fpsRestriction: {
       default: 60,
-      converter: "Number",
+      converter: NumberConverter,
     },
   };
 
@@ -42,13 +45,20 @@ export default class LoopManager extends Component {
   }
 
   protected $mount(): void {
-    this.getAttributeRaw("loopEnabled").watch((attr) => {
+    this.getAttributeRaw(LoopManager.attributes.loopEnabled)!.watch(attr => {
+      if (attr == null) {
+        throw new Error("LoopManager.loopEnabled must not be null.")
+      }
       if (attr) {
         this._begin();
       }
     });
+
     this._timer = new Timer();
-    this.getAttributeRaw("fpsRestriction").watch((attr) => {
+    this.getAttributeRaw(LoopManager.attributes.fpsRestriction)!.watch(attr => {
+      if (attr == null) {
+        throw new Error("LoopManager.fpsRestriction must not be null.")
+      }
       this._timer.fpsRestriction = attr;
     }, true);
     this._timer.internalUpdate();

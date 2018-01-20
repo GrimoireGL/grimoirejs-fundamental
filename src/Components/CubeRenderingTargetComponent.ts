@@ -7,6 +7,7 @@ import RenderingTargetComponentBase from "./RenderingTargetComponentBase";
 import RenderBufferUpdator from "./Texture/RenderBufferUpdator";
 import TextureContainer from "./Texture/TextureContainer";
 import TextureCubeContainer from "./Texture/TextureCubeContainer";
+
 /**
  * Register specified buffer to rendering target.
  * If there were no child buffer node, this component will instanciate default buffers.

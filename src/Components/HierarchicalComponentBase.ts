@@ -4,7 +4,7 @@ import HierachicalDescription from "../SceneRenderer/HierachicalDescription";
 export default class HierarchycalComponentBase extends Component {
     public static componentName = "HierarchycalComponentBase";
     public hierarchicalDescription: HierachicalDescription
-        = new HierachicalDescription((node) => {
+        = new HierachicalDescription(node => {
             if (!node.parent) {
                 return null;
             }

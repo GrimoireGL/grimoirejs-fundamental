@@ -4,9 +4,7 @@ import AssetLoader from "../Asset/AssetLoader";
 import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import BooleanConverter from "grimoirejs/ref/Converter/BooleanConverter";
 import NumberConverter from "grimoirejs/ref/Converter/NumberConverter";
-import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
-
-export { IConverterDeclaration, IStandardConverterDeclaration };
+import { IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
 
 /**
  * アセットの読み込みを司るコンポーネント。ローダーの表示などを司る。
