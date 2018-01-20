@@ -3,6 +3,7 @@ import DefaultLoaderChunk from "raw-loader!../Asset/defaultLoader.html";
 import AssetLoader from "../Asset/AssetLoader";
 import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import BooleanConverter from "grimoirejs/ref/Converter/BooleanConverter";
+import NumberConverter from "grimoirejs/ref/Converter/NumberConverter";
 import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
 
 export { IConverterDeclaration, IStandardConverterDeclaration };
@@ -20,14 +21,14 @@ export default class AssetLoadingManagerComponent extends Component {
      */
     loadingProgress: {
       default: 0,
-      converter: "Number",
+      converter: NumberConverter,
     },
     /**
      * リソースの読み込み完了後に、自動的にレンダリングループを開始するかどうか
      */
     autoStart: {
       default: true,
-      converter: "Boolean",
+      converter: BooleanConverter,
     },
     /**
      * リソースのロード時にローディング画面を表示するかどうか
