@@ -1,9 +1,9 @@
 import Namespace from "grimoirejs/ref/Core/Namespace";
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Timer from "../Util/Timer";
 import AssetLoadingManager from "./AssetLoadingManagerComponent";
 import LoopManager from "./LoopManagerComponent";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 type TimerCoroutine = GeneratorFunction;
 type CoroutineTuple = { coroutine: Iterator<number>; next: number; container: Component; tag?: string | symbol };
 
@@ -93,7 +93,11 @@ export default class BasicComponent extends Component {
    */
   public get loopManager(): LoopManager {
     if (!this._loopManagerBackingStore) {
-      this._loopManagerBackingStore = this.node.getComponentInAncestor(LoopManager);
+      const lm = this.node.getComponentInAncestor(LoopManager);
+      if (!lm) {
+        throw new Error("LoopManager is not found.");
+      }
+      this._loopManagerBackingStore = lm;
     }
     return this._loopManagerBackingStore;
   }
@@ -103,7 +107,11 @@ export default class BasicComponent extends Component {
    */
   public get assetLoadingManager(): AssetLoadingManager {
     if (!this._assetLoadingManagerBackingStore) {
-      this._assetLoadingManagerBackingStore = this.node.getComponentInAncestor(AssetLoadingManager);
+      const alm = this.node.getComponentInAncestor(AssetLoadingManager);
+      if (!alm) {
+        throw new Error("AssetLoadingManager is not found.")
+      }
+      this._assetLoadingManagerBackingStore = alm;
     }
     return this._assetLoadingManagerBackingStore;
   }

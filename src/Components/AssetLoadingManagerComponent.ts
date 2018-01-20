@@ -1,14 +1,19 @@
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import DefaultLoaderChunk from "raw-loader!../Asset/defaultLoader.html";
 import AssetLoader from "../Asset/AssetLoader";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import BooleanConverter from "grimoirejs/ref/Converter/BooleanConverter";
+import NumberConverter from "grimoirejs/ref/Converter/NumberConverter";
+import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
+
+export { IConverterDeclaration, IStandardConverterDeclaration };
 
 /**
  * アセットの読み込みを司るコンポーネント。ローダーの表示などを司る。
  */
 export default class AssetLoadingManagerComponent extends Component {
   public static componentName = "AssetLoadingManager";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
     /**
      * ローディング状況(読み取り専用)
      *
@@ -16,21 +21,21 @@ export default class AssetLoadingManagerComponent extends Component {
      */
     loadingProgress: {
       default: 0,
-      converter: "Number",
+      converter: NumberConverter,
     },
     /**
      * リソースの読み込み完了後に、自動的にレンダリングループを開始するかどうか
      */
     autoStart: {
       default: true,
-      converter: "Boolean",
+      converter: BooleanConverter,
     },
     /**
      * リソースのロード時にローディング画面を表示するかどうか
      */
     enableLoader: {
       default: true,
-      converter: "Boolean",
+      converter: BooleanConverter,
     },
   };
 
@@ -51,7 +56,7 @@ export default class AssetLoadingManagerComponent extends Component {
     this.companion.set(this.name.ns.for("loader"), this.loader);
     this.loader.register(new Promise((resolve) => { this._documentResolver = resolve; }), this);
     const canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
-    if (!this.getAttribute("enableLoader")) {
+    if (!this.getAttribute(AssetLoadingManagerComponent.attributes.enableLoader)) {
       return;
     }
     const loaderContainer = document.createElement("div");
