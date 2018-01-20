@@ -41,7 +41,7 @@ export default class Texture2D extends Texture {
       const c = document.createElement("canvas");
       c.width = this._width;
       c.height = this.height;
-      this._drawerContext = c.getContext("2d");
+      this._drawerContext = c.getContext("2d")!;
       this.updateDrawerCanvas();
     }
     return this._drawerContext;

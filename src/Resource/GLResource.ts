@@ -50,7 +50,7 @@ abstract class GLResource<T> {
     }
     this.index = GLResource._maxIndex++;
     if (GrimoireJS.debug) {
-      resourceReference["__SPECTOR_Metadata"] = this._metadata;
+      (resourceReference as any)["__SPECTOR_Metadata"] = this._metadata;
       this.setMetadata("GL Resource Index", this.index);
     }
     this.valid = false;

@@ -3,7 +3,7 @@ interface IMacro {
   macroName: string;
   type: string;
   target: string;
-  value: number | boolean;
+  value: number | boolean | string;
 }
 
 export default IMacro;

@@ -1,4 +1,5 @@
 import GLResource from "./GLResource";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
 
 export default class Buffer extends GLResource<WebGLBuffer> {
   /**
@@ -6,7 +7,7 @@ export default class Buffer extends GLResource<WebGLBuffer> {
    */
   public keepSource = false;
 
-  public get bufferSource(): BufferSource {
+  public get bufferSource(): Nullable<BufferSource> {
     if (this.keepSource) {
       return this._bufferSource;
     } else {
@@ -14,10 +15,10 @@ export default class Buffer extends GLResource<WebGLBuffer> {
     }
   }
 
-  private _bufferSource: BufferSource = null;
+  private _bufferSource: Nullable<BufferSource> = null;
 
   constructor(gl: WebGLRenderingContext, public readonly target: number = WebGLRenderingContext.ARRAY_BUFFER, public usage: number = WebGLRenderingContext.STATIC_DRAW) {
-    super(gl, gl.createBuffer());
+    super(gl, gl.createBuffer()!);
   }
 
   public update(length: number): void;
