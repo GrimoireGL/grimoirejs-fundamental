@@ -8,11 +8,16 @@ import PassProgram from "../PassProgram";
 import IVariableInfo from "../Schema/IVariableInfo";
 import Technique from "../Technique";
 import TextureReference from "../TextureReference";
-import UniformResolverRegistry from "../UniformResolverRegistry";
+import UniformResolverRegistry, { IUniformRegistererResult } from "../UniformResolverRegistry";
 const gl = WebGLRenderingContext;
+interface UserValueRegisterer {
+  (valInfo: IVariableInfo, pass: Pass): IUniformRegistererResult;
+}
+
+type TypeBasedUserValueRegisterer = { [key: string]: UserValueRegisterer };
 const _userValueRegisterers = {
-  array: {},
-  single: {},
+  array: {} as TypeBasedUserValueRegisterer,
+  single: {} as TypeBasedUserValueRegisterer,
 };
 
 UniformResolverRegistry.add("USER_VALUE", (valInfo: IVariableInfo, pass: Pass, technique: Technique, material: Material) => {
@@ -31,7 +36,7 @@ UniformResolverRegistry.add("USER_VALUE", (valInfo: IVariableInfo, pass: Pass, t
   return register(valInfo, pass);
 });
 
-function basicRegister(type: number, isArray: boolean, converter: string, defaultValue: any, register: (proxy: UniformProxy, name: string, value, matArg: IMaterialArgument) => void, update?: (valInfo: IVariableInfo, passProgram: PassProgram, n: any, o: any) => void) {
+function basicRegister(type: number, isArray: boolean, converter: string, defaultValue: any, register: (proxy: UniformProxy, name: string, value: any, matArg: IMaterialArgument) => void, update?: (valInfo: IVariableInfo, passProgram: PassProgram, n: any, o: any) => void) {
   let registerTarget;
   if (isArray) {
     registerTarget = _userValueRegisterers.array;
@@ -43,7 +48,7 @@ function basicRegister(type: number, isArray: boolean, converter: string, defaul
       converter,
       default: valInfo.attributes["default"] ? valInfo.attributes["default"] : defaultValue,
     });
-    const updator = update ? (p, n, o) => {
+    const updator = update ? (p: PassProgram, n: any, o: any) => {
       update(valInfo, p, n, o);
     } : undefined;
     return {
@@ -64,7 +69,7 @@ basicRegister(gl.INT_VEC4, false, "Vector4", [0, 0, 0, 0], (proxy, name, value) 
 basicRegister(gl.FLOAT_VEC2, false, "Vector2", [0, 0], (proxy, name, value) => proxy.uniformVector2(name, value));
 basicRegister(gl.FLOAT_MAT4, true, "Object", [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], (proxy, name, value) => proxy.uniformMatrixArray(name, value));
 basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: TextureReference, args) => {
-  let texture: Texture2D;
+  let texture: Texture2D | null = null;
   if (value) {
     const fetched = value.get();
     if (fetched.valid) {
@@ -72,7 +77,7 @@ basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: Textur
     }
   }
   if (!texture) {
-    texture = Texture2D.defaultTextures.get(proxy.program.gl);
+    texture = Texture2D.defaultTextures.get(proxy.program.gl)!;
   }
   proxy.uniformTexture2D(name, texture);
 }, (v, p, n, o) => {

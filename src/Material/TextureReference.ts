@@ -15,7 +15,7 @@ export default class TextureReference {
     if (!this.isFunctionalProxy) {
       return this.rawResource as Texture2D;
     } else {
-      return (this.rawResource as ((val: { [key: string]: Texture2D }) => Texture2D))(buffers);
+      return (this.rawResource as ((val: { [key: string]: Texture2D }) => Texture2D))(buffers!);
     }
   }
 }
