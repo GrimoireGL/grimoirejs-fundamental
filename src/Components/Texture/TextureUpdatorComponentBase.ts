@@ -1,4 +1,4 @@
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Texture from "../../Resource/Texture";
 import Texture2D from "../../Resource/Texture2D";
 import ResizableResourceUpdator from "./ResizableResourceUpdator";

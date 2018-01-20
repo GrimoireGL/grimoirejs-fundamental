@@ -1,6 +1,6 @@
 import Color4 from "grimoirejs-math/ref/Color4";
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import MaterialFactory from "../Material/MaterialFactory";
 import Timer from "../Util/Timer";
 import LoopManager from "./LoopManagerComponent";

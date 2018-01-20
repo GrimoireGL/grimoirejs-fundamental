@@ -1,5 +1,5 @@
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import OffscreenRenderingTarget from "../Resource/RenderingTarget/OffscreenRenderingTarget";
 import RenderingTrargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
 import RenderingTargetComponentBase from "./RenderingTargetComponentBase";

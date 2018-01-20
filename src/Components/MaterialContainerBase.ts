@@ -1,5 +1,5 @@
 import Namespace from "grimoirejs/ref/Core/Namespace";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Material from "../Material/Material";
 import BasicComponent from "./BasicComponent";
 

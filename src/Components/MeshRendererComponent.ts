@@ -2,7 +2,7 @@ import grimoirejs from "grimoirejs";
 import GLM from "grimoirejs-math/ref/GLM";
 import Component from "grimoirejs/ref/Core/Component";
 import GomlNode from "grimoirejs/ref/Core/GomlNode";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Geometry from "../Geometry/Geometry";
 import IMaterialArgument from "../Material/IMaterialArgument";
 import IRenderable from "../SceneRenderer/IRenderable";

@@ -1,7 +1,7 @@
 import Component from "grimoirejs/ref/Core/Component";
 import Scene from "./SceneComponent";
 import TextureCube from "../Resource/TextureCube";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 
 export default class SkyboxManager extends Component {
     public static componentName = "SkyboxManager";

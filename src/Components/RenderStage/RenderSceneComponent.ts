@@ -1,5 +1,5 @@
 import GrimoireJS from "grimoirejs";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import CameraComponent from "../CameraComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";

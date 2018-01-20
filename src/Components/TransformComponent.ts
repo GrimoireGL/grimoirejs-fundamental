@@ -4,7 +4,7 @@ import Quaternion from "grimoirejs-math/ref/Quaternion";
 import Vector3 from "grimoirejs-math/ref/Vector3";
 import Vector4 from "grimoirejs-math/ref/Vector4";
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import CameraComponent from "./CameraComponent";
 import HierarchycalComponentBase from "./HierarchicalComponentBase";
 const { mat4, vec3, vec4 } = GLM;
