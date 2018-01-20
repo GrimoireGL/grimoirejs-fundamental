@@ -1,6 +1,6 @@
 import GrimoireJS from "grimoirejs";
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import IResizeViewportMessage from "../../Messages/IResizeViewportMessage";
 import ViewportMouseEvent from "../../Objects/ViewportMouseEvent";
@@ -17,6 +17,7 @@ import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
 import GLStateConfigurator from "../../Material/GLStateConfigurator";
 import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
 import RenderingTarget from "../RenderingTargetComponent";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
 export default class RenderHitareaComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderHitareaComponent";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
@@ -40,7 +41,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
 
   private _readCache: Uint8Array = new Uint8Array(4);
 
-  private _lastRenderable: IRenderable;
+  private _lastRenderable: Nullable<IRenderable>;
 
   private _mouseMoved: boolean;
 
@@ -50,12 +51,12 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     if (!this._sceneRenderer) {
       throw new Error("The node attaching RenderHitArea should contain RenderScene.");
     }
-    this._gl = this.companion.get("gl");
-    this._canvas = this.companion.get("canvasElement");
+    this._gl = this.companion.get("gl")!;
+    this._canvas = this.companion.get("canvasElement")!;
     this.hitareaBuffer = await this.getAttribute<Promise<IRenderingTarget>>("hitareaBuffer");
     if (!this.hitareaBuffer) {
       // Generate default hitarea buffer
-      const node = this.node.parent.addChildByName("rendering-target", { name: `hitarea-buffer-${this._sceneRenderer.id}` });
+      const node = this.node.parent!.addChildByName("rendering-target", { name: `hitarea-buffer-${this._sceneRenderer.id}` });
       this.hitareaBuffer = node.getComponent(RenderingTarget).renderingTarget;
     }
   }

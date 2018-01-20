@@ -74,7 +74,7 @@ export default class RenderCubemapComponent extends RenderStageBase {
 
     protected $mount(): void {
         this.__bindAttributes();
-        this._gl = this.companion.get("gl");
+        this._gl = this.companion.get("gl")!;
     }
 
     protected $renderRenderStage(args: IRenderRendererMessage): void {
