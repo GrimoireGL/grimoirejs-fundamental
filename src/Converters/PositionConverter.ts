@@ -12,11 +12,11 @@ export default {
   verify(attr: Attribute) {
     return true;
   },
-  convert(val: any, attr: Attribute) {
-    if (attr.convertContext._lastVal === val) {
-      return attr.convertContext._node.getAttribute("position");
+  convert(val: any, attr: Attribute, converterContext: any) {
+    if (converterContext._lastVal === val) {
+      return converterContext._node.getAttribute("position");
     } else {
-      attr.convertContext._lastVal = null;
+      converterContext._lastVal = null;
       try { // TODO: remove try cache after fixed grimoirejs-math.
         const vec = StandardAttribute.convert("Vector3", attr as LazyAttribute, val);
         if (vec) {
@@ -25,10 +25,10 @@ export default {
       } catch (e) {
 
       }
-      attr.convertContext._node = StandardAttribute.convert("Node", attr as LazyAttribute, val) as GomlNode;
-      if (attr.convertContext._node) {
-        attr.convertContext._lastVal = val;
-        return attr.convertContext._node.getAttribute("position"); // TODO should not use getAttribute on node
+      converterContext._node = StandardAttribute.convert("Node", attr as LazyAttribute, val) as GomlNode;
+      if (converterContext._node) {
+        converterContext._lastVal = val;
+        return converterContext._node.getAttribute("position"); // TODO should not use getAttribute on node
       }
     }
   },
