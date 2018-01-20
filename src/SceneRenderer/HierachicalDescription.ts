@@ -1,15 +1,16 @@
 import GomlNode from "grimoirejs/ref/Core/GomlNode";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
 /**
  * Resolve description of specified parameter considering hierarchy
  */
 export default class HierachicalDescription {
     public readonly properties: { [key: string]: any } = {};
 
-    private _parent: HierachicalDescription = null;
+    private _parent: Nullable<HierachicalDescription> = null;
 
-    constructor(public resolver?: (node: GomlNode) => HierachicalDescription) {
-
-    }
+    constructor(
+        public resolver?: (node: GomlNode) => HierachicalDescription
+    ) { }
 
     public link(node: GomlNode): void {
         if (this.resolver) {

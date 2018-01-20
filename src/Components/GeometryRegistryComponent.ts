@@ -24,7 +24,7 @@ export default class GeometryRegistryComponent extends Component {
 
   protected $awake(): void {
     this.companion.set(this.name, this);
-    const factory = GeometryFactory.get(this.companion.get("gl"));
+    const factory = GeometryFactory.get(this.companion.get("gl")!);
     for (const geometry of this.getAttribute("defaultGeometry") as string[]) {
       this.addGeometry(geometry, factory.instanciateAsDefault(geometry));
     }
