@@ -2,7 +2,7 @@ import Matrix from "grimoirejs-math/ref/Matrix";
 import Quaternion from "grimoirejs-math/ref/Quaternion";
 import Vector3 from "grimoirejs-math/ref/Vector3";
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Transform from "./TransformComponent";
 
 export default class MouseCameraControlComponent extends Component {

@@ -1,4 +1,4 @@
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import RenderingBufferResourceRegistry from "../../Resource/RenderingTarget/RenderingBufferResourceRegistry";
 import TextureCube from "../../Resource/TextureCube";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";

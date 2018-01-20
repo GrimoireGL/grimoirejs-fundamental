@@ -1,5 +1,5 @@
 import Color4 from "grimoirejs-math/ref/Color4";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import FrameBuffer from "../../Resource/FrameBuffer";
 import IElementOfCubemapDirection from "../../Resource/IElementOfCubemapDirection";
@@ -74,7 +74,7 @@ export default class RenderCubemapComponent extends RenderStageBase {
 
     protected $mount(): void {
         this.__bindAttributes();
-        this._gl = this.companion.get("gl");
+        this._gl = this.companion.get("gl")!;
     }
 
     protected $renderRenderStage(args: IRenderRendererMessage): void {

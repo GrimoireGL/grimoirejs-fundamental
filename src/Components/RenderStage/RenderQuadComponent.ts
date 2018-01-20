@@ -1,5 +1,5 @@
 import GrimoireJS from "grimoirejs";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Geometry from "../../Geometry/Geometry";
 import IMaterialArgument from "../../Material/IMaterialArgument";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";

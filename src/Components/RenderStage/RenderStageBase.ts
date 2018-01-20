@@ -1,6 +1,6 @@
 import GrimoireJS from "grimoirejs";
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import ViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
 import ViewportMouseEvent from "../../Objects/ViewportMouseEvent";
 export default class RenderStageBase extends Component {

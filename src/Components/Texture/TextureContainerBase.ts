@@ -1,5 +1,5 @@
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Texture from "../../Resource/Texture";
 export default class TextureContainerBase<T extends Texture> extends Component {
     public static componentName = "TextureContainerBase";

@@ -1,6 +1,6 @@
 import GrimoireJS from "grimoirejs";
 import Color4 from "grimoirejs-math/ref/Color4";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
 import RenderStageBase from "./RenderStageBase";
 export default class SingleBufferRenderStageBase extends RenderStageBase {
