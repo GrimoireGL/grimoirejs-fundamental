@@ -1,11 +1,14 @@
 import Component from "grimoirejs/ref/Core/Component";
 import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Texture from "../../Resource/Texture";
+import { EnumConverter } from "grimoirejs/ref/Converter/EnumConverter";
+import { StandardAttribute } from "grimoirejs/ref/Core/Attribute";
+
 export default class TextureContainerBase<T extends Texture> extends Component {
     public static componentName = "TextureContainerBase";
     public static attributes = {
         minFilter: {
-            converter: "Enum",
+            converter: EnumConverter,
             default: "LINEAR",
             table: {
                 LINEAR: WebGLRenderingContext.LINEAR,
@@ -17,7 +20,7 @@ export default class TextureContainerBase<T extends Texture> extends Component {
             },
         },
         magFilter: {
-            converter: "Enum",
+            converter: EnumConverter,
             default: "LINEAR",
             table: {
                 LINEAR: WebGLRenderingContext.LINEAR,
@@ -25,7 +28,7 @@ export default class TextureContainerBase<T extends Texture> extends Component {
             },
         },
         wrapS: {
-            converter: "Enum",
+            converter: EnumConverter,
             default: "REPEAT",
             table: {
                 REPEAT: WebGLRenderingContext.REPEAT,
@@ -34,7 +37,7 @@ export default class TextureContainerBase<T extends Texture> extends Component {
             },
         },
         wrapT: {
-            converter: "Enum",
+            converter: EnumConverter,
             default: "REPEAT",
             table: {
                 REPEAT: WebGLRenderingContext.REPEAT,
@@ -74,9 +77,9 @@ export default class TextureContainerBase<T extends Texture> extends Component {
     }
 
     protected __applyParameters(): void {
-        this.texture.magFilter = this.getAttribute("magFilter");
-        this.texture.minFilter = this.getAttribute("minFilter");
-        this.texture.wrapT = this.getAttribute("wrapT");
-        this.texture.wrapS = this.getAttribute("wrapS");
+        this.texture.magFilter = this.getAttribute(TextureContainerBase.attributes.magFilter);
+        this.texture.minFilter = this.getAttribute(TextureContainerBase.attributes.minFilter);
+        this.texture.wrapT = this.getAttribute(TextureContainerBase.attributes.wrapT);
+        this.texture.wrapS = this.getAttribute(TextureContainerBase.attributes.wrapS);
     }
 }

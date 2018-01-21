@@ -2,12 +2,15 @@ import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclar
 import ImageResolver from "../../Asset/ImageResolver";
 import Texture2D from "../../Resource/Texture2D";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
 
 export default class ImageTextureUpdator extends TextureUpdatorComponentBase<Texture2D> {
   public static componentName = "ImageTextureUpdator";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
     src: {
-      converter: "String",
+      converter: StringConverter,
       default: null,
     },
   };
@@ -23,7 +26,7 @@ export default class ImageTextureUpdator extends TextureUpdatorComponentBase<Tex
   protected $awake() {
     super.$awake();
     this.__bindAttributes();
-    this.getAttributeRaw("src").watch((v: string) => {
+    this.getAttributeRaw(ImageTextureUpdator.attributes.src)!.watch((v: Nullable<string>) => {
       if (v !== null) {
         this._loadTask(v);
       }
