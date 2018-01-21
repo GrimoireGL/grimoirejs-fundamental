@@ -11,7 +11,11 @@ export default class SkyboxManager extends Component {
     private _scene: Scene;
 
     public $mount(): void {
-        this._scene = this.node.getComponentInAncestor(Scene);
+        const scene = this.node.getComponentInAncestor(Scene);
+        if (!scene) {
+            throw new Error(`Skybox manager must be children of a scene`);
+        }
+        this._scene = scene;
         this.node.on("material-parameter-updated", () => {
             // TODO: scene property should be updated reactively
             const cube = this.node.getAttribute("src") as TextureCube;

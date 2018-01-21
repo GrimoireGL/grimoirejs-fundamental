@@ -9,7 +9,7 @@ import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import { MaterialConverter } from "../Converters/MaterialConverter";
 import { LazyAttribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute";
-
+import Identity from "grimoirejs/ref/Core/Identity";
 /**
  * マテリアルとマテリアルへの属性を管理するためのコンポーネント
  * このコンポーネントは将来的に`MeshRenderer`と統合されます。

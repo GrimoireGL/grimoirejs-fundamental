@@ -15,7 +15,7 @@ const { mat4, vec3, vec4 } = GLM;
  */
 export default class Transform extends HierarchycalComponentBase {
   public static componentName = "Transform";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
     /**
      * この物体の座標
      */
@@ -74,7 +74,7 @@ export default class Transform extends HierarchycalComponentBase {
    * When this object is root object of contained scene, this value should be null.
    * @type {TransformComponent}
    */
-  private _parentTransform: Transform;
+  private _parentTransform: Transform | null;
 
   /**
    * Calculation cache to
@@ -87,21 +87,21 @@ export default class Transform extends HierarchycalComponentBase {
   /**
    * Cache of forward direction of this object
    */
-  private _forward: Vector3 = new Vector3([0, 0, -1, 0]);
+  private _forward: Vector4 = new Vector4(0, 0, -1, 0);
 
   /**
    * Cache of up direction of this object.
    */
-  private _up: Vector3 = new Vector3([0, 1, 0, 0]);
+  private _up: Vector4 = new Vector4(0, 1, 0, 0);
 
   /**
    * Cache of right direction of this object.
    */
-  private _right: Vector3 = new Vector3([1, 0, 0, 0]);
+  private _right: Vector4 = new Vector4(1, 0, 0, 0);
 
-  private _globalPosition: Vector3 = new Vector3([0, 0, 0]);
+  private _globalPosition: Vector3 = new Vector3(0, 0, 0);
 
-  private _globalScale: Vector3 = new Vector3([1, 1, 1]);
+  private _globalScale: Vector3 = new Vector3(1, 1, 1);
 
   private _matrixTransformMode = false;
 
@@ -122,7 +122,7 @@ export default class Transform extends HierarchycalComponentBase {
 
   public get globalTransformInverse(): Matrix {
     if (!this._globalTransformInverse) {
-      this._globalTransformInverse = Matrix.inverse(this.globalTransform);
+      this._globalTransformInverse = Matrix.inverse(this.globalTransform)!;
     } else {
       this._updateTransform();
     }
@@ -141,17 +141,17 @@ export default class Transform extends HierarchycalComponentBase {
 
   public get forward(): Vector3 {
     this._updateTransform();
-    return this._forward;
+    return new Vector3(this._forward.X, this._forward.Y, this._forward.Z);
   }
 
   public get up(): Vector3 {
     this._updateTransform();
-    return this._up;
+    return new Vector3(this._up.X, this._up.Y, this._up.Z);
   }
 
   public get right(): Vector3 {
     this._updateTransform();
-    return this._right;
+    return new Vector3(this._forward.X, this._forward.Y, this._forward.Z);
   }
 
   public calcPVM(camera: CameraComponent): Matrix {
@@ -166,13 +166,13 @@ export default class Transform extends HierarchycalComponentBase {
 
   protected $awake(): void {
     // register observers
-    this.getAttributeRaw("position").watch((v) => {
+    this.getAttributeRaw(Transform.attributes.position)!.watch((v) => {
       this.notifyUpdateTransform();
     });
-    this.getAttributeRaw("rotation").watch((v) => {
+    this.getAttributeRaw(Transform.attributes.rotation)!.watch((v) => {
       this.notifyUpdateTransform();
     });
-    this.getAttributeRaw("scale").watch((v) => {
+    this.getAttributeRaw(Transform.attributes.scale)!.watch((v) => {
       this.notifyUpdateTransform();
     });
     // assign attribute values to field
@@ -181,7 +181,7 @@ export default class Transform extends HierarchycalComponentBase {
 
   protected $mount(): void {
     super.$mount();
-    this._parentTransform = this.node.parent.getComponent(Transform);
+    this._parentTransform = this.node.parent!.getComponent(Transform);
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
     }

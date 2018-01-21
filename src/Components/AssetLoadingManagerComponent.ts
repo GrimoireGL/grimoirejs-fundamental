@@ -5,7 +5,7 @@ import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclar
 import BooleanConverter from "grimoirejs/ref/Converter/BooleanConverter";
 import NumberConverter from "grimoirejs/ref/Converter/NumberConverter";
 import { IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
-
+import Identity from "grimoirejs/ref/Core/Identity";
 /**
  * アセットの読み込みを司るコンポーネント。ローダーの表示などを司る。
  */

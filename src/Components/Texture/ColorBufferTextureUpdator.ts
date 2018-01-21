@@ -42,6 +42,7 @@ export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBa
         FLOAT: WebGLRenderingContext.FLOAT,
       },
     },
+    ...TextureUpdatorComponentBase.attributes
   };
 
   protected $awake(): void {

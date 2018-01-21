@@ -44,10 +44,11 @@ export default class MouseCameraControlComponent extends Component {
   private _transform: Transform;
   private _updated = false;
 
-  private _lastCenter: Vector3 = null;
+  private _lastCenter: Vector3 | null = null;
 
-  private _lastScreenPos: { x: number, y: number } = null;
-  private _lastPinchDistance = null;
+  private _lastScreenPos: { x: number, y: number } | null = null;
+
+  private _lastPinchDistance: number | null = null;
 
   private _initialDirection: Vector3;
   private _initialRotation: Quaternion;
@@ -73,7 +74,11 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   protected $mount(): void {
-    this._transform = this.node.getComponent(Transform);
+    const transform = this.node.getComponent(Transform);
+    if (!transform) {
+      throw new Error(`MouseCameraControl require Transform component in same node`);
+    }
+    this._transform = transform;
     const canvasElement = this.companion.get("canvasElement");
     canvasElement.addEventListener("mousemove", this._listeners.mousemove);
     canvasElement.addEventListener("touchmove", this._listeners.touchmove);
@@ -196,7 +201,7 @@ export default class MouseCameraControlComponent extends Component {
         const scale =
           ((m.touches[0].pageX - m.touches[1].pageX) ** 2 +
             (m.touches[0].pageY - m.touches[1].pageY) ** 2) ** 0.5;
-        this._zoom((this._lastPinchDistance - scale) * 0.5);
+        this._zoom((this._lastPinchDistance! - scale) * 0.5);
         this._lastPinchDistance = scale;
         break;
       default:
@@ -230,8 +235,8 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   private _move(x: number, y: number): void {
-    const diffX = x - this._lastScreenPos.x;
-    const diffY = y - this._lastScreenPos.y;
+    const diffX = x - this._lastScreenPos!.x;
+    const diffY = y - this._lastScreenPos!.y;
     const moveX = -diffX * this.moveSpeed * 0.01;
     const moveY = diffY * this.moveSpeed * 0.01;
     this._d = this._d.addWith(this._transform.right.multiplyWith(moveX)).addWith(this._transform.up.multiplyWith(moveY));
@@ -239,8 +244,8 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   private _rotate(x: number, y: number): void {
-    const diffX = x - this._lastScreenPos.x;
-    const diffY = y - this._lastScreenPos.y;
+    const diffX = x - this._lastScreenPos!.x;
+    const diffY = y - this._lastScreenPos!.y;
     this._xsum += diffX;
     this._ysum += diffY;
     this._ysum = Math.min(Math.PI * 50, this._ysum);

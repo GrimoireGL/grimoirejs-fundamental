@@ -4,7 +4,7 @@ import MaterialFactory from "../Material/MaterialFactory";
 import MaterialContainerBase from "./MaterialContainerBase";
 import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
-
+import Identity from "grimoirejs/ref/Core/Identity";
 export default class MaterialComponent extends MaterialContainerBase {
     public static componentName = "Material"
     public static attributes = {

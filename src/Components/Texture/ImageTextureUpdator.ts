@@ -13,6 +13,7 @@ export default class ImageTextureUpdator extends TextureUpdatorComponentBase<Tex
       converter: StringConverter,
       default: null,
     },
+    ...TextureUpdatorComponentBase.attributes
   };
 
   public flipY: boolean;

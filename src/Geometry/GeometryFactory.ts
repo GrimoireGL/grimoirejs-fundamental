@@ -1,4 +1,4 @@
-import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration, IStandardAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import GLRelatedRegistryBase from "../Resource/GLRelatedRegistryBase";
 import Geometry from "./Geometry";
 import IGeometryFactoryDelegate from "./IGeometryFactoryDelegate";
@@ -18,7 +18,7 @@ export default class GeometryFactory extends GLRelatedRegistryBase {
   /**
    * Argument inputs to be used for construction of geometry.
    */
-  public static factoryArgumentDeclarations: { [typeName: string]: { [argName: string]: IAttributeDeclaration } } = {};
+  public static factoryArgumentDeclarations: { [typeName: string]: { [argName: string]: IStandardAttributeDeclaration } } = {};
 
   public static factoryExtentions: { [typeName: string]: ((geometry: Geometry, attrs: { [attrKey: string]: any }) => void)[] } = {};
 
@@ -36,7 +36,7 @@ export default class GeometryFactory extends GLRelatedRegistryBase {
    * @param {IAttributeDeclaration }}             argumentDeclarations [description]
    * @param {IGeometryFactoryDelegate} factoryDelegate [description]
    */
-  public static addType(typeName: string, argumentDeclarations: { [argName: string]: IAttributeDeclaration }, factoryDelegate: IGeometryFactoryDelegate): void {
+  public static addType(typeName: string, argumentDeclarations: { [argName: string]: IStandardAttributeDeclaration }, factoryDelegate: IGeometryFactoryDelegate): void {
     GeometryFactory.factoryDelegates[typeName] = factoryDelegate;
     GeometryFactory.factoryArgumentDeclarations[typeName] = argumentDeclarations;
   }

@@ -12,6 +12,7 @@ import RenderQueue from '../SceneRenderer/RenderQueue';
 import Timer from '../Util/Timer';
 import Scene from './SceneComponent';
 import Transform from './TransformComponent';
+import Identity from "grimoirejs/ref/Core/Identity"
 import { IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
 
 const { vec3, vec4, mat4 } = GLM;
@@ -209,9 +210,9 @@ export default class CameraComponent extends Component {
     public updateTransform(): void {
         const cameraTransform = this.__getCameraTransformMatrix();
         vec3.transformMat4(this._eyeCache.rawElements, Vector3.Zero.rawElements, cameraTransform.rawElements);
-        vec4.transformMat4(this._lookAtCache.rawElements, CameraComponent._frontOrigin.rawElements, cameraTransform.rawElements);
+        vec4.transformMat4(this._lookAtCache.rawElements as any, CameraComponent._frontOrigin.rawElements, cameraTransform.rawElements);
         vec3.add(this._lookAtCache.rawElements, this._lookAtCache.rawElements, this._eyeCache.rawElements);
-        vec4.transformMat4(this._upCache.rawElements, CameraComponent._upOrigin.rawElements, cameraTransform.rawElements);
+        vec4.transformMat4(this._upCache.rawElements as any, CameraComponent._upOrigin.rawElements, cameraTransform.rawElements);
         mat4.lookAt(this.viewMatrix.rawElements, this._eyeCache.rawElements, this._lookAtCache.rawElements, this._upCache.rawElements);
         mat4.mul(this.projectionViewMatrix.rawElements, this.projectionMatrix.rawElements, this.viewMatrix.rawElements);
     }

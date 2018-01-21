@@ -7,11 +7,12 @@ import Identity from "grimoirejs/ref/Core/Identity";
 
 export default class RenderBufferComponent extends ResizableResourceUpdator {
   public static componentName = "RenderBufferComponent";
-  public static attributes= {
+  public static attributes = {
     name: {
-      converter:StringConverter,
+      converter: StringConverter,
       default: null,
     },
+    ...ResizableResourceUpdator.attributes
   };
 
   public buffer: RenderBuffer;

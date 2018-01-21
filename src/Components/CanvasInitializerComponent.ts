@@ -10,6 +10,7 @@ import WebGLRenderingContextWithId from "../Resource/WebGLRenderingContextWithId
 import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
 import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import { CanvasSizeConverter } from "../Converters/CanvasSizeConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
 const ns = Namespace.define("grimoirejs-fundamental");
 
 /**

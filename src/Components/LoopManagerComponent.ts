@@ -4,6 +4,7 @@ import Timer from "../Util/Timer";
 import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import { NumberConverter } from "grimoirejs/ref/Converter/NumberConverter";
 import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
+import Identity from "grimoirejs/ref/Core/Identity";
 interface LoopAction {
   action(timer: Timer): void;
   priorty: number;

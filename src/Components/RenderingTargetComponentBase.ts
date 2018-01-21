@@ -23,14 +23,15 @@ export default class RenderingTargetComponentBase<T extends IRenderingTarget> ex
         }
         // TODO: remove this magic
         setImmediate(() => {
-            this.renderingTarget = this.__instanciateRenderingTarget(this.companion.get("gl"));
-            RenderingTrargetRegistry.get(this.companion.get("gl")).setRenderingTarget(name, this.renderingTarget);
+            const gl = this.companion.get("gl");
+            this.renderingTarget = this.__instanciateRenderingTarget(gl);
+            RenderingTrargetRegistry.get(gl).setRenderingTarget(name, this.renderingTarget);
         });
     }
     /*
     */
     protected __instanciateRenderingTarget(gl: WebGLRenderingContext): T {
-        return null;
+        throw new Error(`Abstract method was called unintendedly.`);
     }
 
     /**

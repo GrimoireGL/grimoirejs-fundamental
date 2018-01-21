@@ -39,9 +39,9 @@ class CoroutineRegistry {
         }
       }
     });
-    if (removeTarget) { // remove actually
+    if (removeTarget!) { // remove actually
       // remove completed tasks
-      removeTarget.forEach(f => {
+      removeTarget!.forEach(f => {
         const i = this.coroutines.indexOf(f);
         this.coroutines.splice(i, 1);
       });

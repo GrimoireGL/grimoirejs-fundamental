@@ -24,7 +24,7 @@ export default class UniformProxy {
 
   public uniformMatrix(variableName: string, mat: Matrix): void {
     this._pass(variableName, l => {
-      this._gl.uniformMatrix4fv(l, false, mat.rawElements as number[]);
+      this._gl.uniformMatrix4fv(l, false, mat.rawElements);
     });
   }
 

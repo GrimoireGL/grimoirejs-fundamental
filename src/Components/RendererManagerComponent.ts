@@ -38,21 +38,19 @@ export default class RendererManager extends Component {
 
   public gl: WebGLRenderingContext;
 
-  private _bgColor: Color4;
+  public bgColor: Color4;
 
-  private _clearDepth: number;
+  public clearDepth: number;
 
-  protected $awake(): void {
-    this.getAttributeRaw("bgColor").bindTo("_bgColor");
-    this.getAttributeRaw("clearDepth").bindTo("_clearDepth");
-  }
+  public complementRenderer: boolean;
 
   protected $mount(): void {
-    this.gl = this.companion.get("gl");
+    this.__bindAttributes();
+    this.gl = this.companion.get("gl")!;
   }
 
   protected $treeInitialized(): void {
-    this.node.getComponent(LoopManager).register(this.onloop.bind(this), 1000);
+    this.node.getComponent(LoopManager)!.register(this.onloop.bind(this), 1000);
     if (this.getAttribute("complementRenderer") && this.node.getChildrenByNodeName("renderer").length === 0) {
       this.node.addChildByName("renderer", {});
     }
@@ -61,11 +59,11 @@ export default class RendererManager extends Component {
 
   public onloop(timer: Timer): void {
     if (this.enabled) {
-      const c: Color4 = this._bgColor;
+      const c: Color4 = this.bgColor;
       const gc = GLStateConfigurator.get(this.gl);
       gc.applyIfChanged("clearColor", c.R, c.G, c.B, c.A);
-      gc.applyIfChanged("clearDepth", this._clearDepth);
-      this.gl.clearDepth(this._clearDepth);
+      gc.applyIfChanged("clearDepth", this.clearDepth);
+      this.gl.clearDepth(this.clearDepth);
       this.gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);
       this.node.broadcastMessage(1, "renderRenderer", {
         timer,
@@ -86,8 +84,9 @@ export default class RendererManager extends Component {
         if (!typeName) {
           throw new Error("Every script tag with 'text/sort' type should have typeName attribute to specify the name to be registered as a material.");
         }
-        if (script.getAttribute("src")) {
-          MaterialFactory.addSORTMaterialFromURL(typeName, script.getAttribute("src"));
+        const src = script.getAttribute("src");
+        if (src) {
+          MaterialFactory.addSORTMaterialFromURL(typeName, src);
         } else {
           MaterialFactory.addSORTMaterial(typeName, script.innerText);
         }
