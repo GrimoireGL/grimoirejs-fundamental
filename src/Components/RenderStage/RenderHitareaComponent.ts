@@ -18,11 +18,17 @@ import GLStateConfigurator from "../../Material/GLStateConfigurator";
 import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
 import RenderingTarget from "../RenderingTargetComponent";
 import { Nullable } from "grimoirejs/ref/Tool/Types";
+import { RenderingTargetConverter } from "../../Converters/RenderingTargetConverter";
+import { LazyAttribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute";
+import Identity from "grimoirejs/ref/Core/Identity";
+import Color4 from "grimoirejs-math/ref/Color4";
+
 export default class RenderHitareaComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderHitareaComponent";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
+    ...SingleBufferRenderStageBase.attributes,
     hitareaBuffer: {
-      converter: "RenderingTarget",
+      converter: RenderingTargetConverter,
       default: null
     }
   };
@@ -46,7 +52,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
   private _mouseMoved: boolean;
 
 
-  protected async $mount(): Promise<void> {
+  protected async $mount() {
     this._sceneRenderer = this.node.getComponent(RenderSceneComponent)!;
     if (!this._sceneRenderer) {
       throw new Error("The node attaching RenderHitArea should contain RenderScene.");
@@ -61,7 +67,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     }
   }
 
-  protected $renderRenderStage(args: IRenderRendererMessage): void {
+  protected $renderRenderStage(args: IRenderRendererMessage) {
     if (!this._mouseInside) {
       return;
     }
@@ -89,18 +95,18 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
   }
 
-  protected $mousemove(v: ViewportMouseEvent): void {
+  protected $mousemove(v: ViewportMouseEvent) {
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
   }
 
-  protected $mouseenter(v: ViewportMouseEvent): void {
+  protected $mouseenter(v: ViewportMouseEvent) {
     this._mouseInside = true;
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
   }
 
-  protected $mouseleave(v: ViewportMouseEvent): void {
+  protected $mouseleave(v: ViewportMouseEvent) {
     this._mouseInside = false;
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
@@ -110,25 +116,25 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     this._lastRenderable = null;
   }
 
-  protected $click(v: ViewportMouseEvent): void {
+  protected $click(v: ViewportMouseEvent) {
     if (this._lastRenderable instanceof Component) {
       this._lastRenderable.node.emit("click", this._lastRenderable);
     }
   }
 
-  protected $dblclick(v: ViewportMouseEvent): void {
+  protected $dblclick(v: ViewportMouseEvent) {
     if (this._lastRenderable instanceof Component) {
       this._lastRenderable.node.emit("dblclick", this._lastRenderable);
     }
   }
 
-  protected $mousedown(v: ViewportMouseEvent): void {
+  protected $mousedown(v: ViewportMouseEvent) {
     if (this._lastRenderable instanceof Component) {
       this._lastRenderable.node.emit("mousedown", this._lastRenderable);
     }
   }
 
-  protected $mouseup(v: ViewportMouseEvent): void {
+  protected $mouseup(v: ViewportMouseEvent) {
     if (this._lastRenderable instanceof Component) {
       this._lastRenderable.node.emit("mouseup", this._lastRenderable);
     }
@@ -139,7 +145,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
    * @param index
    * @param camera
    */
-  private _updateCurrentIndex(index: number, camera: CameraComponent): void {
+  private _updateCurrentIndex(index: number, camera: CameraComponent) {
     if (index === 0) { // there was no object at pointer
       if (this._lastRenderable instanceof Component) {
         this._lastRenderable.node.emit("mouseleave", this._lastRenderable);

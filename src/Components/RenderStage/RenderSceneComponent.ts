@@ -3,30 +3,40 @@ import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclar
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import CameraComponent from "../CameraComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import { ComponentConverter, getGenericComponentConverter, IComponentConverter } from "grimoirejs/ref/Converter/ComponentConverter";
+import { StandardAttribute, LazyAttribute } from "grimoirejs/ref/Core/Attribute";
+import Component from "grimoirejs/ref/Core/Component";
+import Identity from "grimoirejs/ref/Core/Identity";
+import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
+import Color4 from "grimoirejs-math/ref/Color4";
+
 /**
  * Render a scene specified by camera.
  */
 export default class RenderSceneComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderSceneComponent";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
+    ...SingleBufferRenderStageBase.attributes,
     layer: {
-      converter: "String",
+      converter: StringConverter,
       default: "default",
     },
     camera: {
       default: "camera",
-      converter: "Component",
+      converter: getGenericComponentConverter<CameraComponent>(),
       target: "Camera",
     },
     technique: {
       default: "default",
-      converter: "String",
+      converter: StringConverter,
     },
   };
 
   public layer: string;
 
-  public camera: CameraComponent;
+  public camera: Nullable<CameraComponent> = null;
 
   public technique: string;
 
@@ -37,16 +47,17 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
   protected $awake(): void {
     super.$awake();
     this.metadata.type = "scene";
-    this.getAttributeRaw("layer").bindTo("layer");
-    this.getAttributeRaw("technique").bindTo("technique");
-    this.getAttributeRaw("camera").watch((cam: CameraComponent) => {
+    this.getAttributeRaw(RenderSceneComponent.attributes.layer)!.bindTo("layer");
+    this.getAttributeRaw(RenderSceneComponent.attributes.technique)!.bindTo("technique");
+    const y = this.getAttributeRaw(RenderSceneComponent.attributes.camera)!
+    this.getAttributeRaw(RenderSceneComponent.attributes.camera)!.watch((cam: Nullable<CameraComponent>) => {
       this.metadata.camera = cam ? cam.node.id : null;
       this.camera = cam;
     }, true);
-    this.getAttributeRaw("technique").watch((t: string) => {
+    this.getAttributeRaw(RenderSceneComponent.attributes.technique)!.watch((t: Nullable<string>) => {
       this.metadata.technique = t;
     }, true);
-    this.getAttributeRaw("layer").watch((t: string) => {
+    this.getAttributeRaw(RenderSceneComponent.attributes.layer)!.watch((t: Nullable<string>) => {
       this.metadata.layer = t;
     }, true);
   }

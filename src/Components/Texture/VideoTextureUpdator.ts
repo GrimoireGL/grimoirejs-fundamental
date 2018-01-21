@@ -2,27 +2,34 @@ import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclar
 import VideoResolver from "../../Asset/VideoResolver";
 import Texture2D from "../../Resource/Texture2D";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
+import Identity from "grimoirejs/ref/Core/Identity";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import { NumberConverter } from "grimoirejs/ref/Converter/NumberConverter";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
+
 export default class VideoTextureUpdator extends TextureUpdatorComponentBase<Texture2D> {
   public static componentName = "VideoTextureUpdator";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
+    ...TextureUpdatorComponentBase.attributes,
     src: {
-      converter: "String",
+      converter: StringConverter,
       default: null,
     },
     currentTime: {
-      converter: "Number",
+      converter: NumberConverter,
       default: 0,
     },
     muted: {
-      converter: "Boolean",
+      converter: BooleanConverter,
       default: true,
     },
     playbackRate: {
-      converter: "Number",
+      converter: NumberConverter,
       default: 1,
     },
     loop: {
-      converter: "Boolean",
+      converter: BooleanConverter,
       default: true,
     },
   };
@@ -46,27 +53,27 @@ export default class VideoTextureUpdator extends TextureUpdatorComponentBase<Tex
   protected $awake() {
     super.$awake();
     this.__bindAttributes();
-    this.getAttributeRaw("src").watch((v: string) => {
+    this.getAttributeRaw(VideoTextureUpdator.attributes.src)!.watch((v: Nullable<string>) => {
       if (v !== null) {
         this._loadTask(v);
       }
     }, true);
-    this.getAttributeRaw("currentTime").watch((v: number) => {
+    this.getAttributeRaw(VideoTextureUpdator.attributes.currentTime)!.watch((v: Nullable<number>) => {
       if (this.video && this.video.currentTime !== this.currentTime) {
         this._syncVideoPref();
       }
     });
-    this.getAttributeRaw("muted").watch(() => {
+    this.getAttributeRaw(VideoTextureUpdator.attributes.muted)!.watch(() => {
       if (this.video) {
         this._syncVideoPref();
       }
     });
-    this.getAttributeRaw("playbackRate").watch(() => {
+    this.getAttributeRaw(VideoTextureUpdator.attributes.playbackRate)!.watch(() => {
       if (this.video) {
         this._syncVideoPref();
       }
     });
-    this.getAttributeRaw("loop").watch(() => {
+    this.getAttributeRaw(VideoTextureUpdator.attributes.loop)!.watch(() => {
       if (this.video) {
         this._syncVideoPref();
       }

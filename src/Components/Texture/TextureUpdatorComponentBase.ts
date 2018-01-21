@@ -4,16 +4,19 @@ import Texture2D from "../../Resource/Texture2D";
 import ResizableResourceUpdator from "./ResizableResourceUpdator";
 import TextureContainer from "./TextureContainer";
 import TextureContainerBase from "./TextureContainerBase";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
 
 export default class TextureUpdatorComponentBase<T extends Texture> extends ResizableResourceUpdator {
     public static componentName = "TextureUpdatorComponentBase";
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
+    public static attributes = {
+        ...ResizableResourceUpdator.attributes,
         flipY: {
-            converter: "Boolean",
+            converter: BooleanConverter,
             default: true,
         },
         premultipliedAlpha: {
-            converter: "Boolean",
+            converter: BooleanConverter,
             default: false,
         },
     };

@@ -1,4 +1,4 @@
-interface ViewportMouseEvent extends MouseEvent {
+export default interface ViewportMouseEvent extends MouseEvent {
   viewportX: number;
   viewportY: number;
   viewportNormalizedX: number;
@@ -9,5 +9,3 @@ interface ViewportMouseEvent extends MouseEvent {
   canvasNormalizedY: number;
   inside: boolean;
 }
-
-export default ViewportMouseEvent;

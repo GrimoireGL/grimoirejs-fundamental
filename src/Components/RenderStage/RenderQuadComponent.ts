@@ -6,20 +6,27 @@ import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import GeometryRegistryComponent from "../GeometryRegistryComponent";
 import MaterialContainer from "../MaterialContainerComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
+import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
+import Color4 from "grimoirejs-math/ref/Color4";
+import { LazyAttribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute";
+
 /**
  * Render to quad.
  * Typically used for post effect processing.
  */
 export default class RenderQuadComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderQuadComponent";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
+    ...SingleBufferRenderStageBase.attributes,
     indexGroup: {
       default: "default",
-      converter: "String",
+      converter: StringConverter,
     },
     technique: {
       default: "default",
-      converter: "String",
+      converter: StringConverter,
     },
   };
 
@@ -36,9 +43,9 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
   protected $awake(): void {
     super.$awake();
     this.metadata.type = "Quad";
-    this.getAttributeRaw("indexGroup").bindTo("indexGroup");
-    this.getAttributeRaw("technique").bindTo("technique");
-    this.getAttributeRaw("technique").watch((t: string) => {
+    this.getAttributeRaw(RenderQuadComponent.attributes.indexGroup)!.bindTo("indexGroup");
+    this.getAttributeRaw(RenderQuadComponent.attributes.technique)!.bindTo("technique");
+    this.getAttributeRaw(RenderQuadComponent.attributes.technique)!.watch(t => {
       this.metadata.technique = t;
     }, true);
   }

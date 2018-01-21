@@ -88,18 +88,18 @@ export default () => {
         GrimoireInterface.registerComponent(BasicComponent);
         GrimoireInterface.registerComponent(SkyboxManager);
 
-        GrimoireInterface.registerConverter("CanvasSize", CanvasSizeConverter);
-        GrimoireInterface.registerConverter("Geometry", GeometryConverter);
-        GrimoireInterface.registerConverter("Material", MaterialConverter);
+        GrimoireInterface.registerConverter(CanvasSizeConverter);
+        GrimoireInterface.registerConverter(GeometryConverter);
+        GrimoireInterface.registerConverter(MaterialConverter);
         // TODO: remove Texture as deprecated Texture converter
         // Use Texture2D converter instead
-        GrimoireInterface.registerConverter("Texture", TextureConverter);
-        GrimoireInterface.registerConverter("Texture2D", TextureConverter);
-        GrimoireInterface.registerConverter("TextureCube", TextureCubeConverter);
-        GrimoireInterface.registerConverter("Viewport", ViewportConverter);
-        GrimoireInterface.registerConverter("Node", NodeConverter);
-        GrimoireInterface.registerConverter("Position", PositionConverter);
-        GrimoireInterface.registerConverter("RenderingTarget", RenderingTargetConverter);
+        GrimoireInterface.registerConverter(TextureConverter);
+        GrimoireInterface.registerConverter(TextureConverter);
+        GrimoireInterface.registerConverter(TextureCubeConverter);
+        GrimoireInterface.registerConverter(ViewportConverter);
+        GrimoireInterface.registerConverter(NodeConverter);
+        GrimoireInterface.registerConverter(PositionConverter);
+        GrimoireInterface.registerConverter(RenderingTargetConverter);
 
         GrimoireInterface.registerNode("goml", [CanvasInitializerComponent, LoopManager, AssetLoadingManagerComponent, GeometryRegistryComponent, RendererManager, Fullscreen]);
         GrimoireInterface.registerNode("scene", [Scene]);
