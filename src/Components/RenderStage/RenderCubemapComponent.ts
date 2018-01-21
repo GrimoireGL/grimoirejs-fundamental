@@ -97,7 +97,7 @@ export default class RenderCubemapComponent extends RenderStageBase {
         }
         this.camera.updateContainedScene(args.timer);
         for (const direction in TextureCube.imageDirections) {
-            this.out.beforeDraw(GLConstantUtility.createClearFilter(this.clearColorEnabled, this.clearDepthEnabled), this.clearColor.rawElements as number[], this.clearDepth, direction);
+            this.out.beforeDraw(GLConstantUtility.createClearFilter(this.clearColorEnabled, this.clearDepthEnabled), Array.from(this.clearColor.rawElements), this.clearDepth, direction);
             this.camera.direction = direction;
             this.camera.renderScene({
                 renderer: this,

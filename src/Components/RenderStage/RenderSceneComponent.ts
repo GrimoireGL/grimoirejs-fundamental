@@ -5,10 +5,12 @@ import CameraComponent from "../CameraComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
 import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 import { ComponentConverter, getGenericComponentConverter, IComponentConverter } from "grimoirejs/ref/Converter/ComponentConverter";
-import { StandardAttribute } from "grimoirejs/ref/Core/Attribute";
+import { StandardAttribute, LazyAttribute } from "grimoirejs/ref/Core/Attribute";
 import Component from "grimoirejs/ref/Core/Component";
 import Identity from "grimoirejs/ref/Core/Identity";
+import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
 import { Nullable } from "grimoirejs/ref/Tool/Types";
+import Color4 from "grimoirejs-math/ref/Color4";
 
 /**
  * Render a scene specified by camera.
@@ -16,6 +18,7 @@ import { Nullable } from "grimoirejs/ref/Tool/Types";
 export default class RenderSceneComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderSceneComponent";
   public static attributes = {
+    ...SingleBufferRenderStageBase.attributes,
     layer: {
       converter: StringConverter,
       default: "default",
