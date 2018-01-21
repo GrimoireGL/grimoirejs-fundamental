@@ -5,9 +5,6 @@ import ViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
 import ViewportMouseEvent from "../../Objects/ViewportMouseEvent";
 export default class RenderStageBase extends Component {
     public static componentName = "RenderStageBase";
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
-
-    };
 
     public rendererDescription: { [key: string]: any } = {
         mouse: {

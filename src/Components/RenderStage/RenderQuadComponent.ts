@@ -6,20 +6,23 @@ import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import GeometryRegistryComponent from "../GeometryRegistryComponent";
 import MaterialContainer from "../MaterialContainerComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
+
 /**
  * Render to quad.
  * Typically used for post effect processing.
  */
 export default class RenderQuadComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderQuadComponent";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
     indexGroup: {
       default: "default",
-      converter: "String",
+      converter: StringConverter,
     },
     technique: {
       default: "default",
-      converter: "String",
+      converter: StringConverter,
     },
   };
 
