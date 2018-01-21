@@ -15,3 +15,5 @@ export const NodeConverter = {
     }
   }
 }
+
+export default NodeConverter;

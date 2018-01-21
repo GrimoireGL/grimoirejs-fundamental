@@ -1,4 +1,4 @@
-import { Attribute } from "grimoirejs/ref/Core/Attribute";
+import { Attribute, LazyAttribute } from "grimoirejs/ref/Core/Attribute";
 import RendererComponent from "../Components/RendererComponent";
 import IRenderingTarget from "../Resource/RenderingTarget/IRenderingTarget";
 import RenderingTargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
@@ -31,3 +31,5 @@ export const RenderingTargetConverter = {
         }
     }
 }
+
+export default RenderingTargetConverter;

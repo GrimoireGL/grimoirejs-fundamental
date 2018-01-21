@@ -1,5 +1,6 @@
 import { Attribute, StandardAttribute, LazyAttribute } from "grimoirejs/ref/Core/Attribute";
 import GomlNode from "grimoirejs/ref/Core/GomlNode";
+import Vector3 from "grimoirejs-math/ref/Vector3";
 
 /**
  * 座標を取得するためのコンバーター
@@ -8,28 +9,26 @@ import GomlNode from "grimoirejs/ref/Core/GomlNode";
  */
 export const PositionConverter = {
   name: "Position",
-  lazy: true,
-  verify(attr: Attribute) {
-    return true;
-  },
-  convert(val: any, attr: Attribute, converterContext: any) {
+  lazy: true as true,
+  convert(val: any, attr: LazyAttribute, converterContext: any): (() => Vector3) | undefined {
     if (converterContext._lastVal === val) {
       return converterContext._node.getAttribute("position");
     } else {
       converterContext._lastVal = null;
       try { // TODO: remove try cache after fixed grimoirejs-math.
-        const vec = StandardAttribute.convert("Vector3", attr as LazyAttribute, val);
+        const vec = StandardAttribute.convert("Vector3", attr, val);
         if (vec) {
           return vec;
         }
       } catch (e) {
 
       }
-      converterContext._node = StandardAttribute.convert("Node", attr as LazyAttribute, val) as GomlNode;
+      converterContext._node = StandardAttribute.convert("Node", attr, val) as GomlNode;
       if (converterContext._node) {
         converterContext._lastVal = val;
         return converterContext._node.getAttribute("position"); // TODO should not use getAttribute on node
       }
+      return undefined;
     }
   },
 };
