@@ -19,10 +19,14 @@ import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
 import RenderingTarget from "../RenderingTargetComponent";
 import { Nullable } from "grimoirejs/ref/Tool/Types";
 import { RenderingTargetConverter } from "../../Converters/RenderingTargetConverter";
+import { LazyAttribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute";
+import Identity from "grimoirejs/ref/Core/Identity";
+import Color4 from "grimoirejs-math/ref/Color4";
 
 export default class RenderHitareaComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderHitareaComponent";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
+    ...SingleBufferRenderStageBase.attributes,
     hitareaBuffer: {
       converter: RenderingTargetConverter,
       default: null
