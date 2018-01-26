@@ -26,11 +26,7 @@ import Color4 from "grimoirejs-math/ref/Color4";
 export default class RenderHitareaComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderHitareaComponent";
   public static attributes = {
-    ...SingleBufferRenderStageBase.attributes,
-    hitareaBuffer: {
-      converter: RenderingTargetConverter,
-      default: null
-    }
+    ...SingleBufferRenderStageBase.attributes
   };
 
   public hitareaBuffer: IRenderingTarget;
@@ -52,19 +48,15 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
   private _mouseMoved: boolean;
 
 
-  protected async $mount() {
+  protected $mount() {
     this._sceneRenderer = this.node.getComponent(RenderSceneComponent)!;
     if (!this._sceneRenderer) {
       throw new Error("The node attaching RenderHitArea should contain RenderScene.");
     }
     this._gl = this.companion.get("gl")!;
     this._canvas = this.companion.get("canvasElement")!;
-    this.hitareaBuffer = await this.getAttribute<Promise<IRenderingTarget>>("hitareaBuffer");
-    if (!this.hitareaBuffer) {
-      // Generate default hitarea buffer
-      const node = this.node.parent!.addChildByName("rendering-target", { name: `hitarea-buffer-${this._sceneRenderer.id}` });
-      this.hitareaBuffer = node.getComponent(RenderingTarget)!.renderingTarget;
-    }
+    const node = this.node.parent!.addChildByName("rendering-target", { name: `hitarea-buffer-${this._sceneRenderer.id}` });
+    this.hitareaBuffer = node.getComponent(RenderingTarget)!.renderingTarget;
   }
 
   protected $renderRenderStage(args: IRenderRendererMessage) {

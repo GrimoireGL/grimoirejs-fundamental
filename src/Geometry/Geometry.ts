@@ -247,7 +247,12 @@ export default class Geometry {
         if (!buffer && (!opt || typeof opt.count === "number")) {
             throw new Error(`Index buffer can't construct without buffer and opt.count`);
         }
-        let count: number = buffer ? Geometry._getGrimoireBufferSourceCount(buffer) : opt!.count!;
+        let count: number;
+        if (opt && opt.count) {
+            count = opt.count;
+        } else {
+            count = Geometry._getGrimoireBufferSourceCount(buffer!);
+        }
         return {
             topology: WebGLRenderingContext.TRIANGLES,
             offset: 0,

@@ -128,7 +128,7 @@ export default class CanvasInitializerComponent extends Component {
     const gl = this._getContext(this.canvas);
     this.companion.set(ns.for("gl"), gl);
     this.companion.set(ns.for("canvasElement"), this.canvas);
-    this.companion.set(ns.for("GLExtRequestor"), new GLExtRequestor(gl));
+    this.companion.set(ns.for("GLExtRequestor"), GLExtRequestor.get(gl));
     Texture2D.generateDefaultTexture(gl);
     return this.canvas;
   }

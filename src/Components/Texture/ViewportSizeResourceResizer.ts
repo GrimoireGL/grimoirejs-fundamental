@@ -18,10 +18,7 @@ export default class ViewportSizeResourceResizer extends ResourceResizerComponen
       converter: Vector2Converter,
       default: "1",
     },
-    keepPow2Size: {
-      converter: BooleanConverter,
-      default: true,
-    },
+    ...ResourceResizerComponentBase.attributes
   };
 
   protected $mount(): void {

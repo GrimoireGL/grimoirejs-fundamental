@@ -70,7 +70,8 @@ export default class NameResolver<T> {
                 this._resolved[name] = resolved;
                 return resolved;
             } catch (e) {
-                throw new Error(`Unexpected error has occured during resolution of named resource '${name}'\n${e}`);
+                const a = e as Error;
+                throw new Error(`Unexpected error has occured during resolution of named resource '${name}'\n${a.message}\n${a.stack}\n\n`);
             }
         } else {
             return this.register(name, Promise.resolve(generator));
