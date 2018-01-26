@@ -3,7 +3,7 @@
  */
 
 // build version
-export const __VERSION__ = "0.38.0-beta10";
+export const __VERSION__ = "0.38.0-beta11";
 
 // full package name
 export const __NAME__ = "grimoirejs-fundamental";

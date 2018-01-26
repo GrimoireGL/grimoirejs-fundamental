@@ -58,14 +58,14 @@ export default class MaterialContainer extends MaterialContainerBase {
       return Number.MAX_VALUE;
     }
     let orderCriteria;
-    if (this._drawOrder === "Auto") {
+    if (this.drawOrder === "Auto") {
       if (this.material.techniques[technique].drawOrder === "Auto") {
-        orderCriteria = DrawPriorty[this._transparent ? "UseAlpha" : "NoAlpha"];
+        orderCriteria = DrawPriorty[this.transparent ? "UseAlpha" : "NoAlpha"];
       } else {
         orderCriteria = DrawPriorty[this.material.techniques[technique].drawOrder];
       }
     } else {
-      orderCriteria = DrawPriorty[this._drawOrder];
+      orderCriteria = DrawPriorty[this.drawOrder];
     }
     if (orderCriteria === void 0) {
       throw new Error(`Specified drawing order "${this.material.techniques[technique].drawOrder}" is not defined`);
@@ -85,25 +85,23 @@ export default class MaterialContainer extends MaterialContainerBase {
 
   private _materialComponent: MaterialComponent;
 
-  private _drawOrder: string;
+  private drawOrder: string;
 
   private _registeredAttributes: boolean;
 
-  private _transparent: boolean;
+  private transparent: boolean;
 
   protected $mount(): void {
     this.getAttributeRaw(MaterialContainer.attributes.material)!.watch(this._onMaterialChanged.bind(this));
-    this.__registerAssetLoading(this._onMaterialChanged());
-    this.getAttributeRaw(MaterialContainer.attributes.drawOrder)!.bindTo("_drawOrder");
-    this.getAttributeRaw(MaterialContainer.attributes.transparent)!.bindTo("_transparent");
+    this.getAttributeRaw(MaterialContainer.attributes.drawOrder)!.bindTo("drawOrder");
+    this.getAttributeRaw(MaterialContainer.attributes.transparent)!.bindTo("transparent");
   }
 
   /**
    * When the material attribute is changed.
    */
-  private async _onMaterialChanged(): Promise<void> {
-    const materialPromise = this.getAttribute(MaterialContainer.attributes.material);
-    if (materialPromise === null) {
+  private async _onMaterialChanged(material: Material): Promise<void> {
+    if (material === null) {
       this.useMaterial = false;
       return; // When specified material is null
     }
@@ -112,9 +110,9 @@ export default class MaterialContainer extends MaterialContainerBase {
       this.__removeExposedMaterialParameters();
     }
     if (!this._materialComponent) { // the material must be instanciated by attribute.
-      await this._prepareInternalMaterial(materialPromise);
+      await this._prepareInternalMaterial(material);
     } else {
-      await this._prepareExternalMaterial(materialPromise);
+      await this._prepareExternalMaterial(material);
     }
   }
 
@@ -122,18 +120,12 @@ export default class MaterialContainer extends MaterialContainerBase {
    * Resolve materials only when the material required from external material component.
    * @return {Promise<void>} [description]
    */
-  private async _prepareExternalMaterial(materialPromise: Promise<Material>) {
-    const material = await materialPromise; // waiting for material load completion
+  private async _prepareExternalMaterial(material: Material) {
     this.material = material;
     this.materialReady = true;
   }
 
-  private async _prepareInternalMaterial(materialPromise: Promise<Material>) {
-    // obtain promise of instanciating material
-    if (!materialPromise) {
-      return;
-    }
-    const material = await materialPromise; // waiting for material load completion
+  private async _prepareInternalMaterial(material: Material) {
     this.material = material;
     this.__exposeMaterialParameters(this.material);
     this._registeredAttributes = true;
