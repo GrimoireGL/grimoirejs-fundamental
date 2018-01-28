@@ -10,6 +10,7 @@ import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import { MaterialConverter } from "../Converters/MaterialConverter";
 import { LazyAttribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute";
 import Identity from "grimoirejs/ref/Core/Identity";
+import IMaterialResolutionResult from "../Material/MaterialResolutionResult";
 /**
  * マテリアルとマテリアルへの属性を管理するためのコンポーネント
  * このコンポーネントは将来的に`MeshRenderer`と統合されます。
@@ -23,8 +24,7 @@ export default class MaterialContainer extends MaterialContainerBase {
      */
     material: {
       converter: MaterialConverter,
-      default: "new(basic-shading)",
-      componentBoundTo: "_materialComponent", // When the material was specified with the other material tag, this field would be assigned.
+      default: "new(basic-shading)"
     },
     /**
      * 描画順序
@@ -54,7 +54,7 @@ export default class MaterialContainer extends MaterialContainerBase {
   private static _defaultMaterial = "unlit";
 
   public getDrawPriorty(depth: number, technique: string): number {
-    if (!this.materialReady && !this.isActive) { // If material was not ready
+    if (!this.useMaterial && !this.isActive) { // If material was not ready
       return Number.MAX_VALUE;
     }
     let orderCriteria;
@@ -79,17 +79,14 @@ export default class MaterialContainer extends MaterialContainerBase {
 
   public material: Material;
 
-  public materialReady = false;
-
   public useMaterial = false;
 
-  private _materialComponent: MaterialComponent;
+  public drawOrder: string;
 
-  private drawOrder: string;
+  public transparent: boolean;
 
-  private _registeredAttributes: boolean;
+  private _attributeExposed: boolean;
 
-  private transparent: boolean;
 
   protected $mount(): void {
     this.getAttributeRaw(MaterialContainer.attributes.material)!.watch(this._onMaterialChanged.bind(this));
@@ -100,35 +97,19 @@ export default class MaterialContainer extends MaterialContainerBase {
   /**
    * When the material attribute is changed.
    */
-  private async _onMaterialChanged(material: Material): Promise<void> {
-    if (material === null) {
+  private _onMaterialChanged(materialResolutionResult: IMaterialResolutionResult): void {
+    if (materialResolutionResult === null) {
       this.useMaterial = false;
       return; // When specified material is null
     }
     this.useMaterial = true;
-    if (this._registeredAttributes) {
+    if (this._attributeExposed) {
       this.__removeExposedMaterialParameters();
     }
-    if (!this._materialComponent) { // the material must be instanciated by attribute.
-      await this._prepareInternalMaterial(material);
-    } else {
-      await this._prepareExternalMaterial(material);
+    this.material = materialResolutionResult.material;
+    if (!materialResolutionResult.external) { // the material must be instanciated by attribute.
+      this.__exposeMaterialParameters(this.material);
+      this._attributeExposed = true;
     }
-  }
-
-  /**
-   * Resolve materials only when the material required from external material component.
-   * @return {Promise<void>} [description]
-   */
-  private async _prepareExternalMaterial(material: Material) {
-    this.material = material;
-    this.materialReady = true;
-  }
-
-  private async _prepareInternalMaterial(material: Material) {
-    this.material = material;
-    this.__exposeMaterialParameters(this.material);
-    this._registeredAttributes = true;
-    this.materialReady = true;
   }
 }

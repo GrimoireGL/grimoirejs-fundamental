@@ -7,6 +7,7 @@ import RenderingTargetComponentBase from "./RenderingTargetComponentBase";
 import RenderBufferUpdator from "./Texture/RenderBufferUpdator";
 import TextureContainer from "./Texture/TextureContainer";
 import TextureCubeContainer from "./Texture/TextureCubeContainer";
+import { EnumConverter } from "grimoirejs/ref/Converter/EnumConverter";
 
 /**
  * Register specified buffer to rendering target.
@@ -16,7 +17,7 @@ export default class CubeRenderingTargetComponent extends RenderingTargetCompone
     public static componentName = "CubemapRenderingTarget";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         colorBufferFormat: {
-            converter: "Enum",
+            converter: EnumConverter,
             default: WebGLRenderingContext.RGBA,
             table: {
                 RGBA: WebGLRenderingContext.RGBA,
@@ -31,7 +32,7 @@ export default class CubeRenderingTargetComponent extends RenderingTargetCompone
             },
         },
         colorBufferType: {
-            converter: "Enum",
+            converter: EnumConverter,
             default: WebGLRenderingContext.UNSIGNED_BYTE,
             table: {
                 UNSIGNED_BYTE: WebGLRenderingContext.UNSIGNED_BYTE,
@@ -44,7 +45,7 @@ export default class CubeRenderingTargetComponent extends RenderingTargetCompone
             },
         },
         depthBufferType: {
-            converter: "Enum",
+            converter: EnumConverter,
             default: WebGLRenderingContext.DEPTH_COMPONENT16,
             table: {
                 NONE: 0,

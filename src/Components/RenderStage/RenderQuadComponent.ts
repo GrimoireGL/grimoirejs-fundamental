@@ -36,7 +36,7 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
 
   private _gl: WebGLRenderingContext;
 
-  private _geom: Geometry;
+  private _quadGeometry: Geometry;
 
   private _materialContainer: MaterialContainer;
 
@@ -54,20 +54,17 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
     this._gl = this.companion.get("gl")!;
     this._materialContainer = this.node.getComponent(MaterialContainer)!;
     const geometryRegistry = this.companion.get("GeometryRegistry") as GeometryRegistryComponent;
-    this._geom = await geometryRegistry.getGeometry("quad");
+    this._quadGeometry = await geometryRegistry.getGeometry("quad");
   }
 
   protected $renderRenderStage(args: IRenderRendererMessage): void {
-    if (!this._materialContainer.materialReady || !this._geom) {
-      return;
-    }
-    if (!this.__beforeRender()) {
+    if (!this._materialContainer.useMaterial || !this._quadGeometry || !this.__beforeRender()) {
       return;
     }
     // make rendering argument
     const renderArgs = {
       indexGroup: this.indexGroup,
-      geometry: this._geom,
+      geometry: this._quadGeometry,
       camera: null,
       transform: null,
       viewport: this.out.getViewport(),

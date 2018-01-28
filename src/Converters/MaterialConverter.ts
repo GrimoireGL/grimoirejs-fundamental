@@ -2,6 +2,7 @@ import { Attribute } from "grimoirejs/ref/Core/Attribute";
 import MaterialComponent from "../Components/MaterialComponent";
 import Material from "../Material/Material";
 import MaterialFactory from "../Material/MaterialFactory";
+import { createMaterialResolutionResult, default as IMaterialResolutionResult } from "../Material/MaterialResolutionResult";
 
 /**
  * マテリアルを指定するためのコンバーター
@@ -12,13 +13,13 @@ import MaterialFactory from "../Material/MaterialFactory";
  */
 export const MaterialConverter = {
   name: "Material",
-  convert(val: any, attr: Attribute): Promise<Material> | null {
+  convert(val: any, attr: Attribute): Promise<IMaterialResolutionResult> | null {
     if (typeof val === "string") {
       const regex = /\s*new\s*\(\s*([a-zA-Z\d\-]+)\s*\)/;
       let regexResult: RegExpExecArray | null;
       if (regexResult = regex.exec(val)) { // new material should be instanciated for this material
-        (attr.component as any)[attr.declaration["componentBoundTo"]] = null;
-        return MaterialFactory.get(attr.companion!.get("gl")!).instanciate(regexResult[1]);
+        const gl = attr.companion!.get("gl")!;
+        return createMaterialResolutionResult(MaterialFactory.get(gl).instanciate(regexResult[1]), false)
       } else {
         const node = attr.tree!(val).first();
         if (node) {
@@ -26,8 +27,7 @@ export const MaterialConverter = {
           if (!mc) {
             throw new Error(`Material component was not found on specified node`);
           }
-          (attr.component as any)[attr.declaration["componentBoundTo"]] = mc;
-          return mc.materialPromise;
+          return createMaterialResolutionResult(mc.materialPromise, true);
         } else {
           console.warn(`There was no matching material component filtered by '${val}'`);
           return null;
@@ -35,7 +35,7 @@ export const MaterialConverter = {
       }
     } else if (val instanceof Material) {
       (attr.component as any)[attr.declaration["componentBoundTo"]] = null;
-      return Promise.resolve(val);
+      return createMaterialResolutionResult(Promise.resolve(val), false);
     }
     return null; // TODO ??
   }

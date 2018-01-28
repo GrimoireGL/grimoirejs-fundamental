@@ -4,6 +4,7 @@ import Geometry from "../Geometry/Geometry";
 import GeometryFactory from "../Geometry/GeometryFactory";
 import GeometryRegistry from "./GeometryRegistryComponent";
 import { Attribute } from "grimoirejs/ref/Core/Attribute";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 
 /**
  * ジオメトリを生成するためのコンポーネント
@@ -21,7 +22,7 @@ export default class GeometryComponent extends Component {
          * また、増えたジオメトリの属性は動的に操作できないことに気をつけてください。
          */
         type: {
-            converter: "String",
+            converter: StringConverter,
             default: null,
         },
         /**
@@ -31,7 +32,7 @@ export default class GeometryComponent extends Component {
          * もし、`quad`など事前に登録されたジオメトリを指定した場合、そのジオメトリを上書きすることができます。
          */
         name: {
-            converter: "String",
+            converter: StringConverter,
             default: null,
         },
     };

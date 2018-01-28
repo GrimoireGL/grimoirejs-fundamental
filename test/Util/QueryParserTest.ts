@@ -12,11 +12,7 @@ test("FunctionalQuery can parse with function", (t) => {
 });
 
 test("FunctionalQuery can parse without function", (t) => {
-    const arr = QueryParser.parseFunctionalQuery("1,32,ABC");
-    t.truthy(arr[0] === null);
-    t.truthy(arr[1] === "1");
-    t.truthy(arr[2] === "32");
-    t.truthy(arr[3] === "ABC");
+    t.throws(() => QueryParser.parseFunctionalQuery("1,32,ABC"));
 });
 
 test("FunctionalQuery can parse without function and specified default function", (t) => {

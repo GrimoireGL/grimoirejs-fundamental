@@ -20,8 +20,6 @@ export default class GeometryFactory extends GLRelatedRegistryBase {
    */
   public static factoryArgumentDeclarations: { [typeName: string]: { [argName: string]: IStandardAttributeDeclaration } } = {};
 
-  public static factoryExtentions: { [typeName: string]: ((geometry: Geometry, attrs: { [attrKey: string]: any }) => void)[] } = {};
-
   /**
    * Get geometry factory by WebGLRenderingContext
    * @param gl
@@ -41,13 +39,6 @@ export default class GeometryFactory extends GLRelatedRegistryBase {
     GeometryFactory.factoryArgumentDeclarations[typeName] = argumentDeclarations;
   }
 
-  public static extend(typeName: string, extender: (geometry: Geometry, attrs: { [attrKey: string]: any }) => Promise<void> | void): void {
-    if (GeometryFactory.factoryExtentions[typeName] === void 0) {
-      GeometryFactory.factoryExtentions[typeName] = [];
-    }
-    GeometryFactory.factoryExtentions[typeName].push(extender);
-  }
-
   constructor(public gl: WebGLRenderingContext) {
     super();
   }
@@ -58,15 +49,6 @@ export default class GeometryFactory extends GLRelatedRegistryBase {
       throw new Error(`Can not instanciate unknown geometry type ${type}`);
     }
     const geometry = await factoryDelegate(this.gl, args);
-    if (GeometryFactory.factoryExtentions[type] !== void 0) {
-      const exts = GeometryFactory.factoryExtentions[type];
-      for (let i = 0; i < exts.length; i++) {
-        const p = exts[i](geometry, args);
-        if (p) {
-          await p;
-        }
-      }
-    }
     return geometry;
   }
 

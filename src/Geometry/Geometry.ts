@@ -9,7 +9,6 @@ import HashCalculator from "../Util/HashCalculator";
 import IndexBufferInfo from "./IndexBufferInfo";
 import VertexBufferAccessor from "./VertexBufferAccessor";
 import Options from "../Util/Options";
-import { echo } from "shelljs";
 
 export interface GeometryVertexBufferAccessor extends VertexBufferAccessor {
     bufferIndex: number;
@@ -63,16 +62,21 @@ export default class Geometry {
         return true;
     }
 
-    public static drawWithCurrentVertexBuffer(geometry: Geometry, indexName: string, count: number = Number.MAX_VALUE, offset = 0): void {
-        const targetIndex = geometry.indices[indexName];
+    public static drawWithCurrentVertexBuffer(geometry: Geometry, indexName: string = "@@WITHOUT_INDEX", count: number = Number.MAX_VALUE, offset = 0): void {
+        let targetIndex = geometry.indices[indexName];
+        if (!targetIndex) {
+            targetIndex = geometry.indices["@@WITHOUT_INDEX"];
+        }
+        const gl = geometry.gl;
         if (targetIndex === void 0) {
             throw new Error(`Specified index buffer "${indexName}" was not found on this geometry.All of the index buffer available on this geometry is "${Object.keys(geometry.indices)}"`);
         }
         if (targetIndex.index) {
             targetIndex.index.bind();
-            targetIndex.index.gl.drawElements(targetIndex.topology, Math.min(targetIndex.count, count), targetIndex.type, Math.min(offset * targetIndex.byteSize + targetIndex.byteOffset, targetIndex.byteOffset + (targetIndex.count - 1) * targetIndex.byteSize));
+            gl.drawElements(targetIndex.topology, Math.min(targetIndex.count, count), targetIndex.type, Math.min(offset * targetIndex.byteSize + targetIndex.byteOffset, targetIndex.byteOffset + (targetIndex.count - 1) * targetIndex.byteSize));
         } else {
-            // TODO: for without index.
+            gl.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, null);
+            gl.drawElements(targetIndex.topology, Math.min(targetIndex.count, count), targetIndex.type, Math.min(offset * targetIndex.byteSize + targetIndex.byteOffset, targetIndex.byteOffset + (targetIndex.count - 1) * targetIndex.byteSize));
         }
         //}
     }
@@ -113,7 +117,7 @@ export default class Geometry {
         const index = this.buffers.length;
         for (const semantic in accessors) {
             let accessor = accessors[semantic] as Options<GeometryVertexBufferAccessor>;
-            this.accessors[semantic] = Geometry._ensureValidVertexBufferAccessor(accessor, index, semantic);;
+            this.accessors[semantic] = Geometry._ensureValidVertexBufferAccessor(buffer, accessor, index, semantic);;
         }
         buffer = this._ensureToBeVertexBuffer(buffer, option.usage, option.keepOnBuffer);
         this.buffers.push(buffer);
@@ -185,7 +189,7 @@ export default class Geometry {
      */
     private _ensureToBeIndexBuffer(buffer: Buffer | BufferSource | number[] | undefined, type: number): Buffer | undefined {
         if (buffer === undefined) {
-            return buffer;
+            return undefined;
         }
         if (!(buffer instanceof Buffer)) {
             let bufferSource = buffer;
@@ -210,12 +214,12 @@ export default class Geometry {
         this._accessorHashCache = HashCalculator.calcHash(hashSource);
     }
 
-    private static _ensureValidVertexBufferAccessor(accessor: Options<GeometryVertexBufferAccessor>, index: number, semantic: string): GeometryVertexBufferAccessor {
+    private static _ensureValidVertexBufferAccessor(buffer: GrimoireBufferSource, accessor: Options<GeometryVertexBufferAccessor>, index: number, semantic: string): GeometryVertexBufferAccessor {
         if (accessor.size === void 0) {
             throw new Error(`Accessor specified with the semantics "${semantic}" is not containing size as paranmeter.`);
         }
         let result = {
-            type: WebGLRenderingContext.FLOAT,
+            type: Geometry._suggestVertexAttributeTypeFromBuffer(buffer),
             offset: 0,
             normalized: false,
             bufferIndex: index, // This property is determined by Geometry automatically.
@@ -270,6 +274,13 @@ export default class Geometry {
             return source.length;
         }
         throw new Error(`Can't fetch length of buffer from specified resource`);
+    }
+
+    private static _suggestVertexAttributeTypeFromBuffer(buffer: GrimoireBufferSource): number {
+        if (Array.isArray(buffer) || buffer instanceof Buffer || buffer instanceof ArrayBuffer) {
+            return WebGLRenderingContext.FLOAT;
+        }
+        return GLConstantUtility.getElementTypeFromTypedArrayConstructor((buffer as any).constructor);
     }
 }
 

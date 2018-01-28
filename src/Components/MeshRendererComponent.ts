@@ -66,11 +66,8 @@ export default class MeshRenderer extends Component implements IRenderable {
         return this._materialContainer.getDrawPriorty(vec3.sqrLen(this._priortyCalcCache.rawElements), technique); // Obtains distance between camera and center of aabb
     }
 
-    protected $awake(): void {
-        this.__bindAttributes();
-    }
-
     protected $mount(): void {
+        this.__bindAttributes();
         const transform = this.node.getComponent(Transform);
         const materialContainer = this.node.getComponent(MaterialContainer);
         const scene = this.node.getComponentInAncestor(Scene);
