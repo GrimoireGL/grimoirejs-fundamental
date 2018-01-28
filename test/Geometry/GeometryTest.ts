@@ -18,7 +18,7 @@ function createGeometry() {
 test("Geometry#addAttribute with single attribute", (t) => {
     {
         let { geometry, glMock } = createGeometry();
-        geometry.addAttributes([0, 1, 2, 3, 4, 5, 6, 7, 8], {
+        geometry.addAttributeBuffer([0, 1, 2, 3, 4, 5, 6, 7, 8], {
             POSITION: {
                 size: 3
             }
@@ -35,7 +35,7 @@ test("Geometry#addAttribute with single attribute", (t) => {
     }
     {
         let { geometry, glMock } = createGeometry();
-        geometry.addAttributes([0, 1, 2, 3, 4, 5, 6, 7, 8], {
+        geometry.addAttributeBuffer([0, 1, 2, 3, 4, 5, 6, 7, 8], {
             POSITION: {
                 size: 2, offset: 3, stride: 8, normalized: true
             }
@@ -52,7 +52,7 @@ test("Geometry#addAttribute with single attribute", (t) => {
     }
     {
         let { geometry, glMock } = createGeometry();
-        geometry.addAttributes(new Float32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
+        geometry.addAttributeBuffer(new Float32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
             POSITION: {
                 size: 3
             }
@@ -64,7 +64,7 @@ test("Geometry#addAttribute with single attribute", (t) => {
     }
     {
         let { geometry, glMock } = createGeometry();
-        geometry.addAttributes(new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
+        geometry.addAttributeBuffer(new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
             POSITION: {
                 size: 3
             }
@@ -76,7 +76,7 @@ test("Geometry#addAttribute with single attribute", (t) => {
     }
     {
         let { geometry, glMock } = createGeometry();
-        geometry.addAttributes(new Uint16Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
+        geometry.addAttributeBuffer(new Uint16Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
             POSITION: {
                 size: 3
             }
@@ -88,7 +88,7 @@ test("Geometry#addAttribute with single attribute", (t) => {
     }
     {
         let { geometry, glMock } = createGeometry();
-        geometry.addAttributes(new Uint32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
+        geometry.addAttributeBuffer(new Uint32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
             POSITION: {
                 size: 3
             }
@@ -100,7 +100,7 @@ test("Geometry#addAttribute with single attribute", (t) => {
     }
     {
         let { geometry, glMock } = createGeometry();
-        geometry.addAttributes(new Int8Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
+        geometry.addAttributeBuffer(new Int8Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
             POSITION: {
                 size: 3
             }
@@ -112,7 +112,7 @@ test("Geometry#addAttribute with single attribute", (t) => {
     }
     {
         let { geometry, glMock } = createGeometry();
-        geometry.addAttributes(new Int16Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
+        geometry.addAttributeBuffer(new Int16Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
             POSITION: {
                 size: 3
             }
@@ -124,7 +124,7 @@ test("Geometry#addAttribute with single attribute", (t) => {
     }
     {
         let { geometry, glMock } = createGeometry();
-        geometry.addAttributes(new Int32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
+        geometry.addAttributeBuffer(new Int32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
             POSITION: {
                 size: 3
             }
@@ -136,7 +136,7 @@ test("Geometry#addAttribute with single attribute", (t) => {
     }
     {
         let { geometry, glMock } = createGeometry();
-        geometry.addAttributes(new Int32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
+        geometry.addAttributeBuffer(new Int32Array([0, 1, 2, 3, 4, 5, 6, 7, 8]), {
             POSITION: {
                 size: 3,
                 type: WebGLRenderingContext.FLOAT

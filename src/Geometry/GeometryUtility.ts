@@ -222,44 +222,135 @@ export default class GeometryUtility {
     const ret = new Array(vdiv * hdiv * 8);
     for (let i = 0; i < vdiv; i++) {
       for (let j = 0; j < hdiv; j++) {
-        ret[8 * (vdiv * i + j) + 0] = center[0]
+        ret[8 * (hdiv * i + j) + 0] = center[0]
           + Math.sin(Math.PI * i / (vdiv - 1)) * (right[0] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[0] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
           - up[0] * Math.cos(Math.PI * i / (vdiv - 1));
-        ret[8 * (vdiv * i + j) + 1] = center[1]
+        ret[8 * (hdiv * i + j) + 1] = center[1]
           + Math.sin(Math.PI * i / (vdiv - 1)) * (right[1] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[1] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
           - up[1] * Math.cos(Math.PI * i / (vdiv - 1));
-        ret[8 * (vdiv * i + j) + 2] = center[2]
+        ret[8 * (hdiv * i + j) + 2] = center[2]
           + Math.sin(Math.PI * i / (vdiv - 1)) * (right[2] * Math.cos(2 * Math.PI * (j / (hdiv - 1)))
             + forward[2] * Math.sin(2 * Math.PI * (j / (hdiv - 1))))
           - up[2] * Math.cos(Math.PI * i / (vdiv - 1));
         const d = Math.pow(
-          ret[8 * (vdiv * i + j) + 0] * ret[8 * (vdiv * i + j) + 0] +
-          ret[8 * (vdiv * i + j) + 1] * ret[8 * (vdiv * i + j) + 1] +
-          ret[8 * (vdiv * i + j) + 2] * ret[8 * (vdiv * i + j) + 2], 0.5);
-        ret[8 * (vdiv * i + j) + 3] = ret[8 * (vdiv * i + j) + 0] / d;
-        ret[8 * (vdiv * i + j) + 4] = ret[8 * (vdiv * i + j) + 1] / d;
-        ret[8 * (vdiv * i + j) + 5] = ret[8 * (vdiv * i + j) + 2] / d;
-        ret[8 * (vdiv * i + j) + 6] = 1 - j / (hdiv - 1);
-        ret[8 * (vdiv * i + j) + 7] = i / (vdiv - 1);
+          ret[8 * (hdiv * i + j) + 0] * ret[8 * (hdiv * i + j) + 0] +
+          ret[8 * (hdiv * i + j) + 1] * ret[8 * (hdiv * i + j) + 1] +
+          ret[8 * (hdiv * i + j) + 2] * ret[8 * (hdiv * i + j) + 2], 0.5);
+        ret[8 * (hdiv * i + j) + 3] = ret[8 * (hdiv * i + j) + 0] / d;
+        ret[8 * (hdiv * i + j) + 4] = ret[8 * (hdiv * i + j) + 1] / d;
+        ret[8 * (hdiv * i + j) + 5] = ret[8 * (hdiv * i + j) + 2] / d;
+        ret[8 * (hdiv * i + j) + 6] = 1 - j / (hdiv - 1);
+        ret[8 * (hdiv * i + j) + 7] = i / (vdiv - 1);
       }
     }
     return ret;
   }
 
   public static sphereIndex(offset: number, vdiv: number, hdiv: number): number[] {
-    const ret: number[] = new Array(hdiv * vdiv * 6);
+    const ret: number[] = new Array((hdiv - 1) * (vdiv - 1) * 6);
     for (let i = 0; i < vdiv - 1; i++) {
       for (let j = 0; j < hdiv - 1; j++) {
-        ret[6 * (vdiv * j + i) + 0] = vdiv * i + j;
-        ret[6 * (vdiv * j + i) + 1] = vdiv * (i + 1) + j;
-        ret[6 * (vdiv * j + i) + 2] = vdiv * i + j + 1;
-        ret[6 * (vdiv * j + i) + 3] = vdiv * i + j + 1;
-        ret[6 * (vdiv * j + i) + 4] = vdiv * (i + 1) + j;
-        ret[6 * (vdiv * j + i) + 5] = vdiv * (i + 1) + j + 1;
+        ret[6 * ((hdiv - 1) * i + j) + 0] = hdiv * i + j;
+        ret[6 * ((hdiv - 1) * i + j) + 1] = hdiv * (i + 1) + j;
+        ret[6 * ((hdiv - 1) * i + j) + 2] = hdiv * i + j + 1;
+        ret[6 * ((hdiv - 1) * i + j) + 3] = hdiv * i + j + 1;
+        ret[6 * ((hdiv - 1) * i + j) + 4] = hdiv * (i + 1) + j;
+        ret[6 * ((hdiv - 1) * i + j) + 5] = hdiv * (i + 1) + j + 1;
       }
     }
     return ret;
+  }
+
+  public static cone(div: number): number[] {
+    const theta = div % 2 !== 0 ? Math.PI / div : 0;
+    const vertices = [].concat.apply([], [
+      GeometryUtility.circle([0, -0.5, 0], [0, -1, 0], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div),
+    ]);
+    const g = Math.cos(Math.PI / div) / 3;
+    const length = Math.sin(Math.PI / div) / Math.pow(3, 0.5) * 2;
+    const radius = Math.cos(Math.PI / div) - g;
+    const s = Math.PI / div;
+
+    for (let i = 0; i < div; i++) {
+      const step = s * (i * 2 + 1);
+      Array.prototype.push.apply(vertices, GeometryUtility.coneTriangle(
+        [-Math.sin(step) * radius, 0, -Math.cos(step) * radius],
+        [-Math.cos(Math.PI / 2 - step), 1, -Math.sin(Math.PI / 2 - step)],
+        [Math.sin(step) * radius, 1, Math.cos(step) * radius],
+        [-Math.cos(step) * length, 0, Math.sin(step) * length],
+        div,
+        i,
+      ));
+    }
+    return vertices;
+  }
+
+  public static coneIndex(div: number): number[] {
+    const os = div + 2;
+    const indices = [].concat.apply([], [
+      GeometryUtility.circleIndex(0, div),
+    ]);
+    for (let i = 0; i < div; i++) {
+      Array.prototype.push.apply(indices, GeometryUtility.triangleIndex(os + i * 3));
+    }
+    return indices;
+  }
+
+  public static cylinder(div: number): number[] {
+    const theta = div % 2 !== 0 ? Math.PI / div : 0;
+    const vertices = [].concat.apply([], [
+      GeometryUtility.circle([0, 1, 0], [0, 1, 0], [0, 0, -1], [1, 0, 0], div),
+      GeometryUtility.circle([0, -1, 0], [0, -1, 0], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div),
+    ]);
+    const length = Math.sin(Math.PI / div);
+    const radius = Math.cos(Math.PI / div);
+    const s = Math.PI / div;
+    for (let i = 0; i < div; i++) {
+      const step = s * (i * 2 + 1);
+      Array.prototype.push.apply(vertices, GeometryUtility.cylinderPlane(
+        [-Math.sin(step) * radius, 0, -Math.cos(step) * radius],
+        [-Math.sin(step), 0, -Math.cos(step)],
+        [0, 1, 0],
+        [-Math.cos(step) * length, 0, Math.sin(step) * length],
+        div, i));
+    }
+    return vertices;
+  }
+
+  public static cylinderIndex(div: number): number[] {
+    const os = div + 2;
+    const indices = [].concat.apply([], [
+      GeometryUtility.circleIndex(0, div),
+      GeometryUtility.circleIndex(os, div),
+    ]);
+    for (let i = 0; i < div; i++) {
+      Array.prototype.push.apply(indices, GeometryUtility.planeIndex(os * 2 + i * 4, 1, 1));
+    }
+    return indices;
+  }
+
+  public static cube(hdiv: number, vdiv: number): number[] {
+    const vertices = [].concat.apply([], [
+      GeometryUtility.plane([0, 0, 1], [0, 0, 1], [0, 1, 0], [1, 0, 0], hdiv, vdiv),
+      GeometryUtility.plane([0, 0, -1], [0, 0, -1], [0, 1, 0], [-1, 0, 0], hdiv, vdiv),
+      GeometryUtility.plane([0, 1, 0], [0, 1, 0], [0, 0, -1], [1, 0, 0], hdiv, vdiv),
+      GeometryUtility.plane([0, -1, 0], [0, -1, 0], [0, 0, -1], [-1, 0, 0], hdiv, vdiv),
+      GeometryUtility.plane([1, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, -1], hdiv, vdiv),
+      GeometryUtility.plane([-1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, 0, 1], hdiv, vdiv)]);
+    return vertices;
+  }
+
+  public static cubeIndex(hdiv: number, vdiv: number): number[] {
+    const os = (hdiv + 1) * (vdiv + 1);
+    const indices = [].concat.apply([], [
+      GeometryUtility.planeIndex(0, hdiv, vdiv),
+      GeometryUtility.planeIndex(os, hdiv, vdiv),
+      GeometryUtility.planeIndex(2 * os, hdiv, vdiv),
+      GeometryUtility.planeIndex(3 * os, hdiv, vdiv),
+      GeometryUtility.planeIndex(4 * os, hdiv, vdiv),
+      GeometryUtility.planeIndex(5 * os, hdiv, vdiv)]);
+    return indices;
   }
 }

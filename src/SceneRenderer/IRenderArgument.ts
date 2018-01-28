@@ -15,7 +15,6 @@ interface IRenderArgument {
   camera: CameraComponent;
   layer: string;
   viewport: Viewport;
-  material?: Material;
   materialArgs?: { [key: string]: any };
   sceneDescription: { [key: string]: any };
   rendererDescription: { [key: string]: any };

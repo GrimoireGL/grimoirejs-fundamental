@@ -181,7 +181,7 @@ export default class Transform extends HierarchycalComponentBase {
 
   protected $mount(): void {
     super.$mount();
-    this._parentTransform = this.node.parent!.getComponent(Transform);
+    this._parentTransform = this.node.parent!.getComponent(Transform, false);
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
     }

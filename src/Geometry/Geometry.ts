@@ -9,6 +9,7 @@ import HashCalculator from "../Util/HashCalculator";
 import IndexBufferInfo from "./IndexBufferInfo";
 import VertexBufferAccessor from "./VertexBufferAccessor";
 import Options from "../Util/Options";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 
 export interface GeometryVertexBufferAccessor extends VertexBufferAccessor {
     bufferIndex: number;
@@ -25,6 +26,26 @@ export interface IndexBufferUploadOptions {
     offset: number;
     count: number;
     type: number;
+}
+
+export interface ReactiveAttributeBufferDeclaration {
+    bufferIndex: number;
+    dependentAttributes: string[];
+    generator: ReactiveAttributeGenerator | ReactiveIndexGenerator;
+    isIndex: boolean;
+}
+
+export interface ReactiveAttributeGenerator {
+    (buffer: Buffer, attributes: { [key: string]: any }): ReactiveAttributeGenerationResult
+}
+
+export interface ReactiveAttributeGenerationResult {
+    accessors: { [semantcis: string]: Options<VertexBufferAccessor> };
+    opt?: Options<VertexBufferUploadOptions>;
+}
+
+export interface ReactiveIndexGenerator {
+    (buffer: Buffer, attributes: { [key: string]: any }): Options<IndexBufferUploadOptions>;
 }
 
 export type GrimoireBufferSource = number[] | BufferSource | Buffer;
@@ -100,6 +121,10 @@ export default class Geometry {
 
     public accessors: { [semantics: string]: GeometryVertexBufferAccessor } = {};
 
+    public reactiveAttributes: { [key: string]: any } = {};
+
+    public reactiveAttributeBufferDeclarations: ReactiveAttributeBufferDeclaration[] = [];
+
     public aabb: AABB = new AABB([Vector3.Zero]);
 
     private instanciator: IGLInstancedArrayInterface;
@@ -112,7 +137,55 @@ export default class Geometry {
         // this.instanciator = GLExtRequestor.get(gl).extensions["ANGLE_instanced_arrays"];
     }
 
-    public addAttributes(buffer: GrimoireBufferSource, accessors: { [semantcis: string]: Options<VertexBufferAccessor> }, opt?: Options<VertexBufferUploadOptions>): void {
+    public declareReactiveAttribute(key: string, defaultValue: any): void {
+        if (defaultValue === undefined) {
+            throw new Error("Reactive attribute can't take undefined as a value");
+        }
+        this.reactiveAttributes[key] = defaultValue;
+    }
+
+    public setReactiveAttribute(key: string, value: any): void {
+        if (value === undefined) {
+            throw new Error("Reactive attribute can't take undefined as a value");
+        }
+        if (this.reactiveAttributes[key] === void 0) {
+            throw new Error(`Specified reactive attribute "${key}" is not existing.`);
+        }
+        this.reactiveAttributes[key] = value;
+        this.reactiveAttributeBufferDeclarations.forEach(raDecl => {
+            if (raDecl.dependentAttributes.includes(key)) {
+                this._callReactiveUpdator(raDecl);
+            }
+        });
+    }
+
+    public addReactiveAttributeBuffer(dependentReactiveAttributes: string[], generator: ReactiveAttributeGenerator): void {
+        const buffer = new Buffer(this.gl, WebGLRenderingContext.ARRAY_BUFFER);
+        const raDecl = {
+            bufferIndex: this.buffers.length,
+            dependentAttributes: dependentReactiveAttributes,
+            generator,
+            isIndex: false
+        };
+        this.reactiveAttributeBufferDeclarations.push(raDecl);
+        this.buffers.push(buffer);
+        this._callReactiveUpdator(raDecl);
+    }
+
+    public addReactiveIndexBuffer(dependentReactiveAttributes: string[], generator: ReactiveIndexGenerator): void {
+        const buffer = new Buffer(this.gl, WebGLRenderingContext.ELEMENT_ARRAY_BUFFER);
+        const raDecl = {
+            bufferIndex: this.buffers.length,
+            dependentAttributes: dependentReactiveAttributes,
+            generator,
+            isIndex: true
+        };
+        this.reactiveAttributeBufferDeclarations.push(raDecl);
+        this.buffers.push(buffer);
+        this._callReactiveUpdator(raDecl);
+    }
+
+    public addAttributeBuffer(buffer: GrimoireBufferSource, accessors: { [semantcis: string]: Options<VertexBufferAccessor> }, opt?: Options<VertexBufferUploadOptions>): void {
         const option = Geometry._ensureValidVertexBufferUploadOptions(accessors, opt);
         const index = this.buffers.length;
         for (const semantic in accessors) {
@@ -124,6 +197,8 @@ export default class Geometry {
         this._recalculateAccsessorHash();
     }
 
+
+
     /**
      * add new index buffer to this geometry.
      * @param {string}                       indexName [description]
@@ -134,7 +209,7 @@ export default class Geometry {
      * @param {number                    =         0}                               type     [description]
      */
     // public addIndex(indexName: string, instanceCount: number, buffer: Buffer | number[] | BufferSource, topology?: number, offset?: number, count?: number, type?: number): void;
-    public addIndex(buffer?: GrimoireBufferSource, opt?: Options<IndexBufferUploadOptions>): void {
+    public addIndexBuffer(buffer?: GrimoireBufferSource, opt?: Options<IndexBufferUploadOptions>): void {
         const option = Geometry._ensureValidIndexBufferUploadOptions(buffer, opt);
         buffer = this._ensureToBeIndexBuffer(buffer, option.type);
         this.indices[option.semantic ? option.semantic : "@@WITHOUT_INDEX"] = {
@@ -162,6 +237,29 @@ export default class Geometry {
         geometry.indices = { ...this.indices };
         geometry.aabb = new AABB([this.aabb.pointLBF, this.aabb.pointRTN]);
         return geometry;
+    }
+
+    private _callReactiveUpdator(raDecl: ReactiveAttributeBufferDeclaration): void {
+        const buffer = this.buffers[raDecl.bufferIndex];
+        if (raDecl.isIndex) {
+            const generated = (raDecl.generator as ReactiveIndexGenerator)(buffer, this.reactiveAttributes);
+            const option = Geometry._ensureValidIndexBufferUploadOptions(buffer, generated);
+            this.indices[option.semantic ? option.semantic : "@@WITHOUT_INDEX"] = {
+                byteOffset: option.offset,
+                byteSize: GLConstantUtility.getElementByteSize(option.type),
+                type: option.type,
+                topology: option.topology,
+                count: option.count,
+                index: this.buffers[raDecl.bufferIndex]
+            };
+        } else {
+            const generated = (raDecl.generator as ReactiveAttributeGenerator)(buffer, this.reactiveAttributes);
+            const option = Geometry._ensureValidVertexBufferUploadOptions(generated.accessors, generated.opt);
+            for (const semantic in generated.accessors) {
+                let accessor = generated.accessors[semantic] as Options<GeometryVertexBufferAccessor>;
+                this.accessors[semantic] = Geometry._ensureValidVertexBufferAccessor(buffer, accessor, raDecl.bufferIndex, semantic);;
+            }
+        }
     }
 
     /**

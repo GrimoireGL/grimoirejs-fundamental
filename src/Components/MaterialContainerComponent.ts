@@ -24,7 +24,7 @@ export default class MaterialContainer extends MaterialContainerBase {
      */
     material: {
       converter: MaterialConverter,
-      default: "new(basic-shading)"
+      default: "new(unlit)"
     },
     /**
      * 描画順序

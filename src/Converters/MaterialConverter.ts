@@ -13,13 +13,12 @@ import { createMaterialResolutionResult, default as IMaterialResolutionResult } 
  */
 export const MaterialConverter = {
   name: "Material",
-  convert(val: any, attr: Attribute): Promise<IMaterialResolutionResult> | null {
+  async convert(val: any, attr: Attribute): Promise<IMaterialResolutionResult | null> {
     if (typeof val === "string") {
       const regex = /\s*new\s*\(\s*([a-zA-Z\d\-]+)\s*\)/;
       let regexResult: RegExpExecArray | null;
       if (regexResult = regex.exec(val)) { // new material should be instanciated for this material
-        const gl = attr.companion!.get("gl")!;
-        return createMaterialResolutionResult(MaterialFactory.get(gl).instanciate(regexResult[1]), false)
+        return createMaterialResolutionResult(MaterialFactory.get(await attr.companion!.waitFor("gl")!).instanciate(regexResult[1]), false)
       } else {
         const node = attr.tree!(val).first();
         if (node) {

@@ -101,6 +101,11 @@ export default class GLConstantUtility {
         throw new Error(`Suitable element type was not found since ${count} is too large for WebGL buffer`);
     }
 
+    public static getSuitableElementTypeFromIndexArray(indexArray: number[]): number {
+        const max = Math.max(...indexArray);
+        return GLConstantUtility.getSuitableElementTypeFromCount(max);
+    }
+
     /**
      * Count element of specified gl format.
      * @param format
