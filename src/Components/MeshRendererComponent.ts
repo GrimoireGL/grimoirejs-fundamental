@@ -43,23 +43,7 @@ export default class MeshRenderer extends Component implements IRenderable {
         layer: {
             converter: "String",
             default: "default",
-        },
-        /**
-         * 描画するインデックスの個数
-         *
-         * デフォルトの状態でジオメトリの全インデックスを描画する
-         */
-        drawCount: {
-            converter: "Number",
-            default: Number.MAX_VALUE,
-        },
-        /**
-         * 描画するジオメトリのインデックスのオフセット
-         */
-        drawOffset: {
-            converter: "Number",
-            default: 0,
-        },
+        }
     };
 
     public index: number;
@@ -67,8 +51,6 @@ export default class MeshRenderer extends Component implements IRenderable {
     public geometry: Geometry;
     private indexGroup: string;
     private layer: string;
-    private drawOffset: number;
-    private drawCount: number;
     private _materialContainer: MaterialContainer;
     private _transformComponent: Transform;
     private _containedScene: Scene;
@@ -125,8 +107,6 @@ export default class MeshRenderer extends Component implements IRenderable {
             camera: args.camera,
             transform: this._transformComponent,
             viewport: args.viewport,
-            drawCount: this.drawCount,
-            drawOffset: this.drawOffset,
             sceneDescription: args.sceneDescription,
             rendererDescription: args.rendererDescription,
             technique: args.technique,

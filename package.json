@@ -1,6 +1,6 @@
 {
   "name": "grimoirejs-fundamental",
-  "version": "0.38.0-beta11",
+  "version": "0.38.0-beta12",
   "description": "Base components,converters and nodes for Web3D with Grimoire.js",
   "main": "./ref/index.js",
   "typings": "./ref/index.d.ts",
@@ -32,7 +32,7 @@
     "condition-circle": "^1.6.0",
     "cpx": "^1.5.0",
     "deflate-js": "^0.2.3",
-    "grimoirejs": "^1.0.9-beta23",
+    "grimoirejs": "^1.0.9-beta25",
     "grimoirejs-cauldron": "^4.2.0-beta1",
     "grimoirejs-math": "^2.1.0-beta4",
     "http-server": "^0.10.0",
