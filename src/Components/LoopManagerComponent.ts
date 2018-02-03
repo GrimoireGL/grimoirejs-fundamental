@@ -73,17 +73,22 @@ export default class LoopManager extends Component {
     this._loopActions.sort((a, b) => a.priorty - b.priorty);
   }
 
-  private _begin(): void {
-    this._registerNextLoop();
-  }
-
-  private _loop(): void {
-    if (this._timer.internalUpdate()) {
+  public tick(followFPSRestriction: boolean = true): void {
+    if (this._timer.internalUpdate() || !followFPSRestriction) {
       this.node.emit("loop", {
         timer: this._timer,
       });
       this._loopActions.forEach((a) => a.action(this._timer));
     }
+  }
+
+  private _begin(): void {
     this._registerNextLoop();
   }
+
+  private _loop(): void {
+    this.tick();
+    this._registerNextLoop();
+  }
+
 }

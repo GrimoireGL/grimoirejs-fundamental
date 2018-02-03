@@ -49,11 +49,6 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
     this.metadata.type = "scene";
     this.getAttributeRaw(RenderSceneComponent.attributes.layer)!.bindTo("layer");
     this.getAttributeRaw(RenderSceneComponent.attributes.technique)!.bindTo("technique");
-    const y = this.getAttributeRaw(RenderSceneComponent.attributes.camera)!
-    this.getAttributeRaw(RenderSceneComponent.attributes.camera)!.watch((cam: Nullable<CameraComponent>) => {
-      this.metadata.camera = cam ? cam.node.id : null;
-      this.camera = cam;
-    }, true);
     this.getAttributeRaw(RenderSceneComponent.attributes.technique)!.watch((t: Nullable<string>) => {
       this.metadata.technique = t;
     }, true);
@@ -67,16 +62,21 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
   }
 
   protected $renderRenderStage(args: IRenderRendererMessage): void {
-    if (!this.camera) {
+    if (this.getAttributeRaw("camera").isPending || !this.camera) {
       return;
     }
     if (!this.__beforeRender()) {
       return;
     }
-    this.camera.updateContainedScene(args.timer);
-    this.camera.renderScene({
+    //TODO: fix this should not resolved every time
+    this.camera = this.getAttribute("camera");
+    if (!this.camera) {
+      return;
+    }
+    this.camera!.updateContainedScene(args.timer);
+    this.camera!.renderScene({
       renderer: this,
-      camera: this.camera,
+      camera: this.camera!,
       layer: this.layer,
       viewport: this.out.getViewport(),
       timer: args.timer,

@@ -20,9 +20,9 @@ export const RenderingTargetConverter = {
                 if (!renderer) {
                     throw new Error(`Can't retrive default rendering target from renderer tag`);
                 }
-                return renderer.renderingTarget;
+                return await renderer.renderingTarget;
             } else {
-                const renderingTarget = RenderingTargetRegistry.get(attr.companion!.get("gl")!).getRenderingTarget(val);
+                const renderingTarget = RenderingTargetRegistry.get(await attr.companion!.waitFor("gl")).getRenderingTarget(val);
                 if (renderingTarget) {
                     return renderingTarget;
                 }

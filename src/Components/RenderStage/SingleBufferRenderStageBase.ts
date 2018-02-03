@@ -58,7 +58,7 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
         if (!super.__beforeRender()) {
             return false;
         }
-        if (!this.out) {
+        if (this.getAttributeRaw("out").isPending || !this.out) {
             return false;
         }
         let clearFlag = 0;
