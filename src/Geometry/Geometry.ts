@@ -359,14 +359,17 @@ export default class Geometry {
             topology: WebGLRenderingContext.TRIANGLES,
             offset: 0,
             count,
-            type: GLConstantUtility.getSuitableElementTypeFromCount(count),
+            type: GLConstantUtility.getSuitableIntegerElementTypeFromMaximum(count),
             ...opt
         };
     }
 
     private static _getGrimoireBufferSourceCount(source: GrimoireBufferSource): number {
         if (source instanceof Buffer) {
-            throw new Error(`Can't fetch length of buffer from fundamental.Resource.Buffer`);
+            if (!source.length) {
+                throw new Error(`Specified buffer has no length information. Have you called update before using in geometry?`);
+            }
+            return source.length;
         }
         if (Array.isArray(source)) {
             return source.length;
@@ -375,8 +378,14 @@ export default class Geometry {
     }
 
     private static _suggestVertexAttributeTypeFromBuffer(buffer: GrimoireBufferSource): number {
-        if (Array.isArray(buffer) || buffer instanceof Buffer || buffer instanceof ArrayBuffer) {
+        if (Array.isArray(buffer) || buffer instanceof ArrayBuffer) {
             return WebGLRenderingContext.FLOAT;
+        }
+        if (buffer instanceof Buffer) {
+            if (!buffer.elementType) {
+                throw new Error(`Specified buffer has no elementType information. Have you called update before using in geometry?`);
+            }
+            return buffer.elementType;
         }
         return GLConstantUtility.getElementTypeFromTypedArrayConstructor((buffer as any).constructor);
     }
