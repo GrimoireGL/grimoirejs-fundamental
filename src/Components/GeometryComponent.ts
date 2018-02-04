@@ -3,7 +3,7 @@ import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclar
 import Geometry from "../Geometry/Geometry";
 import GeometryFactory from "../Geometry/GeometryFactory";
 import GeometryRegistry from "./GeometryRegistryComponent";
-import { Attribute } from "grimoirejs/ref/Core/Attribute";
+import { Attribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute";
 import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 
 /**
@@ -46,10 +46,14 @@ export default class GeometryComponent extends Component {
             const attrs = GeometryFactory.factoryArgumentDeclarations[type];
             const geometryArgument = {} as { [key: string]: Attribute };
             for (const key in attrs) {
-                this.__addAttribute(key, attrs[key]);
+                const attr = this.__addAttribute(key, attrs[key]);
                 geometryArgument[key] = this.getAttribute(key);
             }
             const generator = gf.instanciate(type, geometryArgument);
+            for (const key in attrs) {
+                const attr = this.getAttributeRaw(key) as StandardAttribute<any>;
+                attr.watch(async (v: any) => (await this.geometry).setReactiveAttribute(key, v));
+            }
             const gr = this.companion.get("GeometryRegistry") as GeometryRegistry;
             const name = this.getAttribute("name");
             if (!name) {

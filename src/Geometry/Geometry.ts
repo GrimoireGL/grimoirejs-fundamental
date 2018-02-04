@@ -121,8 +121,6 @@ export default class Geometry {
 
     public accessors: { [semantics: string]: GeometryVertexBufferAccessor } = {};
 
-    public reactiveAttributes: { [key: string]: any } = {};
-
     public reactiveAttributeBufferDeclarations: ReactiveAttributeBufferDeclaration[] = [];
 
     public aabb: AABB = new AABB([Vector3.Zero]);
@@ -131,7 +129,7 @@ export default class Geometry {
 
     private _accessorHashCache = 0;
 
-    constructor(public gl: WebGLRenderingContext) {
+    constructor(public gl: WebGLRenderingContext, public reactiveAttributes: { [key: string]: any } = {}) {
         // TODO: Migrate all instanciated geometries
         // GLExtRequestor.request("ANGLE_instanced_arrays", true);
         // this.instanciator = GLExtRequestor.get(gl).extensions["ANGLE_instanced_arrays"];
@@ -141,7 +139,9 @@ export default class Geometry {
         if (defaultValue === undefined) {
             throw new Error("Reactive attribute can't take undefined as a value");
         }
-        this.reactiveAttributes[key] = defaultValue;
+        if (!this.reactiveAttributes[key]) {
+            this.reactiveAttributes[key] = defaultValue;
+        }
     }
 
     public setReactiveAttribute(key: string, value: any): void {

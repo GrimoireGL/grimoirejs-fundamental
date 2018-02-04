@@ -49,7 +49,7 @@ export default class GeometryFactory extends GLRelatedRegistryBase {
     if (!factoryDelegate) {
       throw new Error(`Can not instanciate unknown geometry type ${type}`);
     }
-    const geometry = new Geometry(this.gl);
+    const geometry = new Geometry(this.gl, args);
     await factoryDelegate(geometry);
     return geometry;
   }
