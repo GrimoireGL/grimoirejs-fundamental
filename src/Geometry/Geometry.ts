@@ -35,16 +35,34 @@ export interface ReactiveAttributeBufferDeclaration {
     isIndex: boolean;
 }
 
+/** 
+ * ReactiveAttributeGenerator will update buffer of Geometry when dependent reactive attributes are changed.
+ * Generator needs to update buffer passed as 1st arguments by using attributes passed as 2nd argument.
+ * Generator also needs to return ReactiveAttributeGenerationResult for accseessor information and VertexBufferUploadOption.
+*/
 export interface ReactiveAttributeGenerator {
     (buffer: Buffer, attributes: { [key: string]: any }): ReactiveAttributeGenerationResult
 }
-
+/** 
+ * Result of ReactiveAttributeGenerator.
+*/
 export interface ReactiveAttributeGenerationResult {
+    /** 
+     * Accessor of buffers.
+    */
     accessors: { [semantcis: string]: Options<VertexBufferAccessor> };
+    /** 
+     * Option of vertex buffer upload option.
+    */
     opt?: Options<VertexBufferUploadOptions>;
 }
 
 export interface ReactiveIndexGenerator {
+    /** 
+ * ReactiveIndexGenerator will update buffer of Geometry when dependent reactive attributes are changed.
+ * Generator needs to update buffer passed as 1st arguments by using attributes passed as 2nd argument.
+ * Generator also needs to return Option<IndexBufferUploadOptions>
+*/
     (buffer: Buffer, attributes: { [key: string]: any }): Options<IndexBufferUploadOptions>;
 }
 
@@ -112,20 +130,32 @@ export default class Geometry {
         return this._accessorHashCache;
     }
     /**
-     * Vertex buffer
+     * Buffers used in this geometry.
+     * Buffer indices can be found on bufferIndex attribute in GeonetryVertexBufferAccessor or IndexBufferInfo
      * @type {Buffer[]}
      */
     public buffers: Buffer[] = [];
 
+    /**
+     * Index buffer accessing information.
+     * This information will be used for each time to be rendered.
+     * You shouldn't write directly to this field. Use addIndexBuffer or addReactiveIndexBuffer instead.
+     */
     public indices: { [geometryType: string]: IndexBufferInfo } = {};
 
+    /**
+     * Vertex buffer accessor information
+     * You shouln't write directly to this field. Use addVertexBuffer or addReactiveVertexBuffer instead.
+     */
     public accessors: { [semantics: string]: GeometryVertexBufferAccessor } = {};
 
+    /**
+     * Declarations of reactive attributes.
+     * You shouldn't write directly to this field. Use addReactiveAttributeBuffer instead.
+     */
     public reactiveAttributeBufferDeclarations: ReactiveAttributeBufferDeclaration[] = [];
-
+    // TODO: Update aabb correctly
     public aabb: AABB = new AABB([Vector3.Zero]);
-
-    private instanciator: IGLInstancedArrayInterface;
 
     private _accessorHashCache = 0;
 
@@ -135,6 +165,12 @@ export default class Geometry {
         // this.instanciator = GLExtRequestor.get(gl).extensions["ANGLE_instanced_arrays"];
     }
 
+    /**
+     * Define an attribute of geometry with default value.
+     * This must be called before using this value in addReactiveAttributeBuffer or addReactiveIndexBuffer
+     * @param key Name of geometry attribute
+     * @param defaultValue value of default value
+     */
     public declareReactiveAttribute(key: string, defaultValue: any): void {
         if (defaultValue === undefined) {
             throw new Error("Reactive attribute can't take undefined as a value");
@@ -143,22 +179,49 @@ export default class Geometry {
             this.reactiveAttributes[key] = defaultValue;
         }
     }
-
+    /**
+     * Assign reactive attribute manually.
+     * This method can invoke updating geometry.(Can be heavy if you call this method frequently)
+     * If you want to assign 2 or more attribute at 1 time, you should use setReactiveAttributes instead.
+     * @param key Key of reactive attribute
+     * @param value value to assign
+     */
     public setReactiveAttribute(key: string, value: any): void {
-        if (value === undefined) {
-            throw new Error("Reactive attribute can't take undefined as a value");
+        this.setReactiveAttributes({ [key]: value });
+    }
+
+    /**
+     * Assign group of attribute manually.
+     * This method can invoke updating geometry.(Can be heavy if you call this method frequently)
+     * @param args 
+     */
+    public setReactiveAttributes(args: { [key: string]: any }): void {
+        const updatableAttributes: string[] = [];
+        for (const key in args) {
+            const value = args[key];
+            if (this.reactiveAttributes[key] === void 0) {
+                throw new Error(`Specified reactive attribute "${key}" is not existing.`);
+            }
+            if (value === void 0 || this.reactiveAttributes[key] === value) {
+                continue;
+            }
+            this.reactiveAttributes[key] = value;
+            updatableAttributes.push(key);
         }
-        if (this.reactiveAttributes[key] === void 0) {
-            throw new Error(`Specified reactive attribute "${key}" is not existing.`);
-        }
-        this.reactiveAttributes[key] = value;
         this.reactiveAttributeBufferDeclarations.forEach(raDecl => {
-            if (raDecl.dependentAttributes.includes(key)) {
+            if (raDecl.dependentAttributes.filter(a => updatableAttributes.includes(a)).length > 0) {
                 this._callReactiveUpdator(raDecl);
             }
         });
     }
 
+    /**
+     * Add reactive attribute buffer.
+     * Geometry will call generator function if dependentReactiveAttributes value was changed.
+     * Generator will be called at registering timing.
+     * @param dependentReactiveAttributes array of attribute names to rise updating buffer
+     * @param generator generator of reactive attribute generator.
+     */
     public addReactiveAttributeBuffer(dependentReactiveAttributes: string[], generator: ReactiveAttributeGenerator): void {
         const buffer = new Buffer(this.gl, WebGLRenderingContext.ARRAY_BUFFER);
         const raDecl = {
@@ -172,6 +235,13 @@ export default class Geometry {
         this._callReactiveUpdator(raDecl);
     }
 
+    /**
+     * Add reactive index buffer.
+     * Geometry will call generator function if dependentReactiveAttributes value was changed.
+     * Generator will be called at registering timing.
+     * @param dependentReactiveAttributes array of attribute names to rise updating buffer
+     * @param generator generator of reactive attribute generator.
+     */
     public addReactiveIndexBuffer(dependentReactiveAttributes: string[], generator: ReactiveIndexGenerator): void {
         const buffer = new Buffer(this.gl, WebGLRenderingContext.ELEMENT_ARRAY_BUFFER);
         const raDecl = {
@@ -239,6 +309,10 @@ export default class Geometry {
         return geometry;
     }
 
+    /**
+     * Call reactive updator for buffers.
+     * @param raDecl 
+     */
     private _callReactiveUpdator(raDecl: ReactiveAttributeBufferDeclaration): void {
         const buffer = this.buffers[raDecl.bufferIndex];
         if (raDecl.isIndex) {
