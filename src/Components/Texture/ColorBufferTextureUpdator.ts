@@ -1,7 +1,9 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import RenderingBufferResourceRegistry from "../../Resource/RenderingTarget/RenderingBufferResourceRegistry";
+import Texture2D from "../../Resource/Texture2D";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
-export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBase {
+export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBase<Texture2D> {
+  public static componentName = "ColorBufferTextureUpdator";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     name: {
       converter: "String",
@@ -37,7 +39,7 @@ export default class ColorBufferTextureUpdator extends TextureUpdatorComponentBa
     },
   };
 
-  public $awake(): void {
+  protected $awake(): void {
     super.$awake();
     const name = this.getAttribute("name");
     const format = this.getAttribute("format");

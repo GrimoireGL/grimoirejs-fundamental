@@ -1,8 +1,9 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Material from "../Material/Material";
 import MaterialFactory from "../Material/MaterialFactory";
 import MaterialContainerBase from "./MaterialContainerBase";
 export default class MaterialComponent extends MaterialContainerBase {
+    public static componentName = "Material"
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         type: {
             converter: "String",
@@ -16,9 +17,7 @@ export default class MaterialComponent extends MaterialContainerBase {
 
     public ready: boolean;
 
-    public materialArgs: { [key: string]: any } = {};
-
-    public $mount(): void {
+    protected $mount(): void {
         const typeName = this.getAttribute("type");
         if (typeName && typeof typeName === "string") {
             const materialFactory = MaterialFactory.get(this.companion.get("gl"));

@@ -99,14 +99,13 @@ export default {
     state.functions.polygonOffset = asNumberArgs(args, 2);
     state.enable.push(WebGLRenderingContext.POLYGON_OFFSET_FILL);
   },
-  Scissor(state: IState, args: string[]) {
-    state.functions.scissor = asNumberArgs(args, 4);
-    state.enable.push(WebGLRenderingContext.SCISSOR_TEST);
-  },
   ExposeMacro() {
     return;
   },
   ReferMacro() {
+    return;
+  },
+  Extension() {
     return;
   },
   DynamicState(state: IState, args: string[]) {

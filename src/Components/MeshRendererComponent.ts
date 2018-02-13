@@ -1,15 +1,16 @@
+import grimoirejs from "grimoirejs";
 import GLM from "grimoirejs-math/ref/GLM";
-import Component from "grimoirejs/ref/Node/Component";
-import GomlNode from "grimoirejs/ref/Node/GomlNode";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import GomlNode from "grimoirejs/ref/Core/GomlNode";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Geometry from "../Geometry/Geometry";
 import IMaterialArgument from "../Material/IMaterialArgument";
 import IRenderable from "../SceneRenderer/IRenderable";
 import IRenderArgument from "../SceneRenderer/IRenderArgument";
 import CameraComponent from "./CameraComponent";
-import MaterialContainerComponent from "./MaterialContainerComponent";
-import SceneComponent from "./SceneComponent";
-import TransformComponent from "./TransformComponent";
+import MaterialContainer from "./MaterialContainerComponent";
+import Scene from "./SceneComponent";
+import Transform from "./TransformComponent";
 const { vec3 } = GLM;
 
 /**
@@ -17,15 +18,15 @@ const { vec3 } = GLM;
  * このメッシュが、対象となるノードの`Transform`や描画に用いる`Camera`、マテリアルなどを考慮して実際のレンダリングを行います。
  */
 export default class MeshRenderer extends Component implements IRenderable {
-
+    public static componentName = "MeshRenderer";
     /**
    * Find scene tag recursively.
    * @param  {GomlNode}       node [the node to searching currently]
-   * @return {SceneComponent}      [the scene component found]
+   * @return {Scene}      [the scene component found]
    */
-    private static _findContainedScene(node: GomlNode): SceneComponent {
+    private static _findContainedScene(node: GomlNode): Scene {
         if (node.parent) {
-            const scene = node.parent.getComponent(SceneComponent);
+            const scene = node.parent.getComponent(Scene);
             if (scene) {
                 return scene;
             } else {
@@ -86,14 +87,14 @@ export default class MeshRenderer extends Component implements IRenderable {
     private layer: string;
     private drawOffset: number;
     private drawCount: number;
-    private _materialContainer: MaterialContainerComponent;
-    private _transformComponent: TransformComponent;
-    private _containedScene: SceneComponent;
+    private _materialContainer: MaterialContainer;
+    private _transformComponent: Transform;
+    private _containedScene: Scene;
 
     private _priortyCalcCache = new Float32Array(3);
 
     public getRenderingPriorty(camera: CameraComponent, technique: string): number {
-        if (!this.geometryInstance) {
+        if (!this.geometryInstance || !this._materialContainer.material.techniques[technique]) {
             return Number.NEGATIVE_INFINITY;
         }
         vec3.add(this._priortyCalcCache, camera.transform.globalPosition.rawElements, this.geometryInstance.aabb.Center.rawElements);
@@ -101,22 +102,22 @@ export default class MeshRenderer extends Component implements IRenderable {
         return this._materialContainer.getDrawPriorty(vec3.sqrLen(this._priortyCalcCache), technique); // Obtains distance between camera and center of aabb
     }
 
-    public $awake(): void {
+    protected $awake(): void {
         this.__bindAttributes();
-        this.getAttributeRaw("geometry").watch(async() => {
+        this.getAttributeRaw("geometry").watch(async () => {
             this.geometryInstance = await this.geometry;
         }, true);
     }
 
-    public $mount(): void {
-        this._transformComponent = this.node.getComponent(TransformComponent);
-        this._materialContainer = this.node.getComponent(MaterialContainerComponent);
+    protected $mount(): void {
+        this._transformComponent = this.node.getComponent(Transform);
+        this._materialContainer = this.node.getComponent(MaterialContainer);
         this._containedScene = MeshRenderer._findContainedScene(this.node);
-        this._containedScene.queueRegistory.addRenderable(this);
+        this._containedScene.queueRegistry.addRenderable(this);
     }
 
-    public $unmount(): void {
-        this._containedScene.queueRegistory.removeRenderable(this);
+    protected $unmount(): void {
+        this._containedScene.queueRegistry.removeRenderable(this);
     }
 
     public render(args: IRenderArgument): void {
@@ -127,6 +128,7 @@ export default class MeshRenderer extends Component implements IRenderable {
             return; // material is not instanciated yet.
         }
         const renderArgs = {
+            hierarchicalDescription: this._transformComponent.hierarchicalDescription,
             indexGroup: this.indexGroup,
             geometry: this.geometryInstance,
             camera: args.camera,
@@ -139,6 +141,9 @@ export default class MeshRenderer extends Component implements IRenderable {
             technique: args.technique,
             renderable: this,
         } as IMaterialArgument;
+        if (grimoirejs.debug && window["spector"]) {
+            window["spector"].setMarker(`Mesh renderer:${this.node.id}`);
+        }
         this._materialContainer.material.draw(renderArgs);
         this.node.emit("render", args);
     }

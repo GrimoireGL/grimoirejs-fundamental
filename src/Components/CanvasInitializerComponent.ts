@@ -1,7 +1,7 @@
-import Namespace from "grimoirejs/ref/Base/Namespace";
-import gr from "grimoirejs/ref/Interface/GrimoireInterface";
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Namespace from "grimoirejs/ref/Core/Namespace";
+import gr from "grimoirejs/ref/Core/GrimoireInterface";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import CanvasSizeObject from "../Objects/CanvasSizeObject";
 import GLExtRequestor from "../Resource/GLExtRequestor";
 import Texture2D from "../Resource/Texture2D";
@@ -19,6 +19,7 @@ enum ResizeMode {
  * このコンポーネントによって、適切な位置に`<canvas>`を初期化してWebGLコンテキストを初期化します。
  */
 export default class CanvasInitializerComponent extends Component {
+  public static componentName = "CanvasInitializer";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * キャンバスタグの横幅を指定します。
@@ -87,7 +88,7 @@ export default class CanvasInitializerComponent extends Component {
   // Ratio of aspect
   private _ratio: number;
 
-  public $awake(): void {
+  protected $awake(): void {
     this._scriptTag = this.companion.get("scriptElement");
     if (this._isContainedInBody(this._scriptTag)) {
       // canvas should be placed siblings of the script tag
@@ -108,6 +109,10 @@ export default class CanvasInitializerComponent extends Component {
     this.getAttributeRaw("preserveDrawingBuffer").watch(() => {
       console.warn("Changing preserveDrawingBuffer attribute is not supported. This is only works when the canvas element created.");
     });
+  }
+
+  public notifySizeChanged(): void {
+    this._onWindowResize();
   }
 
   /**
@@ -154,13 +159,13 @@ export default class CanvasInitializerComponent extends Component {
   private _onWindowResize(supressBroadcast?: boolean): void {
     const size = this._getParentSize();
     if (this._widthMode === ResizeMode.Fit) {
-      this._applyManualWidth(size.width, supressBroadcast);
+      this._applyManualWidth(size[0], supressBroadcast);
     }
     if (this._heightMode === ResizeMode.Fit) {
-      if (size.height === 0 && gr.debug) {
+      if (size[1] === 0 && gr.debug) {
         console.warn("Canvas height parameter specified as fit and height of parent element is 0.\n This is possibly the reason you haven't set css to html or body element.");
       }
-      this._applyManualHeight(size.height, supressBroadcast);
+      this._applyManualHeight(size[1], supressBroadcast);
     }
   }
 
@@ -192,10 +197,20 @@ export default class CanvasInitializerComponent extends Component {
     }
   }
 
-  private _getParentSize(): ClientRect {
+  private _getParentSize(): number[] {
     const parent = this._canvasContainer.parentElement;
-    const boundingBox = parent.getBoundingClientRect();
-    return boundingBox;
+    const cs = getComputedStyle(parent);
+
+    const paddingX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+    const paddingY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+
+    const borderX = parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth);
+    const borderY = parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
+
+    // Element width and height minus padding and border
+    const elementWidth = parent.offsetWidth - paddingX - borderX;
+    const elementHeight = parent.offsetHeight - paddingY - borderY;
+    return [elementWidth, elementHeight];
   }
 
   /**
@@ -250,7 +265,7 @@ export default class CanvasInitializerComponent extends Component {
   /**
    * Insert __id__property to be identify rendering contexts
    */
-  private _applyContextId(context: WebGLRenderingContext): WebGLRenderingContextWithId{
+  private _applyContextId(context: WebGLRenderingContext): WebGLRenderingContextWithId {
     const contextWithId = context as WebGLRenderingContextWithId;
     contextWithId.__id__ = Math.random().toString(36).slice(-6); // Generating random string
     return contextWithId;

@@ -4,6 +4,7 @@ import Buffer from "../Resource/Buffer";
 import IGLInstancedArrayInterface from "../Resource/GLExt/IGLInstancedArrayInterface";
 import GLExtRequestor from "../Resource/GLExtRequestor";
 import Program from "../Resource/Program";
+import GLConstantUtility from "../Util/GLConstantUtility";
 import HashCalculator from "../Util/HashCalculator";
 import IndexBufferInfo from "./IndexBufferInfo";
 import VertexBufferAccessor from "./VertexBufferAccessor";
@@ -16,31 +17,6 @@ export interface GeometryVertexBufferAccessor extends VertexBufferAccessor {
 export default class Geometry {
 
     private static _lastGeometry: Map<WebGLRenderingContext, Geometry> = new Map<WebGLRenderingContext, Geometry>();
-
-    /**
-     * Hash calculator of accessors map.
-     * If this value was same with the other geometry, the 2 geometries have same accessors.
-     * 'Same' DOES NOT mean that these geometries have a buffers containing same elements.
-     * But, if there was a accessor named 'A' in one of them, the other one should exist.
-     */
-    public get accessorHash(): number {
-      return this._accessorHashCache;
-    }
-    /**
-     * Vertex buffer
-     * @type {Buffer[]}
-     */
-    public buffers: Buffer[] = [];
-
-    public indices: { [geometryType: string]: IndexBufferInfo } = {};
-
-    public accessors: { [semantics: string]: GeometryVertexBufferAccessor } = {};
-
-    public aabb: AABB = new AABB([Vector3.Zero]);
-
-    private instanciator: IGLInstancedArrayInterface;
-
-    private _accessorHashCache = 0;
 
     /**
      * bind a vertex buffer to specified attribute variable.
@@ -82,6 +58,31 @@ export default class Geometry {
         }
     }
 
+    /**
+     * Hash calculator of accessors map.
+     * If this value was same with the other geometry, the 2 geometries have same accessors.
+     * 'Same' DOES NOT mean that these geometries have a buffers containing same elements.
+     * But, if there was a accessor named 'A' in one of them, the other one should exist.
+     */
+    public get accessorHash(): number {
+        return this._accessorHashCache;
+    }
+    /**
+     * Vertex buffer
+     * @type {Buffer[]}
+     */
+    public buffers: Buffer[] = [];
+
+    public indices: { [geometryType: string]: IndexBufferInfo } = {};
+
+    public accessors: { [semantics: string]: GeometryVertexBufferAccessor } = {};
+
+    public aabb: AABB = new AABB([Vector3.Zero]);
+
+    private instanciator: IGLInstancedArrayInterface;
+
+    private _accessorHashCache = 0;
+
     constructor(public gl: WebGLRenderingContext) {
         GLExtRequestor.request("ANGLE_instanced_arrays", true);
         this.instanciator = GLExtRequestor.get(gl).extensions["ANGLE_instanced_arrays"];
@@ -102,7 +103,7 @@ export default class Geometry {
                 accessor.type = WebGLRenderingContext.FLOAT;
             }
             if (accessor.stride === void 0) {
-                accessor.stride = accessor.size * this._attribTypeToByteSize(accessor.type);
+                accessor.stride = accessor.size * GLConstantUtility.getElementByteSize(accessor.type);
             }
             if (accessor.offset === void 0) {
                 accessor.offset = 0;
@@ -111,8 +112,8 @@ export default class Geometry {
                 accessor.normalized = false;
             }
             if (accessor.keepOnBuffer === void 0) {
-              // If target semantic was named 'POSITION', default option for keeping buffer is true.
-              accessor.keepOnBuffer = semantic === "POSITION";
+                // If target semantic was named 'POSITION', default option for keeping buffer is true.
+                accessor.keepOnBuffer = semantic === "POSITION";
             }
             keepBuffer = keepBuffer || !!accessor.keepOnBuffer;
             this.accessors[semantic] = accessor;
@@ -163,7 +164,7 @@ export default class Geometry {
             if (typeof topology !== "number") {
                 topology = WebGLRenderingContext.TRIANGLES;
             }
-            if (typeof offset !== "number"){
+            if (typeof offset !== "number") {
                 offset = 0;
             }
         }
@@ -175,12 +176,12 @@ export default class Geometry {
             }
         }
         if (type === 0) {
-            type = this._indexTypeFromCount(count);
+            type = GLConstantUtility.getSuitableElementTypeFromCount(count);
         }
         buffer = this._ensureToBeIndexBuffer(buffer, type);
         this.indices[indexName] = {
             byteOffset: offset,
-            byteSize: this._indexTypeToByteSize(type),
+            byteSize: GLConstantUtility.getElementByteSize(type),
             type,
             topology,
             count,
@@ -199,8 +200,8 @@ export default class Geometry {
     public clone(): Geometry {
         const geometry = new Geometry(this.gl);
         geometry.buffers = [].concat(this.buffers);
-        geometry.accessors = {...this.accessors};
-        geometry.indices = {...this.indices};
+        geometry.accessors = { ...this.accessors };
+        geometry.indices = { ...this.indices };
         geometry.aabb = new AABB([this.aabb.pointLBF, this.aabb.pointRTN]);
         return geometry;
     }
@@ -232,7 +233,7 @@ export default class Geometry {
         if (!(buffer instanceof Buffer)) {
             let bufferSource = buffer;
             if (Array.isArray(bufferSource)) {
-                bufferSource = new (this._indexTypeToArrayConstructor(type))(bufferSource);
+                bufferSource = new (GLConstantUtility.getTypedArrayConstructorFromElementType(type))(bufferSource);
             }
             buffer = new Buffer(this.gl, WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, WebGLRenderingContext.STATIC_DRAW);
             buffer.update(bufferSource);
@@ -244,63 +245,11 @@ export default class Geometry {
         return buffer;
     }
 
-    private _indexTypeFromCount(count: number): number {
-        if (count < 256) {
-            return WebGLRenderingContext.UNSIGNED_BYTE;
-        } else if (count < 65536) {
-            return WebGLRenderingContext.UNSIGNED_SHORT;
-        } else if (count < 4294967296) {
-            return WebGLRenderingContext.UNSIGNED_INT;
-        } else {
-            throw new Error("Index count exceeds 4,294,967,296. WebGL can not handle such a big index buffer");
-        }
-    }
-
-    private _indexTypeToArrayConstructor(type: number): (new (arr: number[]) => ArrayBufferView) {
-        switch (type) {
-            case WebGLRenderingContext.UNSIGNED_BYTE:
-                return Uint8Array;
-            case WebGLRenderingContext.UNSIGNED_SHORT:
-                return Uint16Array;
-            case WebGLRenderingContext.UNSIGNED_INT:
-                return Uint32Array;
-            default:
-                throw new Error("Unsupported index type");
-        }
-    }
-
-    private _indexTypeToByteSize(type: number): number {
-        switch (type) {
-            case WebGLRenderingContext.UNSIGNED_BYTE:
-                return 1;
-            case WebGLRenderingContext.UNSIGNED_SHORT:
-                return 2;
-            case WebGLRenderingContext.UNSIGNED_INT:
-                return 4;
-            default:
-                throw new Error("Unsupported index type");
-        }
-    }
-
-    private _attribTypeToByteSize(type: number): number {
-        switch (type) {
-            case WebGLRenderingContext.FLOAT:
-            case WebGLRenderingContext.UNSIGNED_INT:
-                return 4;
-            case WebGLRenderingContext.UNSIGNED_SHORT:
-                return 2;
-            case WebGLRenderingContext.UNSIGNED_BYTE:
-                return 1;
-            default:
-                throw new Error(`Unsupported attribute variable type "${type}"`);
-        }
-    }
-
     private _recalculateAccsessorHash(): void {
-      let hashSource = "";
-      for (const key in this.accessors) {
-        hashSource += key + "|";
-      }
-      this._accessorHashCache = HashCalculator.calcHash(hashSource);
+        let hashSource = "";
+        for (const key in this.accessors) {
+            hashSource += key + "|";
+        }
+        this._accessorHashCache = HashCalculator.calcHash(hashSource);
     }
 }

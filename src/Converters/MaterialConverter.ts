@@ -1,4 +1,4 @@
-import Attribute from "grimoirejs/ref/Node/Attribute";
+import Attribute from "grimoirejs/ref/Core/Attribute";
 import MaterialComponent from "../Components/MaterialComponent";
 import Material from "../Material/Material";
 import MaterialFactory from "../Material/MaterialFactory";
@@ -13,7 +13,7 @@ import MaterialFactory from "../Material/MaterialFactory";
 export default function MaterialConverter(val: any, attr: Attribute): any {
   if (typeof val === "string") {
     const regex = /\s*new\s*\(\s*([a-zA-Z\d\-]+)\s*\)/;
-    let regexResult: RegExpExecArray |null;
+    let regexResult: RegExpExecArray | null;
     if (regexResult = regex.exec(val)) { // new material should be instanciated for this material
       (attr.component as any)[attr.declaration["componentBoundTo"]] = null;
       return MaterialFactory.get(attr.companion.get("gl")).instanciate(regexResult[1]);

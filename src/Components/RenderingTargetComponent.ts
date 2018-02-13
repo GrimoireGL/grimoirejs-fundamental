@@ -1,19 +1,17 @@
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import OffscreenRenderingTarget from "../Resource/RenderingTarget/OffscreenRenderingTarget";
 import RenderingTrargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
+import RenderingTargetComponentBase from "./RenderingTargetComponentBase";
 import RenderBufferUpdator from "./Texture/RenderBufferUpdator";
 import TextureContainer from "./Texture/TextureContainer";
 /**
  * Register specified buffer to rendering target.
  * If there were no child buffer node, this component will instanciate default buffers.
  */
-export default class RenderingTargetComponent extends Component {
+export default class RenderingTarget extends RenderingTargetComponentBase<OffscreenRenderingTarget> {
+    public static componentName = "RenderingTarget";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
-        name: {
-            converter: "String",
-            default: null,
-        },
         colorBufferFormat: {
             converter: "Enum",
             default: WebGLRenderingContext.RGBA,
@@ -55,31 +53,18 @@ export default class RenderingTargetComponent extends Component {
             default: "ViewportSize",
         },
     };
-
-    public renderingTarget: OffscreenRenderingTarget;
-
-    public $mount(): void {
-        const name = this.getAttribute("name");
-        if (!name) {
-            throw new Error("Rendering target must have name");
-        }
-        if (this.node.children.length === 0) {
-            this._instanciateDefaultBuffers(name);
-        }
-        setImmediate(() => {
-            const textures = this.node.getComponentsInChildren(TextureContainer);
-            const texture = textures[0].texture;
-            const renderBuffer = this.node.getComponentsInChildren(RenderBufferUpdator);
-            this.renderingTarget = new OffscreenRenderingTarget(this.companion.get("gl"), [texture], renderBuffer[0].buffer);
-            RenderingTrargetRegistry.get(this.companion.get("gl")).setRenderingTarget(name, this.renderingTarget);
-        });
+    protected __instanciateRenderingTarget(gl: WebGLRenderingContext): OffscreenRenderingTarget {
+        const textures = this.node.getComponentsInChildren(TextureContainer);
+        const texture = textures[0].texture;
+        const renderBuffer = this.node.getComponentsInChildren(RenderBufferUpdator);
+        return new OffscreenRenderingTarget(this.companion.get("gl"), [texture], renderBuffer[0].buffer);
     }
 
     /**
      * Generate default buffers as children node
      * @param name
      */
-    private _instanciateDefaultBuffers(name: string): void {
+    protected __instanciateDefaultBuffers(name: string): void {
         this.node.addChildByName("color-buffer", {
             name,
             format: this.getAttribute("colorBufferFormat"),

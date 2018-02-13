@@ -1,8 +1,10 @@
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import GrimoireJS from "grimoirejs";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import ViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
 import ViewportMouseEvent from "../../Objects/ViewportMouseEvent";
 export default class RenderStageBase extends Component {
+    public static componentName = "RenderStageBase";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
 
     };
@@ -21,24 +23,48 @@ export default class RenderStageBase extends Component {
         } as ViewportBaseMouseState,
     };
 
-    public $mousemove(v: ViewportMouseEvent): void {
+    public metadata: { [key: string]: any } = {};
+
+    protected $mousemove(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $mouseenter(v: ViewportMouseEvent): void {
+    protected $mouseenter(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $mouseleave(v: ViewportMouseEvent): void {
+    protected $mouseleave(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $mousedown(v: ViewportMouseEvent): void {
+    protected $mousedown(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $mouseup(v: ViewportMouseEvent): void {
+    protected $mouseup(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
+    }
+
+    protected $click(v: ViewportMouseEvent): void {
+        return;
+    }
+
+    protected $dblclick(v: ViewportMouseEvent): void {
+        return;
+    }
+
+    protected __beforeRender(): boolean {
+        if (GrimoireJS.debug && !!window["spector"]) {
+            let metas = "";
+            for (const key in this.metadata) {
+                if (this.metadata[key] === undefined) {
+                    continue;
+                }
+                metas += `${key}=${this.metadata[key]}|`;
+            }
+            window["spector"].setMarker(`Renderer|${metas}`);
+        }
+        return true;
     }
 
     private _assignMouseState(v: ViewportMouseEvent): void {

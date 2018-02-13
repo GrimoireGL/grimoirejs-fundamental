@@ -54,11 +54,13 @@ class SortParser {
 
   private static _parsePassSource(passSource: string): IPassRecipe {
     const shaderSource = SortTransformUtility.removePreferences(passSource);
+    const extensions = SortTransformUtility.parseExtensions(passSource);
     const attributes = SortTransformUtility.parseVariables(passSource, "attribute");
     const uniforms = SortTransformUtility.parseVariables(passSource, "uniform");
     const macros = SortTransformUtility.parseMacros(passSource);
     const states = SortTransformUtility.parsePreferences(passSource);
     return {
+      extensions,
       fragment: shaderSource,
       vertex: shaderSource,
       attributes,

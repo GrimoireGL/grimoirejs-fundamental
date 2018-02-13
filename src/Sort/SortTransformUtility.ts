@@ -145,6 +145,9 @@ export default class SortTransformUtility {
         frontFace: [WebGLRenderingContext.CCW],
         depthRange: [0, 1],
         depthFunc: [WebGLRenderingContext.LESS],
+        depthMask: [true],
+        colorMask: [true, true, true, true],
+        polygonOffset: [0, 0]
       },
       dynamicState: [],
     };
@@ -156,6 +159,16 @@ export default class SortTransformUtility {
         throw new Error(`Unknown pass preference ${regexResult[1]} was specified.`);
       }
       prefParser(result, regexResult[2].split(",").map(m => m.trim()));
+    }
+    return result;
+  }
+
+  public static parseExtensions(source: string): string[] {
+    const regex = /@Extension\(([\sa-zA-Z_0-9]*)\)/g;
+    let regexResult;
+    const result = [];
+    while ((regexResult = regex.exec(source))) {
+      result.push(regexResult[1].trim());
     }
     return result;
   }

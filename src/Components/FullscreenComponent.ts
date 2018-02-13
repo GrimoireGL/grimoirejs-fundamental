@@ -1,5 +1,5 @@
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 
 /**
  * フルスクリーン状態を管理するコンポーネント
@@ -9,7 +9,8 @@ import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
  * また、`fullscreen`属性は必ず マウスのイベントなどのユーザーのインタラクションを伴うイベントからの呼び出しで **動的に** trueにされる必要があります。
  * 最初からtrueに設定して初期状態でキャンバスをフルスクリーン状態にすることはWebAPIの制約上できません。
  */
-export default class FullscreenComponent extends Component {
+export default class Fullscreen extends Component {
+  public static componentName = "Fullscreen";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * フルスクリーン状態かどうか
@@ -35,7 +36,7 @@ export default class FullscreenComponent extends Component {
 
   private _fullscreen = false;
 
-  public $awake(): void {
+  protected $awake(): void {
     this.getAttributeRaw("fullscreen").watch((attr) => {
       if (this._fullscreen === attr) {
         return;

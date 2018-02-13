@@ -1,7 +1,9 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import VideoResolver from "../../Asset/VideoResolver";
+import Texture2D from "../../Resource/Texture2D";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
-export default class VideoTextureUpdatorComponent extends TextureUpdatorComponentBase {
+export default class VideoTextureUpdator extends TextureUpdatorComponentBase<Texture2D> {
+  public static componentName = "VideoTextureUpdator";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     src: {
       converter: "String",
@@ -41,7 +43,7 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
 
   public loop: boolean;
 
-  public $awake() {
+  protected $awake() {
     super.$awake();
     this.__bindAttributes();
     this.getAttributeRaw("src").watch((v: string) => {
@@ -71,18 +73,30 @@ export default class VideoTextureUpdatorComponent extends TextureUpdatorComponen
     });
   }
 
+  public resize(width: number, height: number): void {
+    if (this.video) {
+      this.video.width = width;
+      this.video.height = height;
+      this.tryUpdateCurrentFrame();
+    }
+  }
+
   private *_update() {
     while (true) {
       if (this.currentTime !== this.video.currentTime) {
         this.currentTime = this.video.currentTime;
       }
-      if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
-        this.__texture.update(this.video, {
-          premultipliedAlpha: this.premultipliedAlpha,
-          flipY: this.flipY,
-        });
-      }
+      this.tryUpdateCurrentFrame();
       yield 1;
+    }
+  }
+
+  private tryUpdateCurrentFrame() {
+    if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
+      this.__texture.update(this.video, {
+        premultipliedAlpha: this.premultipliedAlpha,
+        flipY: this.flipY,
+      });
     }
   }
 

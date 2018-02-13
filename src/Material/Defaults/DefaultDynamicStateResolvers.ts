@@ -1,5 +1,6 @@
 import Pass from "../Pass";
 import IDynamicStateResolver from "../Schema/IDynamicStateResolver";
+import GLStateConfigurator from "../GLStateConfigurator";
 export default {
     "dynamic-cull": (args: string[], pass: Pass) => {
         const attributeName = args[1] || "cull";
@@ -14,19 +15,20 @@ export default {
             }
         }
         return (gl: WebGLRenderingContext) => {
+            const gc = GLStateConfigurator.get(gl);
             if (pass.arguments[attributeName] !== "none") {
-                gl.enable(WebGLRenderingContext.CULL_FACE);
+                gc.applyGLFlagIfChanged(WebGLRenderingContext.CULL_FACE, true);
                 if (pass.arguments[attributeName] === "back") {
-                    gl.cullFace(WebGLRenderingContext.BACK);
+                    gc.applyIfChanged("cullFace", WebGLRenderingContext.BACK);
                     changeState("1");
                 } else if (pass.arguments[attributeName] === "front") {
-                    gl.cullFace(WebGLRenderingContext.FRONT);
+                    gc.applyIfChanged("cullFace", WebGLRenderingContext.FRONT);
                     changeState("2");
                 } else {
                     throw new Error("Unknown culling mode");
                 }
             } else {
-                gl.disable(WebGLRenderingContext.CULL_FACE);
+                gc.applyGLFlagIfChanged(WebGLRenderingContext.CULL_FACE, false);
                 changeState("0");
             }
         };

@@ -1,4 +1,4 @@
-import ResourceBase from "./ResourceBase";
+import GLResource from "./GLResource";
 import ResourceCache from "./ResourceCache";
 import Shader from "./Shader";
 import UniformProxy from "./UniformProxy";
@@ -6,12 +6,7 @@ import UniformProxy from "./UniformProxy";
 /**
  * Manages WebGLProgram related stuff.
  */
-export default class Program extends ResourceBase {
-  /**
-   * Actual reference for WebGLProgram
-   * @type {WebGLProgram}
-   */
-  public readonly program: WebGLProgram;
+export default class Program extends GLResource<WebGLProgram> {
 
   /**
    * Reference to uniform proxy which help you to pass uniform variables.
@@ -24,9 +19,8 @@ export default class Program extends ResourceBase {
   private _attributeLocations: { [variableName: string]: number } = {};
 
   constructor(gl: WebGLRenderingContext) {
-    super(gl);
+    super(gl, gl.createProgram());
     this.uniforms = new UniformProxy(this);
-    this.program = gl.createProgram();
   }
 
   /**
@@ -34,7 +28,7 @@ export default class Program extends ResourceBase {
    * @return {boolean} [description]
    */
   public get isLastUsed(): boolean {
-    return ResourceCache.useProgramCheck(this.gl, this.program);
+    return ResourceCache.useProgramCheck(this.gl, this.resourceReference);
   }
 
   /**
@@ -45,18 +39,18 @@ export default class Program extends ResourceBase {
   public update(shaders: Shader[]): void {
     if (this.valid) {
       // detach all attached shaders previously
-      const preciousShaders = this.gl.getAttachedShaders(this.program);
-      preciousShaders.forEach(s => this.gl.detachShader(this.program, s));
+      const preciousShaders = this.gl.getAttachedShaders(this.resourceReference);
+      preciousShaders.forEach(s => this.gl.detachShader(this.resourceReference, s));
     }
     this._uniformLocations = {}; // reset location caches
     this._attributeLocations = {};
     // attach all shader passed
     shaders.forEach(shader => {
-      this.gl.attachShader(this.program, shader.shader);
+      this.gl.attachShader(this.resourceReference, shader.resourceReference);
     });
-    this.gl.linkProgram(this.program); // link program and check errors
-    if (!this.gl.getProgramParameter(this.program, WebGLRenderingContext.LINK_STATUS)) {
-      const errorLog = this.gl.getProgramInfoLog(this.program);
+    this.gl.linkProgram(this.resourceReference); // link program and check errors
+    if (!this.gl.getProgramParameter(this.resourceReference, WebGLRenderingContext.LINK_STATUS)) {
+      const errorLog = this.gl.getProgramInfoLog(this.resourceReference);
       throw new Error(`LINK FAILED\n${errorLog}`);
     }
     this.valid = true;
@@ -67,7 +61,7 @@ export default class Program extends ResourceBase {
    */
   public use(): void {
     if (!this.isLastUsed) {
-      this.gl.useProgram(this.program);
+      this.gl.useProgram(this.resourceReference);
     }
     this.uniforms.onUse();
   }
@@ -77,7 +71,7 @@ export default class Program extends ResourceBase {
    */
   public destroy(): void {
     super.destroy();
-    this.gl.deleteProgram(this.program);
+    this.gl.deleteProgram(this.resourceReference);
     this._uniformLocations = {};
     this._attributeLocations = {};
   }
@@ -89,7 +83,7 @@ export default class Program extends ResourceBase {
    */
   public findAttributeLocation(variableName: string): number {
     if (this._attributeLocations[variableName] === void 0) { // If cache is not available
-      this._attributeLocations[variableName] = this.gl.getAttribLocation(this.program, variableName);
+      this._attributeLocations[variableName] = this.gl.getAttribLocation(this.resourceReference, variableName);
       this._safeEnableVertexAttribArray(this._attributeLocations[variableName]);
       return this._attributeLocations[variableName];
     } else {
@@ -104,7 +98,7 @@ export default class Program extends ResourceBase {
   public findUniformLocation(variableName: string): WebGLUniformLocation {
     const location = this._uniformLocations[variableName];
     if (location === void 0) { // if cache is not available
-      return this._uniformLocations[variableName] = this.gl.getUniformLocation(this.program, variableName);
+      return this._uniformLocations[variableName] = this.gl.getUniformLocation(this.resourceReference, variableName);
     } else {
       return location;
     }

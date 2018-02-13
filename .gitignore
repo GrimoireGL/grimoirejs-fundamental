@@ -114,3 +114,7 @@ yarn.lock
 screens
 docs
 .vscode
+test-lib
+.grimoire
+package-lock.json
+src/metaInfo.ts

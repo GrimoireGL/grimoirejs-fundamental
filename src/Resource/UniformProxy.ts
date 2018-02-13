@@ -6,6 +6,7 @@ import Vector3 from "grimoirejs-math/ref/Vector3";
 import Vector4 from "grimoirejs-math/ref/Vector4";
 import Program from "./Program";
 import Texture2D from "./Texture2D";
+import TextureCube from "./TextureCube";
 
 const mat3Cache = new Float32Array(9);
 
@@ -128,9 +129,23 @@ export default class UniformProxy {
 
   public uniformTexture2D(variableName: string, val: Texture2D): void {
     if (val.valid) {
-      val.register(this._currentTextureRegister);
-      this.uniformInt(variableName, this._currentTextureRegister);
-      this._currentTextureRegister++;
+      this._pass(variableName, (l) => {
+        val.register(this._currentTextureRegister);
+        this._gl.uniform1i(l, this._currentTextureRegister);
+        this._currentTextureRegister++;
+      });
+    } else {
+      console.warn(`The texture assigned to '${variableName}' is not valid.`);
+    }
+  }
+
+  public uniformTextureCube(variableName: string, val: TextureCube): void {
+    if (val && val.valid) {
+      this._pass(variableName, (l) => {
+        val.register(this._currentTextureRegister);
+        this._gl.uniform1i(l, this._currentTextureRegister);
+        this._currentTextureRegister++;
+      });
     } else {
       console.warn(`The texture assigned to '${variableName}' is not valid.`);
     }
@@ -148,6 +163,7 @@ export default class UniformProxy {
   }
 
   private _passAsArray(variableName: string, index: number, act: (location: WebGLUniformLocation) => void) {
+    // tslint:disable-next-line:prefer-template
     const location = this.program.findUniformLocation(variableName + "[" + index + "]");
     if (location) {
       act(location);

@@ -1,5 +1,5 @@
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import IResizeViewportMessage from "../Messages/IResizeViewportMessage";
 import ViewportMouseEvent from "../Objects/ViewportMouseEvent";
@@ -10,15 +10,11 @@ import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 import Timer from "../Util/Timer";
 import CameraComponent from "./CameraComponent";
 export default class RendererComponent extends Component {
+  public static componentName = "Renderer";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     regionName: {
       converter: "String",
       default: null,
-    },
-    camera: {
-      converter: "Component",
-      default: "camera",
-      target: "Camera",
     },
     viewport: {
       converter: "Viewport",
@@ -29,8 +25,6 @@ export default class RendererComponent extends Component {
       default: true,
     },
   };
-
-  public camera: CameraComponent;
 
   public renderingTarget: CanvasRegionRenderingTarget;
 
@@ -61,11 +55,14 @@ export default class RendererComponent extends Component {
 
   private _mouseUpHandler: (e: MouseEvent) => void;
 
+  private _mouseClickHandler: (e: MouseEvent) => void;
+
+  private _dblClickHandler: (e: MouseEvent) => void;
+
   private _wasInside = false;
 
-  public $awake(): void {
+  protected $awake(): void {
     // initializing attributes
-    this.getAttributeRaw("camera").boundTo("camera");
     this.getAttributeRaw("viewport").watch((v) => {
       this._viewportSizeGenerator = v;
       this.$resizeCanvas();
@@ -82,7 +79,7 @@ export default class RendererComponent extends Component {
     this._initializeMouseHandlers();
   }
 
-  public $mount(): void {
+  protected $mount(): void {
     this._gl = this.companion.get("gl") as WebGLRenderingContext;
     this._canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
     this.getAttributeRaw("handleMouse").watch(a => {
@@ -98,16 +95,16 @@ export default class RendererComponent extends Component {
     this.$resizeCanvas();
   }
 
-  public $unmount(): void {
+  protected $unmount(): void {
     this._disableMouseHandling();
   }
 
-  public $treeInitialized(): void {
+  protected $treeInitialized(): void {
     // This should be called after mounting all of tree nodes in children
     this.$resizeCanvas();
   }
 
-  public $resizeCanvas(): void {
+  protected $resizeCanvas(): void {
     this._viewportCache = this._viewportSizeGenerator(this._canvas);
     this.renderingTarget.setViewport(this._viewportCache);
     const pow2Size = TextureSizeCalculator.getPow2Size(this._viewportCache.Width, this._viewportCache.Height);
@@ -119,10 +116,8 @@ export default class RendererComponent extends Component {
     } as IResizeViewportMessage);
   }
 
-  public $renderViewport(args: { timer: Timer }): void {
-    this.node.broadcastMessage("render", {
-      camera: this.camera,
-      viewport: this._viewportCache,
+  protected $renderRenderer(args: { timer: Timer }): void {
+    this.node.broadcastMessage("renderRenderStage", {
       timer: args.timer,
     } as IRenderRendererMessage);
   }
@@ -155,6 +150,12 @@ export default class RendererComponent extends Component {
       }
       this._wasInside = false;
     };
+    this._mouseClickHandler = (e: MouseEvent) => {
+      this._sendMouseEvent("click", e);
+    };
+    this._dblClickHandler = (e: MouseEvent) => {
+      this._sendMouseEvent("dblclick", e);
+    };
     this._mouseDownHandler = (e: MouseEvent) => {
       if (this._isViewportInside(e)) {
         this._sendMouseEvent("mousedown", e);
@@ -173,6 +174,8 @@ export default class RendererComponent extends Component {
     this._canvas.addEventListener("mouseenter", this._mouseEnterHandler);
     this._canvas.addEventListener("mousedown", this._mouseDownHandler);
     this._canvas.addEventListener("mouseup", this._mouseUpHandler);
+    this._canvas.addEventListener("click", this._mouseClickHandler);
+    this._canvas.addEventListener("dblclick", this._dblClickHandler);
   }
 
   private _disableMouseHandling(): void {
@@ -181,13 +184,15 @@ export default class RendererComponent extends Component {
     this._canvas.removeEventListener("mouseenter", this._mouseEnterHandler);
     this._canvas.removeEventListener("mousedown", this._mouseDownHandler);
     this._canvas.removeEventListener("mouseup", this._mouseUpHandler);
+    this._canvas.removeEventListener("click", this._mouseClickHandler);
+    this._canvas.removeEventListener("dblclick", this._dblClickHandler);
   }
 
   private _sendMouseEvent(eventName: string, e: MouseEvent): void {
     if (!this.isActive) {
       return;
     }
-    this.node.emit(eventName);
+    this.node.emit(eventName, e);
     this.node.broadcastMessage(eventName, this._toViewportMouseArgs(e));
   }
 
@@ -223,7 +228,8 @@ export default class RendererComponent extends Component {
     const ro = this._getRelativePosition(e);
     const r = this._viewportCache.toLocal(ro[0], ro[1]);
     const n = this._viewportCache.toLocalNormalized(ro[0], ro[1]);
-    return {...e,
+    return {
+      ...e,
       viewportX: r[0],
       viewportY: r[1],
       viewportNormalizedX: n[0],
@@ -232,6 +238,7 @@ export default class RendererComponent extends Component {
       canvasY: ro[1],
       canvasNormalizedX: ro[0] / ro[2],
       canvasNormalizedY: ro[1] / ro[3],
-      inside: this._isViewportInside(e)};
+      inside: this._isViewportInside(e),
+    };
   }
 }

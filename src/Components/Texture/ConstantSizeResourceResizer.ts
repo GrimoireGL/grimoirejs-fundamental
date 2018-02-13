@@ -1,5 +1,5 @@
 import Vector2 from "grimoirejs-math/ref/Vector2";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import ResourceResizerComponentBase from "./ResourceResizerComponentBase";
 
 /**
@@ -7,6 +7,7 @@ import ResourceResizerComponentBase from "./ResourceResizerComponentBase";
  * This resource resizer will resize by given resolution attribute.
  */
 export default class ConstantSizeResourceResizer extends ResourceResizerComponentBase {
+    public static componentName = "ConstantSizeResourceResizer";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         resolution: {
             converter: "Vector2",
@@ -14,7 +15,7 @@ export default class ConstantSizeResourceResizer extends ResourceResizerComponen
         },
     };
 
-    public $mount(): void {
+    protected $mount(): void {
         this.getAttributeRaw("resolution").watch(n => {
             const res = n as Vector2;
             this.__resizeResources(res.X, res.Y);

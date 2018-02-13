@@ -1,5 +1,5 @@
 import GrimoireInterface from "grimoirejs";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Material from "../Material/Material";
 import DrawPriorty from "../SceneRenderer/DrawPriorty";
 import MaterialComponent from "./MaterialComponent";
@@ -10,14 +10,15 @@ import MaterialContainerBase from "./MaterialContainerBase";
  * このコンポーネントは将来的に`MeshRenderer`と統合されます。
  * 指定されたマテリアルの初期化の管理や、マテリアルによって動的に追加される属性の管理を行います、
  */
-export default class MaterialContainerComponent extends MaterialContainerBase {
+export default class MaterialContainer extends MaterialContainerBase {
+  public static componentName = "MaterialContainer";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * 対象のマテリアル
      */
     material: {
       converter: "Material",
-      default: "new(unlit)",
+      default: "new(basic-shading)",
       componentBoundTo: "_materialComponent", // When the material was specified with the other material tag, this field would be assigned.
     },
     /**
@@ -36,8 +37,8 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
   };
 
   public static rewriteDefaultMaterial(materialName: string): void {
-    if (materialName !== MaterialContainerComponent._defaultMaterial) {
-      MaterialContainerComponent._defaultMaterial = materialName;
+    if (materialName !== MaterialContainer._defaultMaterial) {
+      MaterialContainer._defaultMaterial = materialName;
       GrimoireInterface.componentDeclarations.get("MaterialContainer").attributes["material"].default = `new(${materialName})`;
     }
   }
@@ -74,8 +75,6 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
 
   public material: Material;
 
-  public materialArgs: { [key: string]: any; } = {};
-
   public materialReady = false;
 
   public useMaterial = false;
@@ -88,11 +87,11 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
 
   private _transparent: boolean;
 
-  public $mount(): void {
+  protected $mount(): void {
     this.getAttributeRaw("material").watch(this._onMaterialChanged.bind(this));
     this.__registerAssetLoading(this._onMaterialChanged());
-    this.getAttributeRaw("drawOrder").boundTo("_drawOrder");
-    this.getAttributeRaw("transparent").boundTo("_transparent");
+    this.getAttributeRaw("drawOrder").bindTo("_drawOrder");
+    this.getAttributeRaw("transparent").bindTo("_transparent");
   }
 
   /**
@@ -106,7 +105,7 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
     }
     this.useMaterial = true;
     if (this._registeredAttributes) {
-      this.__removeAttributes();
+      this.__removeExposedMaterialParameters();
     }
     if (!this._materialComponent) { // the material must be instanciated by attribute.
       await this._prepareInternalMaterial(materialPromise);
@@ -122,7 +121,6 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
   private async _prepareExternalMaterial(materialPromise: Promise<Material>): Promise<void> {
     const material = await materialPromise; // waiting for material load completion
     this.material = material;
-    this.materialArgs = this._materialComponent.materialArgs;
     this.materialReady = true;
   }
 

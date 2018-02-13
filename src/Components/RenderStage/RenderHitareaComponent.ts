@@ -1,5 +1,6 @@
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import GrimoireJS from "grimoirejs";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import IResizeViewportMessage from "../../Messages/IResizeViewportMessage";
 import ViewportMouseEvent from "../../Objects/ViewportMouseEvent";
@@ -13,15 +14,19 @@ import TextureSizeCalculator from "../../Util/TextureSizeCalculator";
 import CameraComponent from "../CameraComponent";
 import RenderSceneComponent from "../RenderStage/RenderSceneComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
+import GLStateConfigurator from "../../Material/GLStateConfigurator";
+import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
+import RenderingTarget from "../RenderingTargetComponent";
 export default class RenderHitareaComponent extends SingleBufferRenderStageBase {
+  public static componentName = "RenderHitareaComponent";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
-
+    hitareaBuffer: {
+      converter: "RenderingTarget",
+      default: null
+    }
   };
-  public hitareaTexture: Texture2D;
 
-  public hitareaRenderbuffer: RenderBuffer;
-
-  public hitareaFBO: Framebuffer;
+  public hitareaBuffer: IRenderingTarget;
 
   private _sceneRenderer: RenderSceneComponent;
 
@@ -35,60 +40,40 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
 
   private _readCache: Uint8Array = new Uint8Array(4);
 
-  private _bufferViewport: Viewport;
-
   private _lastRenderable: IRenderable;
 
   private _mouseMoved: boolean;
 
-  public $mount(): void {
+
+  protected async $mount(): Promise<void> {
     this._sceneRenderer = this.node.getComponent(RenderSceneComponent);
     if (!this._sceneRenderer) {
       throw new Error("The node attaching RenderHitArea should contain RenderScene.");
     }
     this._gl = this.companion.get("gl");
     this._canvas = this.companion.get("canvasElement");
-    this.hitareaTexture = new Texture2D(this._gl);
-    this.hitareaRenderbuffer = new RenderBuffer(this._gl);
-    if (this.hitareaFBO) {
-      this.hitareaFBO.destroy();
-      this.hitareaFBO = null;
+    this.hitareaBuffer = await this.getAttribute<Promise<IRenderingTarget>>("hitareaBuffer");
+    if (!this.hitareaBuffer) {
+      // Generate default hitarea buffer
+      const node = this.node.parent.addChildByName("rendering-target", { name: `hitarea-buffer-${this._sceneRenderer.id}` });
+      this.hitareaBuffer = node.getComponent(RenderingTarget).renderingTarget;
     }
   }
 
-  public $resizeViewport(args: IResizeViewportMessage): void {
-    const size = TextureSizeCalculator.getPow2Size(args.width, args.height);
-    this._bufferViewport = new Viewport(0, 0, size.width, size.height);
-    this.hitareaTexture.update(0, size.width, size.height, 0, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE);
-    this.hitareaRenderbuffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, size.width, size.height);
-    if (!this.hitareaFBO) {
-      this.hitareaFBO = new Framebuffer(this._gl);
-      this.hitareaFBO.update(this.hitareaTexture);
-      this.hitareaFBO.update(this.hitareaRenderbuffer);
-    }
-  }
-
-  public $render(args: IRenderRendererMessage): void {
+  protected $renderRenderStage(args: IRenderRendererMessage): void {
     if (!this._mouseInside) {
       return;
     }
-    const camera = this._sceneRenderer.camera || args.camera;
-    if (!camera) {
+    if (!this._sceneRenderer.camera || !this.hitareaBuffer) {
       return;
     }
-    this.hitareaFBO.bind();
-    this._bufferViewport.configure(this._gl);
-    // clear buffer if needed
-    this._gl.clearColor(0, 0, 0, 0);
-    this._gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT);
-    this._gl.clearDepth(1);
-    this._gl.clear(WebGLRenderingContext.DEPTH_BUFFER_BIT);
+    this.hitareaBuffer.beforeDraw(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT, [0, 0, 0, 0], 1);
     // draw for mesh indices
-    camera.renderScene({
-      renderer: this._sceneRenderer, // TODO
-      camera,
+    this._sceneRenderer.camera.renderScene({
+      renderer: this,
+      camera: this._sceneRenderer.camera,
       layer: this._sceneRenderer.layer,
-      viewport: args.viewport,
+      viewport: this._sceneRenderer.out.getViewport(),
       timer: args.timer,
       technique: "hitarea",
       sceneDescription: {},
@@ -97,24 +82,24 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     });
     this._gl.flush();
     // pick pointer pixel
-    this._gl.readPixels(this._lastPosition[0] * this._bufferViewport.Width, this._lastPosition[1] * this._bufferViewport.Height, 1, 1, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._readCache);
-    this._updateCurrentIndex(MeshIndexCalculator.fromColor(this._readCache), camera);
+    this._gl.readPixels(this._lastPosition[0] * this.hitareaBuffer.getBufferWidth(), this._lastPosition[1] * this.hitareaBuffer.getBufferHeight(), 1, 1, WebGLRenderingContext.RGBA, WebGLRenderingContext.UNSIGNED_BYTE, this._readCache);
+    this._updateCurrentIndex(MeshIndexCalculator.fromColor(this._readCache), this._sceneRenderer.camera);
     // reset bound frame buffer
     this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
   }
 
-  public $mousemove(v: ViewportMouseEvent): void {
+  protected $mousemove(v: ViewportMouseEvent): void {
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
   }
 
-  public $mouseenter(v: ViewportMouseEvent): void {
+  protected $mouseenter(v: ViewportMouseEvent): void {
     this._mouseInside = true;
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
   }
 
-  public $mouseleave(v: ViewportMouseEvent): void {
+  protected $mouseleave(v: ViewportMouseEvent): void {
     this._mouseInside = false;
     this._lastPosition = [v.viewportNormalizedX, v.viewportNormalizedY];
     this._mouseMoved = true;
@@ -122,6 +107,30 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
       this._lastRenderable.node.emit("mouseleave", this._lastRenderable);
     }
     this._lastRenderable = null;
+  }
+
+  protected $click(v: ViewportMouseEvent): void {
+    if (this._lastRenderable instanceof Component) {
+      this._lastRenderable.node.emit("click", this._lastRenderable);
+    }
+  }
+
+  protected $dblclick(v: ViewportMouseEvent): void {
+    if (this._lastRenderable instanceof Component) {
+      this._lastRenderable.node.emit("dblclick", this._lastRenderable);
+    }
+  }
+
+  protected $mousedown(v: ViewportMouseEvent): void {
+    if (this._lastRenderable instanceof Component) {
+      this._lastRenderable.node.emit("mousedown", this._lastRenderable);
+    }
+  }
+
+  protected $mouseup(v: ViewportMouseEvent): void {
+    if (this._lastRenderable instanceof Component) {
+      this._lastRenderable.node.emit("mouseup", this._lastRenderable);
+    }
   }
 
   /**
@@ -136,7 +145,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
       }
       this._lastRenderable = null;
     } else {
-      const r = camera.containedScene.queueRegistory.getByIndex(index - 1);
+      const r = camera.containedScene.queueRegistry.getByIndex(index - 1);
       if (this._lastRenderable !== r) {
         if (this._lastRenderable instanceof Component) {
           this._lastRenderable.node.emit("mouseleave", this._lastRenderable);

@@ -1,9 +1,9 @@
-import Namespace from "grimoirejs/ref/Base/Namespace";
-import Component from "grimoirejs/ref/Node/Component";
+import Namespace from "grimoirejs/ref/Core/Namespace";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Timer from "../Util/Timer";
 import AssetLoadingManager from "./AssetLoadingManagerComponent";
 import LoopManager from "./LoopManagerComponent";
-
 type TimerCoroutine = GeneratorFunction;
 type CoroutineTuple = { coroutine: Iterator<number>; next: number; container: Component; tag?: string | symbol };
 
@@ -81,6 +81,8 @@ class CoroutineRegistry {
 }
 
 export default class BasicComponent extends Component {
+  public static componentName = "BasicComponent";
+  public static attributes: { [name: string]: IAttributeDeclaration } = {};
   private _loopManagerBackingStore: LoopManager;
 
   private _assetLoadingManagerBackingStore: AssetLoadingManager;
@@ -143,7 +145,7 @@ export default class BasicComponent extends Component {
    */
   protected __invoke(method: (timer: Timer) => void, timeInMillis: number): void {
     const _that = this;
-    this.__registerTimerCoroutine(function*() {
+    this.__registerTimerCoroutine(function* () {
       const timer = yield timeInMillis;
       method.call(_that, timer as Timer);
     });

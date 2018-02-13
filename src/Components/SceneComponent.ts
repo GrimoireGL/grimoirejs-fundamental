@@ -1,22 +1,27 @@
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import ISceneUpdateArgument from "../SceneRenderer/ISceneUpdateArgument";
 import RenderQueueRegistry from "../SceneRenderer/RenderQueueRegistry";
 import Timer from "../Util/Timer";
+import HierarchycalComponentBase from "./HierarchicalComponentBase";
 
 /**
  * 特定のシーン内に関連する処理を行うためのコンポーネント
  * このコンポーネントには属性が存在しません。
  */
-export default class SceneComponent extends Component {
+export default class Scene extends HierarchycalComponentBase {
+  public static componentName = "Scene";
+  public static attributes: { [key: string]: IAttributeDeclaration } = {};
 
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
-    // Specify the attributes user can intaract
-  };
+  private static _sceneDescriptionCreationHandlers: ((sd: { [key: string]: any }, scene: Scene) => void)[] = [];
 
-  public sceneDescription: { [key: string]: any };
+  public static onSceneDescriptionCreation(handler: (sd: { [key: string]: any }, scene: Scene) => void): void {
+    Scene._sceneDescriptionCreationHandlers.push(handler);
+  }
 
-  public queueRegistory: RenderQueueRegistry = new RenderQueueRegistry();
+  public sceneDescription: { [key: string]: any } = {};
+
+  public queueRegistry: RenderQueueRegistry = new RenderQueueRegistry();
 
   /**
    * The index of loop executed last time.
@@ -24,15 +29,13 @@ export default class SceneComponent extends Component {
    */
   private _lastUpdateIndex: number;
 
-  private static _sceneDescriptionCreationHandlers: ((sd: { [key: string]: any }, scene: SceneComponent) => void)[] = [];
-
-  public static onSceneDescriptionCreation(handler: (sd: { [key: string]: any }, scene: SceneComponent) => void): void {
-    SceneComponent._sceneDescriptionCreationHandlers.push(handler);
+  protected $mount(): void {
+    super.$mount();
+    Scene._sceneDescriptionCreationHandlers.forEach(v => v(this.sceneDescription, this));
   }
 
-  public $mount(): void {
-    this.sceneDescription = {};
-    SceneComponent._sceneDescriptionCreationHandlers.forEach(v => v(this.sceneDescription, this));
+  protected $unmount(): void {
+    super.$unmount();
   }
 
   /**

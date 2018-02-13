@@ -8,10 +8,6 @@ interface ExtensionRequest {
 export default class GLExtRequestor extends GLRelatedRegistryBase {
 
   public static registryName = "GLExtensionRequestor";
-
-  public static get(gl: WebGLRenderingContext): GLExtRequestor {
-    return this.__get(gl, GLExtRequestor);
-  }
   /**
    * Some of extensions needed to override resolving extensions by this.
    */
@@ -19,15 +15,15 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
 
   public static _requestObserver: ((name: string) => void)[] = [];
 
+  public static get(gl: WebGLRenderingContext): GLExtRequestor {
+    return this.__get(gl, GLExtRequestor);
+  }
+
   /**
    * Extension list requested to use.
    * @type {string[]}
    */
   private static _requestedExtensions: ExtensionRequest[] = [];
-
-  public extensions: { [key: string]: any } = {};
-
-  private _readyExtensions: { [key: string]: boolean } = {};
 
   /**
    * Check specified extension was supported on this device.
@@ -70,6 +66,10 @@ export default class GLExtRequestor extends GLRelatedRegistryBase {
     }
     return -1;
   }
+
+  public extensions: { [key: string]: any } = {};
+
+  private _readyExtensions: { [key: string]: boolean } = {};
 
   constructor(public gl: WebGLRenderingContext) {
     super();

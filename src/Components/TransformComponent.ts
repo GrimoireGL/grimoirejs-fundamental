@@ -3,16 +3,18 @@ import Matrix from "grimoirejs-math/ref/Matrix";
 import Quaternion from "grimoirejs-math/ref/Quaternion";
 import Vector3 from "grimoirejs-math/ref/Vector3";
 import Vector4 from "grimoirejs-math/ref/Vector4";
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import CameraComponent from "./CameraComponent";
-const {mat4, vec3, vec4} = GLM;
+import HierarchycalComponentBase from "./HierarchicalComponentBase";
+const { mat4, vec3, vec4 } = GLM;
 /**
  * シーン中に存在する物体の変形を司るコンポーネント
  * このコンポーネントによって物体の座標や回転量、拡大料などが定義されます。
  * シーン中の全ての物体は必ずこのコンポーネントを含まなければなりません。
  */
-export default class TransformComponent extends Component {
+export default class Transform extends HierarchycalComponentBase {
+  public static componentName = "Transform";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * この物体の座標
@@ -65,14 +67,14 @@ export default class TransformComponent extends Component {
    * The children transform should be notified when this transform was updated.
    * @type {TransformComponent[]}
    */
-  private _children: TransformComponent[] = [];
+  private _children: Transform[] = [];
 
   /**
    * The reference to parent TransformComponent.
    * When this object is root object of contained scene, this value should be null.
    * @type {TransformComponent}
    */
-  private _parentTransform: TransformComponent;
+  private _parentTransform: Transform;
 
   /**
    * Calculation cache to
@@ -121,7 +123,7 @@ export default class TransformComponent extends Component {
   public get globalTransformInverse(): Matrix {
     if (!this._globalTransformInverse) {
       this._globalTransformInverse = Matrix.inverse(this.globalTransform);
-    }else {
+    } else {
       this._updateTransform();
     }
     return this._globalTransformInverse;
@@ -153,16 +155,16 @@ export default class TransformComponent extends Component {
   }
 
   public calcPVM(camera: CameraComponent): Matrix {
-    mat4.mul(this._cachePVM.rawElements, camera.ProjectionViewMatrix.rawElements, this.globalTransform.rawElements);
+    mat4.mul(this._cachePVM.rawElements, camera.projectionViewMatrix.rawElements, this.globalTransform.rawElements);
     return this._cachePVM;
   }
 
   public calcVM(camera: CameraComponent): Matrix {
-    mat4.mul(this._cacheVM.rawElements, camera.ViewMatrix.rawElements, this.globalTransform.rawElements);
+    mat4.mul(this._cacheVM.rawElements, camera.viewMatrix.rawElements, this.globalTransform.rawElements);
     return this._cacheVM;
   }
 
-  public $awake(): void {
+  protected $awake(): void {
     // register observers
     this.getAttributeRaw("position").watch((v) => {
       this.notifyUpdateTransform();
@@ -177,15 +179,17 @@ export default class TransformComponent extends Component {
     this.__bindAttributes();
   }
 
-  public $mount(): void {
-    this._parentTransform = this.node.parent.getComponent(TransformComponent);
+  protected $mount(): void {
+    super.$mount();
+    this._parentTransform = this.node.parent.getComponent(Transform);
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
     }
     this._updateTransform();
   }
 
-  public $unmount(): void {
+  protected $unmount(): void {
+    super.$unmount();
     if (this._parentTransform) {
       this._parentTransform._children.splice(this._parentTransform._children.indexOf(this), 1);
       this._parentTransform = null;
@@ -200,7 +204,7 @@ export default class TransformComponent extends Component {
   }
 
   public applyMatrix(mat: Matrix): void {
-    this.setAttribute("scale",  mat.getScaling());
+    this.setAttribute("scale", mat.getScaling());
     this.setAttribute("rotation", mat.getRotation());
     this.setAttribute("position", mat.getTranslation());
   }
@@ -234,9 +238,9 @@ export default class TransformComponent extends Component {
   }
 
   private _updateDirections(): void {
-    vec4.transformMat4(this._forward.rawElements, TransformComponent._forwardBase.rawElements, this.globalTransform.rawElements);
-    vec4.transformMat4(this._up.rawElements, TransformComponent._upBase.rawElements, this.globalTransform.rawElements);
-    vec4.transformMat4(this._right.rawElements, TransformComponent._rightBase.rawElements, this.globalTransform.rawElements);
+    vec4.transformMat4(this._forward.rawElements, Transform._forwardBase.rawElements, this.globalTransform.rawElements);
+    vec4.transformMat4(this._up.rawElements, Transform._upBase.rawElements, this.globalTransform.rawElements);
+    vec4.transformMat4(this._right.rawElements, Transform._rightBase.rawElements, this.globalTransform.rawElements);
   }
 
   private _updateGlobalProperty(): void {

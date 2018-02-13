@@ -1,5 +1,5 @@
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import DefaultLoaderChunk from "raw-loader!../Asset/defaultLoader.html";
 import AssetLoader from "../Asset/AssetLoader";
 
@@ -7,6 +7,7 @@ import AssetLoader from "../Asset/AssetLoader";
  * アセットの読み込みを司るコンポーネント。ローダーの表示などを司る。
  */
 export default class AssetLoadingManagerComponent extends Component {
+  public static componentName = "AssetLoadingManager";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     /**
      * ローディング状況(読み取り専用)
@@ -39,14 +40,14 @@ export default class AssetLoadingManagerComponent extends Component {
 
   private _loaderElement: Element;
 
-  public $treeInitialized(): void {
+  protected $treeInitialized(): void {
     if (this.getAttribute("autoStart")) {
       this._autoStart();
     }
     this._documentResolver();
   }
 
-  public $awake(): void {
+  protected $awake(): void {
     this.companion.set(this.name.ns.for("loader"), this.loader);
     this.loader.register(new Promise((resolve) => { this._documentResolver = resolve; }), this);
     const canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
@@ -65,7 +66,7 @@ export default class AssetLoadingManagerComponent extends Component {
     if (this._loaderElement) {
       this._loaderElement.remove();
     }
-    this.node.emit("asset-load-completed");
+    this.node.emit("asset-load-completed", null);
     this.tree("goml").setAttribute("loopEnabled", true);
     const canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
     canvas.classList.add("gr-resource-loaded-canvas");

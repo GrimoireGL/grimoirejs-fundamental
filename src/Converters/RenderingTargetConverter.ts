@@ -1,11 +1,11 @@
-import Attribute from "grimoirejs/ref/Node/Attribute";
+import Attribute from "grimoirejs/ref/Core/Attribute";
 import RendererComponent from "../Components/RendererComponent";
 import IRenderingTarget from "../Resource/RenderingTarget/IRenderingTarget";
 import RenderingTargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
 
 function isRenderingTarget(obj: any): obj is IRenderingTarget {
     const typedObj = obj as IRenderingTarget;
-    return typeof obj === "object" && typeof typedObj.beforeDraw === "function" && typeof typedObj.getBufferHeight === "function" && typeof typedObj.getBufferWidth === "function" && typeof typedObj.getViewport === "function";
+    return typeof obj === "object" && !!obj && typeof typedObj.beforeDraw === "function" && typeof typedObj.getBufferHeight === "function" && typeof typedObj.getBufferWidth === "function" && typeof typedObj.getViewport === "function";
 }
 
 export default async function RenderingTargetConverter(val: any, attr: Attribute): Promise<IRenderingTarget> {
@@ -22,6 +22,7 @@ export default async function RenderingTargetConverter(val: any, attr: Attribute
             }
             throw new Error(`Specified rendering target "${val}" was not found.`);
         }
+    } else if (val === null) {
+        return null;
     }
-    return null;
 }

@@ -1,11 +1,12 @@
 import Matrix from "grimoirejs-math/ref/Matrix";
 import Quaternion from "grimoirejs-math/ref/Quaternion";
 import Vector3 from "grimoirejs-math/ref/Vector3";
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import TransformComponent from "./TransformComponent";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import Transform from "./TransformComponent";
 
 export default class MouseCameraControlComponent extends Component {
+  public static componentName = "MouseCameraControl";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     rotateSpeed: {
       default: 1,
@@ -40,12 +41,13 @@ export default class MouseCameraControlComponent extends Component {
   public moveSpeed: number;
   public center: Vector3;
   public distance: number;
-  private _transform: TransformComponent;
+  private _transform: Transform;
   private _updated = false;
 
   private _lastCenter: Vector3 = null;
 
   private _lastScreenPos: { x: number, y: number } = null;
+  private _lastPinchDistance = null;
 
   private _initialDirection: Vector3;
   private _initialRotation: Quaternion;
@@ -58,19 +60,25 @@ export default class MouseCameraControlComponent extends Component {
 
   private _listeners: any;
 
-  public $awake(): void {
+  protected $awake(): void {
     this.__bindAttributes();
     this._listeners = {
       mousemove: this._mouseMove.bind(this),
+      touchmove: this._touchMove.bind(this),
+      touchstart: this._touchStart.bind(this),
+      touchend: this._touchEnd.bind(this),
       contextmenu: this._contextMenu.bind(this),
       wheel: this._mouseWheel.bind(this),
     };
   }
 
-  public $mount(): void {
-    this._transform = this.node.getComponent(TransformComponent);
+  protected $mount(): void {
+    this._transform = this.node.getComponent(Transform);
     const canvasElement = this.companion.get("canvasElement");
     canvasElement.addEventListener("mousemove", this._listeners.mousemove);
+    canvasElement.addEventListener("touchmove", this._listeners.touchmove);
+    canvasElement.addEventListener("touchstart", this._listeners.touchstart);
+    canvasElement.addEventListener("touchend", this._listeners.touchend);
     canvasElement.addEventListener("contextmenu", this._listeners.contextmenu);
     canvasElement.addEventListener("wheel", this._listeners.wheel);
 
@@ -78,14 +86,17 @@ export default class MouseCameraControlComponent extends Component {
     this._xsum = 0;
     this._ysum = 0;
   }
-  public $unmount() {
+  protected $unmount() {
     const canvasElement = this.companion.get("canvasElement");
     canvasElement.removeEventListener("mousemove", this._listeners.mousemove);
+    canvasElement.removeEventListener("touchmove", this._listeners.touchmove);
+    canvasElement.removeEventListener("touchstart", this._listeners.touchstart);
+    canvasElement.removeEventListener("touchend", this._listeners.touchend);
     canvasElement.removeEventListener("contextmenu", this._listeners.contextmenu);
     canvasElement.removeEventListener("wheel", this._listeners.wheel);
   }
 
-  public $initialized() {
+  protected $initialized() {
     const look = Vector3.normalize(this.center.subtractWith(this._transform.position));
     const g = Quaternion.fromToRotation(this._transform.forward, look).normalize();
     this._transform.rotation = g;
@@ -98,7 +109,7 @@ export default class MouseCameraControlComponent extends Component {
       this.distance = this._transform.position.subtractWith(this.center).magnitude;
     }
   }
-  public $update() {
+  protected $update() {
     if (this.isActive && this._updated || !this._lastCenter || !this.center.equalWith(this._lastCenter)) {
       this._updated = false;
       this._lastCenter = this.center;
@@ -123,38 +134,83 @@ export default class MouseCameraControlComponent extends Component {
     m.preventDefault();
   }
 
+  private _touchStart(m: TouchEvent): void {
+    if (!this.isActive) {
+      return;
+    }
+    if (m.touches.length >= 2) {
+      this._lastPinchDistance =
+        ((m.touches[0].pageX - m.touches[1].pageX) ** 2 +
+          (m.touches[0].pageY - m.touches[1].pageY) ** 2) ** 0.5;
+    }
+    this._lastScreenPos = null;
+    m.preventDefault();
+  }
+
+  private _touchEnd(m: TouchEvent): void {
+    if (!this.isActive) {
+      return;
+    }
+  }
+
   private _mouseMove(m: MouseEvent): void {
     if (!this.isActive) {
       return;
     }
+    const x = m.screenX;
+    const y = m.screenY;
     if (this._lastScreenPos === null) {
-      this._lastScreenPos = {
-        x: m.screenX,
-        y: m.screenY,
-      };
+      this._lastScreenPos = { x, y };
       return;
     }
-
-    const diffX = m.screenX - this._lastScreenPos.x;
-    const diffY = m.screenY - this._lastScreenPos.y;
-    if (this._checkButtonPress(m, true)) { // When left button was pressed
-      this._xsum += diffX;
-      this._ysum += diffY;
-      this._ysum = Math.min(Math.PI * 50, this._ysum);
-      this._ysum = Math.max(-Math.PI * 50, this._ysum);
-      this._updated = true;
+    if (this._checkButtonPress(m, false)) {
+      m.preventDefault();
+      this._move(x, y);
+    } else if (this._checkButtonPress(m, true)) {
+      m.preventDefault();
+      this._rotate(x, y);
     }
-    if (this._checkButtonPress(m, false)) { // When right button was pressed, move origin.
-      const moveX = -diffX * this.moveSpeed * 0.01;
-      const moveY = diffY * this.moveSpeed * 0.01;
-      this._d = this._d.addWith(this._transform.right.multiplyWith(moveX)).addWith(this._transform.up.multiplyWith(moveY));
-      this._updated = true;
-    }
+    this._lastScreenPos = { x, y };
+  }
 
-    this._lastScreenPos = {
-      x: m.screenX,
-      y: m.screenY,
-    };
+  private _touchMove(m: TouchEvent): void {
+    if (!this.isActive) {
+      return;
+    }
+    switch (m.touches.length) {
+      case 1:
+        const x: number = m.touches[0].pageX;
+        const y: number = m.touches[0].pageY;
+        if (this._lastScreenPos === null) {
+          this._lastScreenPos = { x, y };
+          return;
+        }
+        m.preventDefault();
+        this._rotate(x, y);
+        this._lastScreenPos = { x, y };
+        break;
+      case 2:
+        if (this.getAttribute("preventScroll")) {
+          m.preventDefault();
+        }
+        const scale =
+          ((m.touches[0].pageX - m.touches[1].pageX) ** 2 +
+            (m.touches[0].pageY - m.touches[1].pageY) ** 2) ** 0.5;
+        this._zoom((this._lastPinchDistance - scale) * 0.5);
+        this._lastPinchDistance = scale;
+        break;
+      default:
+    }
+  }
+
+  private _mouseWheel(m: MouseWheelEvent): void {
+    if (!this.isActive) {
+      return;
+    }
+    if (this.getAttribute("preventScroll")) {
+      m.preventDefault();
+    }
+    this._zoom(m.deltaY);
   }
 
   private _checkButtonPress(m: MouseEvent, isRight: boolean) {
@@ -173,16 +229,29 @@ export default class MouseCameraControlComponent extends Component {
     }
   }
 
-  private _mouseWheel(m: MouseWheelEvent): void {
-    if (!this.isActive) {
-      return;
-    }
+  private _move(x: number, y: number): void {
+    const diffX = x - this._lastScreenPos.x;
+    const diffY = y - this._lastScreenPos.y;
+    const moveX = -diffX * this.moveSpeed * 0.01;
+    const moveY = diffY * this.moveSpeed * 0.01;
+    this._d = this._d.addWith(this._transform.right.multiplyWith(moveX)).addWith(this._transform.up.multiplyWith(moveY));
+    this._updated = true;
+  }
+
+  private _rotate(x: number, y: number): void {
+    const diffX = x - this._lastScreenPos.x;
+    const diffY = y - this._lastScreenPos.y;
+    this._xsum += diffX;
+    this._ysum += diffY;
+    this._ysum = Math.min(Math.PI * 50, this._ysum);
+    this._ysum = Math.max(-Math.PI * 50, this._ysum);
+    this._updated = true;
+  }
+
+  private _zoom(delta: number): void {
     const dir = Vector3.subtract(this._transform.position, this.center).normalized;
-    const moveDist = m.deltaY * this.zoomSpeed * 0.05;
+    const moveDist = delta * this.zoomSpeed * 0.05;
     this.distance = Math.max(1, this.distance + moveDist);
     this._transform.position = this.center.addWith(dir.multiplyWith(this.distance));
-    if (this.getAttribute("preventScroll")) {
-      m.preventDefault();
-    }
   }
 }

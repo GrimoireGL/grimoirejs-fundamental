@@ -1,5 +1,5 @@
 import Vector2 from "grimoirejs-math/ref/Vector2";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IResizeViewportMessage from "../../Messages/IResizeViewportMessage";
 import RendererComponent from "../RendererComponent";
 import ResourceResizerComponentBase from "./ResourceResizerComponentBase";
@@ -9,6 +9,7 @@ import ResourceResizerComponentBase from "./ResourceResizerComponentBase";
  * This resource resizer will resize these by considering viewport size.
  */
 export default class ViewportSizeResourceResizer extends ResourceResizerComponentBase {
+  public static componentName = "ViewportSizeResourceResizer";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     resolutionScale: {
       converter: "Vector2",
@@ -20,7 +21,7 @@ export default class ViewportSizeResourceResizer extends ResourceResizerComponen
     },
   };
 
-  public $mount(): void {
+  protected $mount(): void {
     const renderer = this.node.getComponentInAncestor(RendererComponent);
     if (renderer) {
       this.__resizeResources(renderer.viewport.Width, renderer.viewport.Height);
@@ -29,7 +30,7 @@ export default class ViewportSizeResourceResizer extends ResourceResizerComponen
     }
   }
 
-  public $resizeViewport(arg: IResizeViewportMessage): void {
+  protected $resizeViewport(arg: IResizeViewportMessage): void {
     const scale = this.getAttribute("resolutionScale") as Vector2;
     this.__resizeResources(arg.width * scale.X, arg.height * scale.Y);
   }

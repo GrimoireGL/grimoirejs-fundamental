@@ -1,5 +1,5 @@
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Timer from "../Util/Timer";
 interface LoopAction {
   action(timer: Timer): void;
@@ -9,7 +9,8 @@ interface LoopAction {
 /**
  * 全体のループを管理しているコンポーネント。あまり直接ユーザーがいじることはありません。
  */
-export default class LoopManagerComponent extends Component {
+export default class LoopManager extends Component {
+  public static componentName = "LoopManager";
   public static attributes: { [key: string]: IAttributeDeclaration } = {
     loopEnabled: {
       default: false,
@@ -27,7 +28,7 @@ export default class LoopManagerComponent extends Component {
 
   private _timer: Timer;
 
-  public $awake(): void {
+  protected $awake(): void {
     this._registerNextLoop =
       window.requestAnimationFrame  // if window.requestAnimationFrame is defined or undefined
         ?
@@ -40,7 +41,7 @@ export default class LoopManagerComponent extends Component {
         };
   }
 
-  public $mount(): void {
+  protected $mount(): void {
     this.getAttributeRaw("loopEnabled").watch((attr) => {
       if (attr) {
         this._begin();

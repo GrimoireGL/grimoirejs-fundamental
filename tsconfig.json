@@ -6,6 +6,7 @@
     "declaration": true,
     "moduleResolution": "node",
     "declarationDir": "./ref",
+    "sourceMap": true,
     "lib": [
       "dom",
       "dom.iterable",

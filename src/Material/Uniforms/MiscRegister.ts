@@ -6,6 +6,7 @@ import MeshIndexCalculator from "../../Util/MeshIndexCalculator";
 import IMaterialArgument from "../IMaterialArgument";
 import Pass from "../Pass";
 import IVariableInfo from "../Schema/IVariableInfo";
+import UniformResolverContainer from "../UniformResolverContainer";
 import UniformResolverRegistry from "../UniformResolverRegistry";
 
 UniformResolverRegistry.add("VIEWPORT", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
@@ -24,7 +25,6 @@ UniformResolverRegistry.add("TIME", (valInfo: IVariableInfo) => {
   switch (unit) {
     case "s":
       divider = 1000;
-      break;
   }
   return (proxy: UniformProxy, args: IMaterialArgument) => {
     proxy.uniformFloat(valInfo.name, (Date.now() / divider) % 100000);
@@ -49,6 +49,10 @@ UniformResolverRegistry.add("CAMERA_POSITION", (valInfo: IVariableInfo) => (prox
 
 UniformResolverRegistry.add("CAMERA_DIRECTION", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
   proxy.uniformVector3(valInfo.name, args.camera.transform.forward);
+});
+
+UniformResolverRegistry.add("CAMERA_TRANSFORM", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
+  proxy.uniformMatrix(valInfo.name, args.camera.transform.globalTransform);
 });
 
 UniformResolverRegistry.add("MESH_INDEX", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {

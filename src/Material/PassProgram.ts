@@ -2,6 +2,7 @@ import Geometry from "../Geometry/Geometry";
 import ManagedProgram from "../Resource/ManagedProgram";
 import ManagedShader from "../Resource/ManagedShader";
 import ShaderMixer from "./ShaderMixer";
+import GLExtRequestor from "../Resource/GLExtRequestor";
 /**
  * Container of shader program used for Pass.
  * Pass needs to care which geometry will be drawn by a material.
@@ -13,11 +14,11 @@ export default class PassProgram {
    * macros registered dynamically of this programs
    * @return {[type]} [description]
    */
-  public get macros(): {[key: string]: any} {
+  public get macros(): { [key: string]: any } {
     return this._macros;
   }
 
-  public set macros(val: {[key: string]: any}) {
+  public set macros(val: { [key: string]: any }) {
     this._macros = val;
     this.dispose();
   }
@@ -37,22 +38,28 @@ export default class PassProgram {
    * @param  {string} source [description]
    * @return {[type]}        [description]
    */
-  public set fragmentShader(source: string){
+  public set fragmentShader(source: string) {
     this._fsSource = source;
     this.dispose();
   }
 
-  public set vertexShader(source: string){
+  public set vertexShader(source: string) {
     this._vsSource = source;
     this.dispose();
   }
 
-  private _programs: {[hash: number]: ManagedProgram} = {};
+  public supportedExtensions: string[];
+
+  private _programs: { [hash: number]: ManagedProgram } = {};
 
   private _shaders: ManagedShader[] = [];
 
-  constructor(private _gl: WebGLRenderingContext, private _vsSource: string, private _fsSource: string, private _macros: {[key: string]: any} = {}) {
 
+  constructor(private _gl: WebGLRenderingContext, private _vsSource: string, private _fsSource: string, public extensions: string[], private _macros: { [key: string]: any } = {}) {
+    this.supportedExtensions = this.extensions.filter((ext) => {
+      GLExtRequestor.request(ext);
+      return GLExtRequestor.supported(ext);
+    })
   }
   /**
    * Fetch a program instance with specified geometry
@@ -62,7 +69,7 @@ export default class PassProgram {
   public getProgram(geometry: Geometry): ManagedProgram {
     if (this._programs[geometry.accessorHash]) {
       return this._programs[geometry.accessorHash];
-    }else {
+    } else {
       return this._constructProgram(geometry);
     }
   }
@@ -72,11 +79,11 @@ export default class PassProgram {
    * @param {string}         macroName [description]
    * @param {string|boolean} value     [description]
    */
-  public setMacro(macroName: string, value?: string|boolean): void {
+  public setMacro(macroName: string, value?: string | boolean): void {
     if (this._macros[macroName] !== value) {
       if (typeof value === "boolean") {
         this._macros[macroName] = value ? "" : undefined;
-      }else {
+      } else {
         this._macros[macroName] = value;
       }
       this.dispose();
@@ -96,8 +103,8 @@ export default class PassProgram {
   }
 
   private _constructProgram(geometry: Geometry): ManagedProgram {
-    const fs = ManagedShader.getShader(this._gl, WebGLRenderingContext.FRAGMENT_SHADER, ShaderMixer.generate(WebGLRenderingContext.FRAGMENT_SHADER, this._macros, this._fsSource, geometry));
-    const vs = ManagedShader.getShader(this._gl, WebGLRenderingContext.VERTEX_SHADER, ShaderMixer.generate(WebGLRenderingContext.VERTEX_SHADER, this._macros, this._vsSource, geometry));
+    const fs = ManagedShader.getShader(this._gl, WebGLRenderingContext.FRAGMENT_SHADER, ShaderMixer.generate(WebGLRenderingContext.FRAGMENT_SHADER, this._macros, this._fsSource, geometry, this.extensions, this.supportedExtensions));
+    const vs = ManagedShader.getShader(this._gl, WebGLRenderingContext.VERTEX_SHADER, ShaderMixer.generate(WebGLRenderingContext.VERTEX_SHADER, this._macros, this._vsSource, geometry, this.extensions, this.supportedExtensions));
     const program = ManagedProgram.getProgram(this._gl, [vs, fs]);
     this._shaders.push(fs);
     this._shaders.push(vs);
