@@ -14,58 +14,68 @@ import Identity from "grimoirejs/ref/Core/Identity";
 const ns = Namespace.define("grimoirejs-fundamental");
 
 /**
- * キャンバスの初期化及び設定を司るコンポーネント
- * このコンポーネントによって、適切な位置に`<canvas>`を初期化してWebGLコンテキストを初期化します。
+ * CanvasInitializer provides initialization of <canvas> element.
+ * This component is typically existing for each <goml> tag. And this node will insert <canvas> tag ideal location of the body.
+ * This component also treat resizing for initialized canvas.
  */
 export default class CanvasInitializerComponent extends Component {
   public static componentName = "CanvasInitializer";
   public static attributes = {
     /**
-     * キャンバスタグの横幅を指定します。
+     * Width of canvas
      */
     width: {
       default: "fit",
       converter: CanvasSizeConverter,
     },
     /**
-     * キャンバスタグの縦幅を指定します。
+     * Height of canvas
      */
     height: {
       default: "fit",
       converter: CanvasSizeConverter,
     },
     /**
-     * キャンバス要素の直接の親要素のコンテナに割り当てるidを指定します。
+     * Container ID will be assigned as ID of <div> element containing the canvas.
      */
     containerId: {
       default: "",
       converter: StringConverter,
     },
     /**
-     * キャンバス要素の直接の親要素のコンテナに割り当てるクラス名を指定します。
+     * Container classes will be assigned as class name of <div> element containing the canvas.
      */
     containerClass: {
       default: "gr-container",
       converter: StringConverter,
     },
     /**
-     * GLコンテキストの初期化時に、preserveDrawingBufferフラグを有効にするか指定します。
-     *
-     * 描画結果をdataURLに変換する際などはこの属性がtrueでないと正常にレンダリング結果を取得できません。
+     * Flag of initializng GL context.
+     * If you needs to fetch canvas data by dataURI or something other way, You may need to assign this value as true for fetching canvas data correctly.
+     * This value can't be changed after GL context initialized.
      */
     preserveDrawingBuffer: {
       default: true,
       converter: BooleanConverter,
     },
     /**
-     * GLコンテキストの初期化時に、MSAAによるアンチエイリアスを有効にするか指定します。
-     *
-     * この属性は、途中で動的に変更することができません。
+     * Flag of using MSAA antialiasing.
+     * This value can't be changed after GL context initialized.
      */
     antialias: {
       default: true,
       converter: BooleanConverter,
     },
+    /**
+     * Flag of required WebGL version. Available options are listed below.
+     * - 1.0 ・・・Requests only WebGL1.0(Even if WebGL2.0 is available)
+     * - 2.0 ・・・Requests WebGL2.0(Will be fail if WebGL2.0 is not available)
+     * - null・・・Prefer WebGL2.0. but use WebGL1.0 if the context is not available
+     */
+    requiredGLVersion: {
+      default: null,
+      converter: StringConverter
+    }
   };
 
   /**
@@ -237,7 +247,17 @@ export default class CanvasInitializerComponent extends Component {
       antialias: this.getAttribute("antialias"),
       preserveDrawingBuffer: this.getAttribute("preserveDrawingBuffer"),
     };
-    let context: WebGLRenderingContext = canvas.getContext("webgl", contextConfig) as WebGLRenderingContext;
+    const glv = this.getAttribute("requiredGLVersion");
+    let context!: WebGLRenderingContext;
+    if (glv !== "1.0") {
+      context = canvas.getContext("webgl2", contextConfig) as WebGLRenderingContext;
+      if (glv === "2.0" && !context) {
+        throw new Error(`WebGL 2.0 is requested. But this device is not supporting WebGL2.0.`);
+      }
+    }
+    if (!context) {
+      context = canvas.getContext("webgl", contextConfig) as WebGLRenderingContext;
+    }
     if (!context) {
       context = canvas.getContext("experimental-webgl", contextConfig) as WebGLRenderingContext;
     }

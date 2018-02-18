@@ -6,8 +6,7 @@ import Timer from "../Util/Timer";
 import HierarchycalComponentBase from "./HierarchicalComponentBase";
 
 /**
- * 特定のシーン内に関連する処理を行うためのコンポーネント
- * このコンポーネントには属性が存在しません。
+ * Managing scene updating loop and scene depend data.
  */
 export default class Scene extends HierarchycalComponentBase {
   public static componentName = "Scene";
@@ -21,6 +20,9 @@ export default class Scene extends HierarchycalComponentBase {
 
   public sceneDescription: { [key: string]: any } = {};
 
+  /**
+   * RenderQueueRegistry to manage rendering order of the scene.
+   */
   public queueRegistry: RenderQueueRegistry = new RenderQueueRegistry();
 
   /**

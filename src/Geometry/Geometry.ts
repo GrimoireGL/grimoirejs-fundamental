@@ -10,6 +10,7 @@ import IndexBufferInfo from "./IndexBufferInfo";
 import VertexBufferAccessor from "./VertexBufferAccessor";
 import Options from "../Util/Options";
 import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import GLUtility from "../Resource/GLUtility";
 
 export interface GeometryVertexBufferAccessor extends VertexBufferAccessor {
     bufferIndex: number;
@@ -420,8 +421,17 @@ export default class Geometry {
     }
 
     private static _ensureValidIndexBufferUploadOptions(buffer?: GrimoireBufferSource, opt?: Options<IndexBufferUploadOptions>): IndexBufferUploadOptions {
-        if (!buffer && (!opt || typeof opt.count === "number")) {
-            throw new Error(`Index buffer can't construct without buffer and opt.count`);
+        if (!buffer && (!opt || typeof opt.type === "number")) {
+            throw new Error(`Index buffer can't construct without buffer and opt.type`);
+        }
+        let type!: number;
+        if (opt && opt.type) {
+            type = opt.type;
+        }
+        if (buffer instanceof Buffer) {
+            type = buffer.elementType!;
+        } else if (buffer) {
+            type = GLConstantUtility.getSuitableIntegerElementTypeFromMaximum(Math.max(...buffer as any))
         }
         let count: number;
         if (opt && opt.count) {
@@ -433,7 +443,7 @@ export default class Geometry {
             topology: WebGLRenderingContext.TRIANGLES,
             offset: 0,
             count,
-            type: GLConstantUtility.getSuitableIntegerElementTypeFromMaximum(count),
+            type,
             ...opt
         };
     }

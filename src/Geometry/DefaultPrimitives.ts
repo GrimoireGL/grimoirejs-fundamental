@@ -57,13 +57,13 @@ export default class DefaultPrimitives {
     }, (geometry) => {
       geometry.declareReactiveAttribute("divide", 50);
       geometry.addReactiveAttributeBuffer(["divide"], (buffer, attrs) => {
-        const bufferSource = GeometryUtility.cone(attrs.div);
+        const bufferSource = GeometryUtility.cone(attrs.divide);
         buffer.updateFromArray(bufferSource);
         return { accessors: primitiveLayout };
       });
       geometry.addReactiveIndexBuffer(["divide"], (buffer, attrs) => {
         const bufferSource = GeometryUtility.coneIndex(attrs.divide);
-        buffer.updateFromArray(bufferSource);
+        buffer.updateFromArray(bufferSource, false);
         return {
           semantic: "default"
         };
@@ -85,7 +85,7 @@ export default class DefaultPrimitives {
     }, (geometry) => {
       geometry.declareReactiveAttribute("divide", 50);
       geometry.addReactiveAttributeBuffer(["divide"], (buffer, attrs) => {
-        const bufferSource = GeometryUtility.cylinder(attrs.div);
+        const bufferSource = GeometryUtility.cylinder(attrs.divide);
         buffer.updateFromArray(bufferSource);
         return { accessors: primitiveLayout };
       });
@@ -217,7 +217,8 @@ export default class DefaultPrimitives {
       geometry.declareReactiveAttribute("divHorizontal", 10);
       geometry.addReactiveAttributeBuffer(["divVertical", "divHorizontal"], (buffer, attr) => {
         const vertices = [].concat.apply([], [
-          GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], attr.divHorizontal, attr.divVertical), GeometryUtility.plane([0, 0, 0], [0, 0, -1], [0, 1, 0], [-1, 0, 0], attr.divHorizontal, attr.divVertical, true),
+          GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], attr.divHorizontal, attr.divVertical),
+          GeometryUtility.plane([0, 0, 0], [0, 0, -1], [0, 1, 0], [-1, 0, 0], attr.divHorizontal, attr.divVertical, true),
         ]);
         buffer.updateFromArray(vertices);
         return {
@@ -229,7 +230,7 @@ export default class DefaultPrimitives {
           GeometryUtility.planeIndex(0, attr.divHorizontal, attr.divVertical),
           GeometryUtility.planeIndex((attr.divHorizontal + 1) * (attr.divVertical + 1), attr.divHorizontal, attr.divVertical),
         ]);
-        buffer.updateFromArray(indices);
+        buffer.updateFromArray(indices, false);
         return {
           semantic: "default"
         };
@@ -239,7 +240,7 @@ export default class DefaultPrimitives {
           GeometryUtility.planeIndex(0, attr.divHorizontal, attr.divVertical),
           GeometryUtility.planeIndex((attr.divHorizontal + 1) * (attr.divVertical + 1), attr.divHorizontal, attr.divVertical),
         ]);
-        buffer.updateFromArray(GeometryUtility.linesFromTriangles(indices));
+        buffer.updateFromArray(GeometryUtility.linesFromTriangles(indices), false);
         return {
           semantic: "wireframe"
         };

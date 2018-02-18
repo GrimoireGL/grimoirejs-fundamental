@@ -27,6 +27,10 @@ export default class LoopManager extends Component {
     },
   };
 
+  /**
+   * Updating loop is enabled or not.
+   * If thi
+   */
   public loopEnabled: boolean = false;
 
   private _loopActions: LoopAction[] = [];
@@ -71,6 +75,10 @@ export default class LoopManager extends Component {
     this._loopActions.sort((a, b) => a.priorty - b.priorty);
   }
 
+  /**
+   * Execute one frame manually.
+   * @param followFPSRestriction When the value is true and executed frame as surpassing rate of FPS, next frame will be ignored to follow FPS restriction.
+   */
   public tick(followFPSRestriction: boolean = false): void {
     if (this._timer.internalUpdate() || !followFPSRestriction) {
       this.node.emit("loop", {
