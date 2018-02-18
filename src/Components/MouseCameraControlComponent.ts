@@ -36,12 +36,12 @@ export default class MouseCameraControlComponent extends Component {
   };
 
   // propaty bound to
-  public rotateSpeed: number;
-  public zoomSpeed: number;
-  public moveSpeed: number;
-  public center: Vector3;
-  public distance: number;
-  private _transform: Transform;
+  public rotateSpeed: number = NaN;
+  public zoomSpeed: number = NaN;
+  public moveSpeed: number = NaN;
+  public center: Vector3 = undefined!;
+  public distance: number = NaN;
+  private _transform: Transform = undefined!;
   private _updated = false;
 
   private _lastCenter: Vector3 | null = null;
@@ -50,8 +50,8 @@ export default class MouseCameraControlComponent extends Component {
 
   private _lastPinchDistance: number | null = null;
 
-  private _initialDirection: Vector3;
-  private _initialRotation: Quaternion;
+  private _initialDirection: Vector3 = undefined!;
+  private _initialRotation: Quaternion = undefined!;
 
   private _xsum = 0;
 
@@ -227,9 +227,9 @@ export default class MouseCameraControlComponent extends Component {
       }
     } else {
       if (isRight) {
-        return m.which === 1;
+        return (m as MouseEvent).which === 1;
       } else {
-        return m.which === 3;
+        return (m as MouseEvent).which === 3;
       }
     }
   }

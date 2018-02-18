@@ -34,13 +34,13 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
     },
   };
 
-  public layer: string;
+  public layer!: string;
 
   public camera: Nullable<CameraComponent> = null;
 
-  public technique: string;
+  public technique!: string;
 
-  private _gl: WebGLRenderingContext;
+  private _gl!: WebGLRenderingContext;
 
   // messages
 

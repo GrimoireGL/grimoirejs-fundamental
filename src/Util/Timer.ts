@@ -2,13 +2,13 @@ export default class Timer {
 
   public timeScale = 1;
   public fpsRestriction = 60;
-  private _time: number;
-  private _lastRealTime: number;
-  private _unrestrictedLastRealTime: number;
+  private _time: number = NaN;
+  private _lastRealTime: number = NaN;
+  private _unrestrictedLastRealTime: number = NaN;
   private _accumlatedSkipFrame = 0;
-  private _deltaTime: number;
+  private _deltaTime: number = NaN;
   private _frameCount = 0;
-  private _lastFPS: number;
+  private _lastFPS: number = NaN;
 
   public get deltaTime() {
     return this._deltaTime;

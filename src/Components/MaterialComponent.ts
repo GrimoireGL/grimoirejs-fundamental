@@ -23,19 +23,19 @@ export default class MaterialComponent extends MaterialContainerBase {
      * Promise of material.
      * If this object is pending, the material is not initialized yet.
      */
-    public materialPromise: Promise<Material>;
+    public materialPromise!: Promise<Material>;
 
     /**
      * Reference to material.
      * Make sure this material component is ready. If not, material will be undefined.
      */
-    public material: Material;
+    public material!: Material;
 
     /**
      * Flag to check material is initialized.
      * If this flag is not true, this material is not initialized yet.
      */
-    public ready: boolean;
+    public ready!: boolean;
 
     protected $mount(): void {
         const typeName = this.getAttribute("type");

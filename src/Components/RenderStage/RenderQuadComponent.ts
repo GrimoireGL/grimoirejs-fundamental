@@ -30,15 +30,15 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
     },
   };
 
-  public technique: string;
+  public technique!: string;
 
-  private indexGroup: string;
+  private indexGroup!: string;
 
-  private _gl: WebGLRenderingContext;
+  private _gl!: WebGLRenderingContext;
 
-  private _quadGeometry: Geometry;
+  private _quadGeometry!: Geometry;
 
-  private _materialContainer: MaterialContainer;
+  private _materialContainer!: MaterialContainer;
 
   protected $awake(): void {
     super.$awake();

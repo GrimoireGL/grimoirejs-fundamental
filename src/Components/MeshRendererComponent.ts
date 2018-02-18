@@ -45,15 +45,15 @@ export default class MeshRenderer extends Component implements IRenderable {
             default: "default",
         }
     };
-
-    public index: number;
     public renderArgs: { [key: string]: any } = {};
-    public geometry: Geometry;
-    private indexGroup: string;
-    private layer: string;
-    private _materialContainer: MaterialContainer;
-    private _transformComponent: Transform;
-    private _containedScene: Scene;
+
+    public index!: number;
+    public geometry!: Geometry;
+    private indexGroup!: string;
+    private layer!: string;
+    private _materialContainer!: MaterialContainer;
+    private _transformComponent!: Transform;
+    private _containedScene!: Scene;
 
     private _priortyCalcCache = new Vector3(0, 0, 0);
 

@@ -35,17 +35,17 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
         },
     };
 
-    public clearColor: Color4;
+    public clearColor!: Color4;
 
-    public clearColorEnabled: boolean;
+    public clearColorEnabled!: boolean;
 
-    public clearDepth: number;
+    public clearDepth!: number;
 
-    public clearDepthEnabled: boolean;
+    public clearDepthEnabled!: boolean;
 
-    public _out: Promise<IRenderingTarget>;
+    public _out!: Promise<IRenderingTarget>;
 
-    public out: IRenderingTarget;
+    public out!: IRenderingTarget;
 
     protected $awake(): void {
         this.__bindAttributes();

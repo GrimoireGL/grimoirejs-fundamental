@@ -61,11 +61,11 @@ export default class Texture2D extends Texture {
     return this._drawerContext;
   }
 
-  private _drawerContext: CanvasRenderingContext2D;
+  private _drawerContext!: CanvasRenderingContext2D;
 
-  private _width: number;
+  private _width!: number;
 
-  private _height: number;
+  private _height!: number;
 
   constructor(gl: WebGLRenderingContext) {
     super(gl, WebGLRenderingContext.TEXTURE_2D);

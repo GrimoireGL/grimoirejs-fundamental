@@ -34,21 +34,21 @@ export default class VideoTextureUpdator extends TextureUpdatorComponentBase<Tex
     },
   };
 
-  public flipY: boolean;
+  public flipY!: boolean;
 
-  public premultipliedAlpha: boolean;
+  public premultipliedAlpha!: boolean;
 
-  public src: string;
+  public src!: string;
 
-  public video: HTMLVideoElement;
+  public video!: HTMLVideoElement;
 
-  public currentTime: number;
+  public currentTime!: number;
 
-  public muted: boolean;
+  public muted!: boolean;
 
-  public playbackRate: number;
+  public playbackRate!: number;
 
-  public loop: boolean;
+  public loop!: boolean;
 
   protected $awake() {
     super.$awake();

@@ -34,9 +34,9 @@ export default class RendererComponent extends Component {
     this._renderingTargetResolver = resolve;
   });
 
-  private _renderingTargetResolver: (rt: CanvasRegionRenderingTarget) => void;
+  private _renderingTargetResolver!: (rt: CanvasRegionRenderingTarget) => void;
 
-  private _renderingTarget: CanvasRegionRenderingTarget;
+  private _renderingTarget!: CanvasRegionRenderingTarget;
 
   public get viewport(): Viewport {
     if (this._viewportCache) {
@@ -46,28 +46,27 @@ export default class RendererComponent extends Component {
       return this._viewportCache;
     }
   }
+  private _gl!: WebGLRenderingContext;
 
-  private _gl: WebGLRenderingContext;
+  private _canvas!: HTMLCanvasElement;
 
-  private _canvas: HTMLCanvasElement;
+  private _viewportSizeGenerator!: (canvas: HTMLCanvasElement) => Viewport;
 
-  private _viewportSizeGenerator: (canvas: HTMLCanvasElement) => Viewport;
+  private _viewportCache!: Viewport;
 
-  private _viewportCache: Viewport;
+  private _mouseLeaveHandler!: (e: MouseEvent) => void;
 
-  private _mouseLeaveHandler: (e: MouseEvent) => void;
+  private _mouseEnterHandler!: (e: MouseEvent) => void;
 
-  private _mouseEnterHandler: (e: MouseEvent) => void;
+  private _mouseMoveHandler!: (e: MouseEvent) => void;
 
-  private _mouseMoveHandler: (e: MouseEvent) => void;
+  private _mouseDownHandler!: (e: MouseEvent) => void;
 
-  private _mouseDownHandler: (e: MouseEvent) => void;
+  private _mouseUpHandler!: (e: MouseEvent) => void;
 
-  private _mouseUpHandler: (e: MouseEvent) => void;
+  private _mouseClickHandler!: (e: MouseEvent) => void;
 
-  private _mouseClickHandler: (e: MouseEvent) => void;
-
-  private _dblClickHandler: (e: MouseEvent) => void;
+  private _dblClickHandler!: (e: MouseEvent) => void;
 
   private _wasInside = false;
 

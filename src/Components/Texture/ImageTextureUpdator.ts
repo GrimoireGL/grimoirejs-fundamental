@@ -16,13 +16,13 @@ export default class ImageTextureUpdator extends TextureUpdatorComponentBase<Tex
     ...TextureUpdatorComponentBase.attributes
   };
 
-  public flipY: boolean;
+  public flipY!: boolean;
 
-  public premultipliedAlpha: boolean;
+  public premultipliedAlpha!: boolean;
 
-  public src: string;
+  public src!: string;
 
-  private _resolvedImage: HTMLImageElement;
+  private _resolvedImage!: HTMLImageElement;
 
   protected $awake() {
     super.$awake();

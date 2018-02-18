@@ -63,25 +63,25 @@ export default class RenderCubemapComponent extends RenderStageBase {
         },
     };
 
-    public indexGroup: string;
+    public indexGroup!: string;
 
-    public technique: string;
+    public technique!: string;
 
-    public out: ICubemapRenderingTarget;
+    public out!: ICubemapRenderingTarget;
 
-    public camera: CubemapCameraComponent;
+    public camera!: CubemapCameraComponent;
 
-    public layer: string;
+    public layer!: string;
 
-    public clearColor: Color4;
+    public clearColor!: Color4;
 
-    public clearColorEnabled: boolean;
+    public clearColorEnabled!: boolean;
 
-    public clearDepth: number;
+    public clearDepth!: number;
 
-    public clearDepthEnabled: boolean;
+    public clearDepthEnabled!: boolean;
 
-    private _gl: WebGLRenderingContext;
+    private _gl!: WebGLRenderingContext;
 
     protected $mount(): void {
         this.__bindAttributes();

@@ -29,23 +29,23 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     ...SingleBufferRenderStageBase.attributes
   };
 
-  public hitareaBuffer: IRenderingTarget;
+  public hitareaBuffer!: IRenderingTarget;
 
-  private _sceneRenderer: RenderSceneComponent;
+  private _sceneRenderer!: RenderSceneComponent;
 
-  private _gl: WebGLRenderingContext;
+  private _gl!: WebGLRenderingContext;
 
-  private _canvas: HTMLCanvasElement;
+  private _canvas!: HTMLCanvasElement;
 
-  private _lastPosition: number[];
+  private _lastPosition!: number[];
 
-  private _mouseInside: boolean;
+  private _mouseInside!: boolean;
 
   private _readCache: Uint8Array = new Uint8Array(4);
 
-  private _lastRenderable: Nullable<IRenderable>;
+  private _lastRenderable!: Nullable<IRenderable>;
 
-  private _mouseMoved: boolean;
+  private _mouseMoved!: boolean;
 
 
   protected $mount() {

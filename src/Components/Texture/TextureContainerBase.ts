@@ -47,15 +47,15 @@ export default class TextureContainerBase<T extends Texture> extends Component {
         },
     };
 
-    public texture: T;
+    public texture!: T;
 
-    public magFilter: number;
+    public magFilter!: number;
 
-    public minFilter: number;
+    public minFilter!: number;
 
-    public wrapS: number;
+    public wrapS!: number;
 
-    public wrapT: number;
+    public wrapT!: number;
 
     protected $mount(): void {
         this.__bindAttributes();

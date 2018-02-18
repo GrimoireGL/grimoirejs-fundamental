@@ -10,13 +10,13 @@ abstract class GLResource<T> {
 
   public destroyed = false;
 
-  public validPromise: Promise<GLResource<T>>;
-
-  private _valid: boolean;
-
   private _metadata: { [key: string]: any } = {};
 
-  private _validResolve: (r: GLResource<T>) => void;
+  public validPromise!: Promise<GLResource<T>>;
+
+  private _valid!: boolean;
+
+  private _validResolve!: (r: GLResource<T>) => void;
 
   public get valid(): boolean {
     return this._valid;

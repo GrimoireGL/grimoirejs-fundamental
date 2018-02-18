@@ -37,7 +37,7 @@ export default class GeometryComponent extends Component {
         },
     };
 
-    public geometry: Geometry;
+    public geometry!: Geometry;
 
     public async $mount(): Promise<void> {
         const type = this.getAttribute("type");

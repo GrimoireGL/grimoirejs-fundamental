@@ -7,7 +7,7 @@ import GLStateConfigurator from "../../Material/GLStateConfigurator";
  * This rendering target limit a region of canvas by viewport.
  */
 export default class CanvasRegionRenderingTarget extends CanvasRenderingTarget {
-    private _viewport: Viewport;
+    private _viewport!: Viewport;
 
     constructor(gl: WebGLRenderingContext) {
         super(gl);
