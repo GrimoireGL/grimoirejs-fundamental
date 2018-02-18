@@ -243,6 +243,7 @@ export default class DefaultPrimitives {
         buffer.updateFromArray(GeometryUtility.linesFromTriangles(indices), false);
         return {
           semantic: "wireframe"
+          , topology: WebGLRenderingContext.LINES
         };
       });
     });
