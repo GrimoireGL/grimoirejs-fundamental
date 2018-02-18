@@ -9,25 +9,45 @@ import Texture2D from "./Texture2D";
 import TextureCube from "./TextureCube";
 
 const mat3Cache = new Float32Array(9);
-
+/** 
+ * Provides abstractions of passing uniform values.
+ * This proxy will cache uniform location automatically.
+*/
 export default class UniformProxy {
   private _gl: WebGLRenderingContext;
 
+  /**
+   * Index of texture index that havent used on this time.
+   */
   private _currentTextureRegister = 0;
   constructor(public program: Program) {
     this._gl = program.gl;
   }
-
+  /**
+   * Passing bool value to specified uniform variable.
+   * @param variableName variable name of uniform
+   * @param val value to be passed.
+   */
   public uniformBool(variableName: string, val: boolean): void {
     this._pass(variableName, l => this._gl.uniform1i(l, val ? 1 : 0));
   }
 
+  /**
+   * Passing matrix value to specified uniform variable
+   * @param variableName variable name of uniform
+   * @param mat value to be passed.
+   */
   public uniformMatrix(variableName: string, mat: Matrix): void {
     this._pass(variableName, l => {
       this._gl.uniformMatrix4fv(l, false, mat.rawElements);
     });
   }
 
+  /**
+   * Passing Matrix as 3x3 matrix to specified uniform variable.
+   * @param variableName variable name of uniform
+   * @param mat value to be passed by reforming as 3x3 matrix.
+   */
   public uniformMatrix3(variableName: string, mat: Matrix): void {
     this._pass(variableName, l => {
       const r = mat.rawElements;
@@ -40,6 +60,12 @@ export default class UniformProxy {
     });
   }
 
+  /**
+   * Passing Matrix Array from Float32Array to uniform variable.
+   * You may need to flatten Matrix to Float32Array.
+   * @param variableName variable name of uniform
+   * @param mat value to be passed.
+   */
   public uniformMatrixArray(variableName: string, matricies: Float32Array): void {
     const length = matricies.length / 16;
     for (let i = 0; i < length; i++) {
@@ -48,79 +74,136 @@ export default class UniformProxy {
       );
     }
   }
-
+  /**
+ * Passing a single float value to uniform variable.
+ * @param variableName variable name of uniform
+ * @param mat value to be passed.
+ */
   public uniformFloat(variableName: string, val: number): void {
     this._pass(variableName, (l) =>
       this._gl.uniform1f(l, val),
     );
   }
-
-  public uniformFloatArray(variableName: string, val: number[]): void {
+  /**
+   * Passing float array from Float32Array to uniform variable.
+   * You may need to flatten Matrix to Float32Array.
+   * @param variableName variable name of uniform
+   * @param mat value to be passed.
+   */
+  public uniformFloatArray(variableName: string, val: number[] | Float32Array): void {
     this._pass(variableName, (l) =>
       this._gl.uniform1fv(l, val),
     );
   }
-
+  /**
+ * Passing a single int value to uniform variable.
+ * @param variableName variable name of uniform
+ * @param mat value to be passed.
+ */
   public uniformInt(variableName: string, val: number): void {
     this._pass(variableName, (l) =>
       this._gl.uniform1i(l, val),
     );
   }
-
+  /**
+ * Passing a single vec2 value to uniform variable.
+ * @param variableName variable name of uniform
+ * @param mat value to be passed.
+ */
   public uniformVector2(variableName: string, val: Vector2): void {
     this._pass(variableName, (l) =>
       this._gl.uniform2f(l, val.X, val.Y),
     );
   }
-
+  /**
+ * Passing a single ivec2 value to uniform variable.
+ * @param variableName variable name of uniform
+ * @param mat value to be passed.
+ */
   public uniformIntVector2(variableName: string, val: Vector2): void {
     this._pass(variableName, (l) =>
       this._gl.uniform2i(l, val.X, val.Y),
     );
   }
-
+  /**
+ * Passing a vec2[] value to uniform variable.
+ * @param variableName variable name of uniform
+ * @param mat value to be passed.
+ */
   public uniformVector2Array(variableName: string, val: number[] | Float32Array): void {
     this._pass(variableName, (l) => this._gl.uniform2fv(l, val));
   }
-
+  /**
+ * Passing a single vec3 value to uniform variable.
+ * @param variableName variable name of uniform
+ * @param mat value to be passed.
+ */
   public uniformVector3(variableName: string, val: Vector3): void {
     this._pass(variableName, (l) =>
       this._gl.uniform3f(l, val.X, val.Y, val.Z),
     );
   }
-
+  /**
+ * Passing a single ivec3 value to uniform variable.
+ * @param variableName variable name of uniform
+ * @param mat value to be passed.
+ */
   public uniformIntVector3(variableName: string, val: Vector3): void {
     this._pass(variableName, (l) =>
       this._gl.uniform3i(l, val.X, val.Y, val.Z),
     );
   }
-
+  /**
+ * Passing a vec3[] value to uniform variable.
+ * @param variableName variable name of uniform
+ * @param mat value to be passed.
+ */
   public uniformVector3Array(variableName: string, val: number[] | Float32Array): void {
     this._pass(variableName, (l) => this._gl.uniform3fv(l, val));
   }
-
+  /**
+ * Passing a vec3 value to uniform variable from Color3 instance.
+ * @param variableName variable name of uniform
+ * @param mat value to be passed.
+ */
   public uniformColor3(variableName: string, val: Color3): void {
     this._pass(variableName, (l) =>
       this._gl.uniform3f(l, val.R, val.G, val.B),
     );
   }
-
+  /**
+ * Passing a single vec4 value to uniform variable.
+ * @param variableName variable name of uniform
+ * @param mat value to be passed.
+ */
   public uniformVector4(variableName: string, val: Vector4): void {
     this._pass(variableName, (l) =>
       this._gl.uniform4f(l, val.X, val.Y, val.Z, val.W),
     );
   }
-
+  /**
+ * Passing a single ivec4 value to uniform variable.
+ * @param variableName variable name of uniform
+ * @param mat value to be passed.
+ */
   public uniformIntVector4(variableName: string, val: Vector4): void {
     this._pass(variableName, (l) =>
       this._gl.uniform4f(l, val.X, val.Y, val.Z, val.W),
     );
   }
-
+  /**
+ * Passing a vec4 value to uniform variable.
+ * @param variableName variable name of uniform
+ * @param mat value to be passed.
+ */
   public uniformVector4Array(variableName: string, val: number[] | Float32Array): void {
     this._pass(variableName, (l) => this._gl.uniform4fv(l, val));
   }
-
+  /**
+ * Passing a single vec4 value to uniform variable from Color4 instance.
+ * @param variableName variable name of uniform
+ * @param mat value to be passed.
+ */
   public uniformColor4(variableName: string, val: Color4): void {
     this._pass(variableName, (l) =>
       this._gl.uniform4f(l, val.R, val.G, val.B, val.A),

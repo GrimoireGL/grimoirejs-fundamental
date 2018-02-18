@@ -4,6 +4,9 @@ import Texture from "../../Resource/Texture";
 import { EnumConverter } from "grimoirejs/ref/Converter/EnumConverter";
 import { StandardAttribute } from "grimoirejs/ref/Core/Attribute";
 
+/**
+ * An abstract component to hold referrence of Textures.
+ */
 export default class TextureContainerBase<T extends Texture> extends Component {
     public static componentName = "TextureContainerBase";
     public static attributes = {
@@ -72,6 +75,10 @@ export default class TextureContainerBase<T extends Texture> extends Component {
         delete this.texture;
     }
 
+    /**
+     * Create texture referrence using gl context.
+     * @param gl context of WebGL
+     */
     protected __createTexture(gl: WebGLRenderingContext): T {
         throw new Error(`This method should be overriden. But called directly.`);
     }
