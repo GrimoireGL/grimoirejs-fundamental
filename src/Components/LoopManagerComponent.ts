@@ -7,7 +7,8 @@ interface LoopAction {
 }
 
 /**
- * 全体のループを管理しているコンポーネント。あまり直接ユーザーがいじることはありません。
+ * LoopManager manages entire loop of canvas.
+ * This component will arrange loop actions that will be fired by requestAnimationFrame.
  */
 export default class LoopManager extends Component {
   public static componentName = "LoopManager";
@@ -54,6 +55,12 @@ export default class LoopManager extends Component {
     this._timer.internalUpdate();
   }
 
+  /**
+   * Register loop action to be called on every loop.
+   * Consider using $update for any objects inside of scene.
+   * @param action an function to be called on every loop.
+   * @param priorty priorty of loop. All registered loop actions are called by ascending order.
+   */
   public register(action: (timer: Timer) => void, priorty: number): void {
     this._loopActions.push({
       action,

@@ -166,13 +166,13 @@ export default class Transform extends HierarchycalComponentBase {
 
   protected $awake(): void {
     // register observers
-    this.getAttributeRaw("position").watch((v) => {
+    this.getAttributeRaw("position").watch(() => {
       this.notifyUpdateTransform();
     });
-    this.getAttributeRaw("rotation").watch((v) => {
+    this.getAttributeRaw("rotation").watch(() => {
       this.notifyUpdateTransform();
     });
-    this.getAttributeRaw("scale").watch((v) => {
+    this.getAttributeRaw("scale").watch(() => {
       this.notifyUpdateTransform();
     });
     // assign attribute values to field
