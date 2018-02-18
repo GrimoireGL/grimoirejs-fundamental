@@ -83,9 +83,9 @@ class CoroutineRegistry {
 export default class BasicComponent extends Component {
   public static componentName = "BasicComponent";
   public static attributes: { [name: string]: IAttributeDeclaration } = {};
-  private _loopManagerBackingStore: LoopManager;
+  private _loopManagerBackingStore!: LoopManager;
 
-  private _assetLoadingManagerBackingStore: AssetLoadingManager;
+  private _assetLoadingManagerBackingStore!: AssetLoadingManager;
 
   /**
    * Getter for loop manager used for loop mamnagement

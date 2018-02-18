@@ -39,9 +39,9 @@ export default class AssetLoadingManagerComponent extends Component {
 
   public loader: AssetLoader = new AssetLoader();
 
-  private _documentResolver: () => void;
+  private _documentResolver!: () => void;
 
-  private _loaderElement: Element;
+  private _loaderElement!: Element;
 
   protected $treeInitialized(): void {
     if (this.getAttribute("autoStart")) {

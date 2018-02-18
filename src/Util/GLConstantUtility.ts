@@ -1,3 +1,4 @@
+export type TypedArray = Float32Array | Uint8Array | Int8Array | Uint16Array | Int16Array | Uint32Array | Int32Array;
 /**
  * Provides utility methods for converting constants like
  * * Buffer element type and typed array constructor
@@ -5,6 +6,14 @@
  *  ...
  */
 export default class GLConstantUtility {
+
+    public static isTypedArrayBuffer(arrayBuffer: any): arrayBuffer is TypedArray {
+        return arrayBuffer instanceof Float32Array || arrayBuffer instanceof Uint8Array || arrayBuffer instanceof Int8Array || arrayBuffer instanceof Uint16Array || arrayBuffer instanceof Int16Array || arrayBuffer instanceof Uint32Array || arrayBuffer instanceof Int32Array;
+    }
+
+    public static getElementTypeFromTypedArray(array: TypedArray): number {
+        return GLConstantUtility.getElementTypeFromTypedArrayConstructor(array.constructor as any);
+    }
     /**
      * Get size of GL element type
      * @param type gl.FLOAT,gl.UNSIGNED_BYTE,gl_BYTE...
@@ -87,18 +96,32 @@ export default class GLConstantUtility {
     }
 
     /**
-     * Obtain gl element type fits count of vertices.
-     * @param count
+     * Obtain suitable integer typedarray from maximum array element.
+     * @param maximum Maximum of array element
+     * @param signed If the array need to have signed.
      */
-    public static getSuitableElementTypeFromCount(count: number): number {
+    public static getSuitableIntegerElementTypeFromMaximum(maximum: number, signed = false): number {
         const wgc = WebGLRenderingContext;
         const types = [wgc.UNSIGNED_BYTE, wgc.UNSIGNED_SHORT, wgc.UNSIGNED_INT];
+        if (signed) { // If signed, maximum of unsigned must be twice of specified maximum
+            maximum *= 2;
+        }
         for (let i = 0; i < types.length; i++) {
-            if (count <= GLConstantUtility.getMaxElementCountOfIndex(types[i])) {
-                return types[i];
+            if (maximum <= GLConstantUtility.getMaxElementCountOfIndex(types[i])) {
+                return signed ? types[i] - 1 : types[i]; // types[i] - 1 means signed version of the unsigned.
             }
         }
-        throw new Error(`Suitable element type was not found since ${count} is too large for WebGL buffer`);
+        throw new Error(`Suitable element type was not found since ${maximum} is too large for WebGL buffer`);
+    }
+
+    /**
+     * Obtain Integer element type from specified array.
+     * This method will call getSuitableIntegerElementTypeFromMaximum with calculated maximum of the array.
+     * @param array 
+     */
+    public static getSuitableIntegerElementTypeFromArray(array: number[]): number {
+        const max = Math.max(...array);
+        return GLConstantUtility.getSuitableIntegerElementTypeFromMaximum(max);
     }
 
     /**

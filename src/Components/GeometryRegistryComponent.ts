@@ -20,7 +20,7 @@ export default class GeometryRegistryComponent extends Component {
     },
   };
 
-  private _geometryResolver: NameResolver<Geometry> = new NameResolver<Geometry>();
+  public resolver: NameResolver<Geometry> = new NameResolver<Geometry>();
 
   protected $awake(): void {
     this.companion.set(this.name, this);
@@ -31,10 +31,10 @@ export default class GeometryRegistryComponent extends Component {
   }
 
   public addGeometry(name: string, geometry: Promise<Geometry> | Geometry): void {
-    this._geometryResolver.register(name, geometry);
+    this.resolver.register(name, geometry);
   }
 
   public getGeometry(name: string): Promise<Geometry> {
-    return this._geometryResolver.get(name);
+    return this.resolver.get(name);
   }
 }

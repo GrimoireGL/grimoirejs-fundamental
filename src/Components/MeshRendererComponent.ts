@@ -45,20 +45,20 @@ export default class MeshRenderer extends Component implements IRenderable {
             default: "default",
         }
     };
-
-    public index: number;
     public renderArgs: { [key: string]: any } = {};
-    public geometry: Geometry;
-    private indexGroup: string;
-    private layer: string;
-    private _materialContainer: MaterialContainer;
-    private _transformComponent: Transform;
-    private _containedScene: Scene;
+
+    public index!: number;
+    public geometry!: Geometry;
+    private indexGroup!: string;
+    private layer!: string;
+    private _materialContainer!: MaterialContainer;
+    private _transformComponent!: Transform;
+    private _containedScene!: Scene;
 
     private _priortyCalcCache = new Vector3(0, 0, 0);
 
     public getRenderingPriorty(camera: CameraComponent, technique: string): number {
-        if (!this.geometry || !this._materialContainer.material.techniques[technique]) {
+        if (!this.geometry || this._materialContainer.getAttributeRaw("material").isPending || !this._materialContainer.material.techniques[technique]) {
             return Number.NEGATIVE_INFINITY;
         }
         vec3.add(this._priortyCalcCache.rawElements, camera.transform.globalPosition.rawElements, this.geometry.aabb.Center.rawElements);
@@ -71,12 +71,6 @@ export default class MeshRenderer extends Component implements IRenderable {
         const transform = this.node.getComponent(Transform);
         const materialContainer = this.node.getComponent(MaterialContainer);
         const scene = this.node.getComponentInAncestor(Scene);
-        if (!transform) {
-            throw new Error(`Mesh renderer should have Transform component in same node`);
-        }
-        if (!materialContainer) {
-            throw new Error(`Mesh renderer should have MaterialContainer component in same node`);
-        }
         if (!scene) {
             throw new Error(`Mesh renderer must be inside of a scene`);
         }
@@ -94,7 +88,7 @@ export default class MeshRenderer extends Component implements IRenderable {
         if (!this.node.isActive || !this.enabled || this.layer !== args.layer) {
             return;
         }
-        if (!this.geometry || (!args.material && !this._materialContainer.material)) {
+        if (!this.geometry || this._materialContainer.getAttributeRaw("material").isPending) {
             return; // material is not instanciated yet.
         }
         const renderArgs = {

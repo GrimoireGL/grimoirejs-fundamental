@@ -5,6 +5,12 @@ import MaterialContainerBase from "./MaterialContainerBase";
 import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
 import Identity from "grimoirejs/ref/Core/Identity";
+/** 
+ * Material component holds reference of material instance.
+ * This is used in <material/> tag.
+ * This component can contain additional attributes registered by shader.
+*/
+
 export default class MaterialComponent extends MaterialContainerBase {
     public static componentName = "Material"
     public static attributes = {
@@ -13,12 +19,23 @@ export default class MaterialComponent extends MaterialContainerBase {
             default: null,
         },
     };
+    /**
+     * Promise of material.
+     * If this object is pending, the material is not initialized yet.
+     */
+    public materialPromise!: Promise<Material>;
 
-    public materialPromise: Promise<Material>;
+    /**
+     * Reference to material.
+     * Make sure this material component is ready. If not, material will be undefined.
+     */
+    public material!: Material;
 
-    public material: Material;
-
-    public ready: boolean;
+    /**
+     * Flag to check material is initialized.
+     * If this flag is not true, this material is not initialized yet.
+     */
+    public ready!: boolean;
 
     protected $mount(): void {
         const typeName = this.getAttribute("type");

@@ -11,7 +11,8 @@ interface LoopAction {
 }
 
 /**
- * 全体のループを管理しているコンポーネント。あまり直接ユーザーがいじることはありません。
+ * LoopManager manages entire loop of canvas.
+ * This component will arrange loop actions that will be fired by requestAnimationFrame.
  */
 export default class LoopManager extends Component {
   public static componentName = "LoopManager";
@@ -26,27 +27,19 @@ export default class LoopManager extends Component {
     },
   };
 
+  public loopEnabled: boolean = false;
+
   private _loopActions: LoopAction[] = [];
 
-  private _registerNextLoop: () => void;
+  private _registerNextLoop: () => void = () => {
+    window.requestAnimationFrame(this._loop.bind(this));
+  };
 
-  private _timer: Timer;
-
-  protected $awake(): void {
-    this._registerNextLoop =
-      window.requestAnimationFrame  // if window.requestAnimationFrame is defined or undefined
-        ?
-        () => { // When window.requestAnimationFrame is supported
-          window.requestAnimationFrame(this._loop.bind(this));
-        }
-        :
-        () => { // When window.requestAnimationFrame is not supported.
-          window.setTimeout(this._loop.bind(this), 1000 / 60);
-        };
-  }
+  private _timer: Timer = new Timer();
 
   protected $mount(): void {
-    this.getAttributeRaw(LoopManager.attributes.loopEnabled)!.watch(attr => {
+    const attrLoopEnabled = this.getAttributeRaw(LoopManager.attributes.loopEnabled)!;
+    attrLoopEnabled.watch(attr => {
       if (attr == null) {
         throw new Error("LoopManager.loopEnabled must not be null.")
       }
@@ -54,8 +47,7 @@ export default class LoopManager extends Component {
         this._begin();
       }
     });
-
-    this._timer = new Timer();
+    attrLoopEnabled.bindTo("loopEnabled");
     this.getAttributeRaw(LoopManager.attributes.fpsRestriction)!.watch(attr => {
       if (attr == null) {
         throw new Error("LoopManager.fpsRestriction must not be null.")
@@ -65,6 +57,12 @@ export default class LoopManager extends Component {
     this._timer.internalUpdate();
   }
 
+  /**
+   * Register loop action to be called on every loop.
+   * Consider using $update for any objects inside of scene.
+   * @param action an function to be called on every loop.
+   * @param priorty priorty of loop. All registered loop actions are called by ascending order.
+   */
   public register(action: (timer: Timer) => void, priorty: number): void {
     this._loopActions.push({
       action,
@@ -73,17 +71,24 @@ export default class LoopManager extends Component {
     this._loopActions.sort((a, b) => a.priorty - b.priorty);
   }
 
-  private _begin(): void {
-    this._registerNextLoop();
-  }
-
-  private _loop(): void {
-    if (this._timer.internalUpdate()) {
+  public tick(followFPSRestriction: boolean = false): void {
+    if (this._timer.internalUpdate() || !followFPSRestriction) {
       this.node.emit("loop", {
         timer: this._timer,
       });
       this._loopActions.forEach((a) => a.action(this._timer));
     }
+  }
+
+  private _begin(): void {
     this._registerNextLoop();
   }
+
+  private _loop(): void {
+    this.tick(true);
+    if (this.loopEnabled) {
+      this._registerNextLoop();
+    }
+  }
+
 }

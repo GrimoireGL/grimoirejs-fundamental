@@ -11,7 +11,7 @@ export default class RenderingTargetComponentBase<T extends IRenderingTarget> ex
         },
     };
 
-    public renderingTarget: T;
+    public renderingTarget!: T;
 
     protected $mount(): void {
         const name = this.getAttribute("name");

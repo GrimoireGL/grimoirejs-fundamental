@@ -24,7 +24,7 @@ export default class MaterialContainer extends MaterialContainerBase {
      */
     material: {
       converter: MaterialConverter,
-      default: "new(basic-shading)"
+      default: "new(unlit)"
     },
     /**
      * 描画順序
@@ -76,16 +76,15 @@ export default class MaterialContainer extends MaterialContainerBase {
       return depth / 10000 * orderCriteria.priorty;
     }
   }
-
-  public material: Material;
-
   public useMaterial = false;
 
-  public drawOrder: string;
+  public material!: Material;
 
-  public transparent: boolean;
+  public drawOrder!: string;
 
-  private _attributeExposed: boolean;
+  public transparent!: boolean;
+
+  private _attributeExposed!: boolean;
 
 
   protected $mount(): void {

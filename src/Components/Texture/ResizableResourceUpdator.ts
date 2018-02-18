@@ -34,7 +34,7 @@ export default class ResizableResourceUpdator extends BasicComponent {
     }
 
     protected $awake(): void {
-        const resizer = this.node.getComponent(ResourceResizerComponentBase);
+        const resizer = this.node.getComponent(ResourceResizerComponentBase, false);
         if (!resizer) {
             const resizerType = this.getAttribute(ResizableResourceUpdator.attributes.resizerType);
             const resizerCtor = ResizableResourceUpdator.resizers[resizerType];

@@ -30,7 +30,13 @@ export default class RendererComponent extends Component {
     },
   };
 
-  public renderingTarget: CanvasRegionRenderingTarget;
+  public renderingTarget: Promise<CanvasRegionRenderingTarget> = new Promise<CanvasRegionRenderingTarget>((resolve) => {
+    this._renderingTargetResolver = resolve;
+  });
+
+  private _renderingTargetResolver!: (rt: CanvasRegionRenderingTarget) => void;
+
+  private _renderingTarget!: CanvasRegionRenderingTarget;
 
   public get viewport(): Viewport {
     if (this._viewportCache) {
@@ -40,28 +46,27 @@ export default class RendererComponent extends Component {
       return this._viewportCache;
     }
   }
+  private _gl!: WebGLRenderingContext;
 
-  private _gl: WebGLRenderingContext;
+  private _canvas!: HTMLCanvasElement;
 
-  private _canvas: HTMLCanvasElement;
+  private _viewportSizeGenerator!: (canvas: HTMLCanvasElement) => Viewport;
 
-  private _viewportSizeGenerator: (canvas: HTMLCanvasElement) => Viewport;
+  private _viewportCache!: Viewport;
 
-  private _viewportCache: Viewport;
+  private _mouseLeaveHandler!: (e: MouseEvent) => void;
 
-  private _mouseLeaveHandler: (e: MouseEvent) => void;
+  private _mouseEnterHandler!: (e: MouseEvent) => void;
 
-  private _mouseEnterHandler: (e: MouseEvent) => void;
+  private _mouseMoveHandler!: (e: MouseEvent) => void;
 
-  private _mouseMoveHandler: (e: MouseEvent) => void;
+  private _mouseDownHandler!: (e: MouseEvent) => void;
 
-  private _mouseDownHandler: (e: MouseEvent) => void;
+  private _mouseUpHandler!: (e: MouseEvent) => void;
 
-  private _mouseUpHandler: (e: MouseEvent) => void;
+  private _mouseClickHandler!: (e: MouseEvent) => void;
 
-  private _mouseClickHandler: (e: MouseEvent) => void;
-
-  private _dblClickHandler: (e: MouseEvent) => void;
+  private _dblClickHandler!: (e: MouseEvent) => void;
 
   private _wasInside = false;
 
@@ -78,9 +83,11 @@ export default class RendererComponent extends Component {
       regionName = "renderer-" + this.node.index;
     }
     const gl = this.companion.get("gl");
-    this.renderingTarget = new CanvasRegionRenderingTarget(gl);
-    this.renderingTarget.setViewport(this.viewport);
-    RenderingTargetRegistry.get(gl).setRenderingTarget(regionName, this.renderingTarget);
+    const rt = new CanvasRegionRenderingTarget(gl);
+    this._renderingTarget = rt;
+    rt.setViewport(this.viewport);
+    RenderingTargetRegistry.get(gl).setRenderingTarget(regionName, rt);
+    this._renderingTargetResolver(rt);
     this._initializeMouseHandlers();
   }
 
@@ -111,7 +118,7 @@ export default class RendererComponent extends Component {
 
   protected $resizeCanvas(): void {
     this._viewportCache = this._viewportSizeGenerator(this._canvas);
-    this.renderingTarget.setViewport(this._viewportCache);
+    this._renderingTarget.setViewport(this._viewportCache);
     const pow2Size = TextureSizeCalculator.getPow2Size(this._viewportCache.Width, this._viewportCache.Height);
     this.node.broadcastMessage("resizeViewport", {
       width: this._viewportCache.Width,

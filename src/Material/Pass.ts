@@ -53,7 +53,7 @@ export default class Pass {
 
   private _gl: WebGLRenderingContext;
 
-  private _argumentInitialized: boolean;
+  private _argumentInitialized: boolean = false;
 
   constructor(public technique: Technique, public passRecipe: IPassRecipe) {
     this._uniformResolvers = UniformResolverRegistry.generateRegisterers(this, passRecipe);

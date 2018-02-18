@@ -72,20 +72,20 @@ export default class CanvasInitializerComponent extends Component {
    * The canvas managed by this component
    * @type {HTMLCanvasElement}
    */
-  public canvas: HTMLCanvasElement;
+  public canvas!: HTMLCanvasElement;
 
-  private _scriptTag: HTMLScriptElement;
+  private _scriptTag!: HTMLScriptElement;
 
-  private _canvasContainer: HTMLDivElement;
+  private _canvasContainer!: HTMLDivElement;
 
   // Resize mode of width
-  private _widthMode: CanvasSizeObject;
+  private _widthMode!: CanvasSizeObject;
 
   // Resize mode of height
-  private _heightMode: CanvasSizeObject;
+  private _heightMode!: CanvasSizeObject;
 
   // Ratio of aspect
-  private _ratio: number;
+  private _ratio!: number;
 
   protected $awake(): void {
     this._scriptTag = this.companion.get("scriptElement")!;

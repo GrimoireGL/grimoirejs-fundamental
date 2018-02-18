@@ -93,46 +93,46 @@ export default class CameraComponent extends Component {
     private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
     private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
 
-    public containedScene: Scene;
+    public containedScene!: Scene;
 
-    public transform: Transform;
+    public transform!: Transform;
     /**
      * Far clip distance
      */
-    public far: number;
+    public far!: number;
     /**
      * Near clip distance
      */
-    public near: number;
+    public near!: number;
     /**
      * Fovy angle in radians
      */
-    public fovy: number;
+    public fovy!: number;
     /**
      * Frustom size
      * This property is only used when orthogonal flag is true
      */
-    public orthoSize: number;
+    public orthoSize!: number;
     /**
      * Aspect ratio
      */
-    public aspect: number;
+    public aspect!: number;
     /**
      * Orthogonal mode or not
      */
-    public orthogonal: boolean;
+    public orthogonal!: boolean;
 
     /**
      * Automatically adjust aspect ratio by viewport
      */
-    public autoAspect: boolean;
+    public autoAspect!: boolean;
 
     public readonly viewMatrix: Matrix = new Matrix();
     public readonly projectionMatrix: Matrix = new Matrix();
     public readonly invProjectionMatrix: Matrix = new Matrix();
     public readonly projectionViewMatrix: Matrix = new Matrix();
 
-    private _aspectCache: number;
+    private _aspectCache!: number;
 
     private _renderQueue: RenderQueue = new RenderQueue();
 

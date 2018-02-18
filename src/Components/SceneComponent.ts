@@ -27,7 +27,7 @@ export default class Scene extends HierarchycalComponentBase {
    * The index of loop executed last time.
    * @type {number}
    */
-  private _lastUpdateIndex: number;
+  private _lastUpdateIndex!: number;
 
   protected $mount(): void {
     super.$mount();

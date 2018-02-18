@@ -36,13 +36,13 @@ export default class RendererManager extends Component {
 
   private static _sortImportedFromHTML = false;
 
-  public gl: WebGLRenderingContext;
+  public gl!: WebGLRenderingContext;
 
-  public bgColor: Color4;
+  public bgColor!: Color4;
 
-  public clearDepth: number;
+  public clearDepth!: number;
 
-  public complementRenderer: boolean;
+  public complementRenderer!: boolean;
 
   protected $mount(): void {
     this.__bindAttributes();

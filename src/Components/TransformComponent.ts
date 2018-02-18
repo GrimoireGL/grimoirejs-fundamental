@@ -59,9 +59,9 @@ export default class Transform extends HierarchycalComponentBase {
    */
   public localTransform: Matrix = new Matrix();
 
-  public scale: Vector3;
-  public position: Vector3;
-  public rotation: Quaternion;
+  public scale!: Vector3;
+  public position!: Vector3;
+  public rotation!: Quaternion;
 
   /**
    * The children transform should be notified when this transform was updated.
@@ -74,7 +74,7 @@ export default class Transform extends HierarchycalComponentBase {
    * When this object is root object of contained scene, this value should be null.
    * @type {TransformComponent}
    */
-  private _parentTransform: Transform | null;
+  private _parentTransform!: Transform | null;
 
   /**
    * Calculation cache to
@@ -109,7 +109,7 @@ export default class Transform extends HierarchycalComponentBase {
 
   private _globalTransform: Matrix = new Matrix();
 
-  private _globalTransformInverse: Matrix;
+  private _globalTransformInverse!: Matrix;
 
   /**
    * Global transform that consider parent transform and local transform
@@ -181,7 +181,7 @@ export default class Transform extends HierarchycalComponentBase {
 
   protected $mount(): void {
     super.$mount();
-    this._parentTransform = this.node.parent!.getComponent(Transform);
+    this._parentTransform = this.node.parent!.getComponent(Transform, false);
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
     }

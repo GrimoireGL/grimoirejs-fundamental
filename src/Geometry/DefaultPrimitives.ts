@@ -3,6 +3,7 @@ import Vector3 from "grimoirejs-math/ref/Vector3";
 import Geometry from "./Geometry";
 import GeometryFactory from "./GeometryFactory";
 import GeometryUtility from "./GeometryUtility";
+import GLConstantUtility from "../Util/GLConstantUtility";
 
 const unitBox = new AABB();
 unitBox.expand(new Vector3(-1, -1, -1));
@@ -40,65 +41,39 @@ export default class DefaultPrimitives {
 
   private static _registerQuad(): void {
     GeometryFactory.addType("quad", {
-    }, (gl, attrs) => {
-      const geometry = new Geometry(gl);
-      geometry.addAttributes(GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], 1, 1), primitiveLayout);
+    }, (geometry) => {
+      geometry.addAttributeBuffer(GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], 1, 1), primitiveLayout);
       const indices = GeometryUtility.planeIndex(0, 1, 1)
-      geometry.addIndex(indices, { semantic: "default" });
-      geometry.addIndex(GeometryUtility.linesFromTriangles(indices), { semantic: "wireframe", topology: WebGLRenderingContext.LINES });
-      return geometry;
+      geometry.addIndexBuffer(indices, { semantic: "default" });
+      geometry.addIndexBuffer(GeometryUtility.linesFromTriangles(indices), { semantic: "wireframe", topology: WebGLRenderingContext.LINES });
     });
   }
-  // private static _registerTriangle(): void {
-  //   GeometryFactory.addType("triangle", {
-  //   }, (gl, attrs) => {
-  //     const geometry = new Geometry(gl);
-  //     geometry.addAttributes(GeometryUtility.triangle([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]), primitiveLayout);
-  //     geometry.addIndex("default", GeometryUtility.triangleIndex(0));
-  //     geometry.addIndex("wireframe", GeometryUtility.linesFromTriangles(GeometryUtility.triangleIndex(0)), WebGLRenderingContext.LINES);
-  //     return geometry;
-  //   });
-  // }
   private static _registerCone(): void {
     GeometryFactory.addType("cone", {
       divide: {
         converter: "Number",
         default: 50,
       },
-    }, (gl, attrs) => {
-      const div = attrs["divide"] as number;
-      const geometry = new Geometry(gl);
-      const theta = div % 2 !== 0 ? Math.PI / div : 0;
-      const vertices = [].concat.apply([], [
-        GeometryUtility.circle([0, -0.5, 0], [0, -1, 0], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div),
-      ]);
-      const g = Math.cos(Math.PI / div) / 3;
-      const length = Math.sin(Math.PI / div) / Math.pow(3, 0.5) * 2;
-      const radius = Math.cos(Math.PI / div) - g;
-      const s = Math.PI / div;
-
-      for (let i = 0; i < div; i++) {
-        const step = s * (i * 2 + 1);
-        Array.prototype.push.apply(vertices, GeometryUtility.coneTriangle(
-          [-Math.sin(step) * radius, 0, -Math.cos(step) * radius],
-          [-Math.cos(Math.PI / 2 - step), 1, -Math.sin(Math.PI / 2 - step)],
-          [Math.sin(step) * radius, 1, Math.cos(step) * radius],
-          [-Math.cos(step) * length, 0, Math.sin(step) * length],
-          div,
-          i,
-        ));
-      }
-      geometry.addAttributes(vertices, primitiveLayout);
-      const os = div + 2;
-      const indices = [].concat.apply([], [
-        GeometryUtility.circleIndex(0, div),
-      ]);
-      for (let i = 0; i < div; i++) {
-        Array.prototype.push.apply(indices, GeometryUtility.triangleIndex(os + i * 3));
-      }
-      geometry.addIndex(indices, { semantic: "default" });
-      geometry.addIndex(GeometryUtility.linesFromTriangles(indices), { semantic: "wireframe", topology: WebGLRenderingContext.LINES });
-      return geometry;
+    }, (geometry) => {
+      geometry.declareReactiveAttribute("divide", 50);
+      geometry.addReactiveAttributeBuffer(["divide"], (buffer, attrs) => {
+        const bufferSource = GeometryUtility.cone(attrs.div);
+        buffer.updateFromArray(bufferSource);
+        return { accessors: primitiveLayout };
+      });
+      geometry.addReactiveIndexBuffer(["divide"], (buffer, attrs) => {
+        const bufferSource = GeometryUtility.coneIndex(attrs.divide);
+        buffer.updateFromArray(bufferSource);
+        return {
+          semantic: "default"
+        };
+      });
+      geometry.addReactiveIndexBuffer(["divide"], (buffer, attrs) => {
+        let bufferSource = GeometryUtility.coneIndex(attrs.divide);
+        bufferSource = GeometryUtility.linesFromTriangles(bufferSource);
+        buffer.updateFromArray(bufferSource, false)
+        return { semantic: "wireframe", topology: WebGLRenderingContext.LINES }
+      });
     });
   }
   private static _registerCylinder(): void {
@@ -107,38 +82,26 @@ export default class DefaultPrimitives {
         converter: "Number",
         default: 50,
       },
-    }, (gl, attrs) => {
-      const div = attrs["divide"];
-      const geometry = new Geometry(gl);
-      const theta = div % 2 !== 0 ? Math.PI / div : 0;
-      const vertices = [].concat.apply([], [
-        GeometryUtility.circle([0, 1, 0], [0, 1, 0], [0, 0, -1], [1, 0, 0], div),
-        GeometryUtility.circle([0, -1, 0], [0, -1, 0], [-Math.sin(theta), 0, Math.cos(theta)], [Math.cos(theta), 0, Math.sin(theta)], div),
-      ]);
-      const length = Math.sin(Math.PI / div);
-      const radius = Math.cos(Math.PI / div);
-      const s = Math.PI / div;
-      for (let i = 0; i < div; i++) {
-        const step = s * (i * 2 + 1);
-        Array.prototype.push.apply(vertices, GeometryUtility.cylinderPlane(
-          [-Math.sin(step) * radius, 0, -Math.cos(step) * radius],
-          [-Math.sin(step), 0, -Math.cos(step)],
-          [0, 1, 0],
-          [-Math.cos(step) * length, 0, Math.sin(step) * length],
-          div, i));
-      }
-      geometry.addAttributes(vertices, primitiveLayout);
-      const os = div + 2;
-      const indices = [].concat.apply([], [
-        GeometryUtility.circleIndex(0, div),
-        GeometryUtility.circleIndex(os, div),
-      ]);
-      for (let i = 0; i < div; i++) {
-        Array.prototype.push.apply(indices, GeometryUtility.planeIndex(os * 2 + i * 4, 1, 1));
-      }
-      geometry.addIndex(indices, { semantic: "default" });
-      geometry.addIndex(GeometryUtility.linesFromTriangles(indices), { semantic: "wireframe", topology: WebGLRenderingContext.LINES });
-      return geometry;
+    }, (geometry) => {
+      geometry.declareReactiveAttribute("divide", 50);
+      geometry.addReactiveAttributeBuffer(["divide"], (buffer, attrs) => {
+        const bufferSource = GeometryUtility.cylinder(attrs.div);
+        buffer.updateFromArray(bufferSource);
+        return { accessors: primitiveLayout };
+      });
+      geometry.addReactiveIndexBuffer(["divide"], (buffer, attrs) => {
+        const bufferSource = GeometryUtility.cylinderIndex(attrs.divide);
+        buffer.updateFromArray(bufferSource, false)
+        return {
+          semantic: "default"
+        };
+      });
+      geometry.addReactiveIndexBuffer(["divide"], (buffer, attrs) => {
+        let bufferSource = GeometryUtility.cylinderIndex(attrs.divide);
+        bufferSource = GeometryUtility.linesFromTriangles(bufferSource);
+        buffer.updateFromArray(bufferSource, false)
+        return { semantic: "wireframe", topology: WebGLRenderingContext.LINES }
+      });
     });
   }
   private static _registerCube(): void {
@@ -151,29 +114,27 @@ export default class DefaultPrimitives {
         converter: "Number",
         default: 1,
       },
-    }, (gl, attrs) => {
-      const hdiv = attrs["divHorizontal"];
-      const vdiv = attrs["divVertical"];
-      const geometry = new Geometry(gl);
-      const vertices = [].concat.apply([], [
-        GeometryUtility.plane([0, 0, 1], [0, 0, 1], [0, 1, 0], [1, 0, 0], hdiv, vdiv),
-        GeometryUtility.plane([0, 0, -1], [0, 0, -1], [0, 1, 0], [-1, 0, 0], hdiv, vdiv),
-        GeometryUtility.plane([0, 1, 0], [0, 1, 0], [0, 0, -1], [1, 0, 0], hdiv, vdiv),
-        GeometryUtility.plane([0, -1, 0], [0, -1, 0], [0, 0, -1], [-1, 0, 0], hdiv, vdiv),
-        GeometryUtility.plane([1, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, -1], hdiv, vdiv),
-        GeometryUtility.plane([-1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, 0, 1], hdiv, vdiv)]);
-      geometry.addAttributes(vertices, primitiveLayout);
-      const os = (hdiv + 1) * (vdiv + 1);
-      const indices = [].concat.apply([], [
-        GeometryUtility.planeIndex(0, hdiv, vdiv),
-        GeometryUtility.planeIndex(os, hdiv, vdiv),
-        GeometryUtility.planeIndex(2 * os, hdiv, vdiv),
-        GeometryUtility.planeIndex(3 * os, hdiv, vdiv),
-        GeometryUtility.planeIndex(4 * os, hdiv, vdiv),
-        GeometryUtility.planeIndex(5 * os, hdiv, vdiv)]);
-      geometry.addIndex(indices, { semantic: "default" });
-      geometry.addIndex(GeometryUtility.linesFromTriangles(indices), { semantic: "wireframe", topology: WebGLRenderingContext.LINES });
-      return geometry;
+    }, (geometry) => {
+      geometry.declareReactiveAttribute("divVertical", 1);
+      geometry.declareReactiveAttribute("divHorizontal", 1);
+      geometry.addReactiveAttributeBuffer(["divVertical", "divHorizontal"], (buffer, attrs) => {
+        const bufferSource = GeometryUtility.cube(attrs.divHorizontal, attrs.divVertical);
+        buffer.updateFromArray(bufferSource);
+        return { accessors: primitiveLayout };
+      });
+      geometry.addReactiveIndexBuffer(["divVertical", "divHorizontal"], (buffer, attrs) => {
+        const bufferSource = GeometryUtility.cubeIndex(attrs.divHorizontal, attrs.divVertical);
+        buffer.updateFromArray(bufferSource, false)
+        return {
+          semantic: "default"
+        };
+      });
+      geometry.addReactiveIndexBuffer(["divVertical", "divHorizontal"], (buffer, attrs) => {
+        let bufferSource = GeometryUtility.cubeIndex(attrs.divHorizontal, attrs.divVertical);
+        bufferSource = GeometryUtility.linesFromTriangles(bufferSource);
+        buffer.updateFromArray(bufferSource, false)
+        return { semantic: "wireframe", topology: WebGLRenderingContext.LINES }
+      });
     });
   }
   private static _registerSphere(): void {
@@ -186,15 +147,103 @@ export default class DefaultPrimitives {
         converter: "Number",
         default: 50,
       },
-    }, (gl, attrs) => {
-      const dH = attrs["divHorizontal"];
-      const dV = attrs["divVertical"];
-      const geometry = new Geometry(gl);
-      geometry.addAttributes(GeometryUtility.sphere([0, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], dV, dH), primitiveLayout);
-      const indices = GeometryUtility.sphereIndex(0, dV, dH);
-      geometry.addIndex(indices, { semantic: "default" });
-      geometry.addIndex(GeometryUtility.linesFromTriangles(indices), { semantic: "wireframe", topology: WebGLRenderingContext.LINES });
-      return geometry;
+    }, (geometry) => {
+      geometry.declareReactiveAttribute("divVertical", 50);
+      geometry.declareReactiveAttribute("divHorizontal", 50);
+      geometry.addReactiveAttributeBuffer(["divVertical", "divHorizontal"], (buffer, attrs) => {
+        const bufferSource = GeometryUtility.sphere([0, 0, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], attrs.divVertical, attrs.divHorizontal);
+        buffer.updateFromArray(bufferSource);
+        return {
+          accessors: primitiveLayout
+        }
+      });
+      geometry.addReactiveIndexBuffer(["divVertical", "divHorizontal"], (buffer, attrs) => {
+        const bufferSource = GeometryUtility.sphereIndex(0, attrs.divVertical, attrs.divHorizontal);
+        buffer.updateFromArray(bufferSource, false)
+        return {
+          semantic: "default"
+        };
+      });
+      geometry.addReactiveIndexBuffer(["divVertical", "divHorizontal"], (buffer, attrs) => {
+        let bufferSource = GeometryUtility.sphereIndex(0, attrs.divVertical, attrs.divHorizontal);
+        bufferSource = GeometryUtility.linesFromTriangles(bufferSource);
+        buffer.updateFromArray(bufferSource, false)
+        return { semantic: "wireframe", topology: WebGLRenderingContext.LINES }
+      });
+    });
+  }
+  private static _registerCircle(): void {
+    GeometryFactory.addType("circle", {
+      divide: {
+        converter: "Number",
+        default: 30,
+      },
+    }, (geometry) => {
+      geometry.declareReactiveAttribute("divide", 30);
+      geometry.addReactiveAttributeBuffer(["divide"], (buffer, attr) => {
+        const bufferSource = GeometryUtility.circle([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], attr.divide);
+        buffer.updateFromArray(bufferSource);
+        return {
+          accessors: primitiveLayout
+        }
+      })
+      geometry.addReactiveIndexBuffer(["divide"], (buffer, attr) => {
+        const bufferSource = GeometryUtility.circleIndex(0, attr.divide);
+        buffer.updateFromArray(bufferSource, false)
+        return {
+          semantic: "default"
+        };
+      });
+      geometry.addReactiveIndexBuffer(["divide"], (buffer, attr) => {
+        let bufferSource = GeometryUtility.circleIndex(0, attr.divide);
+        bufferSource = GeometryUtility.linesFromTriangles(bufferSource);
+        buffer.updateFromArray(bufferSource, false)
+        return { semantic: "wireframe", topology: WebGLRenderingContext.LINES }
+      });
+    });
+  }
+  private static _registerPlane(): void {
+    GeometryFactory.addType("plane", {
+      divVertical: {
+        converter: "Number",
+        default: 10,
+      },
+      divHorizontal: {
+        converter: "Number",
+        default: 10,
+      },
+    }, (geometry) => {
+      geometry.declareReactiveAttribute("divVertical", 10);
+      geometry.declareReactiveAttribute("divHorizontal", 10);
+      geometry.addReactiveAttributeBuffer(["divVertical", "divHorizontal"], (buffer, attr) => {
+        const vertices = [].concat.apply([], [
+          GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], attr.divHorizontal, attr.divVertical), GeometryUtility.plane([0, 0, 0], [0, 0, -1], [0, 1, 0], [-1, 0, 0], attr.divHorizontal, attr.divVertical, true),
+        ]);
+        buffer.updateFromArray(vertices);
+        return {
+          accessors: primitiveLayout
+        };
+      });
+      geometry.addReactiveIndexBuffer(["divVertical", "divHorizontal"], (buffer, attr) => {
+        const indices = [].concat.apply([], [
+          GeometryUtility.planeIndex(0, attr.divHorizontal, attr.divVertical),
+          GeometryUtility.planeIndex((attr.divHorizontal + 1) * (attr.divVertical + 1), attr.divHorizontal, attr.divVertical),
+        ]);
+        buffer.updateFromArray(indices);
+        return {
+          semantic: "default"
+        };
+      });
+      geometry.addReactiveIndexBuffer(["divVertical", "divHorizontal"], (buffer, attr) => {
+        const indices = [].concat.apply([], [
+          GeometryUtility.planeIndex(0, attr.divHorizontal, attr.divVertical),
+          GeometryUtility.planeIndex((attr.divHorizontal + 1) * (attr.divVertical + 1), attr.divHorizontal, attr.divVertical),
+        ]);
+        buffer.updateFromArray(GeometryUtility.linesFromTriangles(indices));
+        return {
+          semantic: "wireframe"
+        };
+      });
     });
   }
   // private static _registerCapsule(): void {
@@ -214,43 +263,14 @@ export default class DefaultPrimitives {
   //     return geometry;
   //   });
   // }
-  private static _registerCircle(): void {
-    GeometryFactory.addType("circle", {
-      divide: {
-        converter: "Number",
-        default: 30,
-      },
-    }, (gl, attrs) => {
-      const div = attrs["divide"] as number;
-      const geometry = new Geometry(gl);
-      geometry.addAttributes(GeometryUtility.circle([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], div), primitiveLayout);
-      const indices = GeometryUtility.circleIndex(0, div);
-      geometry.addIndex(indices, { semantic: "default" });
-      geometry.addIndex(GeometryUtility.linesFromTriangles(indices), { semantic: "wireframe", topology: WebGLRenderingContext.LINES });
-      return geometry;
-    });
-  }
-  private static _registerPlane(): void {
-    GeometryFactory.addType("plane", {
-      divide: {
-        converter: "Number",
-        default: 10,
-      },
-    }, (gl, attrs) => {
-      const hdiv = attrs["divide"] as number;
-      const vdiv = hdiv;
-      const geometry = new Geometry(gl);
-      const vertices = [].concat.apply([], [
-        GeometryUtility.plane([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], hdiv, vdiv), GeometryUtility.plane([0, 0, 0], [0, 0, -1], [0, 1, 0], [-1, 0, 0], hdiv, vdiv, true),
-      ]);
-      geometry.addAttributes(vertices, primitiveLayout);
-      const indices = [].concat.apply([], [
-        GeometryUtility.planeIndex(0, hdiv, vdiv),
-        GeometryUtility.planeIndex((hdiv + 1) * (vdiv + 1), hdiv, vdiv),
-      ]);
-      geometry.addIndex(indices, { semantic: "default" });
-      geometry.addIndex(GeometryUtility.linesFromTriangles(indices), { semantic: "wireframe", topology: WebGLRenderingContext.LINES });
-      return geometry;
-    });
-  }
+  // private static _registerTriangle(): void {
+  //   GeometryFactory.addType("triangle", {
+  //   }, (gl, attrs) => {
+  //     const geometry = new Geometry(gl);
+  //     geometry.addAttributes(GeometryUtility.triangle([0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0]), primitiveLayout);
+  //     geometry.addIndex("default", GeometryUtility.triangleIndex(0));
+  //     geometry.addIndex("wireframe", GeometryUtility.linesFromTriangles(GeometryUtility.triangleIndex(0)), WebGLRenderingContext.LINES);
+  //     return geometry;
+  //   });
+  // }
 }

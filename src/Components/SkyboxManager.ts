@@ -8,7 +8,7 @@ export default class SkyboxManager extends Component {
 
     public static attributes: { [key: string]: IAttributeDeclaration } = {};
 
-    private _scene: Scene;
+    private _scene!: Scene;
 
     public $mount(): void {
         const scene = this.node.getComponentInAncestor(Scene);

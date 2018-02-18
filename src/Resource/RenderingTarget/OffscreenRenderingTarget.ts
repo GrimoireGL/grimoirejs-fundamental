@@ -32,6 +32,7 @@ export default class OffscreenRenderTarget implements IRenderingTarget {
         if (clearFlag !== 0) {
             let clearTarget = 0;
             const gc = GLStateConfigurator.get(this.gl);
+            gc.applyGLFlagIfChanged(WebGLRenderingContext.SCISSOR_TEST, false);
             if ((clearFlag & WebGLRenderingContext.COLOR_BUFFER_BIT) !== 0 && color) {
                 gc.applyIfChanged("clearColor", color[0], color[1], color[2], color[3]);
                 clearTarget |= WebGLRenderingContext.COLOR_BUFFER_BIT;

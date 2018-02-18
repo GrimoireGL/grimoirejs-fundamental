@@ -1,12 +1,13 @@
 import Viewport from "../Viewport";
 import CanvasRenderingTarget from "./CanvasRenderingTarget";
+import GLStateConfigurator from "../../Material/GLStateConfigurator";
 
 /**
  * Rendering target of part of canvas.
  * This rendering target limit a region of canvas by viewport.
  */
 export default class CanvasRegionRenderingTarget extends CanvasRenderingTarget {
-    private _viewport: Viewport;
+    private _viewport!: Viewport;
 
     constructor(gl: WebGLRenderingContext) {
         super(gl);
@@ -21,9 +22,10 @@ export default class CanvasRegionRenderingTarget extends CanvasRenderingTarget {
     }
 
     protected __configureClearScissor(): void {
-        this.gl.enable(WebGLRenderingContext.SCISSOR_TEST);
+        const gc = GLStateConfigurator.get(this.gl);
+        gc.applyGLFlagIfChanged(WebGLRenderingContext.SCISSOR_TEST, true);
         const vp = this.getViewport();
-        this.gl.scissor(vp.Left, vp.Bottom, vp.Width, vp.Height);
+        gc.applyIfChanged("scissor", vp.Left, vp.Bottom, vp.Width, vp.Height);
     }
 
     protected __endClearScissor(): void {

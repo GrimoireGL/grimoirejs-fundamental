@@ -45,10 +45,12 @@ export default class GeometryFactory extends GLRelatedRegistryBase {
 
   public async instanciate(type: string, args: { [argName: string]: any }): Promise<Geometry> {
     const factoryDelegate = GeometryFactory.factoryDelegates[type];
+    const decl = GeometryFactory.factoryArgumentDeclarations[type];
     if (!factoryDelegate) {
       throw new Error(`Can not instanciate unknown geometry type ${type}`);
     }
-    const geometry = await factoryDelegate(this.gl, args);
+    const geometry = new Geometry(this.gl, args);
+    await factoryDelegate(geometry);
     return geometry;
   }
 

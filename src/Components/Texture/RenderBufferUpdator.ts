@@ -15,7 +15,7 @@ export default class RenderBufferComponent extends ResizableResourceUpdator {
     ...ResizableResourceUpdator.attributes
   };
 
-  public buffer: RenderBuffer;
+  public buffer!: RenderBuffer;
 
   protected $awake(): void {
     super.$awake();
