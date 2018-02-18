@@ -5,11 +5,21 @@ import GLUtility from "./GLUtility";
 import ImageSource from "./ImageSource";
 import IResizeResult from "./IResizeResult";
 import ITextureUploadConfig from "./ITextureUploadConfig";
+/**
+ * Base class of texture related classes.
+ */
 export default abstract class Texture extends GLResource<WebGLTexture> {
 
-    private static _resizerCanvas: HTMLCanvasElement = document.createElement("canvas");
+    /**
+     * A canvas referrence that is used for resizing, flipping and other misc texture manipulation.
+     * This instance is generated automatically and being shared with all texture referrences.
+     */
+    protected static __utilityCanvas: HTMLCanvasElement = document.createElement("canvas");
 
-    private static _resizerContext = Texture._resizerCanvas.getContext("2d");
+    /**
+    * 2D context of Texture.__utilityCanvas
+    */
+    protected static __utilityContext = Texture.__utilityCanvas.getContext("2d");
 
     public get magFilter(): number {
         return this._magFilter;
@@ -130,17 +140,19 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
         return resizedResource;
     }
 
-    protected __getRawPixels<T extends ArrayBufferView = ArrayBufferView>(type: number, format: number, x = 0, y = 0, width: number, height: number, from: number): T {
-        const bufferCtor = GLUtility.typeToTypedArrayConstructor(type);
-        const buffer = new bufferCtor(width * height * GLUtility.formatToElementCount(format));
+    protected __getRawPixels<T extends ArrayBufferView = ArrayBufferView>(type: number, format: number, x = 0, y = 0, width: number, height: number, from: number, dest?: T): T {
+        if (!dest) {
+            const bufferCtor = GLUtility.typeToTypedArrayConstructor(type);
+            dest = new bufferCtor(width * height * GLUtility.formatToElementCount(format)) as T;
+        }
         const frame = this.gl.createFramebuffer();
         this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, frame);
         this.gl.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, from, this.resourceReference, 0);
         if (this.gl.checkFramebufferStatus(WebGLRenderingContext.FRAMEBUFFER) === WebGLRenderingContext.FRAMEBUFFER_COMPLETE) {
-            this.gl.readPixels(x, y, width, height, format, type, buffer);
+            this.gl.readPixels(x, y, width, height, format, type, dest);
         }
         this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
-        return buffer as T;
+        return dest as T;
     }
 
     /**
@@ -251,10 +263,10 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
     }
 
     private _resizeImageOrVideo(resource: HTMLImageElement | HTMLVideoElement, width: number, height: number): HTMLCanvasElement {
-        const canv = Texture._resizerCanvas;
+        const canv = Texture.__utilityCanvas;
         canv.height = height;
         canv.width = width;
-        Texture._resizerContext.drawImage(resource, 0, 0, resource.width, resource.height, 0, 0, width, height);
-        return Texture._resizerCanvas;
+        Texture.__utilityContext.drawImage(resource, 0, 0, resource.width, resource.height, 0, 0, width, height);
+        return Texture.__utilityCanvas;
     }
 }

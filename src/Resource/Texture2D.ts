@@ -7,8 +7,15 @@ import Texture from "./Texture";
 import Viewport from "./Viewport";
 export default class Texture2D extends Texture {
   public static defaultTextures: Map<WebGLRenderingContext, Texture2D> = new Map<WebGLRenderingContext, Texture2D>();
+  /**
+   * Maximum texture size
+   */
   public static maxTextureSize: number;
 
+  /**
+   * Generate white default textures.
+   * This texture is used for invalid textures initialized.
+   */
   public static generateDefaultTexture(gl: WebGLRenderingContext): void {
     Texture2D.defaultTextures.set(gl, null); // for preventing called this method recursively by instanciating default texture
     const texture = new Texture2D(gl);
@@ -32,10 +39,16 @@ export default class Texture2D extends Texture {
     return this._height;
   }
 
+  /**
+   * A viewport instance to fill this texture.
+   */
   public get viewport(): Viewport {
     return new Viewport(0, 0, this.width, this.height);
   }
 
+  /**
+   * A canvas2d context that can touch with texture raw data directly with friendly canvas2d interfaces.
+   */
   public get drawerContext(): CanvasRenderingContext2D {
     if (!this._drawerContext) {
       const c = document.createElement("canvas");
@@ -102,22 +115,45 @@ export default class Texture2D extends Texture {
     this.valid = true;
   }
 
+  /** 
+   * Update Texture2D#drawerCanvas from GPU memory.
+  */
   public updateDrawerCanvas(): void {
-    const imageData = this.drawerContext.createImageData(this.width, this.height);
+    if (!this.width || !this.height) {
+      throw new Error(`Unable to get texture width or height during updating drawer canvas. Have you updated texture before updating drawer canvas?`);
+    }
+    const flipperCanvas = Texture2D.__utilityCanvas;
+    flipperCanvas.width = this.width;
+    flipperCanvas.height = this.height;
+    const flipperContext = Texture2D.__utilityContext;
+    const imageData = flipperContext.createImageData(this.width, this.height);
     const buffer = this.getRawPixels();
     const bufferSize = this.width * this.height * GLUtility.formatToElementCount(this.format);
     for (let i = 0; i < bufferSize; i++) {
       imageData.data[i] = buffer[i];
     }
-    this.drawerContext.putImageData(imageData, 0, 0);
+    flipperContext.putImageData(imageData, 0, 0);
+    this.drawerContext.clearRect(0, 0, this.width, this.height);
     this.drawerContext.setTransform(1, 0, 0, -1, 0, this.height);
-    this.drawerContext.drawImage(this.drawerContext.canvas, 0, 0);
+    this.drawerContext.drawImage(flipperCanvas, 0, 0);
+    this.drawerContext.setTransform(1, 0, 0, 1, 0, 0); // Make sure daraweContext transform is identity.
   }
 
-  public getRawPixels<T extends ArrayBufferView = ArrayBufferView>(x = 0, y = 0, width = this.width, height = this.height): T {
-    return this.__getRawPixels<T>(this.type, this.format, x, y, width, height, WebGLRenderingContext.TEXTURE_2D);
+  /**
+   * Read raw pixels from texture memory.
+   * @param x X coordinate of left lower corner.
+   * @param y Y coordinate of left lower corner.
+   * @param width width to fetch.
+   * @param height height to fetch.
+   * @param dest Destination memory. If this argument is not present, Generate suitable typed array buffer to obtain.
+   */
+  public getRawPixels<T extends ArrayBufferView = ArrayBufferView>(x = 0, y = 0, width = this.width, height = this.height, dest?: T): T {
+    return this.__getRawPixels<T>(this.type, this.format, x, y, width, height, WebGLRenderingContext.TEXTURE_2D, dest);
   }
 
+  /** 
+   * Update texture from current drawer context.
+  */
   public applyDraw(): void {
     if (this._drawerContext) {
       this.update(this._drawerContext.canvas);
