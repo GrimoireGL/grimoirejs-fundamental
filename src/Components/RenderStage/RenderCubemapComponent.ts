@@ -1,5 +1,6 @@
 import Color4 from "grimoirejs-math/ref/Color4";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import Color4Converter from "grimoirejs-math/ref/Converters/Color4Converter";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import FrameBuffer from "../../Resource/FrameBuffer";
 import IElementOfCubemapDirection from "../../Resource/IElementOfCubemapDirection";
@@ -10,45 +11,55 @@ import Viewport from "../../Resource/Viewport";
 import GLConstantUtility from "../../Util/GLConstantUtility";
 import CubemapCameraComponent from "../CubemapCameraComponent";
 import RenderStageBase from "./RenderStageBase";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
+import { ComponentConverter } from "grimoirejs/ref/Converter/ComponentConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
+import { NumberConverter } from "grimoirejs/ref/Converter/NumberConverter";
+import { StandardAttribute, LazyAttribute } from "grimoirejs/ref/Core/Attribute";
+import Component from "grimoirejs/ref/Core/Component";
+import { RenderingTargetConverter } from "../../Converters/RenderingTargetConverter";
+import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
+
 export default class RenderCubemapComponent extends RenderStageBase {
     public static componentName = "RenderCubemapComponent";
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
+    public static attributes = {
         indexGroup: {
             default: "default",
-            converter: "String",
+            converter: StringConverter,
         },
         technique: {
             default: "default",
-            converter: "String",
+            converter: StringConverter,
         },
         layer: {
             default: "default",
-            converter: "String",
+            converter: StringConverter,
         },
         out: {
             default: null,
-            converter: "RenderingTarget",
+            converter: RenderingTargetConverter,
         },
         camera: {
             default: "cube-camera",
-            converter: "Component",
+            converter: ComponentConverter,
             target: "CubemapCamera",
         },
         clearColor: {
             default: "#0000",
-            converter: "Color4",
+            converter: Color4Converter,
         },
         clearColorEnabled: {
             default: true,
-            converter: "Boolean",
+            converter: BooleanConverter,
         },
         clearDepthEnabled: {
             default: true,
-            converter: "Boolean",
+            converter: BooleanConverter,
         },
         clearDepth: {
             default: 1,
-            converter: "Number",
+            converter: NumberConverter,
         },
     };
 
@@ -74,7 +85,7 @@ export default class RenderCubemapComponent extends RenderStageBase {
 
     protected $mount(): void {
         this.__bindAttributes();
-        this._gl = this.companion.get("gl");
+        this._gl = this.companion.get("gl")!;
     }
 
     protected $renderRenderStage(args: IRenderRendererMessage): void {
@@ -86,7 +97,7 @@ export default class RenderCubemapComponent extends RenderStageBase {
         }
         this.camera.updateContainedScene(args.timer);
         for (const direction in TextureCube.imageDirections) {
-            this.out.beforeDraw(GLConstantUtility.createClearFilter(this.clearColorEnabled, this.clearDepthEnabled), this.clearColor.rawElements as number[], this.clearDepth, direction);
+            this.out.beforeDraw(GLConstantUtility.createClearFilter(this.clearColorEnabled, this.clearDepthEnabled), Array.from(this.clearColor.rawElements), this.clearDepth, direction);
             this.camera.direction = direction;
             this.camera.renderScene({
                 renderer: this,

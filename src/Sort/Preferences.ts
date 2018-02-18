@@ -5,7 +5,7 @@ function asGLConstantArgs(args: string[], length: number): number[] {
     throw new Error("Unmatching argument count on preference parse");
   }
   return args.map(arg => {
-    const argNum = WebGLRenderingContext[arg];
+    const argNum = (WebGLRenderingContext as any)[arg];
     if (typeof argNum !== "number") {
       throw new Error(`Unknown WebGL constant ${arg} was specified`);
     }
@@ -40,14 +40,14 @@ function asBooleanArgs(args: string[], length: number): boolean[] {
 
 export default {
   Enable(state: IState, args: string[]) {
-    const enableTarget = WebGLRenderingContext[args[0]];
+    const enableTarget = (WebGLRenderingContext as any)[args[0]];
     if (typeof enableTarget !== "number") {
       throw new Error(`Unknown WebGL constant "${args[0]}" was specified on @Enable`);
     }
     state.enable.push(enableTarget);
   },
   Disable(state: IState, args: string[]) {
-    const disableTarget = WebGLRenderingContext[args[0]];
+    const disableTarget = (WebGLRenderingContext as any)[args[0]];
     if (typeof disableTarget !== "number") {
       throw new Error(`Unknown WebGL constant "${args[0]}" was specified on @Disable`);
     }
@@ -114,7 +114,7 @@ export default {
     }
     const resolver = args[0];
     args.splice(0, 1);
-    state.dynamicState.push({
+    state.dynamicState!.push({
       stateResolver: resolver,
       args,
     });

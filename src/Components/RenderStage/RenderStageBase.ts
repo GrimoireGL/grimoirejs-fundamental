@@ -1,13 +1,10 @@
 import GrimoireJS from "grimoirejs";
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import ViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
 import ViewportMouseEvent from "../../Objects/ViewportMouseEvent";
 export default class RenderStageBase extends Component {
     public static componentName = "RenderStageBase";
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
-
-    };
 
     public rendererDescription: { [key: string]: any } = {
         mouse: {
@@ -54,7 +51,7 @@ export default class RenderStageBase extends Component {
     }
 
     protected __beforeRender(): boolean {
-        if (GrimoireJS.debug && !!window["spector"]) {
+        if (GrimoireJS.debug && !!(window as any)["spector"]) {
             let metas = "";
             for (const key in this.metadata) {
                 if (this.metadata[key] === undefined) {
@@ -62,7 +59,7 @@ export default class RenderStageBase extends Component {
                 }
                 metas += `${key}=${this.metadata[key]}|`;
             }
-            window["spector"].setMarker(`Renderer|${metas}`);
+            (window as any)["spector"].setMarker(`Renderer|${metas}`);
         }
         return true;
     }

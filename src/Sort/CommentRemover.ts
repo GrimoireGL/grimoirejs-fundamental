@@ -31,7 +31,7 @@ export default class CommentRemover {
 
   private _remove(): string {
     let text = "";
-    let last;
+    let last = "";
     for (let i = 0; i < this.source.length; i++) {
       const c = this.source.charAt(i);
       const cn = this.source.charAt(i + 1);

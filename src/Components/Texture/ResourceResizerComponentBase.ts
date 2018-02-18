@@ -1,16 +1,18 @@
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import TextureSizeCalculator from "../../Util/TextureSizeCalculator";
 import ResizableResourceUpdator from "./ResizableResourceUpdator";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
 
 /**
  * Base class of texture resizer
  */
-export default class TextureResizerComponentBase extends Component {
-    public static componentName = "TextureResizerComponentBase";
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
+export default class ResourceResizerComponentBase extends Component {
+    public static componentName = "ResourceResizerComponentBase";
+    public static attributes = {
         keepPow2Size: {
-            converter: "Boolean",
+            converter: BooleanConverter,
             default: true,
         },
     };
@@ -25,7 +27,7 @@ export default class TextureResizerComponentBase extends Component {
      * @param height
      */
     protected __resizeResources(width: number, height: number): void {
-        if (this.getAttribute("keepPow2Size")) {
+        if (this.getAttribute(ResourceResizerComponentBase.attributes.keepPow2Size)) {
             const newSize = TextureSizeCalculator.getPow2Size(width, height);
             width = newSize.width;
             height = newSize.height;

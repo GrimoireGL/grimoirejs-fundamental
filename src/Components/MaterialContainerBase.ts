@@ -1,7 +1,8 @@
 import Namespace from "grimoirejs/ref/Core/Namespace";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Material from "../Material/Material";
 import BasicComponent from "./BasicComponent";
+import { StandardAttribute } from "grimoirejs/ref/Core/Attribute";
 
 /**
  * Base class for container component for material and material arguments.
@@ -30,7 +31,7 @@ export default class MaterialContainerBase extends BasicComponent {
           // ${techniqueName}.pass${passIndex}.${variableName}
           // EX) hitarea.pass0.enabled
           nextParameters[argumentFQN] = pass.argumentDeclarations[argumentKey];
-          this.__addAttribute(argumentFQN, pass.argumentDeclarations[argumentKey]);
+          const attr = this.__addAttribute(argumentFQN, pass.argumentDeclarations[argumentKey]);
           try {
             if (typeof pass.arguments[argumentKey] !== "undefined") {
               this.setAttribute(argumentFQN, pass.arguments[argumentKey]);
@@ -38,7 +39,7 @@ export default class MaterialContainerBase extends BasicComponent {
               this.setAttribute(argumentFQN, this._lastParameters[argumentFQN].__lastValue);
             }
             // Register handlers to update pass variables when tag variable was changed
-            this.getAttributeRaw(argumentFQN).watch((n, o) => {
+            attr.watch((n, o) => {
               pass.setArgument(argumentKey, n, o);
             }, true);
           } catch (e) {

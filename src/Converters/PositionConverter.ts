@@ -1,38 +1,35 @@
-import Attribute from "grimoirejs/ref/Core/Attribute";
+import { Attribute, StandardAttribute, LazyAttribute } from "grimoirejs/ref/Core/Attribute";
 import GomlNode from "grimoirejs/ref/Core/GomlNode";
-
+import Vector3 from "grimoirejs-math/ref/Vector3";
 /**
  * 座標を取得するためのコンバーター
  * Vector3コンバーターの受け取り売る値もしくは、任意のシーン中のノードへのクエリを受け取る。
  * クエリを受け取った場合は、そのクエリの示す対象の物体の座標が用いられる。
  */
-export default {
+export const PositionConverter = {
   name: "Position",
-  lazy: true,
-  verify(attr: Attribute) {
-    return true;
-  },
-  convert(val: any, attr: Attribute) {
-    if (val === null) {
-      return null;
-    }
-    if (attr.convertContext._lastVal === val) {
-      return attr.convertContext._node.getAttribute("position");
+  lazy: true as true,
+  convert(val: any, attr: LazyAttribute, converterContext: any): (() => Vector3) | undefined {
+    if (converterContext._lastVal === val) {
+      return () => converterContext._node.getAttribute("position");
     } else {
-      attr.convertContext._lastVal = null;
+      converterContext._lastVal = null;
       try { // TODO: remove try cache after fixed grimoirejs-math.
-        const vec = Attribute.convert("Vector3", attr, val);
+        const vec = StandardAttribute.convert("Vector3", attr, val);
         if (vec) {
-          return vec;
+          return () => vec;
         }
       } catch (e) {
 
       }
-      attr.convertContext._node = Attribute.convert("Node", attr, val) as GomlNode;
-      if (attr.convertContext._node) {
-        attr.convertContext._lastVal = val;
-        return attr.convertContext._node.getAttribute("position"); // TODO should not use getAttribute on node
+      converterContext._node = StandardAttribute.convert("Node", attr, val) as GomlNode;
+      if (converterContext._node) {
+        converterContext._lastVal = val;
+        return () => converterContext._node.getAttribute("position"); // TODO should not use getAttribute on node
       }
+      return undefined;
     }
   },
 };
+
+export default PositionConverter;

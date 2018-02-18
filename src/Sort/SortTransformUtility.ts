@@ -6,6 +6,7 @@ import ImportResolver from "./ImportResolver";
 import NameSemanticPair from "./NameSemanticsPair";
 import Preferences from "./Preferences";
 import TypeToConstant from "./TypeToConstant";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
 
 export default class SortTransformUtility {
   /**
@@ -17,9 +18,9 @@ export default class SortTransformUtility {
     if (uncommentedSource.indexOf("@Technique") === -1) {
       return { default: uncommentedSource };
     } else {
-      const result = {};
+      const result: { [key: string]: string } = {};
       const regex = /@Technique\s+([a-zA-Z0-9_]+)/g;
-      let regexResult: RegExpExecArray;
+      let regexResult: RegExpExecArray | null;
       while (regexResult = regex.exec(uncommentedSource)) {
         const techniqueName = regexResult[1];
         if (result[techniqueName] !== void 0) {
@@ -43,7 +44,7 @@ export default class SortTransformUtility {
     } else {
       const result = [];
       const regex = /@Pass/g;
-      let regexResult: RegExpExecArray;
+      let regexResult: RegExpExecArray | null;
       while (regexResult = regex.exec(uncommentedSource)) {
         result.push(SortTransformUtility.obtainNextSection(uncommentedSource, "{", "}", regexResult.index + regexResult.length));
       }
@@ -56,7 +57,7 @@ export default class SortTransformUtility {
    * @param  {string} uncommentedTechniqueSource [description]
    * @return {string}                            [description]
    */
-  public static fetchDrawOrder(uncommentedTechniqueSource: string): string {
+  public static fetchDrawOrder(uncommentedTechniqueSource: string): Nullable<string> {
     const regexResult = /@DrawOrder\s*\((\w+)\)/g.exec(uncommentedTechniqueSource);
     if (regexResult) {
       const firstPassIndex = uncommentedTechniqueSource.indexOf("@Pass");
@@ -88,7 +89,7 @@ export default class SortTransformUtility {
   }
 
   public static parseMacros(source: string): { [key: string]: IMacro } {
-    const result = {};
+    const result: { [key: string]: IMacro } = {};
     let regex = /@ExposeMacro\s*\(\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*,\s*([a-zA-Z0-9_]+)\s*\)/g;
     let regexResult;
     while ((regexResult = regex.exec(source))) {
@@ -124,6 +125,7 @@ export default class SortTransformUtility {
         throw new Error(`Invalid parameter was passed on @ReferMacro preference on '${regexResult[0]}'`);
       }
       result[regexResult[1]] = {
+        type: "",
         name: regexResult[1],
         macroName: regexResult[1],
         value: regexResult[2],
@@ -154,7 +156,7 @@ export default class SortTransformUtility {
     const regex = /@([A-Za-z]+)\(([\sa-zA-Z_0-9,\.\-]*)\)/g;
     let regexResult;
     while ((regexResult = regex.exec(source))) {
-      const prefParser = Preferences[regexResult[1]];
+      const prefParser = (Preferences as any)[regexResult[1]];
       if (!prefParser) {
         throw new Error(`Unknown pass preference ${regexResult[1]} was specified.`);
       }
@@ -213,19 +215,19 @@ export default class SortTransformUtility {
   }
 
   public static parseVariables(source: string, variableType: string): { [key: string]: IVariableInfo } {
-    const result = {};
+    const result: { [key: string]: IVariableInfo } = {};
     const regex = SortTransformUtility.generateVariableFetchRegex(variableType);
-    let regexResult: RegExpExecArray;
+    let regexResult: Nullable<RegExpExecArray>;
     while ((regexResult = regex.exec(source))) {
       const name = regexResult[5];
-      const type = TypeToConstant[regexResult[4]];
+      const type = (TypeToConstant as any)[regexResult[4]];
       const precision = regexResult[3];
       const rawAnnotations = regexResult[2];
       const isArray = regexResult[6] !== void 0;
       let arrayCount;
       let semantic = regexResult[1];
       if (!semantic) {
-        semantic = NameSemanticPair[variableType][name];
+        semantic = (NameSemanticPair as any)[variableType][name];
         if (!semantic) {
           semantic = variableType === "uniform" ? "USER_VALUE" : name.toUpperCase();
         }

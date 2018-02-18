@@ -19,7 +19,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
     /**
     * 2D context of Texture.__utilityCanvas
     */
-    protected static __utilityContext = Texture.__utilityCanvas.getContext("2d");
+    protected static __utilityContext: CanvasRenderingContext2D = Texture.__utilityCanvas.getContext("2d")!;
 
     public get magFilter(): number {
         return this._magFilter;
@@ -89,7 +89,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
     private _wrapT: number = WebGLRenderingContext.REPEAT;
 
     constructor(gl: WebGLRenderingContext, public textureType: number) {
-        super(gl, gl.createTexture());
+        super(gl, gl.createTexture()!);
     }
 
     /**
@@ -116,7 +116,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
         this.__applyTexParameter();
     }
 
-    protected __prepareTextureUpload(uploadConfig: ITextureUploadConfig, complement = { flipY: true, premultipliedAlpha: false }): void {
+    protected __prepareTextureUpload(uploadConfig?: ITextureUploadConfig, complement = { flipY: true, premultipliedAlpha: false }): void {
         uploadConfig = {
             ...complement,
             ...uploadConfig
@@ -162,7 +162,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
      */
     protected __ensurePOT(image: ImageSource): IResizeResult {
         if (image instanceof ImageData) {
-            const context = document.createElement("canvas").getContext("2d");
+            const context = document.createElement("canvas").getContext("2d")!;
             context.canvas.width = image.width;
             context.canvas.height = image.height;
             context.putImageData(image, 0, 0);
@@ -266,7 +266,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
         const canv = Texture.__utilityCanvas;
         canv.height = height;
         canv.width = width;
-        Texture.__utilityContext.drawImage(resource, 0, 0, resource.width, resource.height, 0, 0, width, height);
+        Texture.__utilityContext!.drawImage(resource, 0, 0, resource.width, resource.height, 0, 0, width, height);
         return Texture.__utilityCanvas;
     }
 }

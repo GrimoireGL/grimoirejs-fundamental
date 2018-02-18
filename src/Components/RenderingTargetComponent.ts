@@ -1,5 +1,5 @@
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import OffscreenRenderingTarget from "../Resource/RenderingTarget/OffscreenRenderingTarget";
 import RenderingTrargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
 import RenderingTargetComponentBase from "./RenderingTargetComponentBase";
@@ -21,8 +21,8 @@ export default class RenderingTarget extends RenderingTargetComponentBase<Offscr
                 ALPHA: WebGLRenderingContext.ALPHA,
                 LUMINANCE: WebGLRenderingContext.LUMINANCE,
                 LUMINANCE_ALPHA: WebGLRenderingContext.LUMINANCE_ALPHA,
-                SRGB_EXT: WebGLRenderingContext["SRGB_EXT"],
-                SRGB_ALPHA_EXT: WebGLRenderingContext["SRGB_ALPHA_EXT"],
+                SRGB_EXT: (WebGLRenderingContext as any)["SRGB_EXT"],
+                SRGB_ALPHA_EXT: (WebGLRenderingContext as any)["SRGB_ALPHA_EXT"],
                 DEPTH_COMPONENT: WebGLRenderingContext["DEPTH_COMPONENT"],
                 DEPTH_STENCIL: WebGLRenderingContext["DEPTH_STENCIL"],
             },
@@ -57,7 +57,7 @@ export default class RenderingTarget extends RenderingTargetComponentBase<Offscr
         const textures = this.node.getComponentsInChildren(TextureContainer);
         const texture = textures[0].texture;
         const renderBuffer = this.node.getComponentsInChildren(RenderBufferUpdator);
-        return new OffscreenRenderingTarget(this.companion.get("gl"), [texture], renderBuffer[0].buffer);
+        return new OffscreenRenderingTarget(this.companion.get("gl")!, [texture], renderBuffer[0].buffer);
     }
 
     /**

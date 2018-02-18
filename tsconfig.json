@@ -7,11 +7,13 @@
     "moduleResolution": "node",
     "declarationDir": "./ref",
     "sourceMap": true,
+    "strict": true,
     "lib": [
       "dom",
       "dom.iterable",
       "es2017",
       "es2016",
+      "es2016.array.include",
       "es2015",
       "es2015.iterable",
       "es2015.generator"

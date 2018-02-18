@@ -1,17 +1,21 @@
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Material from "../Material/Material";
 import MaterialFactory from "../Material/MaterialFactory";
 import MaterialContainerBase from "./MaterialContainerBase";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
+import Identity from "grimoirejs/ref/Core/Identity";
 /** 
  * Material component holds reference of material instance.
  * This is used in <material/> tag.
  * This component can contain additional attributes registered by shader.
 */
+
 export default class MaterialComponent extends MaterialContainerBase {
     public static componentName = "Material"
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
+    public static attributes = {
         type: {
-            converter: "String",
+            converter: StringConverter,
             default: null,
         },
     };
@@ -36,7 +40,7 @@ export default class MaterialComponent extends MaterialContainerBase {
     protected $mount(): void {
         const typeName = this.getAttribute("type");
         if (typeName && typeof typeName === "string") {
-            const materialFactory = MaterialFactory.get(this.companion.get("gl"));
+            const materialFactory = MaterialFactory.get(this.companion.get("gl")!);
             this.materialPromise = materialFactory.instanciate(typeName);
             this._registerAttributes();
         } else {

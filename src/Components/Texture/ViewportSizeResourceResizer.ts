@@ -1,8 +1,11 @@
 import Vector2 from "grimoirejs-math/ref/Vector2";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IResizeViewportMessage from "../../Messages/IResizeViewportMessage";
 import RendererComponent from "../RendererComponent";
 import ResourceResizerComponentBase from "./ResourceResizerComponentBase";
+import { Vector2Converter } from "grimoirejs-math/ref/Converters/Vector2Converter";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
 
 /**
  * Resource resizer that resizes all of ResizableResourceUpdator bounded to this node.
@@ -10,15 +13,12 @@ import ResourceResizerComponentBase from "./ResourceResizerComponentBase";
  */
 export default class ViewportSizeResourceResizer extends ResourceResizerComponentBase {
   public static componentName = "ViewportSizeResourceResizer";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
     resolutionScale: {
-      converter: "Vector2",
+      converter: Vector2Converter,
       default: "1",
     },
-    keepPow2Size: {
-      converter: "Boolean",
-      default: true,
-    },
+    ...ResourceResizerComponentBase.attributes
   };
 
   protected $mount(): void {
@@ -31,7 +31,7 @@ export default class ViewportSizeResourceResizer extends ResourceResizerComponen
   }
 
   protected $resizeViewport(arg: IResizeViewportMessage): void {
-    const scale = this.getAttribute("resolutionScale") as Vector2;
+    const scale = this.getAttribute(ViewportSizeResourceResizer.attributes.resolutionScale) as Vector2;
     this.__resizeResources(arg.width * scale.X, arg.height * scale.Y);
   }
 }

@@ -44,18 +44,21 @@ UniformResolverRegistry.add("HAS_TEXTURE", (valInfo: IVariableInfo, pass: Pass) 
 });
 
 UniformResolverRegistry.add("CAMERA_POSITION", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
-  proxy.uniformVector3(valInfo.name, args.camera.transform.globalPosition);
+  proxy.uniformVector3(valInfo.name, args.camera!.transform.globalPosition);
 });
 
 UniformResolverRegistry.add("CAMERA_DIRECTION", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
-  proxy.uniformVector3(valInfo.name, args.camera.transform.forward);
+  proxy.uniformVector3(valInfo.name, args.camera!.transform.forward);
 });
 
 UniformResolverRegistry.add("CAMERA_TRANSFORM", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
-  proxy.uniformMatrix(valInfo.name, args.camera.transform.globalTransform);
+  proxy.uniformMatrix(valInfo.name, args.camera!.transform.globalTransform);
 });
 
 UniformResolverRegistry.add("MESH_INDEX", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
+  if (!args.renderable) {
+    throw new Error("Renderable must be speicified to use MESH_INDEX");
+  }
   const index = args.renderable.index;
   proxy.uniformVector4(valInfo.name, MeshIndexCalculator.fromIndex(index));
 });

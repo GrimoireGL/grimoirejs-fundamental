@@ -1,4 +1,4 @@
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration, IStandardAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Geometry from "../Geometry/Geometry";
 import ManagedProgram from "../Resource/ManagedProgram";
 import GLStateConfigurator from "./GLStateConfigurator";
@@ -37,7 +37,7 @@ export default class Pass {
    * @param  {IPassRecipe} publicpassRecipe [description]
    * @return {[type]}                       [description]
    */
-  public argumentDeclarations: { [key: string]: IAttributeDeclaration } = {};
+  public argumentDeclarations: { [key: string]: IStandardAttributeDeclaration } = {};
 
   /**
    * Values of materila arguments.
@@ -111,7 +111,7 @@ export default class Pass {
    * Append an argument as pass variable.
    * This is mainly used for resolving uniform stages.
    */
-  public addArgument(name: string, val: IAttributeDeclaration): void {
+  public addArgument(name: string, val: IStandardAttributeDeclaration): void {
     if (this._argumentInitialized) {
       throw new Error("setArgument cant be called for initialized pass");
     }

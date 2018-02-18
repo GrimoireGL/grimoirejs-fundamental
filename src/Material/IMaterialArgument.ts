@@ -4,14 +4,15 @@ import Transform from "../Components/TransformComponent";
 import Geometry from "../Geometry/Geometry";
 import HierachicalDescription from "../SceneRenderer/HierachicalDescription";
 import IRenderable from "../SceneRenderer/IRenderable";
+import { Undef } from "grimoirejs/ref/Tool/Types";
 interface IMaterialArgument {
   indexGroup: string;
   geometry: Geometry;
   sceneDescription: { [key: string]: any };
   rendererDescription: { [key: string]: any };
-  camera: CameraComponent;
+  camera: Undef<CameraComponent>;
   viewport: Rectangle;
-  transform: Transform;
+  transform: Undef<Transform>;
   drawOffset?: number;
   drawCount?: number;
   technique: string;

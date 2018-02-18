@@ -14,7 +14,7 @@ export default class OffscreenCubemapRenderTarget implements ICubemapRenderingTa
     constructor(public gl: WebGLRenderingContext, public texture: TextureCube, public depthBuffer?: RenderBuffer) {
         for (const direction in TextureCube.imageDirections) {
             this.fbos[direction] = new FrameBuffer(gl);
-            this.fbos[direction].update(texture, TextureCube.imageDirections[direction], 0);
+            this.fbos[direction].update(texture, (TextureCube.imageDirections as any)[direction], 0);
             if (depthBuffer) {
                 this.fbos[direction].update(depthBuffer);
             }
@@ -44,9 +44,15 @@ export default class OffscreenCubemapRenderTarget implements ICubemapRenderingTa
         this.getViewport().configure(this.gl);
     }
     public getBufferWidth(): number {
+        if (!this.texture.width) {
+            throw new Error(`Texture is not initialized yet.`);
+        }
         return this.texture.width;
     }
     public getBufferHeight(): number {
+        if (!this.texture.height) {
+            throw new Error(`Texture is not initialized yet.`);
+        }
         return this.texture.height;
     }
     public getViewport(): Viewport {

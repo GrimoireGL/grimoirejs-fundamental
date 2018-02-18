@@ -16,7 +16,7 @@ export default class MacroRegistry {
 
   constructor() {
     for (const key in DefaultMacro) {
-      this.setValue(key, DefaultMacro[key]);
+      this.setValue(key, (DefaultMacro as any)[key]);
     }
   }
 
@@ -25,10 +25,7 @@ export default class MacroRegistry {
    * @param {string}    key [description]
    * @param {string =   null}        val [description]
    */
-  public setValue(key: string, val: string = null): void {
-    if (val === null) {
-      val = "";
-    }
+  public setValue(key: string, val: string = ""): void {
     if (this._macro[key] !== val) {
       this._macro[key] = val;
       if (!this._observers[key]) {
@@ -74,6 +71,7 @@ export default class MacroRegistry {
         return true;
       }
     }
+    return false;
   }
 
   private _notifyMacroChanged(key: string, value: string): void {

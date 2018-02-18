@@ -1,7 +1,8 @@
-import Attribute from "grimoirejs/ref/Core/Attribute";
+import { Attribute } from "grimoirejs/ref/Core/Attribute";
 import MaterialComponent from "../Components/MaterialComponent";
 import Material from "../Material/Material";
 import MaterialFactory from "../Material/MaterialFactory";
+import { createMaterialResolutionResult, default as IMaterialResolutionResult } from "../Material/MaterialResolutionResult";
 
 /**
  * マテリアルを指定するためのコンバーター
@@ -10,27 +11,33 @@ import MaterialFactory from "../Material/MaterialFactory";
  * 通常、マテリアルを指定するコンポーネントはマテリアルによって、そのコンポーネントが所持する属性が置き換わる。
  * `new(マテリアル)`名で指定した場合、そのコンポーネント自身がマテリアルの属性を管理することになるので注意が必要。
  */
-export default function MaterialConverter(val: any, attr: Attribute): any {
-  if (typeof val === "string") {
-    const regex = /\s*new\s*\(\s*([a-zA-Z\d\-]+)\s*\)/;
-    let regexResult: RegExpExecArray | null;
-    if (regexResult = regex.exec(val)) { // new material should be instanciated for this material
-      (attr.component as any)[attr.declaration["componentBoundTo"]] = null;
-      return MaterialFactory.get(attr.companion.get("gl")).instanciate(regexResult[1]);
-    } else {
-      const node = attr.tree(val).first();
-      if (node) {
-        const mc = node.getComponent(MaterialComponent);
-        (attr.component as any)[attr.declaration["componentBoundTo"]] = mc;
-        return mc.materialPromise;
+export const MaterialConverter = {
+  name: "Material",
+  async convert(val: any, attr: Attribute): Promise<IMaterialResolutionResult | null> {
+    if (typeof val === "string") {
+      const regex = /\s*new\s*\(\s*([a-zA-Z\d\-]+)\s*\)/;
+      let regexResult: RegExpExecArray | null;
+      if (regexResult = regex.exec(val)) { // new material should be instanciated for this material
+        return createMaterialResolutionResult(MaterialFactory.get(await attr.companion!.waitFor("gl")!).instanciate(regexResult[1]), false)
       } else {
-        console.warn(`There was no matching material component filtered by '${val}'`);
-        return null;
+        const node = attr.tree!(val).first();
+        if (node) {
+          const mc = node.getComponent(MaterialComponent);
+          if (!mc) {
+            throw new Error(`Material component was not found on specified node`);
+          }
+          return createMaterialResolutionResult(mc.materialPromise, true);
+        } else {
+          console.warn(`There was no matching material component filtered by '${val}'`);
+          return null;
+        }
       }
+    } else if (val instanceof Material) {
+      (attr.component as any)[attr.declaration["componentBoundTo"]] = null;
+      return createMaterialResolutionResult(Promise.resolve(val), false);
     }
-  } else if (val instanceof Material) {
-    (attr.component as any)[attr.declaration["componentBoundTo"]] = null;
-    return Promise.resolve(val);
+    return null; // TODO ??
   }
-  return null; // TODO ??
 }
+
+export default MaterialConverter;

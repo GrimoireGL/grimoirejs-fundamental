@@ -9,7 +9,7 @@ UniformResolverRegistry.add("MODELVIEWPROJECTION", (valInfo: IVariableInfo) => (
     proxy.uniformMatrix(valInfo.name, Matrix.identity());
     return;
   }
-  proxy.uniformMatrix(valInfo.name, args.transform.calcPVM(args.camera));
+  proxy.uniformMatrix(valInfo.name, args.transform.calcPVM(args.camera!));
 });
 
 UniformResolverRegistry.add("LOCAL", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
@@ -33,7 +33,7 @@ UniformResolverRegistry.add("MODELVIEW", (valInfo: IVariableInfo) => (proxy: Uni
     proxy.uniformMatrix(valInfo.name, Matrix.identity());
     return;
   }
-  proxy.uniformMatrix(valInfo.name, args.camera.viewMatrix.multiplyWith(args.transform.globalTransform));
+  proxy.uniformMatrix(valInfo.name, args.camera!.viewMatrix.multiplyWith(args.transform.globalTransform));
 });
 
 UniformResolverRegistry.add("VIEW", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
@@ -41,7 +41,7 @@ UniformResolverRegistry.add("VIEW", (valInfo: IVariableInfo) => (proxy: UniformP
     proxy.uniformMatrix(valInfo.name, Matrix.identity());
     return;
   }
-  proxy.uniformMatrix(valInfo.name, args.camera.viewMatrix);
+  proxy.uniformMatrix(valInfo.name, args.camera!.viewMatrix);
 });
 
 UniformResolverRegistry.add("PROJECTION", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
@@ -49,7 +49,7 @@ UniformResolverRegistry.add("PROJECTION", (valInfo: IVariableInfo) => (proxy: Un
     proxy.uniformMatrix(valInfo.name, Matrix.identity());
     return;
   }
-  proxy.uniformMatrix(valInfo.name, args.camera.projectionMatrix);
+  proxy.uniformMatrix(valInfo.name, args.camera!.projectionMatrix);
 });
 
 UniformResolverRegistry.add("MODELINVERSE", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
@@ -57,11 +57,11 @@ UniformResolverRegistry.add("MODELINVERSE", (valInfo: IVariableInfo) => (proxy: 
     proxy.uniformMatrix(valInfo.name, Matrix.identity());
     return;
   }
-  proxy.uniformMatrix(valInfo.name, Matrix.inverse(args.transform.globalTransform));
+  proxy.uniformMatrix(valInfo.name, args.transform.globalTransformInverse);
 });
 
 UniformResolverRegistry.add("VIEWINVERSE", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
-  proxy.uniformMatrix(valInfo.name, Matrix.inverse(args.camera.viewMatrix));
+  proxy.uniformMatrix(valInfo.name, Matrix.inverse(args.camera!.viewMatrix)!);
 });
 
 UniformResolverRegistry.add("PROJECTIONINVERSE", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
@@ -69,7 +69,7 @@ UniformResolverRegistry.add("PROJECTIONINVERSE", (valInfo: IVariableInfo) => (pr
     proxy.uniformMatrix(valInfo.name, Matrix.identity());
     return;
   }
-  proxy.uniformMatrix(valInfo.name, args.camera.invProjectionMatrix);
+  proxy.uniformMatrix(valInfo.name, args.camera!.invProjectionMatrix);
 });
 
 UniformResolverRegistry.add("MODELVIEWINVERSE", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
@@ -77,7 +77,7 @@ UniformResolverRegistry.add("MODELVIEWINVERSE", (valInfo: IVariableInfo) => (pro
     proxy.uniformMatrix(valInfo.name, Matrix.identity());
     return;
   }
-  proxy.uniformMatrix(valInfo.name, Matrix.inverse(args.transform.calcVM(args.camera)));
+  proxy.uniformMatrix(valInfo.name, Matrix.inverse(args.transform.calcVM(args.camera!))!);
 });
 
 UniformResolverRegistry.add("MODELVIEWPROJECTIONINVERSE", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
@@ -85,7 +85,7 @@ UniformResolverRegistry.add("MODELVIEWPROJECTIONINVERSE", (valInfo: IVariableInf
     proxy.uniformMatrix(valInfo.name, Matrix.identity());
     return;
   }
-  proxy.uniformMatrix(valInfo.name, Matrix.inverse(args.transform.calcPVM(args.camera)));
+  proxy.uniformMatrix(valInfo.name, Matrix.inverse(args.transform.calcPVM(args.camera!))!);
 });
 
 UniformResolverRegistry.add("MODELINVERSETRANSPOSE", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
@@ -93,7 +93,7 @@ UniformResolverRegistry.add("MODELINVERSETRANSPOSE", (valInfo: IVariableInfo) =>
     proxy.uniformMatrix(valInfo.name, Matrix.identity());
     return;
   }
-  proxy.uniformMatrix(valInfo.name, Matrix.transpose(Matrix.inverse(args.transform.globalTransform)));
+  proxy.uniformMatrix(valInfo.name, Matrix.transpose(args.transform.globalTransformInverse));
 });
 
 UniformResolverRegistry.add("MODELVIEWINVERSETRANSPOSE", (valInfo: IVariableInfo) => (proxy: UniformProxy, args: IMaterialArgument) => {
@@ -101,7 +101,7 @@ UniformResolverRegistry.add("MODELVIEWINVERSETRANSPOSE", (valInfo: IVariableInfo
     proxy.uniformMatrix3(valInfo.name, Matrix.identity());
     return;
   }
-  proxy.uniformMatrix3(valInfo.name, Matrix.transpose(Matrix.inverse(args.transform.calcVM(args.camera))));
+  proxy.uniformMatrix3(valInfo.name, Matrix.transpose(Matrix.inverse(args.transform.calcVM(args.camera!))!));
 });
 
 export default null;

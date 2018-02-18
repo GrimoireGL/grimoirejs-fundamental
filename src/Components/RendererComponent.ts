@@ -1,5 +1,5 @@
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderRendererMessage from "../Messages/IRenderRendererMessage";
 import IResizeViewportMessage from "../Messages/IResizeViewportMessage";
 import ViewportMouseEvent from "../Objects/ViewportMouseEvent";
@@ -9,24 +9,34 @@ import Viewport from "../Resource/Viewport";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 import Timer from "../Util/Timer";
 import CameraComponent from "./CameraComponent";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import { ViewportConverter } from "../Converters/ViewportConverter";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
 export default class RendererComponent extends Component {
   public static componentName = "Renderer";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
     regionName: {
-      converter: "String",
+      converter: StringConverter,
       default: null,
     },
     viewport: {
-      converter: "Viewport",
+      converter: ViewportConverter,
       default: "auto",
     },
     handleMouse: {
-      converter: "Boolean",
+      converter: BooleanConverter,
       default: true,
     },
   };
 
-  public renderingTarget: CanvasRegionRenderingTarget;
+  public renderingTarget: Promise<CanvasRegionRenderingTarget> = new Promise<CanvasRegionRenderingTarget>((resolve) => {
+    this._renderingTargetResolver = resolve;
+  });
+
+  private _renderingTargetResolver: (rt: CanvasRegionRenderingTarget) => void;
+
+  private _renderingTarget: CanvasRegionRenderingTarget;
 
   public get viewport(): Viewport {
     if (this._viewportCache) {
@@ -63,8 +73,8 @@ export default class RendererComponent extends Component {
 
   protected $awake(): void {
     // initializing attributes
-    this.getAttributeRaw("viewport").watch((v) => {
-      this._viewportSizeGenerator = v;
+    this.getAttributeRaw(RendererComponent.attributes.viewport)!.watch((v) => {
+      this._viewportSizeGenerator = v!;
       this.$resizeCanvas();
     });
     // viewport converter returns a delegate to generate viewport size
@@ -73,16 +83,19 @@ export default class RendererComponent extends Component {
     if (!regionName) {
       regionName = "renderer-" + this.node.index;
     }
-    this.renderingTarget = new CanvasRegionRenderingTarget(this.companion.get("gl"));
-    this.renderingTarget.setViewport(this.viewport);
-    RenderingTargetRegistry.get(this.companion.get("gl")).setRenderingTarget(regionName, this.renderingTarget);
+    const gl = this.companion.get("gl");
+    const rt = new CanvasRegionRenderingTarget(gl);
+    this._renderingTarget = rt;
+    rt.setViewport(this.viewport);
+    RenderingTargetRegistry.get(gl).setRenderingTarget(regionName, rt);
+    this._renderingTargetResolver(rt);
     this._initializeMouseHandlers();
   }
 
   protected $mount(): void {
     this._gl = this.companion.get("gl") as WebGLRenderingContext;
     this._canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
-    this.getAttributeRaw("handleMouse").watch(a => {
+    this.getAttributeRaw(RendererComponent.attributes.handleMouse)!.watch(a => {
       if (a) {
         this._enableMouseHandling();
       } else {
@@ -106,7 +119,7 @@ export default class RendererComponent extends Component {
 
   protected $resizeCanvas(): void {
     this._viewportCache = this._viewportSizeGenerator(this._canvas);
-    this.renderingTarget.setViewport(this._viewportCache);
+    this._renderingTarget.setViewport(this._viewportCache);
     const pow2Size = TextureSizeCalculator.getPow2Size(this._viewportCache.Width, this._viewportCache.Height);
     this.node.broadcastMessage("resizeViewport", {
       width: this._viewportCache.Width,

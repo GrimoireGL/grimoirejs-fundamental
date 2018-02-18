@@ -1,5 +1,5 @@
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import NameResolver from "../Asset/NameResolver";
 import Geometry from "../Geometry/Geometry";
 import GeometryFactory from "../Geometry/GeometryFactory";
@@ -20,21 +20,21 @@ export default class GeometryRegistryComponent extends Component {
     },
   };
 
-  private _geometryResolver: NameResolver<Geometry> = new NameResolver<Geometry>();
+  public resolver: NameResolver<Geometry> = new NameResolver<Geometry>();
 
   protected $awake(): void {
     this.companion.set(this.name, this);
-    const factory = GeometryFactory.get(this.companion.get("gl"));
+    const factory = GeometryFactory.get(this.companion.get("gl")!);
     for (const geometry of this.getAttribute("defaultGeometry") as string[]) {
       this.addGeometry(geometry, factory.instanciateAsDefault(geometry));
     }
   }
 
   public addGeometry(name: string, geometry: Promise<Geometry> | Geometry): void {
-    this._geometryResolver.register(name, geometry);
+    this.resolver.register(name, geometry);
   }
 
   public getGeometry(name: string): Promise<Geometry> {
-    return this._geometryResolver.get(name);
+    return this.resolver.get(name);
   }
 }

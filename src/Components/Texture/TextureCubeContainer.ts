@@ -1,5 +1,5 @@
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Texture2D from "../../Resource/Texture2D";
 import TextureCube from "../../Resource/TextureCube";
 import TextureContainerBase from "./TextureContainerBase";

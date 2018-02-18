@@ -1,18 +1,17 @@
 import Namespace from "grimoirejs/ref/Core/Namespace";
 import gr from "grimoirejs/ref/Core/GrimoireInterface";
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
-import CanvasSizeObject from "../Objects/CanvasSizeObject";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import CanvasSizeObject, { ResizeMode } from "../Objects/CanvasSizeObject";
 import GLExtRequestor from "../Resource/GLExtRequestor";
 import Texture2D from "../Resource/Texture2D";
+import StringConverter from "grimoirejs/ref/Converter/StringConverter";
 import WebGLRenderingContextWithId from "../Resource/WebGLRenderingContextWithId";
+import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
+import { CanvasSizeConverter } from "../Converters/CanvasSizeConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
 const ns = Namespace.define("grimoirejs-fundamental");
-
-enum ResizeMode {
-  Aspect,
-  Fit,
-  Manual,
-}
 
 /**
  * キャンバスの初期化及び設定を司るコンポーネント
@@ -20,34 +19,34 @@ enum ResizeMode {
  */
 export default class CanvasInitializerComponent extends Component {
   public static componentName = "CanvasInitializer";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
+  public static attributes = {
     /**
      * キャンバスタグの横幅を指定します。
      */
     width: {
       default: "fit",
-      converter: "CanvasSize",
+      converter: CanvasSizeConverter,
     },
     /**
      * キャンバスタグの縦幅を指定します。
      */
     height: {
       default: "fit",
-      converter: "CanvasSize",
+      converter: CanvasSizeConverter,
     },
     /**
      * キャンバス要素の直接の親要素のコンテナに割り当てるidを指定します。
      */
     containerId: {
       default: "",
-      converter: "String",
+      converter: StringConverter,
     },
     /**
      * キャンバス要素の直接の親要素のコンテナに割り当てるクラス名を指定します。
      */
     containerClass: {
       default: "gr-container",
-      converter: "String",
+      converter: StringConverter,
     },
     /**
      * GLコンテキストの初期化時に、preserveDrawingBufferフラグを有効にするか指定します。
@@ -56,7 +55,7 @@ export default class CanvasInitializerComponent extends Component {
      */
     preserveDrawingBuffer: {
       default: true,
-      converter: "Boolean",
+      converter: BooleanConverter,
     },
     /**
      * GLコンテキストの初期化時に、MSAAによるアンチエイリアスを有効にするか指定します。
@@ -65,7 +64,7 @@ export default class CanvasInitializerComponent extends Component {
      */
     antialias: {
       default: true,
-      converter: "Boolean",
+      converter: BooleanConverter,
     },
   };
 
@@ -80,33 +79,34 @@ export default class CanvasInitializerComponent extends Component {
   private _canvasContainer: HTMLDivElement;
 
   // Resize mode of width
-  private _widthMode: ResizeMode;
+  private _widthMode: CanvasSizeObject;
 
   // Resize mode of height
-  private _heightMode: ResizeMode;
+  private _heightMode: CanvasSizeObject;
 
   // Ratio of aspect
   private _ratio: number;
 
   protected $awake(): void {
-    this._scriptTag = this.companion.get("scriptElement");
+    this._scriptTag = this.companion.get("scriptElement")!;
     if (this._isContainedInBody(this._scriptTag)) {
       // canvas should be placed siblings of the script tag
       this._generateCanvas(this._scriptTag);
     } else {
       throw new Error("goml script should have body as ancesotor to instanciate canvas element in the location");
     }
+
     // apply sizes on changed
-    this.getAttributeRaw("width").watch(() => {
+    this.getAttributeRaw(CanvasInitializerComponent.attributes.width)!.watch(() => {
       this._resize();
     });
-    this.getAttributeRaw("height").watch(() => {
+    this.getAttributeRaw(CanvasInitializerComponent.attributes.height)!.watch(() => {
       this._resize();
     });
-    this.getAttributeRaw("antialias").watch(() => {
+    this.getAttributeRaw(CanvasInitializerComponent.attributes.antialias)!.watch(() => {
       console.warn("Changing antialias attribute is not supported. This is only works when the canvas element created.");
     });
-    this.getAttributeRaw("preserveDrawingBuffer").watch(() => {
+    this.getAttributeRaw(CanvasInitializerComponent.attributes.preserveDrawingBuffer)!.watch(() => {
       console.warn("Changing preserveDrawingBuffer attribute is not supported. This is only works when the canvas element created.");
     });
   }
@@ -128,29 +128,29 @@ export default class CanvasInitializerComponent extends Component {
     const gl = this._getContext(this.canvas);
     this.companion.set(ns.for("gl"), gl);
     this.companion.set(ns.for("canvasElement"), this.canvas);
-    this.companion.set(ns.for("GLExtRequestor"), new GLExtRequestor(gl));
+    this.companion.set(ns.for("GLExtRequestor"), GLExtRequestor.get(gl));
     Texture2D.generateDefaultTexture(gl);
     return this.canvas;
   }
 
   private _resize(supressBroadcast?: boolean): void {
-    const widthRaw = this.getAttribute("width") as CanvasSizeObject;
-    const heightRaw = this.getAttribute("height") as CanvasSizeObject;
-    this._widthMode = this._asResizeMode(widthRaw);
-    this._heightMode = this._asResizeMode(heightRaw);
-    if (this._widthMode === this._heightMode && this._widthMode === ResizeMode.Aspect) {
+    const widthRaw = this.getAttribute(CanvasInitializerComponent.attributes.width);
+    const heightRaw = this.getAttribute(CanvasInitializerComponent.attributes.height);
+    this._widthMode = widthRaw;
+    this._heightMode = heightRaw;
+    if (this._widthMode === this._heightMode && this._widthMode.mode === "aspect") {
       throw new Error("Width and height could not have aspect mode in same time!");
     }
-    if (this._widthMode === ResizeMode.Aspect) {
+    if (widthRaw.mode === "aspect") {
       this._ratio = widthRaw.aspect;
     }
-    if (this._heightMode === ResizeMode.Aspect) {
+    if (heightRaw.mode === "aspect") {
       this._ratio = heightRaw.aspect;
     }
-    if (this._widthMode === ResizeMode.Manual) {
+    if (widthRaw.mode === "manual") {
       this._applyManualWidth(widthRaw.size, supressBroadcast);
     }
-    if (this._heightMode === ResizeMode.Manual) {
+    if (heightRaw.mode === "manual") {
       this._applyManualHeight(heightRaw.size, supressBroadcast);
     }
     this._onWindowResize(supressBroadcast);
@@ -158,10 +158,10 @@ export default class CanvasInitializerComponent extends Component {
 
   private _onWindowResize(supressBroadcast?: boolean): void {
     const size = this._getParentSize();
-    if (this._widthMode === ResizeMode.Fit) {
+    if (this._widthMode.mode === "fit") {
       this._applyManualWidth(size[0], supressBroadcast);
     }
-    if (this._heightMode === ResizeMode.Fit) {
+    if (this._heightMode.mode === "fit") {
       if (size[1] === 0 && gr.debug) {
         console.warn("Canvas height parameter specified as fit and height of parent element is 0.\n This is possibly the reason you haven't set css to html or body element.");
       }
@@ -178,7 +178,7 @@ export default class CanvasInitializerComponent extends Component {
     if (!supressBroadcast) {
       this.node.broadcastMessage(1, "resizeCanvas");
     }
-    if (this._heightMode === ResizeMode.Aspect) {
+    if (this._heightMode.mode === "aspect") {
       this._applyManualHeight(width / this._ratio, supressBroadcast);
     }
   }
@@ -192,40 +192,25 @@ export default class CanvasInitializerComponent extends Component {
     if (!supressBroadcast) {
       this.node.broadcastMessage(1, "resizeCanvas");
     }
-    if (this._widthMode === ResizeMode.Aspect) {
+    if (this._widthMode.mode === "aspect") {
       this._applyManualWidth(height * this._ratio, supressBroadcast);
     }
   }
 
   private _getParentSize(): number[] {
-    const parent = this._canvasContainer.parentElement;
+    const parent = this._canvasContainer.parentElement!;
     const cs = getComputedStyle(parent);
 
-    const paddingX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
-    const paddingY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+    const paddingX = parseFloat(cs.paddingLeft!) + parseFloat(cs.paddingRight!);
+    const paddingY = parseFloat(cs.paddingTop!) + parseFloat(cs.paddingBottom!);
 
-    const borderX = parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth);
-    const borderY = parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
+    const borderX = parseFloat(cs.borderLeftWidth!) + parseFloat(cs.borderRightWidth!);
+    const borderY = parseFloat(cs.borderTopWidth!) + parseFloat(cs.borderBottomWidth!);
 
     // Element width and height minus padding and border
     const elementWidth = parent.offsetWidth - paddingX - borderX;
     const elementHeight = parent.offsetHeight - paddingY - borderY;
     return [elementWidth, elementHeight];
-  }
-
-  /**
-   * Get resize mode from raw attribute of height or width
-   * @param  {string  | number}      mode [description]
-   * @return {ResizeMode}   [description]
-   */
-  private _asResizeMode(cso: CanvasSizeObject): ResizeMode {
-    if (cso.mode === "fit") {
-      return ResizeMode.Fit;
-    } else if (cso.mode === "aspect") {
-      return ResizeMode.Aspect;
-    } else {
-      return ResizeMode.Manual;
-    }
   }
 
   private _configureCanvas(canvas: HTMLCanvasElement, scriptTag: HTMLScriptElement): void {
@@ -243,7 +228,7 @@ export default class CanvasInitializerComponent extends Component {
       this._canvasContainer.className = this.getAttribute("containerClass");
     }
     this.companion.set(ns.for("canvasContainer"), this._canvasContainer);
-    scriptTag.parentElement.insertBefore(this._canvasContainer, scriptTag.nextSibling);
+    scriptTag.parentElement!.insertBefore(this._canvasContainer, scriptTag.nextSibling);
     this._resize(true);
   }
 
@@ -280,18 +265,18 @@ export default class CanvasInitializerComponent extends Component {
     if (!tag.parentElement) {
       return false;
     }
-    if (tag.parentNode.nodeName === "BODY") {
+    if (tag.parentNode!.nodeName === "BODY") {
       return true;
     }
     return this._isContainedInBody(tag.parentElement);
   }
 
   private _autoFixForBody(scriptTag: Element): void {
-    if (scriptTag.parentElement.nodeName === "BODY") {
+    if (scriptTag.parentElement!.nodeName === "BODY") {
       const boudningBox = document.body.getBoundingClientRect();
       if (boudningBox.height === 0) {
         document.body.style.height = "100%";
-        document.body.parentElement.style.height = "100%";
+        document.body.parentElement!.style.height = "100%";
       }
     }
   }

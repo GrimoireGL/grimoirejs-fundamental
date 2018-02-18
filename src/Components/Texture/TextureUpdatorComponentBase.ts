@@ -1,19 +1,22 @@
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Texture from "../../Resource/Texture";
 import Texture2D from "../../Resource/Texture2D";
 import ResizableResourceUpdator from "./ResizableResourceUpdator";
 import TextureContainer from "./TextureContainer";
 import TextureContainerBase from "./TextureContainerBase";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
 
 export default class TextureUpdatorComponentBase<T extends Texture> extends ResizableResourceUpdator {
     public static componentName = "TextureUpdatorComponentBase";
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
+    public static attributes = {
+        ...ResizableResourceUpdator.attributes,
         flipY: {
-            converter: "Boolean",
+            converter: BooleanConverter,
             default: true,
         },
         premultipliedAlpha: {
-            converter: "Boolean",
+            converter: BooleanConverter,
             default: false,
         },
     };
@@ -25,6 +28,10 @@ export default class TextureUpdatorComponentBase<T extends Texture> extends Resi
 
     protected $awake(): void {
         super.$awake();
-        this.textureComponent = this.node.getComponent(TextureContainerBase);
+        const tc = this.node.getComponent(TextureContainerBase);
+        if (!tc) {
+            throw new Error(`Texture updater should have TextureContainerBase in same ndoe`);
+        }
+        this.textureComponent = tc;
     }
 }

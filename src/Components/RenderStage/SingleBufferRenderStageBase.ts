@@ -1,30 +1,37 @@
 import GrimoireJS from "grimoirejs";
 import Color4 from "grimoirejs-math/ref/Color4";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
 import RenderStageBase from "./RenderStageBase";
+import { RenderingTargetConverter } from "../../Converters/RenderingTargetConverter";
+import { StandardAttribute, LazyAttribute } from "grimoirejs/ref/Core/Attribute";
+import { Color4Converter } from "grimoirejs-math/ref/Converters/Color4Converter";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
+import { NumberConverter } from "grimoirejs/ref/Converter/NumberConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
+
 export default class SingleBufferRenderStageBase extends RenderStageBase {
     public static componentName = "SingleBufferRenderStageBase";
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
+    public static attributes = {
         out: {
-            converter: "RenderingTarget",
             default: "default",
+            converter: RenderingTargetConverter,
         },
         clearColor: {
             default: "#0000",
-            converter: "Color4",
+            converter: Color4Converter,
         },
         clearColorEnabled: {
             default: true,
-            converter: "Boolean",
+            converter: BooleanConverter,
         },
         clearDepthEnabled: {
             default: true,
-            converter: "Boolean",
+            converter: BooleanConverter,
         },
         clearDepth: {
             default: 1,
-            converter: "Number",
+            converter: NumberConverter,
         },
     };
 
@@ -41,14 +48,7 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
     public out: IRenderingTarget;
 
     protected $awake(): void {
-        this.getAttributeRaw("clearColor").bindTo("clearColor");
-        this.getAttributeRaw("clearColorEnabled").bindTo("clearColorEnabled");
-        this.getAttributeRaw("clearDepthEnabled").bindTo("clearDepthEnabled");
-        this.getAttributeRaw("clearDepth").bindTo("clearDepth");
-        this.getAttributeRaw("out").watch((promise: Promise<IRenderingTarget>) => {
-            this._out = promise;
-            promise.then(r => this.out = r);
-        }, true);
+        this.__bindAttributes();
     }
 
     /**
@@ -58,7 +58,7 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
         if (!super.__beforeRender()) {
             return false;
         }
-        if (!this.out) {
+        if (this.getAttributeRaw("out").isPending || !this.out) {
             return false;
         }
         let clearFlag = 0;
@@ -68,7 +68,7 @@ export default class SingleBufferRenderStageBase extends RenderStageBase {
         if (this.clearDepthEnabled) {
             clearFlag |= WebGLRenderingContext.DEPTH_BUFFER_BIT;
         }
-        this.out.beforeDraw(clearFlag, this.clearColor.rawElements as number[], this.clearDepth);
+        this.out.beforeDraw(clearFlag, Array.from(this.clearColor.rawElements), this.clearDepth);
         return true;
     }
 }

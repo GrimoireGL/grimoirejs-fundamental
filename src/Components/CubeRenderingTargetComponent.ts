@@ -1,5 +1,5 @@
 import Component from "grimoirejs/ref/Core/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import OffscreenCubemapRenderTarget from "../Resource/RenderingTarget/OffscreenCubemapRenderingTarget";
 import OffscreenRenderingTarget from "../Resource/RenderingTarget/OffscreenRenderingTarget";
 import RenderingTrargetRegistry from "../Resource/RenderingTarget/RenderingTargetRegistry";
@@ -7,6 +7,8 @@ import RenderingTargetComponentBase from "./RenderingTargetComponentBase";
 import RenderBufferUpdator from "./Texture/RenderBufferUpdator";
 import TextureContainer from "./Texture/TextureContainer";
 import TextureCubeContainer from "./Texture/TextureCubeContainer";
+import { EnumConverter } from "grimoirejs/ref/Converter/EnumConverter";
+
 /**
  * Register specified buffer to rendering target.
  * If there were no child buffer node, this component will instanciate default buffers.
@@ -15,7 +17,7 @@ export default class CubeRenderingTargetComponent extends RenderingTargetCompone
     public static componentName = "CubemapRenderingTarget";
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         colorBufferFormat: {
-            converter: "Enum",
+            converter: EnumConverter,
             default: WebGLRenderingContext.RGBA,
             table: {
                 RGBA: WebGLRenderingContext.RGBA,
@@ -23,14 +25,14 @@ export default class CubeRenderingTargetComponent extends RenderingTargetCompone
                 ALPHA: WebGLRenderingContext.ALPHA,
                 LUMINANCE: WebGLRenderingContext.LUMINANCE,
                 LUMINANCE_ALPHA: WebGLRenderingContext.LUMINANCE_ALPHA,
-                SRGB_EXT: WebGLRenderingContext["SRGB_EXT"],
-                SRGB_ALPHA_EXT: WebGLRenderingContext["SRGB_ALPHA_EXT"],
+                SRGB_EXT: (WebGLRenderingContext as any)["SRGB_EXT"],
+                SRGB_ALPHA_EXT: (WebGLRenderingContext as any)["SRGB_ALPHA_EXT"],
                 DEPTH_COMPONENT: WebGLRenderingContext["DEPTH_COMPONENT"],
                 DEPTH_STENCIL: WebGLRenderingContext["DEPTH_STENCIL"],
             },
         },
         colorBufferType: {
-            converter: "Enum",
+            converter: EnumConverter,
             default: WebGLRenderingContext.UNSIGNED_BYTE,
             table: {
                 UNSIGNED_BYTE: WebGLRenderingContext.UNSIGNED_BYTE,
@@ -43,7 +45,7 @@ export default class CubeRenderingTargetComponent extends RenderingTargetCompone
             },
         },
         depthBufferType: {
-            converter: "Enum",
+            converter: EnumConverter,
             default: WebGLRenderingContext.DEPTH_COMPONENT16,
             table: {
                 NONE: 0,
@@ -59,7 +61,7 @@ export default class CubeRenderingTargetComponent extends RenderingTargetCompone
         const textures = this.node.getComponentsInChildren(TextureCubeContainer);
         const texture = textures[0].texture;
         const renderBuffer = this.node.getComponentsInChildren(RenderBufferUpdator);
-        return new OffscreenCubemapRenderTarget(this.companion.get("gl"), texture, renderBuffer[0].buffer);
+        return new OffscreenCubemapRenderTarget(this.companion.get("gl")!, texture, renderBuffer[0].buffer);
     }
 
     /**
