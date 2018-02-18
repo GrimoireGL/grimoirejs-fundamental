@@ -1,6 +1,6 @@
 {
   "name": "grimoirejs-fundamental",
-  "version": "0.38.0-beta23",
+  "version": "0.38.0-beta24",
   "description": "Base components,converters and nodes for Web3D with Grimoire.js",
   "main": "./ref/index.js",
   "typings": "./ref/index.d.ts",
@@ -19,8 +19,7 @@
     "webgl"
   ],
   "dependencies": {
-    "@types/sinon": "^4.1.3",
-    "babel-preset-env": "^1.6.1"
+    "@types/sinon": "^4.1.3"
   },
   "devDependencies": {
     "@types/node": "^9.4.6",
@@ -30,6 +29,7 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "condition-circle": "^2.0.1",
@@ -40,6 +40,7 @@
     "grimoirejs-math": "beta",
     "http-server": "^0.10.0",
     "jsdom": "^11.5.1",
+    "nyc": "^11.4.1",
     "raw-loader": "^0.5.1",
     "regenerator-runtime": "^0.11.1",
     "semantic-release": "^12.4.1",
@@ -60,6 +61,7 @@
     "grimoirejs-math": "latest"
   },
   "scripts": {
+    "coverage": "trash coverage && nyc --reporter=lcov --reporter=text --reporter=json --reporter=html npm run test",
     "prepare": "npm run build -- --env.prod",
     "debug": "node ./common/debug.js",
     "lint": "tslint -c tslint.json ./src/**/*.ts --project ./ --type-check --exclude ./src/index.ts",
