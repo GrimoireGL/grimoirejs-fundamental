@@ -6,20 +6,21 @@ import TextureContainer from "./TextureContainer";
 import TextureContainerBase from "./TextureContainerBase";
 import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import Identity from "grimoirejs/ref/Core/Identity";
+import { attribute } from "grimoirejs/ref/Core/Decorator";
 
 export default class TextureUpdatorComponentBase<T extends Texture> extends ResizableResourceUpdator {
     public static componentName = "TextureUpdatorComponentBase";
-    public static attributes = {
-        ...ResizableResourceUpdator.attributes,
-        flipY: {
-            converter: BooleanConverter,
-            default: true,
-        },
-        premultipliedAlpha: {
-            converter: BooleanConverter,
-            default: false,
-        },
-    };
+
+    /**
+     * Flag to flipY coordinate of texture when texture was passed into GPU memory.
+     */
+    @attribute(BooleanConverter, true)
+    public flipY!: boolean;
+    /**
+     * Premultiplied alpha flag to updating texture.
+     */
+    @attribute(BooleanConverter, false)
+    public premultipliedAlpha!: boolean;
 
     private textureComponent!: TextureContainerBase<T>;
     protected get __texture(): T {

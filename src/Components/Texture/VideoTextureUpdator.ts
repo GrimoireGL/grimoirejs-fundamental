@@ -7,84 +7,50 @@ import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 import { NumberConverter } from "grimoirejs/ref/Converter/NumberConverter";
 import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import { Nullable } from "grimoirejs/ref/Tool/Types";
+import { attribute, watch } from "grimoirejs/ref/Core/Decorator";
 
 export default class VideoTextureUpdator extends TextureUpdatorComponentBase<Texture2D> {
   public static componentName = "VideoTextureUpdator";
-  public static attributes = {
-    ...TextureUpdatorComponentBase.attributes,
-    src: {
-      converter: StringConverter,
-      default: null,
-    },
-    currentTime: {
-      converter: NumberConverter,
-      default: 0,
-    },
-    muted: {
-      converter: BooleanConverter,
-      default: true,
-    },
-    playbackRate: {
-      converter: NumberConverter,
-      default: 1,
-    },
-    loop: {
-      converter: BooleanConverter,
-      default: true,
-    },
-  };
 
-  public flipY!: boolean;
-
-  public premultipliedAlpha!: boolean;
-
+  @attribute(StringConverter, null)
   public src!: string;
-
-  public video!: HTMLVideoElement;
-
+  @attribute(NumberConverter, 0)
   public currentTime!: number;
-
+  @attribute(BooleanConverter, true)
   public muted!: boolean;
-
+  @attribute(NumberConverter, 1)
   public playbackRate!: number;
-
+  @attribute(BooleanConverter, true)
   public loop!: boolean;
 
-  protected $awake() {
-    super.$awake();
-    this.__bindAttributes();
-    this.getAttributeRaw(VideoTextureUpdator.attributes.src)!.watch((v: Nullable<string>) => {
-      if (v !== null) {
-        this._loadTask(v);
-      }
-    }, true);
-    this.getAttributeRaw(VideoTextureUpdator.attributes.currentTime)!.watch((v: Nullable<number>) => {
-      if (this.video && this.video.currentTime !== this.currentTime) {
-        this._syncVideoPref();
-      }
-    });
-    this.getAttributeRaw(VideoTextureUpdator.attributes.muted)!.watch(() => {
-      if (this.video) {
-        this._syncVideoPref();
-      }
-    });
-    this.getAttributeRaw(VideoTextureUpdator.attributes.playbackRate)!.watch(() => {
-      if (this.video) {
-        this._syncVideoPref();
-      }
-    });
-    this.getAttributeRaw(VideoTextureUpdator.attributes.loop)!.watch(() => {
-      if (this.video) {
-        this._syncVideoPref();
-      }
-    });
-  }
+  public video!: HTMLVideoElement;
 
   public resize(width: number, height: number): void {
     if (this.video) {
       this.video.width = width;
       this.video.height = height;
       this.tryUpdateCurrentFrame();
+    }
+  }
+  @watch("src", true)
+  private _onSrcChanged(): void {
+    if (this.src !== null) {
+      this._loadTask(this.src);
+    }
+  }
+  @watch("currentTime")
+  private _onTimeChanged(): void {
+    if (this.video && this.video.currentTime !== this.currentTime) {
+      this._syncVideoPref();
+    }
+  }
+
+  @watch("muted")
+  @watch("playbackRate")
+  @watch("loop")
+  private _onPlayerConfigChanged(): void {
+    if (this.video) {
+      this._syncVideoPref();
     }
   }
 

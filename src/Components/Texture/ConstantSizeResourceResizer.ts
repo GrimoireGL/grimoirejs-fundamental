@@ -3,6 +3,7 @@ import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclar
 import ResourceResizerComponentBase from "./ResourceResizerComponentBase";
 import Vector2Converter from "grimoirejs-math/ref/Converters/Vector2Converter";
 import Identity from "grimoirejs/ref/Core/Identity";
+import { attribute, watch } from "grimoirejs/ref/Core/Decorator";
 
 /**
  * Resource resizer that resizes all of ResizableResourceUpdator bounded to this node.
@@ -10,18 +11,11 @@ import Identity from "grimoirejs/ref/Core/Identity";
  */
 export default class ConstantSizeResourceResizer extends ResourceResizerComponentBase {
     public static componentName = "ConstantSizeResourceResizer";
-    public static attributes = {
-        ...ResourceResizerComponentBase.attributes,
-        resolution: {
-            converter: Vector2Converter,
-            default: "512,512",
-        },
-    };
+    @attribute(Vector2Converter, "512,512")
+    public resolution!: Vector2;
 
-    protected $mount(): void {
-        this.getAttributeRaw(ConstantSizeResourceResizer.attributes.resolution)!.watch(n => {
-            const res = n as Vector2;
-            this.__resizeResources(res.X, res.Y);
-        }, true);
+    @watch("resolution", true)
+    private _onResolutionChange(): void {
+        this.__resizeResources(this.resolution.X, this.resolution.Y);
     }
 }

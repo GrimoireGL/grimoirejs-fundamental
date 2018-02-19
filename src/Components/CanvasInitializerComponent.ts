@@ -11,6 +11,7 @@ import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs
 import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import { CanvasSizeConverter } from "../Converters/CanvasSizeConverter";
 import Identity from "grimoirejs/ref/Core/Identity";
+import { companion } from "grimoirejs/ref/Core/Decorator";
 const ns = Namespace.define("grimoirejs-fundamental");
 
 /**
@@ -83,7 +84,7 @@ export default class CanvasInitializerComponent extends Component {
    * @type {HTMLCanvasElement}
    */
   public canvas!: HTMLCanvasElement;
-
+  @companion("scriptElement")
   private _scriptTag!: HTMLScriptElement;
 
   private _canvasContainer!: HTMLDivElement;
@@ -98,7 +99,6 @@ export default class CanvasInitializerComponent extends Component {
   private _ratio!: number;
 
   protected $awake(): void {
-    this._scriptTag = this.companion.get("scriptElement")!;
     if (this._isContainedInBody(this._scriptTag)) {
       // canvas should be placed siblings of the script tag
       this._generateCanvas(this._scriptTag);

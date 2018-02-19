@@ -4,16 +4,13 @@ import RenderingBufferResourceRegistry from "../../Resource/RenderingTarget/Rend
 import ResizableResourceUpdator from "./ResizableResourceUpdator";
 import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 import Identity from "grimoirejs/ref/Core/Identity";
+import { attribute } from "grimoirejs/ref/Core/Decorator";
 
 export default class RenderBufferComponent extends ResizableResourceUpdator {
   public static componentName = "RenderBufferComponent";
-  public static attributes = {
-    name: {
-      converter: StringConverter,
-      default: null,
-    },
-    ...ResizableResourceUpdator.attributes
-  };
+
+  @attribute(StringConverter, null)
+  public bufferName!: string;
 
   public buffer!: RenderBuffer;
 
@@ -22,7 +19,7 @@ export default class RenderBufferComponent extends ResizableResourceUpdator {
     const gl = this.companion.get("gl")!;
     this.buffer = new RenderBuffer(gl);
     this.buffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, 1, 1);
-    const name = this.getAttribute(RenderBufferComponent.attributes.name);
+    const name = this.bufferName;
     if (name) {
       RenderingBufferResourceRegistry.get(gl).setDepthBuffer(name, this.buffer);
     }

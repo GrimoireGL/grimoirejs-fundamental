@@ -20,73 +20,39 @@ import { StandardAttribute, LazyAttribute } from "grimoirejs/ref/Core/Attribute"
 import Component from "grimoirejs/ref/Core/Component";
 import { RenderingTargetConverter } from "../../Converters/RenderingTargetConverter";
 import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
-
+import { attribute, companion } from "grimoirejs/ref/Core/Decorator";
 export default class RenderCubemapComponent extends RenderStageBase {
     public static componentName = "RenderCubemapComponent";
-    public static attributes = {
-        indexGroup: {
-            default: "default",
-            converter: StringConverter,
-        },
-        technique: {
-            default: "default",
-            converter: StringConverter,
-        },
-        layer: {
-            default: "default",
-            converter: StringConverter,
-        },
-        out: {
-            default: null,
-            converter: RenderingTargetConverter,
-        },
-        camera: {
-            default: "cube-camera",
-            converter: ComponentConverter,
-            target: "CubemapCamera",
-        },
-        clearColor: {
-            default: "#0000",
-            converter: Color4Converter,
-        },
-        clearColorEnabled: {
-            default: true,
-            converter: BooleanConverter,
-        },
-        clearDepthEnabled: {
-            default: true,
-            converter: BooleanConverter,
-        },
-        clearDepth: {
-            default: 1,
-            converter: NumberConverter,
-        },
-    };
 
+    @attribute(StringConverter, "default")
     public indexGroup!: string;
 
+    @attribute(StringConverter, "default")
     public technique!: string;
 
-    public out!: ICubemapRenderingTarget;
-
-    public camera!: CubemapCameraComponent;
-
+    @attribute(StringConverter, "default")
     public layer!: string;
 
+    @attribute(RenderingTargetConverter, null)
+    public out!: ICubemapRenderingTarget;
+
+    @attribute(ComponentConverter, "cube-camera", { target: "CubemapCamera" })
+    public camera!: CubemapCameraComponent;
+
+    @attribute(Color4Converter, "#0000")
     public clearColor!: Color4;
 
+    @attribute(BooleanConverter, true)
     public clearColorEnabled!: boolean;
 
+    @attribute(NumberConverter, 1)
     public clearDepth!: number;
 
+    @attribute(BooleanConverter, true)
     public clearDepthEnabled!: boolean;
 
+    @companion("gl")
     private _gl!: WebGLRenderingContext;
-
-    protected $mount(): void {
-        this.__bindAttributes();
-        this._gl = this.companion.get("gl")!;
-    }
 
     protected $renderRenderStage(args: IRenderRendererMessage): void {
         if (!this.__beforeRender()) {

@@ -11,6 +11,7 @@ import Identity from "grimoirejs/ref/Core/Identity";
 import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
 import Color4 from "grimoirejs-math/ref/Color4";
 import { LazyAttribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute";
+import { companion, attribute, watch } from "grimoirejs/ref/Core/Decorator";
 
 /**
  * Render to quad.
@@ -18,22 +19,20 @@ import { LazyAttribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute"
  */
 export default class RenderQuadComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderQuadComponent";
-  public static attributes = {
-    ...SingleBufferRenderStageBase.attributes,
-    indexGroup: {
-      default: "default",
-      converter: StringConverter,
-    },
-    technique: {
-      default: "default",
-      converter: StringConverter,
-    },
-  };
 
+  /**
+   * Technique to be rendered.
+   */
+  @attribute(StringConverter, "default")
   public technique!: string;
+  /**
+   * Indexgroup of quad to be used.
+   * If specify this attribute as "wireframe", render quad using wireframe.
+   */
+  @attribute(StringConverter, "default")
+  public indexGroup!: string;
 
-  private indexGroup!: string;
-
+  @companion("gl")
   private _gl!: WebGLRenderingContext;
 
   private _quadGeometry!: Geometry;
@@ -41,17 +40,10 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
   private _materialContainer!: MaterialContainer;
 
   protected $awake(): void {
-    super.$awake();
     this.metadata.type = "Quad";
-    this.getAttributeRaw(RenderQuadComponent.attributes.indexGroup)!.bindTo("indexGroup");
-    this.getAttributeRaw(RenderQuadComponent.attributes.technique)!.bindTo("technique");
-    this.getAttributeRaw(RenderQuadComponent.attributes.technique)!.watch(t => {
-      this.metadata.technique = t;
-    }, true);
   }
 
   public async $mount(): Promise<void> {
-    this._gl = this.companion.get("gl")!;
     this._materialContainer = this.node.getComponent(MaterialContainer)!;
     const geometryRegistry = this.companion.get("GeometryRegistry") as GeometryRegistryComponent;
     this._quadGeometry = await geometryRegistry.getGeometry("quad");
@@ -75,5 +67,10 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
     // do render
     this._materialContainer.material.draw(renderArgs);
     this._gl.flush();
+  }
+
+  @watch("technique", true)
+  private _onTechniqueChange(): void {
+    this.metadata.technique = this.technique;
   }
 }

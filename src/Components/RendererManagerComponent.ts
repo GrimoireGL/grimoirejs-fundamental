@@ -5,6 +5,7 @@ import MaterialFactory from "../Material/MaterialFactory";
 import Timer from "../Util/Timer";
 import LoopManager from "./LoopManagerComponent";
 import GLStateConfigurator from "../Material/GLStateConfigurator";
+import { companion } from "grimoirejs/ref/Core/Decorator";
 /**
  * 全レンダラーを管理するためのコンポーネント
  */
@@ -35,7 +36,7 @@ export default class RendererManager extends Component {
   };
 
   private static _sortImportedFromHTML = false;
-
+  @companion("gl")
   public gl!: WebGLRenderingContext;
 
   public bgColor!: Color4;
@@ -46,7 +47,6 @@ export default class RendererManager extends Component {
 
   protected $mount(): void {
     this.__bindAttributes();
-    this.gl = this.companion.get("gl")!;
   }
 
   protected $treeInitialized(): void {

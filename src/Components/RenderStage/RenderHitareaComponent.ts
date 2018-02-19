@@ -22,19 +22,18 @@ import { RenderingTargetConverter } from "../../Converters/RenderingTargetConver
 import { LazyAttribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute";
 import Identity from "grimoirejs/ref/Core/Identity";
 import Color4 from "grimoirejs-math/ref/Color4";
+import { companion } from "grimoirejs/ref/Core/Decorator";
 
 export default class RenderHitareaComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderHitareaComponent";
-  public static attributes = {
-    ...SingleBufferRenderStageBase.attributes
-  };
 
   public hitareaBuffer!: IRenderingTarget;
 
   private _sceneRenderer!: RenderSceneComponent;
 
+  @companion("gl")
   private _gl!: WebGLRenderingContext;
-
+  @companion("canvasElement")
   private _canvas!: HTMLCanvasElement;
 
   private _lastPosition!: number[];
@@ -53,8 +52,6 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
     if (!this._sceneRenderer) {
       throw new Error("The node attaching RenderHitArea should contain RenderScene.");
     }
-    this._gl = this.companion.get("gl")!;
-    this._canvas = this.companion.get("canvasElement")!;
     const node = this.node.parent!.addChildByName("rendering-target", { name: `hitarea-buffer-${this._sceneRenderer.id}` });
     this.hitareaBuffer = node.getComponent(RenderingTarget)!.renderingTarget;
   }

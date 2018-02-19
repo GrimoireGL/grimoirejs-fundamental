@@ -12,6 +12,7 @@ import MaterialContainer from "./MaterialContainerComponent";
 import Scene from "./SceneComponent";
 import Transform from "./TransformComponent";
 import Vector3 from "grimoirejs-math/ref/Vector3";
+import { attribute } from "grimoirejs/ref/Core/Decorator";
 const { vec3 } = GLM;
 
 /**
@@ -20,37 +21,29 @@ const { vec3 } = GLM;
  */
 export default class MeshRenderer extends Component implements IRenderable {
     public static componentName = "MeshRenderer";
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
-        /**
-         * 描画に用いる形状データ
-         */
-        geometry: {
-            converter: "Geometry",
-            default: "quad",
-        },
-        /**
-         * 描画に用いるインデックスバッファ名
-         */
-        indexGroup: {
-            converter: "String",
-            default: "default",
-        },
-        /**
-         * このメッシュが属するレイヤー
-         *
-         * 詳しくは`render-scene`ノードを参考にしてください。
-         */
-        layer: {
-            converter: "String",
-            default: "default",
-        }
-    };
+
+    /**
+     * Geometry to be rendered.
+     */
+    @attribute("Geometry", "quad")
+    public geometry!: Geometry;
+    /**
+     * Indexgroup to be rendered.
+     * By default initialization of PRIMITIVE, you can render wireframe by specifying "wireframe".
+     */
+    @attribute("String", "default")
+    private indexGroup!: string;
+    /**
+     * Layer of 3D scene.
+     * This is used for masking during rendering.
+     */
+    @attribute("String", "default")
+    private layer!: string;
+
     public renderArgs: { [key: string]: any } = {};
 
     public index!: number;
-    public geometry!: Geometry;
-    private indexGroup!: string;
-    private layer!: string;
+
     private _materialContainer!: MaterialContainer;
     private _transformComponent!: Transform;
     private _containedScene!: Scene;
@@ -67,7 +60,6 @@ export default class MeshRenderer extends Component implements IRenderable {
     }
 
     protected $mount(): void {
-        this.__bindAttributes();
         const transform = this.node.getComponent(Transform);
         const materialContainer = this.node.getComponent(MaterialContainer);
         const scene = this.node.getComponentInAncestor(Scene);

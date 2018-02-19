@@ -7,6 +7,62 @@ export type TypedArray = Float32Array | Uint8Array | Int8Array | Uint16Array | I
  */
 export default class GLConstantUtility {
 
+    /**
+     * Map to texture format constant value from name.
+     */
+    public static textureFormatFromName: { [key: string]: number } = {
+        RGBA: WebGLRenderingContext.RGBA,
+        RGB: WebGLRenderingContext.RGB,
+        ALPHA: WebGLRenderingContext.ALPHA,
+        LUMINANCE: WebGLRenderingContext.LUMINANCE,
+        LUMINANCE_ALPHA: WebGLRenderingContext.LUMINANCE_ALPHA,
+        SRGB_EXT: (WebGLRenderingContext as any)["SRGB_EXT"],
+        SRGB_ALPHA_EXT: (WebGLRenderingContext as any)["SRGB_ALPHA_EXT"],
+        DEPTH_COMPONENT: WebGLRenderingContext.DEPTH_COMPONENT,
+        DEPTH_STENCIL: WebGLRenderingContext.DEPTH_STENCIL,
+    };
+    /**
+    * Map to texture elementType constant value from name.
+    */
+    public static textureElementTypeFromName: { [key: string]: number } = {
+        UNSIGNED_BYTE: WebGLRenderingContext.UNSIGNED_BYTE,
+        UNSIGNED_SHORT_5_6_5: WebGLRenderingContext.UNSIGNED_SHORT_5_6_5,
+        UNSIGNED_SHORT_4_4_4_4: WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4,
+        UNSIGNED_SHORT_5_5_5_1: WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1,
+        UNSIGNED_SHORT: WebGLRenderingContext.UNSIGNED_SHORT,
+        UNSIGNED_INT: WebGLRenderingContext.UNSIGNED_INT,
+        FLOAT: WebGLRenderingContext.FLOAT,
+    };
+
+    /**
+     * Map to texture min filter value from name
+     */
+    public static textureMinFilterFromName: { [key: string]: number } = {
+        LINEAR: WebGLRenderingContext.LINEAR,
+        NEAREST: WebGLRenderingContext.NEAREST,
+        NEAREST_MIPMAP_NEAREST: WebGLRenderingContext.NEAREST_MIPMAP_NEAREST,
+        NEAREST_MIPMAP_LINEAR: WebGLRenderingContext.NEAREST_MIPMAP_LINEAR,
+        LINEAR_MIPMAP_NEAREST: WebGLRenderingContext.LINEAR_MIPMAP_NEAREST,
+        LINEAR_MIPMAP_LINEAR: WebGLRenderingContext.LINEAR_MIPMAP_LINEAR,
+    };
+
+    /**
+    * Map to texture mag filter value from name
+    */
+    public static textureMagFilterFromName: { [key: string]: number } = {
+        LINEAR: WebGLRenderingContext.LINEAR,
+        NEAREST: WebGLRenderingContext.NEAREST,
+    }
+
+    /**
+    * Map to texture wrap type value from name
+    */
+    public static textureWrapFromName: { [key: string]: number } = {
+        REPEAT: WebGLRenderingContext.REPEAT,
+        MIRRORED_REPEAT: WebGLRenderingContext.MIRRORED_REPEAT,
+        CLAMP_TO_EDGE: WebGLRenderingContext.CLAMP_TO_EDGE,
+    }
+
     public static isTypedArrayBuffer(arrayBuffer: any): arrayBuffer is TypedArray {
         return arrayBuffer instanceof Float32Array || arrayBuffer instanceof Uint8Array || arrayBuffer instanceof Int8Array || arrayBuffer instanceof Uint16Array || arrayBuffer instanceof Int16Array || arrayBuffer instanceof Uint32Array || arrayBuffer instanceof Int32Array;
     }

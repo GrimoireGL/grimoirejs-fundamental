@@ -11,54 +11,42 @@ import Identity from "grimoirejs/ref/Core/Identity";
 import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
 import { Nullable } from "grimoirejs/ref/Tool/Types";
 import Color4 from "grimoirejs-math/ref/Color4";
+import { companion, attribute, watch } from "grimoirejs/ref/Core/Decorator";
 
 /**
  * Render a scene specified by camera.
+ * This 
  */
 export default class RenderSceneComponent extends SingleBufferRenderStageBase {
   public static componentName = "RenderSceneComponent";
-  public static attributes = {
-    ...SingleBufferRenderStageBase.attributes,
-    layer: {
-      converter: StringConverter,
-      default: "default",
-    },
-    camera: {
-      default: "camera",
-      converter: getGenericComponentConverter<CameraComponent>(),
-      target: "Camera",
-    },
-    technique: {
-      default: "default",
-      converter: StringConverter,
-    },
-  };
 
+  /**
+   * Layer of scene to render.
+   * MeshRenderer also have same property named layer.
+   * RenderScene only try to render the mesn have same layer name.
+   */
+  @attribute(StringConverter, "default")
   public layer!: string;
 
+  /**
+   * Camera referrence to be rendered.
+   */
+  @attribute(ComponentConverter, "camera", { target: "Camera" })
   public camera: Nullable<CameraComponent> = null;
 
+  /**
+   * Technique to be renderred.
+   */
+  @attribute(StringConverter, "default")
   public technique!: string;
 
+  @companion("gl")
   private _gl!: WebGLRenderingContext;
 
   // messages
 
   protected $awake(): void {
-    super.$awake();
     this.metadata.type = "scene";
-    this.getAttributeRaw(RenderSceneComponent.attributes.layer)!.bindTo("layer");
-    this.getAttributeRaw(RenderSceneComponent.attributes.technique)!.bindTo("technique");
-    this.getAttributeRaw(RenderSceneComponent.attributes.technique)!.watch((t: Nullable<string>) => {
-      this.metadata.technique = t;
-    }, true);
-    this.getAttributeRaw(RenderSceneComponent.attributes.layer)!.watch((t: Nullable<string>) => {
-      this.metadata.layer = t;
-    }, true);
-  }
-
-  protected $mount(): void {
-    this._gl = this.companion.get("gl")!;
   }
 
   protected $renderRenderStage(args: IRenderRendererMessage): void {
@@ -84,5 +72,11 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
       sceneDescription: {},
       rendererDescription: this.rendererDescription,
     });
+  }
+  @watch("technique", true)
+  @watch("layer")
+  private _onMetadataChange(): void { // For Spector.js
+    this.metadata.technique = this.technique;
+    this.metadata.layer = this.layer;
   }
 }

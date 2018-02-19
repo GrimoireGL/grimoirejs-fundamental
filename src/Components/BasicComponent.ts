@@ -79,10 +79,12 @@ class CoroutineRegistry {
     });
   }
 }
-
+/**
+ * Basic component provides useful methods for creating components.
+ * 
+ */
 export default class BasicComponent extends Component {
   public static componentName = "BasicComponent";
-  public static attributes: { [name: string]: IAttributeDeclaration } = {};
   private _loopManagerBackingStore!: LoopManager;
 
   private _assetLoadingManagerBackingStore!: AssetLoadingManager;

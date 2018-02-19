@@ -13,6 +13,7 @@ import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 import { ViewportConverter } from "../Converters/ViewportConverter";
 import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import Identity from "grimoirejs/ref/Core/Identity";
+import { companion } from "grimoirejs/ref/Core/Decorator";
 export default class RendererComponent extends Component {
   public static componentName = "Renderer";
   public static attributes = {
@@ -46,8 +47,9 @@ export default class RendererComponent extends Component {
       return this._viewportCache;
     }
   }
+  @companion("gl")
   private _gl!: WebGLRenderingContext;
-
+  @companion("canvasElement")
   private _canvas!: HTMLCanvasElement;
 
   private _viewportSizeGenerator!: (canvas: HTMLCanvasElement) => Viewport;
@@ -92,8 +94,6 @@ export default class RendererComponent extends Component {
   }
 
   protected $mount(): void {
-    this._gl = this.companion.get("gl") as WebGLRenderingContext;
-    this._canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
     this.getAttributeRaw(RendererComponent.attributes.handleMouse)!.watch(a => {
       if (a) {
         this._enableMouseHandling();

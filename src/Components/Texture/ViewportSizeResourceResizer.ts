@@ -6,6 +6,7 @@ import ResourceResizerComponentBase from "./ResourceResizerComponentBase";
 import { Vector2Converter } from "grimoirejs-math/ref/Converters/Vector2Converter";
 import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import Identity from "grimoirejs/ref/Core/Identity";
+import { attribute } from "grimoirejs/ref/Core/Decorator";
 
 /**
  * Resource resizer that resizes all of ResizableResourceUpdator bounded to this node.
@@ -13,25 +14,21 @@ import Identity from "grimoirejs/ref/Core/Identity";
  */
 export default class ViewportSizeResourceResizer extends ResourceResizerComponentBase {
   public static componentName = "ViewportSizeResourceResizer";
-  public static attributes = {
-    resolutionScale: {
-      converter: Vector2Converter,
-      default: "1",
-    },
-    ...ResourceResizerComponentBase.attributes
-  };
+
+  /**
+   * Scale factor of texture resolution.
+   */
+  @attribute(Vector2Converter, "1")
+  public resolutionScale!: Vector2;
+
 
   protected $mount(): void {
     const renderer = this.node.getComponentInAncestor(RendererComponent);
-    if (renderer) {
-      this.__resizeResources(renderer.viewport.Width, renderer.viewport.Height);
-    } else {
-      throw new Error("Resizable resource with ViewportSizeResourceResizer must be child of RendererComponent");
-    }
+    this.__resizeResources(renderer.viewport.Width, renderer.viewport.Height);
   }
 
   protected $resizeViewport(arg: IResizeViewportMessage): void {
-    const scale = this.getAttribute(ViewportSizeResourceResizer.attributes.resolutionScale) as Vector2;
+    const scale = this.resolutionScale;
     this.__resizeResources(arg.width * scale.X, arg.height * scale.Y);
   }
 }

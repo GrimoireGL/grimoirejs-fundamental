@@ -90,6 +90,17 @@ export default class MouseCameraControlComponent extends Component {
     this._lastScreenPos = null;
     this._xsum = 0;
     this._ysum = 0;
+    const look = Vector3.normalize(this.center.subtractWith(this._transform.position));
+    const g = Quaternion.fromToRotation(this._transform.forward, look).normalize();
+    this._transform.rotation = g;
+    this._initialRotation = g;
+    this._initialDirection = Vector3.copy(this._transform.forward.negateThis()).normalized;
+
+    if (this.distance !== null) {
+      this._transform.position = this.center.addWith(this._initialDirection.multiplyWith(this.distance));
+    } else {
+      this.distance = this._transform.position.subtractWith(this.center).magnitude;
+    }
   }
   protected $unmount() {
     const canvasElement = this.companion.get("canvasElement");
@@ -102,17 +113,6 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   protected $initialized() {
-    const look = Vector3.normalize(this.center.subtractWith(this._transform.position));
-    const g = Quaternion.fromToRotation(this._transform.forward, look).normalize();
-    this._transform.rotation = g;
-    this._initialRotation = g;
-    this._initialDirection = Vector3.copy(this._transform.forward.negateThis()).normalized;
-
-    if (this.distance !== null) {
-      this._transform.position = this.center.addWith(this._initialDirection.multiplyWith(this.distance));
-    } else {
-      this.distance = this._transform.position.subtractWith(this.center).magnitude;
-    }
   }
   protected $update() {
     if (this.isActive && this._updated || !this._lastCenter || !this.center.equalWith(this._lastCenter)) {

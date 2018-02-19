@@ -9,48 +9,37 @@ import { Color4Converter } from "grimoirejs-math/ref/Converters/Color4Converter"
 import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import { NumberConverter } from "grimoirejs/ref/Converter/NumberConverter";
 import Identity from "grimoirejs/ref/Core/Identity";
-
+import { attribute } from "grimoirejs/ref/Core/Decorator";
+/** 
+ * Base class of a render stage that render to only single texture.
+*/
 export default class SingleBufferRenderStageBase extends RenderStageBase {
     public static componentName = "SingleBufferRenderStageBase";
-    public static attributes = {
-        out: {
-            default: "default",
-            converter: RenderingTargetConverter,
-        },
-        clearColor: {
-            default: "#0000",
-            converter: Color4Converter,
-        },
-        clearColorEnabled: {
-            default: true,
-            converter: BooleanConverter,
-        },
-        clearDepthEnabled: {
-            default: true,
-            converter: BooleanConverter,
-        },
-        clearDepth: {
-            default: 1,
-            converter: NumberConverter,
-        },
-    };
-
+    /**
+     * Clear color of buffer for every rendering loop
+     */
+    @attribute(Color4Converter, "#0000")
     public clearColor!: Color4;
-
+    /**
+     * Flag to enable/disable clearing color of buffer
+     */
+    @attribute(BooleanConverter, true)
     public clearColorEnabled!: boolean;
-
+    /**
+     * Clear depth of buffer for every rendeirng loop
+     */
+    @attribute(NumberConverter, 1)
     public clearDepth!: number;
-
+    /**
+     * Flag to enable/disable clearing depth of buffer.
+     */
+    @attribute(BooleanConverter, true)
     public clearDepthEnabled!: boolean;
-
-    public _out!: Promise<IRenderingTarget>;
-
+    /**
+     * A buffer to render.
+     */
+    @attribute(RenderingTargetConverter, "default")
     public out!: IRenderingTarget;
-
-    protected $awake(): void {
-        this.__bindAttributes();
-    }
-
     /**
      * Setup rendering target(Attaching FBO, clearning depth or color buffers)
      */

@@ -6,6 +6,7 @@
     "declaration": true,
     "moduleResolution": "node",
     "declarationDir": "./ref",
+    "experimentalDecorators": true,
     "sourceMap": true,
     "strict": true,
     "lib": [
