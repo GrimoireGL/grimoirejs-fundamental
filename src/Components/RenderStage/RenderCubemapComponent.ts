@@ -36,7 +36,7 @@ export default class RenderCubemapComponent extends RenderStageBase {
     @attribute(RenderingTargetConverter, null)
     public out!: ICubemapRenderingTarget;
 
-    @attribute(ComponentConverter, "cube-camera", { target: "CubemapCamera" })
+    @attribute(ComponentConverter, "cube-camera", "camera", { target: "CubemapCamera" })
     public camera!: CubemapCameraComponent;
 
     @attribute(Color4Converter, "#0000")

@@ -5,6 +5,7 @@ import MaterialContainerBase from "./MaterialContainerBase";
 import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
 import Identity from "grimoirejs/ref/Core/Identity";
+import { attribute } from "grimoirejs/ref/Core/Decorator";
 /** 
  * Material component holds reference of material instance.
  * This is used in <material/> tag.
@@ -13,12 +14,12 @@ import Identity from "grimoirejs/ref/Core/Identity";
 
 export default class MaterialComponent extends MaterialContainerBase {
     public static componentName = "Material"
-    public static attributes = {
-        type: {
-            converter: StringConverter,
-            default: null,
-        },
-    };
+
+    /**
+     * Type of material to instanciate
+     */
+    @attribute(StringConverter, null)
+    public type!: string;
     /**
      * Promise of material.
      * If this object is pending, the material is not initialized yet.

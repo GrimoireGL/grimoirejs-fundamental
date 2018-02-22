@@ -11,7 +11,7 @@ import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs
 import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import { CanvasSizeConverter } from "../Converters/CanvasSizeConverter";
 import Identity from "grimoirejs/ref/Core/Identity";
-import { companion } from "grimoirejs/ref/Core/Decorator";
+import { companion, attribute, watch } from "grimoirejs/ref/Core/Decorator";
 const ns = Namespace.define("grimoirejs-fundamental");
 
 /**
@@ -21,63 +21,54 @@ const ns = Namespace.define("grimoirejs-fundamental");
  */
 export default class CanvasInitializerComponent extends Component {
   public static componentName = "CanvasInitializer";
-  public static attributes = {
-    /**
-     * Width of canvas
-     */
-    width: {
-      default: "fit",
-      converter: CanvasSizeConverter,
-    },
-    /**
-     * Height of canvas
-     */
-    height: {
-      default: "fit",
-      converter: CanvasSizeConverter,
-    },
-    /**
-     * Container ID will be assigned as ID of <div> element containing the canvas.
-     */
-    containerId: {
-      default: "",
-      converter: StringConverter,
-    },
-    /**
-     * Container classes will be assigned as class name of <div> element containing the canvas.
-     */
-    containerClass: {
-      default: "gr-container",
-      converter: StringConverter,
-    },
-    /**
-     * Flag of initializng GL context.
-     * If you needs to fetch canvas data by dataURI or something other way, You may need to assign this value as true for fetching canvas data correctly.
-     * This value can't be changed after GL context initialized.
-     */
-    preserveDrawingBuffer: {
-      default: true,
-      converter: BooleanConverter,
-    },
-    /**
-     * Flag of using MSAA antialiasing.
-     * This value can't be changed after GL context initialized.
-     */
-    antialias: {
-      default: true,
-      converter: BooleanConverter,
-    },
-    /**
-     * Flag of required WebGL version. Available options are listed below.
-     * - 1.0 ・・・Requests only WebGL1.0(Even if WebGL2.0 is available)
-     * - 2.0 ・・・Requests WebGL2.0(Will be fail if WebGL2.0 is not available)
-     * - null・・・Prefer WebGL2.0. but use WebGL1.0 if the context is not available
-     */
-    requiredGLVersion: {
-      default: null,
-      converter: StringConverter
-    }
-  };
+
+  /**
+   * Width of canvas
+   */
+  @attribute(CanvasSizeConverter, "fit")
+  public width!: CanvasSizeObject;
+
+  /**
+   * Height of canvas
+   */
+  @attribute(CanvasSizeConverter, "fit")
+  public height!: CanvasSizeObject;
+
+  /**
+   * ID attribute of HTMLElement assigned to container <div> element wrapping canvas element.
+   */
+  @attribute(StringConverter, "")
+  public containerId!: string;
+
+  /**
+  * Container classes will be assigned as class name of <div> element wrapping the canvas.
+  */
+  @attribute(StringConverter, "gr-container")
+  public containerClass!: string;
+
+  /**
+   * Flag of initializng GL context.
+   * If you needs to fetch canvas data by dataURI or something other way, You may need to assign this value as true for fetching canvas data correctly.
+   * This value can't be changed after GL context initialized.
+   */
+  @attribute(BooleanConverter, true)
+  public preserveDrawingBuffer!: boolean;
+
+  /**
+   * Flag of using MSAA antialiasing.
+   * This value can't be changed after GL context initialized.
+   */
+  @attribute(BooleanConverter, true)
+  public antialias!: boolean;
+
+  /**
+   * Flag of required WebGL version. Available options are listed below.
+   * - 1.0 ・・・Requests only WebGL1.0(Even if WebGL2.0 is available)
+   * - 2.0 ・・・Requests WebGL2.0(Will be fail if WebGL2.0 is not available)
+   * - null・・・Prefer WebGL2.0. but use WebGL1.0 if the context is not available
+   */
+  @attribute(StringConverter, null)
+  public requiredGLVersion!: string;
 
   /**
    * The canvas managed by this component
@@ -89,12 +80,6 @@ export default class CanvasInitializerComponent extends Component {
 
   private _canvasContainer!: HTMLDivElement;
 
-  // Resize mode of width
-  private _widthMode!: CanvasSizeObject;
-
-  // Resize mode of height
-  private _heightMode!: CanvasSizeObject;
-
   // Ratio of aspect
   private _ratio!: number;
 
@@ -105,20 +90,6 @@ export default class CanvasInitializerComponent extends Component {
     } else {
       throw new Error("goml script should have body as ancesotor to instanciate canvas element in the location");
     }
-
-    // apply sizes on changed
-    this.getAttributeRaw(CanvasInitializerComponent.attributes.width)!.watch(() => {
-      this._resize();
-    });
-    this.getAttributeRaw(CanvasInitializerComponent.attributes.height)!.watch(() => {
-      this._resize();
-    });
-    this.getAttributeRaw(CanvasInitializerComponent.attributes.antialias)!.watch(() => {
-      console.warn("Changing antialias attribute is not supported. This is only works when the canvas element created.");
-    });
-    this.getAttributeRaw(CanvasInitializerComponent.attributes.preserveDrawingBuffer)!.watch(() => {
-      console.warn("Changing preserveDrawingBuffer attribute is not supported. This is only works when the canvas element created.");
-    });
   }
 
   public notifySizeChanged(): void {
@@ -144,34 +115,30 @@ export default class CanvasInitializerComponent extends Component {
   }
 
   private _resize(supressBroadcast?: boolean): void {
-    const widthRaw = this.getAttribute(CanvasInitializerComponent.attributes.width);
-    const heightRaw = this.getAttribute(CanvasInitializerComponent.attributes.height);
-    this._widthMode = widthRaw;
-    this._heightMode = heightRaw;
-    if (this._widthMode === this._heightMode && this._widthMode.mode === "aspect") {
+    if (this.width === this.height && this.width.mode === "aspect") {
       throw new Error("Width and height could not have aspect mode in same time!");
     }
-    if (widthRaw.mode === "aspect") {
-      this._ratio = widthRaw.aspect;
+    if (this.width.mode === "aspect") {
+      this._ratio = this.width.aspect;
     }
-    if (heightRaw.mode === "aspect") {
-      this._ratio = heightRaw.aspect;
+    if (this.height.mode === "aspect") {
+      this._ratio = this.height.aspect;
     }
-    if (widthRaw.mode === "manual") {
-      this._applyManualWidth(widthRaw.size, supressBroadcast);
+    if (this.width.mode === "manual") {
+      this._applyManualWidth(this.width.size, supressBroadcast);
     }
-    if (heightRaw.mode === "manual") {
-      this._applyManualHeight(heightRaw.size, supressBroadcast);
+    if (this.height.mode === "manual") {
+      this._applyManualHeight(this.height.size, supressBroadcast);
     }
     this._onWindowResize(supressBroadcast);
   }
 
   private _onWindowResize(supressBroadcast?: boolean): void {
     const size = this._getParentSize();
-    if (this._widthMode.mode === "fit") {
+    if (this.width.mode === "fit") {
       this._applyManualWidth(size[0], supressBroadcast);
     }
-    if (this._heightMode.mode === "fit") {
+    if (this.height.mode === "fit") {
       if (size[1] === 0 && gr.debug) {
         console.warn("Canvas height parameter specified as fit and height of parent element is 0.\n This is possibly the reason you haven't set css to html or body element.");
       }
@@ -188,7 +155,7 @@ export default class CanvasInitializerComponent extends Component {
     if (!supressBroadcast) {
       this.node.broadcastMessage(1, "resizeCanvas");
     }
-    if (this._heightMode.mode === "aspect") {
+    if (this.height.mode === "aspect") {
       this._applyManualHeight(width / this._ratio, supressBroadcast);
     }
   }
@@ -202,7 +169,7 @@ export default class CanvasInitializerComponent extends Component {
     if (!supressBroadcast) {
       this.node.broadcastMessage(1, "resizeCanvas");
     }
-    if (this._widthMode.mode === "aspect") {
+    if (this.width.mode === "aspect") {
       this._applyManualWidth(height * this._ratio, supressBroadcast);
     }
   }
@@ -294,10 +261,22 @@ export default class CanvasInitializerComponent extends Component {
   private _autoFixForBody(scriptTag: Element): void {
     if (scriptTag.parentElement!.nodeName === "BODY") {
       const boudningBox = document.body.getBoundingClientRect();
-      if (boudningBox.height === 0) {
+      if (boudningBox.height === 0) { // If height of parent body is 0, expand body
         document.body.style.height = "100%";
         document.body.parentElement!.style.height = "100%";
       }
     }
+  }
+
+  @watch("width")
+  @watch("height")
+  private _onSizeParameterChanged(): void {
+    this._resize();
+  }
+
+  @watch("antialias")
+  @watch("preserveDrawingBuffer")
+  private _onGLContextConfigurationChanged(): void {
+    console.warn("You can't change 'antialias' or 'preserveDrawingBuffer' attribute after initialization. You should specify GOML directly to change the value before initialization.");
   }
 }

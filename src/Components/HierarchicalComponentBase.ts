@@ -1,6 +1,5 @@
 import Component from "grimoirejs/ref/Core/Component";
 import HierachicalDescription from "../SceneRenderer/HierachicalDescription";
-import { fail } from "assert";
 
 export default class HierarchycalComponentBase extends Component {
     public static componentName = "HierarchycalComponentBase";

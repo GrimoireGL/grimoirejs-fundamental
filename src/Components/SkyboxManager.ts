@@ -6,8 +6,6 @@ import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclar
 export default class SkyboxManager extends Component {
     public static componentName = "SkyboxManager";
 
-    public static attributes: { [key: string]: IAttributeDeclaration } = {};
-
     private _scene!: Scene;
 
     public $mount(): void {

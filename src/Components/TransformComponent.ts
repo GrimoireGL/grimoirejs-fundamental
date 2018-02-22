@@ -7,37 +7,15 @@ import Component from "grimoirejs/ref/Core/Component";
 import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import CameraComponent from "./CameraComponent";
 import HierarchycalComponentBase from "./HierarchicalComponentBase";
+import { attribute, watch, componentInAncestor } from "grimoirejs/ref/Core/Decorator";
+import { quat } from "gl-matrix";
 const { mat4, vec3, vec4 } = GLM;
 /**
- * シーン中に存在する物体の変形を司るコンポーネント
- * このコンポーネントによって物体の座標や回転量、拡大料などが定義されます。
- * シーン中の全ての物体は必ずこのコンポーネントを含まなければなりません。
+ * Transform component manages transform matrices and provide basic parameters to control transform of the object.
+ * You can control objects by position,rotation, and scale.
  */
 export default class Transform extends HierarchycalComponentBase {
   public static componentName = "Transform";
-  public static attributes = {
-    /**
-     * この物体の座標
-     */
-    position: {
-      converter: "Vector3",
-      default: [0, 0, 0],
-    },
-    /**
-     * この物体の回転量
-     */
-    rotation: {
-      converter: "Rotation3",
-      default: [0, 0, 0, 1],
-    },
-    /**
-     * この物体の拡大率
-     */
-    scale: {
-      converter: "Vector3",
-      default: [1, 1, 1],
-    },
-  };
   /**
    * Source vector to be multiplied with global transform to calculate forward direction of attached object.
    */
@@ -59,8 +37,25 @@ export default class Transform extends HierarchycalComponentBase {
    */
   public localTransform: Matrix = new Matrix();
 
+  /**
+   * Scale of attached object.
+   * This scale will inherit parent transform.
+   */
+  @attribute("Vector3", [1, 1, 1])
   public scale!: Vector3;
+
+  /**
+ * Position of attached object.
+ * This position is relative position from parent transform.
+ */
+  @attribute("Vector3", [0, 0, 0])
   public position!: Vector3;
+
+  /**
+   * Rotation of attached object.
+   * This rotation is relative rotation from parent transform.
+   */
+  @attribute("Rotation3", [0, 0, 0, 1])
   public rotation!: Quaternion;
 
   /**
@@ -74,12 +69,9 @@ export default class Transform extends HierarchycalComponentBase {
    * When this object is root object of contained scene, this value should be null.
    * @type {TransformComponent}
    */
+  @componentInAncestor(Transform, false)
   private _parentTransform!: Transform | null;
 
-  /**
-   * Calculation cache to
-   * @return {[type]} [description]
-   */
   private _cachePVM: Matrix = new Matrix();
 
   private _cacheVM: Matrix = new Matrix();
@@ -102,6 +94,8 @@ export default class Transform extends HierarchycalComponentBase {
   private _globalPosition: Vector3 = new Vector3(0, 0, 0);
 
   private _globalScale: Vector3 = new Vector3(1, 1, 1);
+
+  private _globalRotation: Quaternion = Quaternion.Identity;
 
   private _matrixTransformMode = false;
 
@@ -139,6 +133,11 @@ export default class Transform extends HierarchycalComponentBase {
     return this._globalScale;
   }
 
+  public get globalRotation(): Quaternion {
+    this._updateTransform();
+    return this._globalRotation;
+  }
+
   public get forward(): Vector3 {
     this._updateTransform();
     return new Vector3(this._forward.X, this._forward.Y, this._forward.Z);
@@ -154,7 +153,7 @@ export default class Transform extends HierarchycalComponentBase {
     return new Vector3(this._forward.X, this._forward.Y, this._forward.Z);
   }
 
-  public calcPVM(camera: CameraComponent): Matrix {
+  public calcPVM(camera: CameraComponent): Matrix { // TODO: Possibility to have side effect
     mat4.mul(this._cachePVM.rawElements, camera.projectionViewMatrix.rawElements, this.globalTransform.rawElements);
     return this._cachePVM;
   }
@@ -164,24 +163,8 @@ export default class Transform extends HierarchycalComponentBase {
     return this._cacheVM;
   }
 
-  protected $awake(): void {
-    // register observers
-    this.getAttributeRaw(Transform.attributes.position)!.watch((v) => {
-      this.notifyUpdateTransform();
-    });
-    this.getAttributeRaw(Transform.attributes.rotation)!.watch((v) => {
-      this.notifyUpdateTransform();
-    });
-    this.getAttributeRaw(Transform.attributes.scale)!.watch((v) => {
-      this.notifyUpdateTransform();
-    });
-    // assign attribute values to field
-    this.__bindAttributes();
-  }
-
   protected $mount(): void {
     super.$mount();
-    this._parentTransform = this.node.parent!.getComponent(Transform, false);
     if (this._parentTransform) {
       this._parentTransform._children.push(this);
     }
@@ -196,17 +179,29 @@ export default class Transform extends HierarchycalComponentBase {
     }
   }
 
-  public notifyUpdateTransform(): void {
+
+  public notifyUpdateTransform(noDirectionalUpdate = false): void {
     if (!this._updatedTransform) {
       this._updatedTransform = true;
-      this._children.forEach(c => c.notifyUpdateTransform());
+      this._children.forEach(c => c.notifyUpdateTransform(noDirectionalUpdate));
     }
   }
 
   public applyMatrix(mat: Matrix): void {
-    this.setAttribute("scale", mat.getScaling());
-    this.setAttribute("rotation", mat.getRotation());
-    this.setAttribute("position", mat.getTranslation());
+    this.scale = mat.getScaling();
+    this.rotation = mat.getRotation();
+    this.position = mat.getTranslation();
+  }
+
+  @watch("position")
+  @watch("scale")
+  private _onPositionScaleChange(): void {
+    this.notifyUpdateTransform(true);
+  }
+
+  @watch("rotation")
+  private _onRotationChange(): void {
+    this.notifyUpdateTransform(false);
   }
 
   private _updateTransform(noDirectionalUpdate?: boolean): void {
@@ -247,9 +242,11 @@ export default class Transform extends HierarchycalComponentBase {
     if (!this._parentTransform) {
       vec3.copy(this._globalPosition.rawElements, this.position.rawElements);
       vec3.copy(this._globalScale.rawElements, this.scale.rawElements);
+      quat.identity(this._globalRotation.rawElements);
     } else {
       vec3.transformMat4(this._globalPosition.rawElements, this.position.rawElements, this._parentTransform.globalTransform.rawElements);
       vec3.transformMat4(this._globalScale.rawElements, this.scale.rawElements, this._parentTransform.globalTransform.rawElements); // TODO buggy
+      quat.mul(this._globalRotation.rawElements, this._parentTransform._globalRotation.rawElements, this.rotation.rawElements);
     }
   }
 

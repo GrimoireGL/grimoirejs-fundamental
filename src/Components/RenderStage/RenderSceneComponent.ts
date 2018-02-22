@@ -31,7 +31,7 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
   /**
    * Camera referrence to be rendered.
    */
-  @attribute(ComponentConverter, "camera", { target: "Camera" })
+  @attribute(ComponentConverter, "camera", "camera", { target: "Camera" })
   public camera: Nullable<CameraComponent> = null;
 
   /**

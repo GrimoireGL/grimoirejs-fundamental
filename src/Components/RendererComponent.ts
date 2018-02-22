@@ -13,23 +13,26 @@ import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 import { ViewportConverter } from "../Converters/ViewportConverter";
 import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import Identity from "grimoirejs/ref/Core/Identity";
-import { companion } from "grimoirejs/ref/Core/Decorator";
+import { companion, attribute, overrideGetter, watch } from "grimoirejs/ref/Core/Decorator";
+
+type ViewportSizeGenerator = (canvas: HTMLCanvasElement) => Viewport;
+
+function _generatorToSize(this: RendererComponent, generator: ViewportSizeGenerator): Viewport {
+  return generator(this["_canvas"]);
+}
+
 export default class RendererComponent extends Component {
   public static componentName = "Renderer";
-  public static attributes = {
-    regionName: {
-      converter: StringConverter,
-      default: null,
-    },
-    viewport: {
-      converter: ViewportConverter,
-      default: "auto",
-    },
-    handleMouse: {
-      converter: BooleanConverter,
-      default: true,
-    },
-  };
+
+  @attribute(StringConverter, null)
+  public regionName!: string;
+
+  @overrideGetter(_generatorToSize as any)
+  @attribute(ViewportConverter, "auto")
+  public viewport!: Viewport;
+
+  @attribute(BooleanConverter, true)
+  public handleMouse!: boolean;
 
   public renderingTarget: Promise<CanvasRegionRenderingTarget> = new Promise<CanvasRegionRenderingTarget>((resolve) => {
     this._renderingTargetResolver = resolve;
@@ -39,22 +42,19 @@ export default class RendererComponent extends Component {
 
   private _renderingTarget!: CanvasRegionRenderingTarget;
 
-  public get viewport(): Viewport {
-    if (this._viewportCache) {
-      return this._viewportCache;
-    } else {
-      this._viewportCache = this._viewportSizeGenerator((this.companion.get("gl") as WebGLRenderingContext).canvas);
-      return this._viewportCache;
-    }
-  }
+  // public get viewport(): Viewport {
+  //   if (this._viewportCache) {
+  //     return this._viewportCache;
+  //   } else {
+  //     this._viewportCache = this._viewportSizeGenerator((this.companion.get("gl") as WebGLRenderingContext).canvas);
+  //     return this._viewportCache;
+  //   }
+  // }
   @companion("gl")
   private _gl!: WebGLRenderingContext;
+
   @companion("canvasElement")
   private _canvas!: HTMLCanvasElement;
-
-  private _viewportSizeGenerator!: (canvas: HTMLCanvasElement) => Viewport;
-
-  private _viewportCache!: Viewport;
 
   private _mouseLeaveHandler!: (e: MouseEvent) => void;
 
@@ -73,13 +73,7 @@ export default class RendererComponent extends Component {
   private _wasInside = false;
 
   protected $awake(): void {
-    // initializing attributes
-    this.getAttributeRaw(RendererComponent.attributes.viewport)!.watch((v) => {
-      this._viewportSizeGenerator = v!;
-      this.$resizeCanvas();
-    });
     // viewport converter returns a delegate to generate viewport size
-    this._viewportSizeGenerator = this.getAttribute("viewport");
     let regionName = this.getAttribute("regionName");
     if (!regionName) {
       regionName = "renderer-" + this.node.index;
@@ -94,13 +88,6 @@ export default class RendererComponent extends Component {
   }
 
   protected $mount(): void {
-    this.getAttributeRaw(RendererComponent.attributes.handleMouse)!.watch(a => {
-      if (a) {
-        this._enableMouseHandling();
-      } else {
-        this._disableMouseHandling();
-      }
-    }, true);
     if (this.node.children.length === 0) { // complement render stage
       this.node.addChildByName("render-scene", {});
     }
@@ -117,12 +104,12 @@ export default class RendererComponent extends Component {
   }
 
   protected $resizeCanvas(): void {
-    this._viewportCache = this._viewportSizeGenerator(this._canvas);
-    this._renderingTarget.setViewport(this._viewportCache);
-    const pow2Size = TextureSizeCalculator.getPow2Size(this._viewportCache.Width, this._viewportCache.Height);
+    const vp = this.viewport;
+    this._renderingTarget.setViewport(vp);
+    const pow2Size = TextureSizeCalculator.getPow2Size(vp.Width, vp.Height);
     this.node.broadcastMessage("resizeViewport", {
-      width: this._viewportCache.Width,
-      height: this._viewportCache.Height,
+      width: vp.Width,
+      height: vp.Height,
       pow2Width: pow2Size.width,
       pow2Height: pow2Size.height,
     } as IResizeViewportMessage);
@@ -207,6 +194,19 @@ export default class RendererComponent extends Component {
     this.node.emit(eventName, e);
     this.node.broadcastMessage(eventName, this._toViewportMouseArgs(e));
   }
+  @watch("handleMouse")
+  private _onMouseHandleChanged(enabled: boolean): void {
+    if (enabled) {
+      this._enableMouseHandling();
+    } else {
+      this._disableMouseHandling();
+    }
+  }
+
+  @watch("viewport")
+  private _onViewportChanged(): void {
+    this.$resizeCanvas();
+  }
 
   /**
    * Check mouse is inside of viewport
@@ -215,7 +215,7 @@ export default class RendererComponent extends Component {
    */
   private _isViewportInside(e: MouseEvent): boolean {
     const rc = this._getRelativePosition(e);
-    const n = this._viewportCache.toLocalNormalized(rc[0], rc[1]);
+    const n = this.viewport.toLocalNormalized(rc[0], rc[1]);
     return n[0] >= 0 && n[0] <= 1 && n[1] >= 0 && n[1] <= 1;
   }
 
@@ -238,8 +238,8 @@ export default class RendererComponent extends Component {
    */
   private _toViewportMouseArgs(e: MouseEvent): ViewportMouseEvent {
     const ro = this._getRelativePosition(e);
-    const r = this._viewportCache.toLocal(ro[0], ro[1]);
-    const n = this._viewportCache.toLocalNormalized(ro[0], ro[1]);
+    const r = this.viewport.toLocal(ro[0], ro[1]);
+    const n = this.viewport.toLocalNormalized(ro[0], ro[1]);
     return {
       ...e,
       viewportX: r[0],

@@ -10,7 +10,6 @@ import HierarchycalComponentBase from "./HierarchicalComponentBase";
  */
 export default class Scene extends HierarchycalComponentBase {
   public static componentName = "Scene";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {};
 
   private static _sceneDescriptionCreationHandlers: ((sd: { [key: string]: any }, scene: Scene) => void)[] = [];
 

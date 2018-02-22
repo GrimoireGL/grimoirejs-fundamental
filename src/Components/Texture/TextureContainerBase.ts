@@ -14,22 +14,22 @@ export default class TextureContainerBase<T extends Texture> extends Component {
     /**
      * Texture mag filter
      */
-    @attribute(EnumConverter, "LINEAR", { table: GLConstantUtility.textureMagFilterFromName })
+    @attribute(EnumConverter, "LINEAR", "magFilter", { table: GLConstantUtility.textureMagFilterFromName })
     public magFilter!: number;
     /**
      * Texture min filter
      */
-    @attribute(EnumConverter, "LINEAR", { table: GLConstantUtility.textureMinFilterFromName })
+    @attribute(EnumConverter, "LINEAR", "minFilter", { table: GLConstantUtility.textureMinFilterFromName })
     public minFilter!: number;
     /**
      * Texture wrap filter of S coordinate.
      */
-    @attribute(EnumConverter, "REPEAT", { table: GLConstantUtility.textureWrapFromName })
+    @attribute(EnumConverter, "REPEAT", "wrapS", { table: GLConstantUtility.textureWrapFromName })
     public wrapS!: number;
     /**
      * Texture wrap filter of T coordinate.
      */
-    @attribute(EnumConverter, "REPEAT", { table: GLConstantUtility.textureWrapFromName })
+    @attribute(EnumConverter, "REPEAT", "wrapT", { table: GLConstantUtility.textureWrapFromName })
     public wrapT!: number;
     /**
      * Texture referrence to be managed.

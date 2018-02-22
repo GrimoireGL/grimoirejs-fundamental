@@ -5,6 +5,7 @@ import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import { NumberConverter } from "grimoirejs/ref/Converter/NumberConverter";
 import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
 import Identity from "grimoirejs/ref/Core/Identity";
+import { attribute, watch } from "grimoirejs/ref/Core/Decorator";
 interface LoopAction {
   action(timer: Timer): void;
   priorty: number;
@@ -16,22 +17,13 @@ interface LoopAction {
  */
 export default class LoopManager extends Component {
   public static componentName = "LoopManager";
-  public static attributes = {
-    loopEnabled: {
-      default: false,
-      converter: BooleanConverter,
-    },
-    fpsRestriction: {
-      default: 60,
-      converter: NumberConverter,
-    },
-  };
 
-  /**
-   * Updating loop is enabled or not.
-   * If thi
-   */
-  public loopEnabled: boolean = false;
+  /*
+  * Updating loop is enabled or not.
+   * If 
+  */
+  @attribute(BooleanConverter, false)
+  public loopEnabled!: boolean;
 
   private _loopActions: LoopAction[] = [];
 
@@ -42,22 +34,6 @@ export default class LoopManager extends Component {
   private _timer: Timer = new Timer();
 
   protected $mount(): void {
-    const attrLoopEnabled = this.getAttributeRaw(LoopManager.attributes.loopEnabled)!;
-    attrLoopEnabled.watch(attr => {
-      if (attr == null) {
-        throw new Error("LoopManager.loopEnabled must not be null.")
-      }
-      if (attr) {
-        this._begin();
-      }
-    });
-    attrLoopEnabled.bindTo("loopEnabled");
-    this.getAttributeRaw(LoopManager.attributes.fpsRestriction)!.watch(attr => {
-      if (attr == null) {
-        throw new Error("LoopManager.fpsRestriction must not be null.")
-      }
-      this._timer.fpsRestriction = attr;
-    }, true);
     this._timer.internalUpdate();
   }
 
@@ -85,6 +61,13 @@ export default class LoopManager extends Component {
         timer: this._timer,
       });
       this._loopActions.forEach((a) => a.action(this._timer));
+    }
+  }
+
+  @watch("loopEnabled")
+  private _onLoopEnabledChanged(): void {
+    if (this.loopEnabled) {
+      this._begin();
     }
   }
 

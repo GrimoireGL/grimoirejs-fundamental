@@ -4,43 +4,28 @@ import Vector3 from "grimoirejs-math/ref/Vector3";
 import Component from "grimoirejs/ref/Core/Component";
 import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Transform from "./TransformComponent";
+import { attribute, component } from "grimoirejs/ref/Core/Decorator";
+import { NumberConverter } from "grimoirejs/ref/Converter/NumberConverter";
+import { PositionConverter } from "../Converters/PositionConverter";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 
 export default class MouseCameraControlComponent extends Component {
   public static componentName = "MouseCameraControl";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
-    rotateSpeed: {
-      default: 1,
-      converter: "Number",
-    },
-    zoomSpeed: {
-      default: 1,
-      converter: "Number",
-    },
-    moveSpeed: {
-      default: 1,
-      converter: "Number",
-    },
-    center: {
-      default: "0,0,0",
-      converter: "Position",
-      lazy: true,
-    },
-    distance: {
-      default: null,
-      converter: "Number",
-    },
-    preventScroll: {
-      default: true,
-      converter: "Boolean",
-    },
-  };
 
   // propaty bound to
-  public rotateSpeed: number = NaN;
-  public zoomSpeed: number = NaN;
-  public moveSpeed: number = NaN;
-  public center: Vector3 = undefined!;
-  public distance: number = NaN;
+  @attribute(NumberConverter, 1)
+  public rotateSpeed!: number;
+  @attribute(NumberConverter, 1)
+  public zoomSpeed!: number;
+  @attribute(NumberConverter, 1)
+  public moveSpeed!: number;
+  @attribute(PositionConverter, "0,0,0")
+  public center!: Vector3;
+  @attribute(NumberConverter, null)
+  public distance!: number;
+  @attribute(BooleanConverter, true)
+  public preventScroll!: boolean;
+  @component(Transform)
   private _transform: Transform = undefined!;
   private _updated = false;
 
@@ -62,7 +47,6 @@ export default class MouseCameraControlComponent extends Component {
   private _listeners: any;
 
   protected $awake(): void {
-    this.__bindAttributes();
     this._listeners = {
       mousemove: this._mouseMove.bind(this),
       touchmove: this._touchMove.bind(this),
@@ -74,11 +58,6 @@ export default class MouseCameraControlComponent extends Component {
   }
 
   protected $mount(): void {
-    const transform = this.node.getComponent(Transform);
-    if (!transform) {
-      throw new Error(`MouseCameraControl require Transform component in same node`);
-    }
-    this._transform = transform;
     const canvasElement = this.companion.get("canvasElement");
     canvasElement.addEventListener("mousemove", this._listeners.mousemove);
     canvasElement.addEventListener("touchmove", this._listeners.touchmove);
@@ -195,7 +174,7 @@ export default class MouseCameraControlComponent extends Component {
         this._lastScreenPos = { x, y };
         break;
       case 2:
-        if (this.getAttribute("preventScroll")) {
+        if (this.preventScroll) {
           m.preventDefault();
         }
         const scale =
@@ -212,7 +191,7 @@ export default class MouseCameraControlComponent extends Component {
     if (!this.isActive) {
       return;
     }
-    if (this.getAttribute("preventScroll")) {
+    if (this.preventScroll) {
       m.preventDefault();
     }
     this._zoom(m.deltaY);

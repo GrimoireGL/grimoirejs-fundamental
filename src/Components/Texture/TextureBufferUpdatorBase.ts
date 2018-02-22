@@ -8,10 +8,10 @@ import GLConstantUtility from "../../Util/GLConstantUtility";
 export default class TextureBufferUpdatorBase<T extends Texture> extends TextureUpdatorComponentBase<T> {
     public static componentName = "TextureBufferUpdatorBase";
 
-    @attribute(EnumConverter, WebGLRenderingContext.UNSIGNED_BYTE, { table: GLConstantUtility.textureElementTypeFromName })
+    @attribute(EnumConverter, WebGLRenderingContext.UNSIGNED_BYTE, "type", { table: GLConstantUtility.textureElementTypeFromName })
     public type!: number;
 
-    @attribute(EnumConverter, WebGLRenderingContext.RGBA, { table: GLConstantUtility.textureFormatFromName })
+    @attribute(EnumConverter, WebGLRenderingContext.RGBA, "format", { table: GLConstantUtility.textureFormatFromName })
     public format!: number;
 
 }

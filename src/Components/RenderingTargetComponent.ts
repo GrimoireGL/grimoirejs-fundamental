@@ -5,54 +5,51 @@ import RenderingTrargetRegistry from "../Resource/RenderingTarget/RenderingTarge
 import RenderingTargetComponentBase from "./RenderingTargetComponentBase";
 import RenderBufferUpdator from "./Texture/RenderBufferUpdator";
 import TextureContainer from "./Texture/TextureContainer";
+import { attribute } from "grimoirejs/ref/Core/Decorator";
+import { EnumConverter } from "grimoirejs/ref/Converter/EnumConverter";
+import GLConstantUtility from "../Util/GLConstantUtility";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 /**
  * Register specified buffer to rendering target.
  * If there were no child buffer node, this component will instanciate default buffers.
  */
 export default class RenderingTarget extends RenderingTargetComponentBase<OffscreenRenderingTarget> {
     public static componentName = "RenderingTarget";
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
-        colorBufferFormat: {
-            converter: "Enum",
-            default: WebGLRenderingContext.RGBA,
-            table: {
-                RGBA: WebGLRenderingContext.RGBA,
-                RGB: WebGLRenderingContext.RGB,
-                ALPHA: WebGLRenderingContext.ALPHA,
-                LUMINANCE: WebGLRenderingContext.LUMINANCE,
-                LUMINANCE_ALPHA: WebGLRenderingContext.LUMINANCE_ALPHA,
-                SRGB_EXT: (WebGLRenderingContext as any)["SRGB_EXT"],
-                SRGB_ALPHA_EXT: (WebGLRenderingContext as any)["SRGB_ALPHA_EXT"],
-                DEPTH_COMPONENT: WebGLRenderingContext["DEPTH_COMPONENT"],
-                DEPTH_STENCIL: WebGLRenderingContext["DEPTH_STENCIL"],
-            },
-        },
-        colorBufferType: {
-            converter: "Enum",
-            default: WebGLRenderingContext.UNSIGNED_BYTE,
-            table: {
-                UNSIGNED_BYTE: WebGLRenderingContext.UNSIGNED_BYTE,
-                UNSIGNED_SHORT_5_6_5: WebGLRenderingContext.UNSIGNED_SHORT_5_6_5,
-                UNSIGNED_SHORT_4_4_4_4: WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4,
-                UNSIGNED_SHORT_5_5_5_1: WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1,
-                UNSIGNED_SHORT: WebGLRenderingContext.UNSIGNED_SHORT,
-                UNSIGNED_INT: WebGLRenderingContext.UNSIGNED_INT,
-                FLOAT: WebGLRenderingContext.FLOAT,
-            },
-        },
-        depthBufferType: {
-            converter: "Enum",
-            default: WebGLRenderingContext.DEPTH_COMPONENT16,
-            table: {
-                NONE: 0,
-                DEPTH_COMPONENT16: WebGLRenderingContext.DEPTH_COMPONENT16,
-            },
-        },
-        resizerType: {
-            converter: "String",
-            default: "ViewportSize",
-        },
-    };
+    /**
+     * Color buffer format
+     */
+    @attribute(EnumConverter, WebGLRenderingContext.RGBA, "colorBufferFormat", { table: GLConstantUtility.textureFormatFromName })
+    public colorBufferFormat!: number;
+
+    /**
+     * Element type of Color buffer
+     */
+    @attribute(EnumConverter, WebGLRenderingContext.UNSIGNED_BYTE, "colorBufferType", { table: GLConstantUtility.textureElementTypeFromName })
+    public colorBufferType!: number;
+
+    /**
+     * Element type of depth buffer.
+     */
+    @attribute(EnumConverter, WebGLRenderingContext.DEPTH_COMPONENT16, "depthBufferType", {
+        table: {
+            DEPTH_COMPONENT16: WebGLRenderingContext.DEPTH_COMPONENT16,
+        }
+    })
+    public depthBufferType!: number;
+
+    /**
+     * Use depth buffer or not
+     */
+    @attribute(BooleanConverter, true)
+    public useDepthBuffer!: boolean;
+
+    /**
+     * Viewport size of children
+     */
+    @attribute(StringConverter, "ViewportSize")
+    public resizerType!: string;
+
     protected __instanciateRenderingTarget(gl: WebGLRenderingContext): OffscreenRenderingTarget {
         const textures = this.node.getComponentsInChildren(TextureContainer);
         const texture = textures[0].texture;

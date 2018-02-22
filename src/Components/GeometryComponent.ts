@@ -13,6 +13,7 @@ import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
  */
 export default class GeometryComponent extends Component {
     public static componentName = "Geometry";
+    // TODO: Rewrite attributes as decorators
     public static attributes: { [key: string]: IAttributeDeclaration } = {
         /**
          * 生成するプリミティブのタイプ
@@ -38,6 +39,7 @@ export default class GeometryComponent extends Component {
     };
 
     public geometry!: Geometry;
+
 
     public async $mount(): Promise<void> {
         const type = this.getAttribute("type");

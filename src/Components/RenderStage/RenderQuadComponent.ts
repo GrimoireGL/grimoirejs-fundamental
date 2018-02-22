@@ -11,7 +11,7 @@ import Identity from "grimoirejs/ref/Core/Identity";
 import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
 import Color4 from "grimoirejs-math/ref/Color4";
 import { LazyAttribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute";
-import { companion, attribute, watch } from "grimoirejs/ref/Core/Decorator";
+import { companion, attribute, watch, component } from "grimoirejs/ref/Core/Decorator";
 
 /**
  * Render to quad.
@@ -37,6 +37,7 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
 
   private _quadGeometry!: Geometry;
 
+  @component(MaterialContainer)
   private _materialContainer!: MaterialContainer;
 
   protected $awake(): void {
@@ -44,13 +45,12 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
   }
 
   public async $mount(): Promise<void> {
-    this._materialContainer = this.node.getComponent(MaterialContainer)!;
     const geometryRegistry = this.companion.get("GeometryRegistry") as GeometryRegistryComponent;
     this._quadGeometry = await geometryRegistry.getGeometry("quad");
   }
 
   protected $renderRenderStage(args: IRenderRendererMessage): void {
-    if (!this._materialContainer.useMaterial || !this._quadGeometry || !this.__beforeRender()) {
+    if (!this._materialContainer.materialEnabled || !this._quadGeometry || !this.__beforeRender()) {
       return;
     }
     // make rendering argument

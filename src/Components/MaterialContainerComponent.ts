@@ -11,6 +11,7 @@ import { MaterialConverter } from "../Converters/MaterialConverter";
 import { LazyAttribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute";
 import Identity from "grimoirejs/ref/Core/Identity";
 import IMaterialResolutionResult from "../Material/MaterialResolutionResult";
+import { attribute, watch, overrideGetter } from "grimoirejs/ref/Core/Decorator";
 /**
  * マテリアルとマテリアルへの属性を管理するためのコンポーネント
  * このコンポーネントは将来的に`MeshRenderer`と統合されます。
@@ -18,43 +19,37 @@ import IMaterialResolutionResult from "../Material/MaterialResolutionResult";
  */
 export default class MaterialContainer extends MaterialContainerBase {
   public static componentName = "MaterialContainer";
-  public static attributes = {
-    /**
-     * 対象のマテリアル
-     */
-    material: {
-      converter: MaterialConverter,
-      default: "new(unlit)"
-    },
-    /**
-     * 描画順序
-     * デフォルトの状態では、マテリアルから読み込んだ描画順序設定を用います
-     */
-    drawOrder: {
-      converter: StringConverter,
-      default: "Auto",
-    },
-    transparent: {
-      converter: BooleanConverter,
-      default: true,
-    },
-  };
+  /**
+   * Material is now enabled or not.
+   */
+  public materialEnabled = false;
 
-  public static rewriteDefaultMaterial(materialName: string): void {
-    if (materialName !== MaterialContainer._defaultMaterial) {
-      MaterialContainer._defaultMaterial = materialName;
-      GrimoireInterface.componentDeclarations.get("MaterialContainer")!.attributes["material"].default = `new(${materialName})`;
-    }
-  }
+  /**
+   * Material referrence.
+   * This can be null or undefined because of promise attribute.
+   */
+  @overrideGetter((v: IMaterialResolutionResult) => v.material)
+  @attribute(MaterialConverter, "new(unlit)")
+  public material!: Material;
+  /**
+   * Draw order of this material.
+   * If you specify Auto, material will use default material draw order loaded from .sort material.
+   */
+  @attribute(StringConverter, "Auto")
+  public drawOrder!: string;
 
-  public static get defaultMaterial(): string {
-    return this._defaultMaterial;
-  }
+  /**
+   * Transparent or not.
+   * This flag will be used for calculating draw order that needs to be determined with transparency.
+   * If you need to display large object without transparency, you should make this flag false to prevent the other small transparency object rendered correctly.
+   */
+  @attribute(BooleanConverter, true)
+  public transparent!: boolean;
 
-  private static _defaultMaterial = "unlit";
+  private _attributeExposed!: boolean;
 
   public getDrawPriorty(depth: number, technique: string): number {
-    if (!this.useMaterial && !this.isActive) { // If material was not ready
+    if (!this.materialEnabled && !this.isActive) { // If material was not ready
       return Number.MAX_VALUE;
     }
     let orderCriteria;
@@ -76,36 +71,19 @@ export default class MaterialContainer extends MaterialContainerBase {
       return depth / 10000 * orderCriteria.priorty;
     }
   }
-  public useMaterial = false;
-
-  public material!: Material;
-
-  public drawOrder!: string;
-
-  public transparent!: boolean;
-
-  private _attributeExposed!: boolean;
-
-
-  protected $mount(): void {
-    this.getAttributeRaw(MaterialContainer.attributes.material)!.watch(this._onMaterialChanged.bind(this));
-    this.getAttributeRaw(MaterialContainer.attributes.drawOrder)!.bindTo("drawOrder");
-    this.getAttributeRaw(MaterialContainer.attributes.transparent)!.bindTo("transparent");
-  }
-
   /**
    * When the material attribute is changed.
    */
+  @watch("material")
   private _onMaterialChanged(materialResolutionResult: IMaterialResolutionResult): void {
     if (materialResolutionResult === null) {
-      this.useMaterial = false;
+      this.materialEnabled = false;
       return; // When specified material is null
     }
-    this.useMaterial = true;
+    this.materialEnabled = true;
     if (this._attributeExposed) {
       this.__removeExposedMaterialParameters();
     }
-    this.material = materialResolutionResult.material;
     if (!materialResolutionResult.external) { // the material must be instanciated by attribute.
       this.__exposeMaterialParameters(this.material);
       this._attributeExposed = true;

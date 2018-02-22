@@ -8,6 +8,9 @@ import RenderBufferUpdator from "./Texture/RenderBufferUpdator";
 import TextureContainer from "./Texture/TextureContainer";
 import TextureCubeContainer from "./Texture/TextureCubeContainer";
 import { EnumConverter } from "grimoirejs/ref/Converter/EnumConverter";
+import { attribute } from "grimoirejs/ref/Core/Decorator";
+import GLConstantUtility from "../Util/GLConstantUtility";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 
 /**
  * Register specified buffer to rendering target.
@@ -15,48 +18,35 @@ import { EnumConverter } from "grimoirejs/ref/Converter/EnumConverter";
  */
 export default class CubeRenderingTargetComponent extends RenderingTargetComponentBase<OffscreenCubemapRenderTarget> {
     public static componentName = "CubemapRenderingTarget";
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
-        colorBufferFormat: {
-            converter: EnumConverter,
-            default: WebGLRenderingContext.RGBA,
-            table: {
-                RGBA: WebGLRenderingContext.RGBA,
-                RGB: WebGLRenderingContext.RGB,
-                ALPHA: WebGLRenderingContext.ALPHA,
-                LUMINANCE: WebGLRenderingContext.LUMINANCE,
-                LUMINANCE_ALPHA: WebGLRenderingContext.LUMINANCE_ALPHA,
-                SRGB_EXT: (WebGLRenderingContext as any)["SRGB_EXT"],
-                SRGB_ALPHA_EXT: (WebGLRenderingContext as any)["SRGB_ALPHA_EXT"],
-                DEPTH_COMPONENT: WebGLRenderingContext["DEPTH_COMPONENT"],
-                DEPTH_STENCIL: WebGLRenderingContext["DEPTH_STENCIL"],
-            },
-        },
-        colorBufferType: {
-            converter: EnumConverter,
-            default: WebGLRenderingContext.UNSIGNED_BYTE,
-            table: {
-                UNSIGNED_BYTE: WebGLRenderingContext.UNSIGNED_BYTE,
-                UNSIGNED_SHORT_5_6_5: WebGLRenderingContext.UNSIGNED_SHORT_5_6_5,
-                UNSIGNED_SHORT_4_4_4_4: WebGLRenderingContext.UNSIGNED_SHORT_4_4_4_4,
-                UNSIGNED_SHORT_5_5_5_1: WebGLRenderingContext.UNSIGNED_SHORT_5_5_5_1,
-                UNSIGNED_SHORT: WebGLRenderingContext.UNSIGNED_SHORT,
-                UNSIGNED_INT: WebGLRenderingContext.UNSIGNED_INT,
-                FLOAT: WebGLRenderingContext.FLOAT,
-            },
-        },
-        depthBufferType: {
-            converter: EnumConverter,
-            default: WebGLRenderingContext.DEPTH_COMPONENT16,
-            table: {
-                NONE: 0,
-                DEPTH_COMPONENT16: WebGLRenderingContext.DEPTH_COMPONENT16,
-            },
-        },
-        resizerType: {
-            converter: "String",
-            default: "ViewportSize",
-        },
-    };
+
+    /**
+    * Format of color buffer. 
+    * RGBA,RGB,ALPHA,LUMINANCE,LUMINANCE_ALPHA,SRGB_EXT,SRGB_ALPHA_EXT,DEPTH_COMPONENT,DEPTH_STENCIL
+    */
+    @attribute(EnumConverter, WebGLRenderingContext.RGBA, "colorBufferFormat", GLConstantUtility.textureFormatFromName)
+    public colorBufferFormat!: number;
+
+    /**
+    * Type of color buffer elements.
+    * UNSIGNED_BYTE,UNSIGNED_SHORT_5_6_5,UNSIGNED_SHORT_4_4_4_4,UNSIGNED_SHORT_5_5_5_1,UNSIGNED_SHORT,UNSIGNED_INT,FLOAT
+    */
+    @attribute(EnumConverter, WebGLRenderingContext.UNSIGNED_BYTE)
+    public colorBufferType!: number;
+
+    /**
+     * Type of depth buffer element. If you specify 0 or "NONE" as a value, rendering target will not use depth buffer.
+    * NONE,DEPTH_COMPONENT16,
+    */
+    @attribute(EnumConverter, WebGLRenderingContext.DEPTH_COMPONENT16)
+    public depthBufferType!: number;
+
+    /**
+    * Resizer type of children.
+    */
+    @attribute(StringConverter, "ViewportSize")
+    public resizerType!: string;
+
+
     protected __instanciateRenderingTarget(gl: WebGLRenderingContext): OffscreenCubemapRenderTarget {
         const textures = this.node.getComponentsInChildren(TextureCubeContainer);
         const texture = textures[0].texture;

@@ -5,58 +5,58 @@ import MaterialFactory from "../Material/MaterialFactory";
 import Timer from "../Util/Timer";
 import LoopManager from "./LoopManagerComponent";
 import GLStateConfigurator from "../Material/GLStateConfigurator";
-import { companion } from "grimoirejs/ref/Core/Decorator";
+import { companion, attribute, readonly } from "grimoirejs/ref/Core/Decorator";
+import { Color4Converter } from "grimoirejs-math/ref/Converters/Color4Converter";
+import { NumberConverter } from "grimoirejs/ref/Converter/NumberConverter";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 /**
- * 全レンダラーを管理するためのコンポーネント
+ * RendererManager will manage all renderers and provides configurations for entire canvas not managed by viewport.
  */
 export default class RendererManager extends Component {
   public static componentName = "RendererManager";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
-    /**
-     * キャンバスの初期化色
-     */
-    bgColor: {
-      default: new Color4(0, 0, 0, 0),
-      converter: "Color4",
-    },
-    /**
-     * キャンバスの初期化深度値
-     */
-    clearDepth: {
-      default: 1.0,
-      converter: "Number",
-    },
-    /**
-     * goml内にrendererが一つもなかった場合に自動的に補完するかどうか
-     */
-    complementRenderer: {
-      default: true,
-      converter: "Boolean",
-    },
-  };
-
   private static _sortImportedFromHTML = false;
+
+  /**
+   * Clear color of canvas
+   * This property probably nonsence because this clear color just only for entire canvas.
+   * If there were region managed by viewport, clearing feature should be delegated by them.
+   * You should see SingleBufferRenderingStage#clearColor also.
+   */
+  @attribute(Color4Converter, "#00000000")
+  public bgColor!: Color4;
+
+  /**
+   * Clear depth of canvas
+   * This property probably nonsence because this clear color just only for entire canvas.
+   * If there were region managed by viewport, clearing feature should be delegated by them.
+   * You should see SingleBufferRenderingStage#clearDepth also.
+   */
+  @attribute(NumberConverter, 1.0)
+  public clearDepth!: number;
+
+  /**
+   * Flag to complement renderer if there were no renderer on initialization timing.
+   * If this value was true, this component will append <renderer> automatically.
+   */
+  @readonly()
+  @attribute(BooleanConverter, true)
+  public complementRenderer!: boolean;
+
   @companion("gl")
   public gl!: WebGLRenderingContext;
 
-  public bgColor!: Color4;
-
-  public clearDepth!: number;
-
-  public complementRenderer!: boolean;
-
-  protected $mount(): void {
-    this.__bindAttributes();
-  }
-
   protected $treeInitialized(): void {
     this.node.getComponent(LoopManager)!.register(this.onloop.bind(this), 1000);
-    if (this.getAttribute("complementRenderer") && this.node.getChildrenByNodeName("renderer").length === 0) {
+    if (this.complementRenderer && this.node.getChildrenByNodeName("renderer").length === 0) {
       this.node.addChildByName("renderer", {});
     }
     this._importSortFromHTML();
   }
 
+  /**
+   * The first method that will be called by LoopManager#tick
+   * @param timer current timer instance
+   */
   public onloop(timer: Timer): void {
     if (this.enabled) {
       const c: Color4 = this.bgColor;

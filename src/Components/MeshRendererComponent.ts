@@ -12,7 +12,7 @@ import MaterialContainer from "./MaterialContainerComponent";
 import Scene from "./SceneComponent";
 import Transform from "./TransformComponent";
 import Vector3 from "grimoirejs-math/ref/Vector3";
-import { attribute } from "grimoirejs/ref/Core/Decorator";
+import { attribute, component, componentInAncestor } from "grimoirejs/ref/Core/Decorator";
 const { vec3 } = GLM;
 
 /**
@@ -44,8 +44,11 @@ export default class MeshRenderer extends Component implements IRenderable {
 
     public index!: number;
 
+    @component(MaterialContainer)
     private _materialContainer!: MaterialContainer;
+    @component(Transform)
     private _transformComponent!: Transform;
+    @componentInAncestor(Scene)
     private _containedScene!: Scene;
 
     private _priortyCalcCache = new Vector3(0, 0, 0);
@@ -60,15 +63,6 @@ export default class MeshRenderer extends Component implements IRenderable {
     }
 
     protected $mount(): void {
-        const transform = this.node.getComponent(Transform);
-        const materialContainer = this.node.getComponent(MaterialContainer);
-        const scene = this.node.getComponentInAncestor(Scene);
-        if (!scene) {
-            throw new Error(`Mesh renderer must be inside of a scene`);
-        }
-        this._transformComponent = transform;
-        this._materialContainer = materialContainer;
-        this._containedScene = scene;
         this._containedScene.queueRegistry.addRenderable(this);
     }
 

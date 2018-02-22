@@ -3,23 +3,25 @@ import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclar
 import NameResolver from "../Asset/NameResolver";
 import Geometry from "../Geometry/Geometry";
 import GeometryFactory from "../Geometry/GeometryFactory";
+import { attribute } from "grimoirejs/ref/Core/Decorator";
 
 /**
- * ジオメトリを管理するコンポーネント
- * あまりユーザーが直接操作することはありません。
+ * Manage geometry instances of GOML hierarchy.
  */
 export default class GeometryRegistryComponent extends Component {
   public static componentName = "GeometryRegistry";
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
-    /**
-     * デフォルトで生成するジオメトリの種類
-     */
-    defaultGeometry: {
-      converter: "StringArray",
-      default: ["quad", "cube", "sphere"],
-    },
-  };
 
+  /**
+   * Default geometry types to instanciate on initialization timing.
+   * Specified geometries will be instanciated with default values on mount timing of this component.
+   * You should specify this attribute on GOML if you needs to add new geometry.
+   */
+  @attribute("StringArray", ["quad", "cube", "sphere"])
+  public defaultGeometry!: string[];
+
+  /**
+   * NameResolver for managing geometry referrences.
+   */
   public resolver: NameResolver<Geometry> = new NameResolver<Geometry>();
 
   protected $awake(): void {
@@ -30,10 +32,19 @@ export default class GeometryRegistryComponent extends Component {
     }
   }
 
+  /**
+   * Set new Geometry instance with specified name.
+   * @param name name of Geometry
+   * @param geometry Geometry instance or Promise to resolve geometry
+   */
   public addGeometry(name: string, geometry: Promise<Geometry> | Geometry): void {
     this.resolver.register(name, geometry);
   }
 
+  /**
+   * Obtain geometry referrence by specified geometry name.
+   * @param name name of the geometry.
+   */
   public getGeometry(name: string): Promise<Geometry> {
     return this.resolver.get(name);
   }

@@ -4,6 +4,7 @@ import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
 import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
 import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
 import Identity from "grimoirejs/ref/Core/Identity";
+import { attribute, watch } from "grimoirejs/ref/Core/Decorator";
 /**
  * フルスクリーン状態を管理するコンポーネント
  * Grimoire.jsによって管理されているキャンバス(正確にはその親のコンテナ)のフルスクリーン状態等を管理します。
@@ -14,45 +15,24 @@ import Identity from "grimoirejs/ref/Core/Identity";
  */
 export default class Fullscreen extends Component {
   public static componentName = "Fullscreen";
-  public static attributes = {
-    /**
-     * フルスクリーン状態かどうか
-     *
-     * このフラグをtrueにする際は、**必ず**、マウスイベントなどのユーザーのインタラクションを伴うイベントからの呼び出しで変更されなければなりません。
-     *
-     * したがって、GOMLで初期状態からこのフラグをtrueにすることはできません。
-     */
-    fullscreen: {
-      converter: BooleanConverter,
-      default: false,
-    },
-    /**
-     * フルスクリーンにするDOM要素へのクエリ
-     *
-     * nullが指定された場合、キャンバスの親要素が用いられます。
-     */
-    fullscreenTarget: {
-      converter: StringConverter,
-      default: null,
-    },
-  };
+  /**
+  * Flag of fullscreen. Make sure changing time of this flag need to be under user interaction.
+  * By this reason, you can't enable this flag with GOML.
+  */
+  @attribute(BooleanConverter, false)
+  public fullscreen!: boolean;
 
-  private _fullscreen = false;
+  /**
+  * Query for fullscreen.
+  * If you specified null, container element of canvas will be used.
+  */
+  @attribute(StringConverter, null)
+  public fullscreenTarget!: string;
 
-  protected $awake(): void {
-    this.getAttributeRaw(Fullscreen.attributes.fullscreen)!.watch(attr => {
-      attr = !!attr;
-      if (this._fullscreen === attr) {
-        return;
-      }
-      this._fullscreen = attr;
-      this._switchFullscreen();
-    });
-  }
-
+  @watch("fullscreen")
   private _switchFullscreen(): void {
-    if (this._fullscreen) {
-      const target = this.getAttribute(Fullscreen.attributes.fullscreenTarget);
+    if (this.fullscreen) {
+      const target = this.fullscreenTarget
       if (target) {
         const queriedTarget = document.querySelectorAll(target);
         if (queriedTarget[0]) {
