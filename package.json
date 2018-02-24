@@ -35,7 +35,7 @@
     "condition-circle": "^2.0.1",
     "cpx": "^1.5.0",
     "deflate-js": "^0.2.3",
-    "grimoirejs": "^1.0.9-beta37",
+    "grimoirejs": "^1.0.9-beta39",
     "grimoirejs-cauldron": "^4.2.0-beta3",
     "grimoirejs-math": "beta",
     "http-server": "^0.10.0",

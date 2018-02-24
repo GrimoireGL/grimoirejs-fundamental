@@ -50,7 +50,7 @@ export default class RenderHitareaComponent extends SingleBufferRenderStageBase 
 
 
   protected $mount() {
-    const node = this.node.parent!.addChildByName("rendering-target", { name: `hitarea-buffer-${this._sceneRenderer.id}` });
+    const node = this.node.parent!.addChildByName("rendering-target", { name: `hitarea-buffer-${this._sceneRenderer.uniqueKey}` });
     this.hitareaBuffer = node.getComponent(RenderingTarget)!.renderingTarget;
   }
 

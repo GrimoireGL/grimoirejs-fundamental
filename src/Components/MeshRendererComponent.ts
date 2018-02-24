@@ -90,7 +90,7 @@ export default class MeshRenderer extends Component implements IRenderable {
             renderable: this,
         } as IMaterialArgument;
         if (grimoirejs.debug && (window as any)["spector"]) {
-            (window as any)["spector"].setMarker(`Mesh renderer:${this.node.id}`);
+            (window as any)["spector"].setMarker(`Mesh renderer:${this.node.uniqueKey}`);
         }
         this._materialContainer.material.draw(renderArgs);
         this.node.emit("render", args);

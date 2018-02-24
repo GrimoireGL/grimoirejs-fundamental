@@ -7,9 +7,16 @@ import Identity from "grimoirejs/ref/Core/Identity";
 import { Nullable } from "grimoirejs/ref/Tool/Types";
 import { attribute, watch } from "grimoirejs/ref/Core/Decorator";
 
+/** 
+ * Updator that use image resource as texture source.
+*/
 export default class ImageTextureUpdator extends TextureUpdatorComponentBase<Texture2D> {
   public static componentName = "ImageTextureUpdator";
 
+  /**
+   * Source url of image.
+   * Base64 encoded image is also available as resource.
+   */
   @attribute(StringConverter, null)
   public src!: string;
 

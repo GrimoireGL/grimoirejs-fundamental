@@ -11,6 +11,10 @@ import { attribute, watch } from "grimoirejs/ref/Core/Decorator";
  */
 export default class ConstantSizeResourceResizer extends ResourceResizerComponentBase {
     public static componentName = "ConstantSizeResourceResizer";
+    /**
+     * Resolution of resource.
+     * You can specify as Vector2 as "px".
+     */
     @attribute(Vector2Converter, "512,512")
     public resolution!: Vector2;
 
