@@ -36,13 +36,17 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
      * @param  {string}        source   [description]
      * @return {Promise<void>}          [description]
      */
-    public static async addSORTMaterial(typeName: string, source: string): Promise<(factory: MaterialFactory) => Material> {
-        return this.materialGeneratorResolver.register(typeName, (async () => {
-            const techniques = await SortParser.parse(source);
-            return (factory: MaterialFactory) => {
-                return new Material(factory.gl, techniques);
-            };
-        })());
+    public static async addSORTMaterial(typeName: string, source: string, overrideIfExists = true): Promise<(factory: MaterialFactory) => Material> {
+        if (this.getMaterialStatus(typeName) === NameResolver.UNLOADED || overrideIfExists) {
+            return this.materialGeneratorResolver.register(typeName, (async () => {
+                const techniques = await SortParser.parse(source);
+                return (factory: MaterialFactory) => {
+                    return new Material(factory.gl, techniques);
+                };
+            })());
+        } else {
+            return this.materialGeneratorResolver.get(typeName);
+        }
     }
 
     /**
@@ -51,14 +55,8 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
      * @param  {string}        url      [description]
      * @return {Promise<void>}          [description]
      */
-    public static addSORTMaterialFromURL(typeName: string, url: string): Promise<(factory: MaterialFactory) => Material> {
-        return this.materialGeneratorResolver.register(typeName, (async () => {
-            const source = await TextFileResolver.resolve(url);
-            const techniques = await SortParser.parse(source);
-            return (factory: MaterialFactory) => {
-                return new Material(factory.gl, techniques);
-            };
-        })());
+    public static async addSORTMaterialFromURL(typeName: string, url: string, overrideIfExists = true): Promise<(factory: MaterialFactory) => Material> {
+        return MaterialFactory.addSORTMaterial(typeName, await TextFileResolver.resolve(url), overrideIfExists);
     }
 
     public static getMaterialStatus(typeName: string): number {

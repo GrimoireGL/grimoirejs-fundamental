@@ -27,13 +27,6 @@ export default class MaterialImporter extends Component {
   public src!: string;
 
   protected $awake(): void {
-    // TODO: Make attributes readonly
-    // this.getAttributeRaw(MaterialImporter.attributes.typeName)!.watch(() => {
-    //   console.warn("Changeing 'typeName' on MaterialImporter makes no sense. This change won't affect anything.");
-    // });
-    // this.getAttributeRaw(MaterialImporter.attributes.src)!.watch(() => {
-    //   console.warn("Changeing 'src' on MaterialImporter makes no sense. This change won't affect anything.");
-    // });
     if (!this.getAttribute("typeName") || !this.getAttribute("src")) {
       throw new Error("type or src cannot be null in material importer");
     } else {
