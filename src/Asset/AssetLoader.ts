@@ -51,7 +51,7 @@ export default class AssetLoader extends EEObject {
       const result = await promise;
       this.loadCount++;
     } catch (e) {
-      console.error(`Failed to resolve asset loading promise.\n\nLoading fired by: ${component.identity.fqn}\nAttached node:${component.node.name.fqn}\n${e.stack}`);
+      console.error(`Failed to resolve asset loading promise.\n\nLoading fired by: ${component.identity.fqn}\nAttached node:${component.node.identity.fqn}\n${e.stack}`);
       this.errorCount++;
     }
     this.completeCount++;
