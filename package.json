@@ -90,5 +90,11 @@
       "babel-register"
     ],
     "babel": "inherit"
+  },
+  "e2e": {
+    "dependencies": {
+      "grimoirejs": "beta",
+      "math": "beta"
+    }
   }
 }
