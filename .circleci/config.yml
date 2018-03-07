@@ -24,16 +24,14 @@ jobs:
             - ~/.npm/_cacache
             - ~/.cache/yarn
             - node_modules/
+            - yarn.lock
       - save-cache:
           key: artifact-cache-{{ .Environment.CIRCLE_SHA1 }}
           paths:
-            - lib/
-            - lib-es5/
             - ref/
             - register/
-            - test-es5/
-            - yarn.lock
             - src/index.ts
+            - src/metaInfo.ts
   test:
     docker:
       - image: circleci/node:9.6
