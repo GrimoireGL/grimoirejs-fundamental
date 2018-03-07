@@ -69,7 +69,7 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
 
     constructor(public gl: WebGLRenderingContext) {
         super();
-        this.macro = new MacroRegistry();
+        this.macro = new MacroRegistry(); 
     }
 
     public async instanciate(typeName: string): Promise<Material> {
