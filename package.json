@@ -94,7 +94,10 @@
   "e2e": {
     "dependencies": {
       "grimoirejs": "beta",
-      "math": "beta"
+      "math": "beta",
+      "forward-shading": "beta",
+      "animation": "beta",
+      "gltf": "beta"
     }
   }
 }
