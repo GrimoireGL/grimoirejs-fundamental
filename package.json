@@ -20,7 +20,7 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^8.0.53",
+    "@types/node": "^9.4.7",
     "@types/xmldom": "^0.1.29",
     "ava": "^0.22.0",
     "babel-cli": "^6.26.0",
