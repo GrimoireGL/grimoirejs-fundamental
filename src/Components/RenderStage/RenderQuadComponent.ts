@@ -50,7 +50,7 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
   }
 
   protected $renderRenderStage(args: IRenderRendererMessage): void {
-    if (!this._materialContainer.materialEnabled || !this._quadGeometry || !this.__beforeRender()) {
+    if (!this._materialContainer.material || !this._quadGeometry || !this.__beforeRender()) {
       return;
     }
     // make rendering argument

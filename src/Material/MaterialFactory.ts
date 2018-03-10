@@ -13,6 +13,11 @@ import Material from "./Material";
 export default class MaterialFactory extends GLRelatedRegistryBase {
     public static registryName = "MaterialFactory";
 
+    /**
+     * Default shader to be used when material name was not provided.
+     */
+    public static defaultMaterialName = "unlit";
+
     public static defaultShaderHeader: string = ShaderHeader;
 
     public static materialGeneratorResolver: NameResolver<(factory: MaterialFactory) => Material> = new NameResolver<(factory: MaterialFactory) => Material>();
@@ -69,11 +74,22 @@ export default class MaterialFactory extends GLRelatedRegistryBase {
 
     constructor(public gl: WebGLRenderingContext) {
         super();
-        this.macro = new MacroRegistry(); 
+        this.macro = new MacroRegistry();
     }
 
+    /**
+     * Instanciate specified material.
+     * @param typeName 
+     */
     public async instanciate(typeName: string): Promise<Material> {
         const generator = await MaterialFactory.materialGeneratorResolver.get(typeName);
         return generator(this);
+    }
+
+    /** 
+     * Instanciate default material
+    */
+    public async instanciateDefault(): Promise<Material> {
+        return this.instanciate(MaterialFactory.defaultMaterialName);
     }
 }

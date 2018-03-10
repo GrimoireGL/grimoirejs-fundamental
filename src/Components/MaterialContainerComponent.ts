@@ -11,7 +11,8 @@ import { MaterialConverter } from "../Converters/MaterialConverter";
 import { LazyAttribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute";
 import Identity from "grimoirejs/ref/Core/Identity";
 import IMaterialResolutionResult from "../Material/MaterialResolutionResult";
-import { attribute, watch, overrideGetter } from "grimoirejs/ref/Core/Decorator";
+import { attribute, watch, overrideGetter, companion } from "grimoirejs/ref/Core/Decorator";
+import MaterialFactory from "../Material/MaterialFactory";
 /**
  * マテリアルとマテリアルへの属性を管理するためのコンポーネント
  * このコンポーネントは将来的に`MeshRenderer`と統合されます。
@@ -19,17 +20,13 @@ import { attribute, watch, overrideGetter } from "grimoirejs/ref/Core/Decorator"
  */
 export default class MaterialContainer extends MaterialContainerBase {
   public static componentName = "MaterialContainer";
-  /**
-   * Material is now enabled or not.
-   */
-  public materialEnabled = false;
 
   /**
    * Material referrence.
    * This can be null or undefined because of promise attribute.
    */
   @overrideGetter((v: IMaterialResolutionResult) => v.material)
-  @attribute(MaterialConverter, "new(unlit)")
+  @attribute(MaterialConverter, null)
   public material!: Material;
   /**
    * Draw order of this material.
@@ -48,8 +45,11 @@ export default class MaterialContainer extends MaterialContainerBase {
 
   private _attributeExposed!: boolean;
 
+  @companion("gl")
+  private gl!: WebGLRenderingContext;
+
   public getDrawPriorty(depth: number, technique: string): number {
-    if (!this.materialEnabled && !this.isActive) { // If material was not ready
+    if (!this.isActive) { // If material was not ready
       return Number.MAX_VALUE;
     }
     let orderCriteria;
@@ -75,14 +75,14 @@ export default class MaterialContainer extends MaterialContainerBase {
    * When the material attribute is changed.
    */
   @watch("material")
-  private _onMaterialChanged(materialResolutionResult: IMaterialResolutionResult): void {
-    if (materialResolutionResult === null) {
-      this.materialEnabled = false;
-      return; // When specified material is null
-    }
-    this.materialEnabled = true;
+  private async _onMaterialChanged(materialResolutionResult: IMaterialResolutionResult): Promise<void> {
     if (this._attributeExposed) {
       this.__removeExposedMaterialParameters();
+    }
+    if (materialResolutionResult === null) {
+      this.__exposeMaterialParameters(await MaterialFactory.get(this.gl).instanciateDefault());
+      this._attributeExposed = true;
+      return; // When specified material is null
     }
     if (!materialResolutionResult.external) { // the material must be instanciated by attribute.
       this.__exposeMaterialParameters(this.material);
