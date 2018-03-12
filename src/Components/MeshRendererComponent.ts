@@ -54,7 +54,7 @@ export default class MeshRenderer extends Component implements IRenderable {
     private _priortyCalcCache = new Vector3(0, 0, 0);
 
     public getRenderingPriorty(camera: CameraComponent, technique: string): number {
-        if (!this.geometry || this._materialContainer.getAttributeRaw("material").isPending || !this._materialContainer.material.techniques[technique]) {
+        if (!this.geometry || this._materialContainer.getAttributeRaw("material").isPending || !this._materialContainer.material || !this._materialContainer.material.techniques[technique]) {
             return Number.NEGATIVE_INFINITY;
         }
         vec3.add(this._priortyCalcCache.rawElements, camera.transform.globalPosition.rawElements, this.geometry.aabb.Center.rawElements);
@@ -74,7 +74,7 @@ export default class MeshRenderer extends Component implements IRenderable {
         if (!this.node.isActive || !this.enabled || this.layer !== args.layer) {
             return;
         }
-        if (!this.geometry || this._materialContainer.getAttributeRaw("material").isPending) {
+        if (!this.geometry || this._materialContainer.getAttributeRaw("material").isPending || !this._materialContainer.material) {
             return; // material is not instanciated yet.
         }
         const renderArgs = {

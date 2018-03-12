@@ -25,7 +25,7 @@ export default class MaterialContainer extends MaterialContainerBase {
    * Material referrence.
    * This can be null or undefined because of promise attribute.
    */
-  @overrideGetter((v: IMaterialResolutionResult) => v.material)
+  @overrideGetter((v: IMaterialResolutionResult) => v ? v.material : null)
   @attribute(MaterialConverter, null)
   public material!: Material;
   /**
@@ -74,13 +74,18 @@ export default class MaterialContainer extends MaterialContainerBase {
   /**
    * When the material attribute is changed.
    */
-  @watch("material")
-  private async _onMaterialChanged(materialResolutionResult: IMaterialResolutionResult): Promise<void> {
+  @watch("material", true)
+  private async _onMaterialChanged(materialResolutionResult: IMaterialResolutionResult, old: IMaterialResolutionResult): Promise<void> {
+    if (materialResolutionResult === old || old === undefined /*For first time attribute resolution*/) {
+      return;
+    }
     if (this._attributeExposed) {
       this.__removeExposedMaterialParameters();
     }
     if (materialResolutionResult === null) {
-      this.__exposeMaterialParameters(await MaterialFactory.get(this.gl).instanciateDefault());
+      const mat = await MaterialFactory.get(this.gl).instanciateDefault();
+      this.material = mat;
+      this.__exposeMaterialParameters(mat);
       this._attributeExposed = true;
       return; // When specified material is null
     }
