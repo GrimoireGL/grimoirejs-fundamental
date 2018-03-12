@@ -43,7 +43,9 @@ export default class MaterialContainer extends MaterialContainerBase {
   @attribute(BooleanConverter, true)
   public transparent!: boolean;
 
-  private _attributeExposed!: boolean;
+  private _attributeExposed: boolean = false;
+
+  private _internalMaterialSet: boolean = false;
 
   @companion("gl")
   private gl!: WebGLRenderingContext;
@@ -76,7 +78,7 @@ export default class MaterialContainer extends MaterialContainerBase {
    */
   @watch("material", true)
   private async _onMaterialChanged(materialResolutionResult: IMaterialResolutionResult, old: IMaterialResolutionResult): Promise<void> {
-    if (materialResolutionResult === old || old === undefined /*For first time attribute resolution*/) {
+    if (materialResolutionResult === old || this._internalMaterialSet) {
       return;
     }
     if (this._attributeExposed) {
@@ -84,7 +86,9 @@ export default class MaterialContainer extends MaterialContainerBase {
     }
     if (materialResolutionResult === null) {
       const mat = await MaterialFactory.get(this.gl).instanciateDefault();
+      this._internalMaterialSet = true;
       this.material = mat;
+      this._internalMaterialSet = false;
       this.__exposeMaterialParameters(mat);
       this._attributeExposed = true;
       return; // When specified material is null
