@@ -78,24 +78,26 @@ export default class MaterialContainer extends MaterialContainerBase {
    */
   @watch("material", true)
   private async _onMaterialChanged(materialResolutionResult: IMaterialResolutionResult, old: IMaterialResolutionResult): Promise<void> {
-    if (materialResolutionResult === old || this._internalMaterialSet) {
+    if (materialResolutionResult === old) {
       return;
     }
-    if (this._attributeExposed) {
-      this.__removeExposedMaterialParameters();
+    if (this._internalMaterialSet) { // For prevent watch handler being called recursively
+      this._internalMaterialSet = false;
+      return;
+    }
+    if (this._attributeExposed) { // Removing attributes that was registered by previous material
+      this.__removeExposedMaterialParameters(); // TODO: Fix bug of replacing material
     }
     if (materialResolutionResult === null) {
       const mat = await MaterialFactory.get(this.gl).instanciateDefault();
       this._internalMaterialSet = true;
       this.material = mat;
-      this._internalMaterialSet = false;
       this.__exposeMaterialParameters(mat);
       this._attributeExposed = true;
       return; // When specified material is null
     }
     if (!materialResolutionResult.external) { // the material must be instanciated by attribute.
-      this.__exposeMaterialParameters(this.material);
-      this._attributeExposed = true;
+      this._attributeExposed = false;
     }
   }
 }
