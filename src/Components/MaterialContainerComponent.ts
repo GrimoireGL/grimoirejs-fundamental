@@ -87,6 +87,7 @@ export default class MaterialContainer extends MaterialContainerBase {
     }
     if (this._attributeExposed) { // Removing attributes that was registered by previous material
       this.__removeExposedMaterialParameters(); // TODO: Fix bug of replacing material
+      this._attributeExposed = false;
     }
     if (materialResolutionResult === null) {
       const mat = await MaterialFactory.get(this.gl).instanciateDefault();
@@ -97,7 +98,8 @@ export default class MaterialContainer extends MaterialContainerBase {
       return; // When specified material is null
     }
     if (!materialResolutionResult.external) { // the material must be instanciated by attribute.
-      this._attributeExposed = false;
+      this.__exposeMaterialParameters(materialResolutionResult.material);
+      this._attributeExposed = true;
     }
   }
 }
