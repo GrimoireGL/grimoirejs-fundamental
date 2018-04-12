@@ -1,68 +1,70 @@
 import GrimoireJS from "grimoirejs";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
 import CameraComponent from "../CameraComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import { ComponentConverter, getGenericComponentConverter, IComponentConverter } from "grimoirejs/ref/Converter/ComponentConverter";
+import { StandardAttribute, LazyAttribute } from "grimoirejs/ref/Core/Attribute";
+import Component from "grimoirejs/ref/Core/Component";
+import Identity from "grimoirejs/ref/Core/Identity";
+import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
+import Color4 from "grimoirejs-math/ref/Color4";
+import { companion, attribute, watch } from "grimoirejs/ref/Core/Decorator";
+
+/**
+ * Render a scene specified by camera.
+ * This 
+ */
 export default class RenderSceneComponent extends SingleBufferRenderStageBase {
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
-    layer: {
-      converter: "String",
-      default: "default",
-    },
-    camera: {
-      default: null,
-      converter: "Component",
-      target: "Camera",
-    },
-    technique: {
-      default: "default",
-      converter: "String",
-    },
-  };
+  public static componentName = "RenderSceneComponent";
 
-  public layer: string;
+  /**
+   * Layer of scene to render.
+   * MeshRenderer also have same property named layer.
+   * RenderScene only try to render the mesn have same layer name.
+   */
+  @attribute(StringConverter, "default")
+  public layer!: string;
 
-  public camera: CameraComponent;
+  /**
+   * Camera referrence to be rendered.
+   */
+  @attribute(ComponentConverter, "camera", "camera", { target: "Camera" })
+  public camera: Nullable<CameraComponent> = null;
 
-  public technique: string;
+  /**
+   * Technique to be renderred.
+   */
+  @attribute(StringConverter, "default")
+  public technique!: string;
 
-  private _gl: WebGLRenderingContext;
+  @companion("gl")
+  private _gl!: WebGLRenderingContext;
 
   // messages
 
-  public $awake(): void {
-    super.$awake();
+  protected $awake(): void {
     this.metadata.type = "scene";
-    this.getAttributeRaw("layer").boundTo("layer");
-    this.getAttributeRaw("camera").boundTo("_camera");
-    this.getAttributeRaw("technique").boundTo("technique");
-    this.getAttributeRaw("camera").watch((cam: CameraComponent) => {
-      this.metadata.camera = cam ? cam.node.id : null;
-    }, true);
-    this.getAttributeRaw("technique").watch((t: string) => {
-      this.metadata.technique = t;
-    }, true);
-    this.getAttributeRaw("layer").watch((t: string) => {
-      this.metadata.layer = t;
-    }, true);
   }
 
-  public $mount(): void {
-    this._gl = this.companion.get("gl");
-  }
-
-  public $render(args: IRenderRendererMessage): void {
-    const camera = this.camera ? this.camera : args.camera;
-    if (!camera) {
+  protected $renderRenderStage(args: IRenderRendererMessage): void {
+    if (this.getAttributeRaw("camera").isPending || !this.camera) {
       return;
     }
     if (!this.__beforeRender()) {
       return;
     }
-    camera.updateContainedScene(args.timer);
-    camera.renderScene({
+    //TODO: fix this should not resolved every time
+    this.camera = this.getAttribute("camera");
+    if (!this.camera) {
+      return;
+    }
+    this.camera!.updateContainedScene(args.timer);
+    this.camera!.renderScene({
       renderer: this,
-      camera,
+      camera: this.camera!,
       layer: this.layer,
       viewport: this.out.getViewport(),
       timer: args.timer,
@@ -70,5 +72,11 @@ export default class RenderSceneComponent extends SingleBufferRenderStageBase {
       sceneDescription: {},
       rendererDescription: this.rendererDescription,
     });
+  }
+  @watch("technique", true)
+  @watch("layer")
+  private _onMetadataChange(): void { // For Spector.js
+    this.metadata.technique = this.technique;
+    this.metadata.layer = this.layer;
   }
 }

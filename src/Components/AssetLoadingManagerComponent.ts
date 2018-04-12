@@ -1,56 +1,60 @@
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
 import DefaultLoaderChunk from "raw-loader!../Asset/defaultLoader.html";
 import AssetLoader from "../Asset/AssetLoader";
-
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
+import BooleanConverter from "grimoirejs/ref/Converter/BooleanConverter";
+import NumberConverter from "grimoirejs/ref/Converter/NumberConverter";
+import { IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
+import Identity from "grimoirejs/ref/Core/Identity";
+import { attribute } from "grimoirejs/ref/Core/Decorator";
 /**
  * アセットの読み込みを司るコンポーネント。ローダーの表示などを司る。
  */
 export default class AssetLoadingManagerComponent extends Component {
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
-    /**
-     * ローディング状況(読み取り専用)
-     *
-     * 現在の読み込み状況を0-1で表す。
-     */
-    loadingProgress: {
-      default: 0,
-      converter: "Number",
-    },
-    /**
-     * リソースの読み込み完了後に、自動的にレンダリングループを開始するかどうか
-     */
-    autoStart: {
-      default: true,
-      converter: "Boolean",
-    },
-    /**
-     * リソースのロード時にローディング画面を表示するかどうか
-     */
-    enableLoader: {
-      default: true,
-      converter: "Boolean",
-    },
-  };
+  public static componentName = "AssetLoadingManager";
 
+  /**
+   * Loading progress of entire assets triggered by this GOML structure.
+   * By default, AssetLoader will wait for completing asset load until loadingProgress filled as 1.
+   * This property is readonly property.
+   */
+  @attribute(NumberConverter, 0)
+  public loadingProgress!: number;
+
+  /**
+   * Automatically assign true to LoopManager#loopEnabled or not.
+   * You can specify this attribute on initialization timing only.
+   */
+  @attribute(BooleanConverter, true)
+  public autoStart!: boolean;
+
+  /**
+   * Flag to show loader screen or not.
+   */
+  @attribute(BooleanConverter, true)
+  public enableLoader!: boolean;
+
+  /**
+   * Asset loader referrence.
+   */
   public loader: AssetLoader = new AssetLoader();
 
-  private _documentResolver: () => void;
+  private _documentResolver!: () => void;
 
-  private _loaderElement: Element;
+  private _loaderElement!: Element;
 
-  public $treeInitialized(): void {
-    if (this.getAttribute("autoStart")) {
+  protected $treeInitialized(): void {
+    if (this.autoStart) {
       this._autoStart();
     }
     this._documentResolver();
   }
 
-  public $awake(): void {
-    this.companion.set(this.name.ns.for("loader"), this.loader);
+  protected $awake(): void {
+    this.companion.set(this.identity.ns.for("loader"), this.loader);
     this.loader.register(new Promise((resolve) => { this._documentResolver = resolve; }), this);
     const canvasContainer = this.companion.get("canvasContainer") as HTMLDivElement;
-    if (!this.getAttribute("enableLoader")) {
+    if (!this.enableLoader) {
       return;
     }
     const loaderContainer = document.createElement("div");
@@ -65,7 +69,7 @@ export default class AssetLoadingManagerComponent extends Component {
     if (this._loaderElement) {
       this._loaderElement.remove();
     }
-    this.node.emit("asset-load-completed");
+    this.node.emit("asset-load-completed", null);
     this.tree("goml").setAttribute("loopEnabled", true);
     const canvas = this.companion.get("canvasElement") as HTMLCanvasElement;
     canvas.classList.add("gr-resource-loaded-canvas");

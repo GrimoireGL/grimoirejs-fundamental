@@ -16,7 +16,7 @@ class SortParser {
       });
     } else {
       return SortParser._parse(source).then(v => {
-        SortParser._parsedCache[source] = v;
+        SortParser._parsedCache[sourceHash] = v;
         return v;
       });
     }
@@ -54,11 +54,13 @@ class SortParser {
 
   private static _parsePassSource(passSource: string): IPassRecipe {
     const shaderSource = SortTransformUtility.removePreferences(passSource);
+    const extensions = SortTransformUtility.parseExtensions(passSource);
     const attributes = SortTransformUtility.parseVariables(passSource, "attribute");
     const uniforms = SortTransformUtility.parseVariables(passSource, "uniform");
     const macros = SortTransformUtility.parseMacros(passSource);
     const states = SortTransformUtility.parsePreferences(passSource);
     return {
+      extensions,
       fragment: shaderSource,
       vertex: shaderSource,
       attributes,

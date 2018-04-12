@@ -1,30 +1,33 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import RenderBuffer from "../../Resource/RenderBuffer";
 import RenderingBufferResourceRegistry from "../../Resource/RenderingTarget/RenderingBufferResourceRegistry";
 import ResizableResourceUpdator from "./ResizableResourceUpdator";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
+import { attribute } from "grimoirejs/ref/Core/Decorator";
+
 export default class RenderBufferComponent extends ResizableResourceUpdator {
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
-    name: {
-      converter: "String",
-      default: null,
-    },
-  };
+  public static componentName = "RenderBufferComponent";
 
-  public buffer: RenderBuffer;
+  @attribute(StringConverter, null)
+  public bufferName!: string;
 
-  public $awake(): void {
+  public buffer!: RenderBuffer;
+
+  protected $awake(): void {
     super.$awake();
-    this.buffer = new RenderBuffer(this.companion.get("gl"));
+    const gl = this.companion.get("gl")!;
+    this.buffer = new RenderBuffer(gl);
     this.buffer.update(WebGLRenderingContext.DEPTH_COMPONENT16, 1, 1);
-    const name = this.getAttribute("name");
+    const name = this.bufferName;
     if (name) {
-      RenderingBufferResourceRegistry.get(this.companion.get("gl")).setDepthBuffer(name, this.buffer);
+      RenderingBufferResourceRegistry.get(gl).setDepthBuffer(name, this.buffer);
     }
   }
 
-  public $unmount(): void {
+  protected $unmount(): void {
     this.buffer.destroy();
-    this.buffer = null;
+    delete this.buffer;
   }
 
   public resize(width: number, height: number): void {

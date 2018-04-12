@@ -1,4 +1,5 @@
 import "../TestInit";
+import "../JsDOMAsync";
 // tslint:disable-next-line:ordered-imports
 import test from "ava";
 import Texture2D from "../../src/Resource/Texture2D";

@@ -1,66 +1,68 @@
 import GrimoireInterface from "grimoirejs";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Material from "../Material/Material";
 import DrawPriorty from "../SceneRenderer/DrawPriorty";
 import MaterialComponent from "./MaterialComponent";
 import MaterialContainerBase from "./MaterialContainerBase";
-
+import { IConverterDeclaration, IStandardConverterDeclaration, ILazyConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import { BooleanConverter } from "grimoirejs/ref/Converter/BooleanConverter";
+import { MaterialConverter } from "../Converters/MaterialConverter";
+import { LazyAttribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute";
+import Identity from "grimoirejs/ref/Core/Identity";
+import IMaterialResolutionResult from "../Material/MaterialResolutionResult";
+import { attribute, watch, overrideGetter, companion } from "grimoirejs/ref/Core/Decorator";
+import MaterialFactory from "../Material/MaterialFactory";
 /**
  * マテリアルとマテリアルへの属性を管理するためのコンポーネント
  * このコンポーネントは将来的に`MeshRenderer`と統合されます。
  * 指定されたマテリアルの初期化の管理や、マテリアルによって動的に追加される属性の管理を行います、
  */
-export default class MaterialContainerComponent extends MaterialContainerBase {
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
-    /**
-     * 対象のマテリアル
-     */
-    material: {
-      converter: "Material",
-      default: "new(unlit)",
-      componentBoundTo: "_materialComponent", // When the material was specified with the other material tag, this field would be assigned.
-    },
-    /**
-     * 描画順序
-     *
-     * デフォルトの状態では、マテリアルから読み込んだ描画順序設定を用います
-     */
-    drawOrder: {
-      converter: "String",
-      default: "Auto",
-    },
-    transparent: {
-      converter: "Boolean",
-      default: true,
-    },
-  };
+export default class MaterialContainer extends MaterialContainerBase {
+  public static componentName = "MaterialContainer";
 
-  public static rewriteDefaultMaterial(materialName: string): void {
-    if (materialName !== MaterialContainerComponent._defaultMaterial) {
-      MaterialContainerComponent._defaultMaterial = materialName;
-      GrimoireInterface.componentDeclarations.get("MaterialContainer").attributes["material"].default = `new(${materialName})`;
-    }
-  }
+  /**
+   * Material referrence.
+   * This can be null or undefined because of promise attribute.
+   */
+  @overrideGetter((v: IMaterialResolutionResult) => v ? v.material : null)
+  @attribute(MaterialConverter, null)
+  public material!: Material;
+  /**
+   * Draw order of this material.
+   * If you specify Auto, material will use default material draw order loaded from .sort material.
+   */
+  @attribute(StringConverter, "Auto")
+  public drawOrder!: string;
 
-  public static get defaultMaterial(): string {
-    return this._defaultMaterial;
-  }
+  /**
+   * Transparent or not.
+   * This flag will be used for calculating draw order that needs to be determined with transparency.
+   * If you need to display large object without transparency, you should make this flag false to prevent the other small transparency object rendered correctly.
+   */
+  @attribute(BooleanConverter, true)
+  public transparent!: boolean;
 
-  private static _defaultMaterial = "unlit";
+  private _attributeExposed: boolean = false;
+
+  private _internalMaterialSet: boolean = false;
+
+  @companion("gl")
+  private gl!: WebGLRenderingContext;
 
   public getDrawPriorty(depth: number, technique: string): number {
-    if (!this.materialReady && !this.isActive) { // If material was not ready
+    if (!this.isActive) { // If material was not ready
       return Number.MAX_VALUE;
     }
     let orderCriteria;
-    if (this._drawOrder === "Auto") {
+    if (this.drawOrder === "Auto") {
       if (this.material.techniques[technique].drawOrder === "Auto") {
-        orderCriteria = DrawPriorty[this._transparent ? "UseAlpha" : "NoAlpha"];
+        orderCriteria = DrawPriorty[this.transparent ? "UseAlpha" : "NoAlpha"];
       } else {
         orderCriteria = DrawPriorty[this.material.techniques[technique].drawOrder];
       }
     } else {
-      orderCriteria = DrawPriorty[this._drawOrder];
+      orderCriteria = DrawPriorty[this.drawOrder];
     }
     if (orderCriteria === void 0) {
       throw new Error(`Specified drawing order "${this.material.techniques[technique].drawOrder}" is not defined`);
@@ -71,71 +73,33 @@ export default class MaterialContainerComponent extends MaterialContainerBase {
       return depth / 10000 * orderCriteria.priorty;
     }
   }
-
-  public material: Material;
-
-  public materialArgs: { [key: string]: any; } = {};
-
-  public materialReady = false;
-
-  public useMaterial = false;
-
-  private _materialComponent: MaterialComponent;
-
-  private _drawOrder: string;
-
-  private _registeredAttributes: boolean;
-
-  private _transparent: boolean;
-
-  public $mount(): void {
-    this.getAttributeRaw("material").watch(this._onMaterialChanged.bind(this));
-    this.__registerAssetLoading(this._onMaterialChanged());
-    this.getAttributeRaw("drawOrder").boundTo("_drawOrder");
-    this.getAttributeRaw("transparent").boundTo("_transparent");
-  }
-
   /**
    * When the material attribute is changed.
    */
-  private async _onMaterialChanged(): Promise<void> {
-    const materialPromise = this.getAttribute("material") as Promise<Material>;
-    if (materialPromise === null) {
-      this.useMaterial = false;
-      return; // When specified material is null
-    }
-    this.useMaterial = true;
-    if (this._registeredAttributes) {
-      this.__removeExposedMaterialParameters();
-    }
-    if (!this._materialComponent) { // the material must be instanciated by attribute.
-      await this._prepareInternalMaterial(materialPromise);
-    } else {
-      await this._prepareExternalMaterial(materialPromise);
-    }
-  }
-
-  /**
-   * Resolve materials only when the material required from external material component.
-   * @return {Promise<void>} [description]
-   */
-  private async _prepareExternalMaterial(materialPromise: Promise<Material>): Promise<void> {
-    const material = await materialPromise; // waiting for material load completion
-    this.material = material;
-    this.materialArgs = this._materialComponent.materialArgs;
-    this.materialReady = true;
-  }
-
-  private async _prepareInternalMaterial(materialPromise: Promise<Material>): Promise<void> {
-    // obtain promise of instanciating material
-    if (!materialPromise) {
+  @watch("material", true)
+  private async _onMaterialChanged(materialResolutionResult: IMaterialResolutionResult, old: IMaterialResolutionResult): Promise<void> {
+    if (materialResolutionResult === old) {
       return;
     }
-    const material = await materialPromise; // waiting for material load completion
-    this.material = material;
-    this.__exposeMaterialParameters(this.material);
-    this._registeredAttributes = true;
-    this.materialReady = true;
+    if (this._internalMaterialSet) { // For prevent watch handler being called recursively
+      this._internalMaterialSet = false;
+      return;
+    }
+    if (this._attributeExposed) { // Removing attributes that was registered by previous material
+      this.__removeExposedMaterialParameters(); // TODO: Fix bug of replacing material
+      this._attributeExposed = false;
+    }
+    if (materialResolutionResult === null) {
+      const mat = await MaterialFactory.get(this.gl).instanciateDefault();
+      this._internalMaterialSet = true;
+      this.material = mat;
+      this.__exposeMaterialParameters(mat);
+      this._attributeExposed = true;
+      return; // When specified material is null
+    }
+    if (!materialResolutionResult.external) { // the material must be instanciated by attribute.
+      this.__exposeMaterialParameters(materialResolutionResult.material);
+      this._attributeExposed = true;
+    }
   }
-
 }

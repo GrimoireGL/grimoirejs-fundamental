@@ -1,6 +1,7 @@
 import GLRelatedRegistryBase from "../GLRelatedRegistryBase";
 import Renderbuffer from "../RenderBuffer";
 import Texture2D from "../Texture2D";
+import TextureCube from "../TextureCube";
 /**
  * =
  */
@@ -15,7 +16,7 @@ export default class RenderingBufferResourceRegistry extends GLRelatedRegistryBa
         return this.__get(gl, RenderingBufferResourceRegistry);
     }
 
-    public backbuffers: { [key: string]: Texture2D } = {};
+    public backbuffers: { [key: string]: Texture2D | TextureCube } = {};
 
     public depthBuffers: { [key: string]: Renderbuffer } = {};
 
@@ -23,11 +24,11 @@ export default class RenderingBufferResourceRegistry extends GLRelatedRegistryBa
         super();
     }
 
-    public setBackbuffer(name: string, backbuffer: Texture2D): void {
+    public setBackbuffer(name: string, backbuffer: Texture2D | TextureCube): void {
         this.backbuffers[name] = backbuffer;
     }
 
-    public getBackbuffer(name: string): Texture2D {
+    public getBackbuffer(name: string): Texture2D | TextureCube {
         return this.backbuffers[name];
     }
 

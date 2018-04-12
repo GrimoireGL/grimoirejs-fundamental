@@ -1,32 +1,26 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import ImageResolver from "../../Asset/ImageResolver";
+import Texture2D from "../../Resource/Texture2D";
 import TextureUpdatorComponentBase from "./TextureUpdatorComponentBase";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
+import { attribute, watch } from "grimoirejs/ref/Core/Decorator";
 
-export default class ImageTextureUpdator extends TextureUpdatorComponentBase {
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
-    src: {
-      converter: "String",
-      default: null,
-    },
-  };
+/** 
+ * Updator that use image resource as texture source.
+*/
+export default class ImageTextureUpdator extends TextureUpdatorComponentBase<Texture2D> {
+  public static componentName = "ImageTextureUpdator";
 
-  public flipY: boolean;
+  /**
+   * Source url of image.
+   * Base64 encoded image is also available as resource.
+   */
+  @attribute(StringConverter, null)
+  public src!: string;
 
-  public premultipliedAlpha: boolean;
-
-  public src: string;
-
-  private _resolvedImage: HTMLImageElement;
-
-  public $awake() {
-    super.$awake();
-    this.__bindAttributes();
-    this.getAttributeRaw("src").watch((v: string) => {
-      if (v !== null) {
-        this._loadTask(v);
-      }
-    }, true);
-  }
+  private _resolvedImage!: HTMLImageElement;
 
   public resize(width: number, height: number): void {
     if (this._resolvedImage) {
@@ -36,7 +30,11 @@ export default class ImageTextureUpdator extends TextureUpdatorComponentBase {
     }
   }
 
+  @watch("src", true)
   private async _loadTask(src: string): Promise<void> {
+    if (src === null) {
+      return;
+    }
     const image = await ImageResolver.resolve(src);
     this._resolvedImage = image;
     this._updateTexture();

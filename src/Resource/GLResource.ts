@@ -10,13 +10,13 @@ abstract class GLResource<T> {
 
   public destroyed = false;
 
-  public validPromise: Promise<GLResource<T>>;
-
-  private _valid: boolean;
-
   private _metadata: { [key: string]: any } = {};
 
-  private _validResolve: (r: GLResource<T>) => void;
+  public validPromise!: Promise<GLResource<T>>;
+
+  private _valid!: boolean;
+
+  private _validResolve!: (r: GLResource<T>) => void;
 
   public get valid(): boolean {
     return this._valid;
@@ -28,6 +28,7 @@ abstract class GLResource<T> {
     }
     this._valid = val;
     if (this._valid) {
+      this.__onValid();
       this._validResolve(this);
     } else {
       this.validPromise = new Promise((resolve) => {
@@ -49,7 +50,7 @@ abstract class GLResource<T> {
     }
     this.index = GLResource._maxIndex++;
     if (GrimoireJS.debug) {
-      resourceReference["__SPECTOR_Metadata"] = this._metadata;
+      (resourceReference as any)["__SPECTOR_Metadata"] = this._metadata;
       this.setMetadata("GL Resource Index", this.index);
     }
     this.valid = false;
@@ -66,6 +67,10 @@ abstract class GLResource<T> {
 
   public destroy(): void {
     this.destroyed = true;
+  }
+
+  protected __onValid(): void {
+    return;
   }
 }
 

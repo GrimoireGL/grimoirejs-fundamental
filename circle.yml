@@ -2,14 +2,18 @@ general:
   branches:
     ignore:
       - gh-pages
+checkout:
+  post:
+    - git submodule init
+    - git submodule update
 machine:
   timezone: Asia/Tokyo
   node:
-    version: 8.5.0
+    version: 9.3.0
 test:
   override:
     - npm run build -- --env.prod && npm test
-    - sh -x shell/e2e.sh
+    - sh -x common/e2e.sh
   post:
     - sh release.sh
 deployment:

@@ -1,4 +1,4 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import { IAttributeDeclaration, IStandardAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Geometry from "../Geometry/Geometry";
 import ManagedProgram from "../Resource/ManagedProgram";
 import GLStateConfigurator from "./GLStateConfigurator";
@@ -10,6 +10,7 @@ import IPassRecipe from "./Schema/IPassRecipe";
 import Technique from "./Technique";
 import UniformResolverContainer from "./UniformResolverContainer";
 import UniformResolverRegistry from "./UniformResolverRegistry";
+import GLExtRequestor from "../Resource/GLExtRequestor";
 /**
  * Pass provides single draw call for a geometry.
  * Containing arguments of uniform variables and gl state configruations for each drawing call.
@@ -36,7 +37,7 @@ export default class Pass {
    * @param  {IPassRecipe} publicpassRecipe [description]
    * @return {[type]}                       [description]
    */
-  public argumentDeclarations: { [key: string]: IAttributeDeclaration } = {};
+  public argumentDeclarations: { [key: string]: IStandardAttributeDeclaration } = {};
 
   /**
    * Values of materila arguments.
@@ -52,7 +53,7 @@ export default class Pass {
 
   private _gl: WebGLRenderingContext;
 
-  private _argumentInitialized: boolean;
+  private _argumentInitialized: boolean = false;
 
   constructor(public technique: Technique, public passRecipe: IPassRecipe) {
     this._uniformResolvers = UniformResolverRegistry.generateRegisterers(this, passRecipe);
@@ -60,7 +61,7 @@ export default class Pass {
     const factory = MaterialFactory.get(this._gl);
     const macroRegister = factory.macro;
     this._dynamicStateResolver = GLStateConfigurator.getDynamicStateResolver(this);
-    this.program = new PassProgram(this._gl, passRecipe.vertex, passRecipe.fragment);
+    this.program = new PassProgram(this._gl, passRecipe.vertex, passRecipe.fragment, passRecipe.extensions);
     // register macro
     for (const key in passRecipe.macros) {
       const macro = passRecipe.macros[key];
@@ -82,7 +83,7 @@ export default class Pass {
       } else if (macro.target === "refer") {
         this.program.setMacro(macro.macroName, macro.value + "");
         macroRegister.watch(macro.macroName, (val, immediate) => {
-            this.program.setMacro(macro.macroName, val);
+          this.program.setMacro(macro.macroName, val);
         }, true);
       }
     }
@@ -96,7 +97,7 @@ export default class Pass {
     const p = this.program.getProgram(args.geometry);
     p.use();
     this._uniformResolvers.resolve(p.uniforms, args);
-    GLStateConfigurator.configureForPass(this._gl, this.passRecipe); // configure for gl states
+    GLStateConfigurator.get(this._gl).configureForPass(this.passRecipe); // configure for gl states
     this._dynamicStateResolver(this._gl, args);
     // draw actually
     for (const key in this.passRecipe.attributes) {
@@ -110,7 +111,7 @@ export default class Pass {
    * Append an argument as pass variable.
    * This is mainly used for resolving uniform stages.
    */
-  public addArgument(name: string, val: IAttributeDeclaration): void {
+  public addArgument(name: string, val: IStandardAttributeDeclaration): void {
     if (this._argumentInitialized) {
       throw new Error("setArgument cant be called for initialized pass");
     }

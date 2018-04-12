@@ -1,9 +1,9 @@
-import Namespace from "grimoirejs/ref/Base/Namespace";
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Namespace from "grimoirejs/ref/Core/Namespace";
+import Component from "grimoirejs/ref/Core/Component";
 import Timer from "../Util/Timer";
 import AssetLoadingManager from "./AssetLoadingManagerComponent";
 import LoopManager from "./LoopManagerComponent";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 type TimerCoroutine = GeneratorFunction;
 type CoroutineTuple = { coroutine: Iterator<number>; next: number; container: Component; tag?: string | symbol };
 
@@ -39,9 +39,9 @@ class CoroutineRegistry {
         }
       }
     });
-    if (removeTarget) { // remove actually
+    if (removeTarget!) { // remove actually
       // remove completed tasks
-      removeTarget.forEach(f => {
+      removeTarget!.forEach(f => {
         const i = this.coroutines.indexOf(f);
         this.coroutines.splice(i, 1);
       });
@@ -79,13 +79,15 @@ class CoroutineRegistry {
     });
   }
 }
-
+/**
+ * Basic component provides useful methods for creating components.
+ * 
+ */
 export default class BasicComponent extends Component {
+  public static componentName = "BasicComponent";
+  private _loopManagerBackingStore!: LoopManager;
 
-  public static attributes: { [name: string]: IAttributeDeclaration } = {};
-  private _loopManagerBackingStore: LoopManager;
-
-  private _assetLoadingManagerBackingStore: AssetLoadingManager;
+  private _assetLoadingManagerBackingStore!: AssetLoadingManager;
 
   /**
    * Getter for loop manager used for loop mamnagement
@@ -93,7 +95,11 @@ export default class BasicComponent extends Component {
    */
   public get loopManager(): LoopManager {
     if (!this._loopManagerBackingStore) {
-      this._loopManagerBackingStore = this.node.getComponentInAncestor(LoopManager);
+      const lm = this.node.getComponentInAncestor(LoopManager);
+      if (!lm) {
+        throw new Error("LoopManager is not found.");
+      }
+      this._loopManagerBackingStore = lm;
     }
     return this._loopManagerBackingStore;
   }
@@ -103,7 +109,11 @@ export default class BasicComponent extends Component {
    */
   public get assetLoadingManager(): AssetLoadingManager {
     if (!this._assetLoadingManagerBackingStore) {
-      this._assetLoadingManagerBackingStore = this.node.getComponentInAncestor(AssetLoadingManager);
+      const alm = this.node.getComponentInAncestor(AssetLoadingManager);
+      if (!alm) {
+        throw new Error("AssetLoadingManager is not found.")
+      }
+      this._assetLoadingManagerBackingStore = alm;
     }
     return this._assetLoadingManagerBackingStore;
   }
@@ -119,7 +129,7 @@ export default class BasicComponent extends Component {
     if (!coroutines) {
       coroutines = new CoroutineRegistry();
       this.loopManager.register((t: Timer) => coroutines.callCoroutine(t.time, t), 100);
-      this.companion.set(Namespace.define(this.node.name.ns.qualifiedName).for("timer-coroutine"), coroutines);
+      this.companion.set(Namespace.define(this.node.identity.ns.qualifiedName).for("timer-coroutine"), coroutines);
     }
     coroutines.register(this, coroutine, tag);
   }
@@ -133,7 +143,7 @@ export default class BasicComponent extends Component {
     if (!coroutines) {
       coroutines = new CoroutineRegistry();
       this.loopManager.register((t: Timer) => coroutines.callCoroutine(t.frameCount, t), 100);
-      this.companion.set(Namespace.define(this.node.name.ns.qualifiedName).for("frame-coroutine"), coroutines);
+      this.companion.set(Namespace.define(this.node.identity.ns.qualifiedName).for("frame-coroutine"), coroutines);
     }
     coroutines.register(this, coroutine, tag);
   }
@@ -145,7 +155,7 @@ export default class BasicComponent extends Component {
    */
   protected __invoke(method: (timer: Timer) => void, timeInMillis: number): void {
     const _that = this;
-    this.__registerTimerCoroutine(function*() {
+    this.__registerTimerCoroutine(function* () {
       const timer = yield timeInMillis;
       method.call(_that, timer as Timer);
     });

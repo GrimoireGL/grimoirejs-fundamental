@@ -1,27 +1,47 @@
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Material from "../Material/Material";
 import MaterialFactory from "../Material/MaterialFactory";
 import MaterialContainerBase from "./MaterialContainerBase";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import { IConverterDeclaration, IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
+import Identity from "grimoirejs/ref/Core/Identity";
+import { attribute } from "grimoirejs/ref/Core/Decorator";
+/** 
+ * Material component holds reference of material instance.
+ * This is used in <material/> tag.
+ * This component can contain additional attributes registered by shader.
+*/
+
 export default class MaterialComponent extends MaterialContainerBase {
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
-        type: {
-            converter: "String",
-            default: null,
-        },
-    };
+    public static componentName = "Material"
 
-    public materialPromise: Promise<Material>;
+    /**
+     * Type of material to instanciate
+     */
+    @attribute(StringConverter, null)
+    public type!: string;
+    /**
+     * Promise of material.
+     * If this object is pending, the material is not initialized yet.
+     */
+    public materialPromise!: Promise<Material>;
 
-    public material: Material;
+    /**
+     * Reference to material.
+     * Make sure this material component is ready. If not, material will be undefined.
+     */
+    public material!: Material;
 
-    public ready: boolean;
+    /**
+     * Flag to check material is initialized.
+     * If this flag is not true, this material is not initialized yet.
+     */
+    public ready!: boolean;
 
-    public materialArgs: { [key: string]: any } = {};
-
-    public $mount(): void {
+    protected $mount(): void {
         const typeName = this.getAttribute("type");
         if (typeName && typeof typeName === "string") {
-            const materialFactory = MaterialFactory.get(this.companion.get("gl"));
+            const materialFactory = MaterialFactory.get(this.companion.get("gl")!);
             this.materialPromise = materialFactory.instanciate(typeName);
             this._registerAttributes();
         } else {

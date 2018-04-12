@@ -1,16 +1,18 @@
 import grimoirejs from "grimoirejs";
 import GLM from "grimoirejs-math/ref/GLM";
-import Component from "grimoirejs/ref/Node/Component";
-import GomlNode from "grimoirejs/ref/Node/GomlNode";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import GomlNode from "grimoirejs/ref/Core/GomlNode";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Geometry from "../Geometry/Geometry";
 import IMaterialArgument from "../Material/IMaterialArgument";
 import IRenderable from "../SceneRenderer/IRenderable";
 import IRenderArgument from "../SceneRenderer/IRenderArgument";
 import CameraComponent from "./CameraComponent";
-import MaterialContainerComponent from "./MaterialContainerComponent";
-import SceneComponent from "./SceneComponent";
-import TransformComponent from "./TransformComponent";
+import MaterialContainer from "./MaterialContainerComponent";
+import Scene from "./SceneComponent";
+import Transform from "./TransformComponent";
+import Vector3 from "grimoirejs-math/ref/Vector3";
+import { attribute, component, componentInAncestor } from "grimoirejs/ref/Core/Decorator";
 const { vec3 } = GLM;
 
 /**
@@ -18,130 +20,77 @@ const { vec3 } = GLM;
  * このメッシュが、対象となるノードの`Transform`や描画に用いる`Camera`、マテリアルなどを考慮して実際のレンダリングを行います。
  */
 export default class MeshRenderer extends Component implements IRenderable {
+    public static componentName = "MeshRenderer";
 
     /**
-   * Find scene tag recursively.
-   * @param  {GomlNode}       node [the node to searching currently]
-   * @return {SceneComponent}      [the scene component found]
-   */
-    private static _findContainedScene(node: GomlNode): SceneComponent {
-        if (node.parent) {
-            const scene = node.parent.getComponent(SceneComponent);
-            if (scene) {
-                return scene;
-            } else {
-                return MeshRenderer._findContainedScene(node.parent);
-            }
-        } else {
-            return null;
-        }
-    }
+     * Geometry to be rendered.
+     */
+    @attribute("Geometry", "quad")
+    public geometry!: Geometry;
+    /**
+     * Indexgroup to be rendered.
+     * By default initialization of PRIMITIVE, you can render wireframe by specifying "wireframe".
+     */
+    @attribute("String", "default")
+    private indexGroup!: string;
+    /**
+     * Layer of 3D scene.
+     * This is used for masking during rendering.
+     */
+    @attribute("String", "default")
+    private layer!: string;
 
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
-        /**
-         * 描画に用いる形状データ
-         */
-        geometry: {
-            converter: "Geometry",
-            default: "quad",
-        },
-        /**
-         * 描画に用いるインデックスバッファ名
-         */
-        indexGroup: {
-            converter: "String",
-            default: "default",
-        },
-        /**
-         * このメッシュが属するレイヤー
-         *
-         * 詳しくは`render-scene`ノードを参考にしてください。
-         */
-        layer: {
-            converter: "String",
-            default: "default",
-        },
-        /**
-         * 描画するインデックスの個数
-         *
-         * デフォルトの状態でジオメトリの全インデックスを描画する
-         */
-        drawCount: {
-            converter: "Number",
-            default: Number.MAX_VALUE,
-        },
-        /**
-         * 描画するジオメトリのインデックスのオフセット
-         */
-        drawOffset: {
-            converter: "Number",
-            default: 0,
-        },
-    };
-
-    public index: number;
     public renderArgs: { [key: string]: any } = {};
-    public geometry: Promise<Geometry>;
-    public geometryInstance: Geometry;
-    private indexGroup: string;
-    private layer: string;
-    private drawOffset: number;
-    private drawCount: number;
-    private _materialContainer: MaterialContainerComponent;
-    private _transformComponent: TransformComponent;
-    private _containedScene: SceneComponent;
 
-    private _priortyCalcCache = new Float32Array(3);
+    public index!: number;
+
+    @component(MaterialContainer)
+    private _materialContainer!: MaterialContainer;
+    @component(Transform)
+    private _transformComponent!: Transform;
+    @componentInAncestor(Scene)
+    private _containedScene!: Scene;
+
+    private _priortyCalcCache = new Vector3(0, 0, 0);
 
     public getRenderingPriorty(camera: CameraComponent, technique: string): number {
-        if (!this.geometryInstance || !this._materialContainer.material.techniques[technique]) {
+        if (!this.geometry || this._materialContainer.getAttributeRaw("material").isPending || !this._materialContainer.material || !this._materialContainer.material.techniques[technique]) {
             return Number.NEGATIVE_INFINITY;
         }
-        vec3.add(this._priortyCalcCache, camera.transform.globalPosition.rawElements, this.geometryInstance.aabb.Center.rawElements);
-        vec3.sub(this._priortyCalcCache, this._priortyCalcCache, this._transformComponent.globalPosition.rawElements);
-        return this._materialContainer.getDrawPriorty(vec3.sqrLen(this._priortyCalcCache), technique); // Obtains distance between camera and center of aabb
+        vec3.add(this._priortyCalcCache.rawElements, camera.transform.globalPosition.rawElements, this.geometry.aabb.Center.rawElements);
+        vec3.sub(this._priortyCalcCache.rawElements, this._priortyCalcCache.rawElements, this._transformComponent.globalPosition.rawElements);
+        return this._materialContainer.getDrawPriorty(vec3.sqrLen(this._priortyCalcCache.rawElements), technique); // Obtains distance between camera and center of aabb
     }
 
-    public $awake(): void {
-        this.__bindAttributes();
-        this.getAttributeRaw("geometry").watch(async() => {
-            this.geometryInstance = await this.geometry;
-        }, true);
+    protected $mount(): void {
+        this._containedScene.queueRegistry.addRenderable(this);
     }
 
-    public $mount(): void {
-        this._transformComponent = this.node.getComponent(TransformComponent);
-        this._materialContainer = this.node.getComponent(MaterialContainerComponent);
-        this._containedScene = MeshRenderer._findContainedScene(this.node);
-        this._containedScene.queueRegistory.addRenderable(this);
-    }
-
-    public $unmount(): void {
-        this._containedScene.queueRegistory.removeRenderable(this);
+    protected $unmount(): void {
+        this._containedScene.queueRegistry.removeRenderable(this);
     }
 
     public render(args: IRenderArgument): void {
         if (!this.node.isActive || !this.enabled || this.layer !== args.layer) {
             return;
         }
-        if (!this.geometryInstance || (!args.material && !this._materialContainer.material)) {
+        if (!this.geometry || this._materialContainer.getAttributeRaw("material").isPending || !this._materialContainer.material) {
             return; // material is not instanciated yet.
         }
         const renderArgs = {
+            hierarchicalDescription: this._transformComponent.hierarchicalDescription,
             indexGroup: this.indexGroup,
-            geometry: this.geometryInstance,
+            geometry: this.geometry,
             camera: args.camera,
             transform: this._transformComponent,
             viewport: args.viewport,
-            drawCount: this.drawCount,
-            drawOffset: this.drawOffset,
             sceneDescription: args.sceneDescription,
             rendererDescription: args.rendererDescription,
             technique: args.technique,
             renderable: this,
         } as IMaterialArgument;
-        if (grimoirejs.debug && window["spector"]) {
-            window["spector"].setMarker(`Mesh renderer:${this.node.id}`);
+        if (grimoirejs.debug && (window as any)["spector"]) {
+            (window as any)["spector"].setMarker(`Mesh renderer:${this.node.uniqueKey}`);
         }
         this._materialContainer.material.draw(renderArgs);
         this.node.emit("render", args);
