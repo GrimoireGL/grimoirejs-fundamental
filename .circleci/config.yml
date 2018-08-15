@@ -66,9 +66,9 @@ jobs:
       - run: pip install awscli --upgrade --user
       - run: echo 'export PATH=/home/circleci/.local/bin:$PATH' >> $BASH_ENV
       - run: sh ./common/e2e.sh
-      - run: mkdir -p /tmp/artifacts && mv register /tmp/artifacts/
       - store_artifacts:
-          path: /tmp/artifacts/register
+          path: ./register
+          destination: /register
   npm_release:
     docker:
       - image: circleci/node:9.6
@@ -103,12 +103,12 @@ jobs:
       - run: pip install awscli --upgrade --user
       - run: echo 'export PATH=/home/circleci/.local/bin:$PATH' >> $BASH_ENV
       - run: npm run doc
-      - run: mkdir -p /tmp/artifacts && mv docs /tmp/artifacts/
       - store_artifacts:
-          path: /tmp/artifacts/docs
+          path: ./docs
+          destination: /docs
       - run:
           name: document deploy
-          command: aws s3 cp /tmp/artifacts/docs/ s3://api.grimoire.gl/$CIRCLE_PROJECT_REPONAME --recursive --acl public-read
+          command: aws s3 cp ./docs/ s3://api.grimoire.gl/$CIRCLE_PROJECT_REPONAME --recursive --acl public-read
 
 workflows:
   version: 2
