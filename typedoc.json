@@ -1,9 +1,0 @@
-{
-  "mode": "file",
-  "moduleResolution": "node",
-  "tsconfig": "tsconfig.json",
-  "includeDeclarations": true,
-  "ignoreCompilerErrors": true,
-  "excludePrivate": true,
-  "excludeExternals": true
-}

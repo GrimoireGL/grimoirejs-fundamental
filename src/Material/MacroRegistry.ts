@@ -2,7 +2,7 @@ import DefaultMacro from "./Defaults/DefaultMacro";
 /**
  * Manage macros which would be appended head of all shaders grimoire.js would load.
  */
-export default class MacroRegistory {
+export default class MacroRegistry {
 
   /**
    * The map of macro.
@@ -12,11 +12,11 @@ export default class MacroRegistory {
   /**
    * Handlers functions for changing macro.
    */
-  private _observers: {[macroName: string]: ((value: string, isImmediateCall: boolean) => void)[]} = {};
+  private _observers: { [macroName: string]: ((value: string, isImmediateCall: boolean) => void)[] } = {};
 
   constructor() {
     for (const key in DefaultMacro) {
-      this.setValue(key, DefaultMacro[key]);
+      this.setValue(key, (DefaultMacro as any)[key]);
     }
   }
 
@@ -25,10 +25,7 @@ export default class MacroRegistory {
    * @param {string}    key [description]
    * @param {string =   null}        val [description]
    */
-  public setValue(key: string, val: string = null): void {
-    if (val === null) {
-      val = "";
-    }
+  public setValue(key: string, val: string = ""): void {
     if (this._macro[key] !== val) {
       this._macro[key] = val;
       if (!this._observers[key]) {
@@ -47,7 +44,7 @@ export default class MacroRegistory {
     const macro = this._macro[key];
     if (macro === null) {
       return "";
-    }else {
+    } else {
       return macro;
     }
   }
@@ -74,6 +71,7 @@ export default class MacroRegistory {
         return true;
       }
     }
+    return false;
   }
 
   private _notifyMacroChanged(key: string, value: string): void {

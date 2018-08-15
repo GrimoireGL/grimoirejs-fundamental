@@ -1,4 +1,5 @@
 import Texture2D from "../../Resource/Texture2D";
+import TextureCube from "../../Resource/TextureCube";
 import UniformProxy from "../../Resource/UniformProxy";
 import IMaterialArgument from "../IMaterialArgument";
 import Material from "../Material";
@@ -7,11 +8,16 @@ import PassProgram from "../PassProgram";
 import IVariableInfo from "../Schema/IVariableInfo";
 import Technique from "../Technique";
 import TextureReference from "../TextureReference";
-import UniformResolverRegistry from "../UniformResolverRegistry";
+import UniformResolverRegistry, { IUniformRegistererResult } from "../UniformResolverRegistry";
 const gl = WebGLRenderingContext;
+interface UserValueRegisterer {
+  (valInfo: IVariableInfo, pass: Pass): IUniformRegistererResult;
+}
+
+type TypeBasedUserValueRegisterer = { [key: string]: UserValueRegisterer };
 const _userValueRegisterers = {
-  array: {},
-  single: {},
+  array: {} as TypeBasedUserValueRegisterer,
+  single: {} as TypeBasedUserValueRegisterer,
 };
 
 UniformResolverRegistry.add("USER_VALUE", (valInfo: IVariableInfo, pass: Pass, technique: Technique, material: Material) => {
@@ -30,19 +36,19 @@ UniformResolverRegistry.add("USER_VALUE", (valInfo: IVariableInfo, pass: Pass, t
   return register(valInfo, pass);
 });
 
-function basicRegister(type: number, isArray: boolean, converter: string, defaultValue: any, register: (proxy: UniformProxy, name: string, value, matArg: IMaterialArgument) => void, update?: (valInfo: IVariableInfo, passProgram: PassProgram, n: any, o: any) => void) {
+function basicRegister(type: number, isArray: boolean, converter: string, defaultValue: any, register: (proxy: UniformProxy, name: string, value: any, matArg: IMaterialArgument) => void, update?: (valInfo: IVariableInfo, passProgram: PassProgram, n: any, o: any) => void) {
   let registerTarget;
   if (isArray) {
     registerTarget = _userValueRegisterers.array;
   } else {
     registerTarget = _userValueRegisterers.single;
   }
-  registerTarget[type] = function(valInfo: IVariableInfo, pass: Pass) {
+  registerTarget[type] = function (valInfo: IVariableInfo, pass: Pass) {
     pass.addArgument(valInfo.name, {
       converter,
       default: valInfo.attributes["default"] ? valInfo.attributes["default"] : defaultValue,
     });
-    const updator = update ? (p, n, o) => {
+    const updator = update ? (p: PassProgram, n: any, o: any) => {
       update(valInfo, p, n, o);
     } : undefined;
     return {
@@ -63,7 +69,7 @@ basicRegister(gl.INT_VEC4, false, "Vector4", [0, 0, 0, 0], (proxy, name, value) 
 basicRegister(gl.FLOAT_VEC2, false, "Vector2", [0, 0], (proxy, name, value) => proxy.uniformVector2(name, value));
 basicRegister(gl.FLOAT_MAT4, true, "Object", [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], (proxy, name, value) => proxy.uniformMatrixArray(name, value));
 basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: TextureReference, args) => {
-  let texture: Texture2D;
+  let texture: Texture2D | null = null;
   if (value) {
     const fetched = value.get();
     if (fetched.valid) {
@@ -71,11 +77,11 @@ basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: Textur
     }
   }
   if (!texture) {
-    texture = Texture2D.defaultTextures.get(proxy.program.gl);
+    texture = Texture2D.defaultTextures.get(proxy.program.gl)!;
   }
   proxy.uniformTexture2D(name, texture);
 }, (v, p, n, o) => {
-  if (v.attributes["flag"] === void 0) return;
+  if (v.attributes["flag"] === void 0) { return; }
   let used = false;
   if (n) {
     if (n.isFunctionalProxy) {
@@ -95,9 +101,37 @@ basicRegister(gl.SAMPLER_2D, false, "Texture", null, (proxy, name, value: Textur
   p.setMacro(v.attributes["flag"], used);
 });
 
+basicRegister(gl.SAMPLER_CUBE, false, "TextureCube", null, (proxy, name, value: TextureCube, args) => {
+  if (value && value.valid) {
+    proxy.uniformTextureCube(name, value);
+  } else {
+    proxy.uniformTextureCube(name, TextureCube.getDefaultTexture(proxy.program.gl));
+  }
+});
+// TODO implement used flag
+//   if (v.attributes["flag"] === void 0) { return; }
+//   let used = false;
+//   if (n) {
+//     if (n.isFunctionalProxy) {
+//       used = true;
+//     } else {
+//       const fetched = n.get({});
+//       if (fetched.valid) {
+//         used = true;
+//       } else {
+//         fetched.validPromise.then(() => {
+//           p.setMacro(v.attributes["flag"], true);
+//           used = true;
+//         });
+//       }
+//     }
+//   }
+//   p.setMacro(v.attributes["flag"], used);
+// });
+
 // vec3 or vec4 should consider the arguments are color or vector.
 
-_userValueRegisterers.single[gl.FLOAT_VEC3] = function(valInfo: IVariableInfo, pass: Pass) {
+_userValueRegisterers.single[gl.FLOAT_VEC3] = function (valInfo: IVariableInfo, pass: Pass) {
   const isColor = valInfo.attributes["type"] === "color";
   const attrDefault = valInfo.attributes["default"];
   const defaultValue = attrDefault ? attrDefault : (isColor ? [1, 1, 1] : [0, 0, 0]);
@@ -114,7 +148,7 @@ _userValueRegisterers.single[gl.FLOAT_VEC3] = function(valInfo: IVariableInfo, p
   };
 };
 
-_userValueRegisterers.single[gl.FLOAT_VEC4] = function(valInfo: IVariableInfo, pass: Pass) {
+_userValueRegisterers.single[gl.FLOAT_VEC4] = function (valInfo: IVariableInfo, pass: Pass) {
   const isColor = valInfo.attributes["type"] === "color";
   const attrDefault = valInfo.attributes["default"];
   const defaultValue = attrDefault ? attrDefault : (isColor ? [1, 1, 1, 1] : [0, 0, 0, 0]);

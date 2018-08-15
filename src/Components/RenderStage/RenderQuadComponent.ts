@@ -1,61 +1,62 @@
 import GrimoireJS from "grimoirejs";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import Geometry from "../../Geometry/Geometry";
 import IMaterialArgument from "../../Material/IMaterialArgument";
 import IRenderRendererMessage from "../../Messages/IRenderRendererMessage";
-import GeometryRegistoryComponent from "../GeometryRegistoryComponent";
-import MaterialContainerComponent from "../MaterialContainerComponent";
+import GeometryRegistryComponent from "../GeometryRegistryComponent";
+import MaterialContainer from "../MaterialContainerComponent";
 import SingleBufferRenderStageBase from "./SingleBufferRenderStageBase";
+import { StringConverter } from "grimoirejs/ref/Converter/StringConverter";
+import Identity from "grimoirejs/ref/Core/Identity";
+import IRenderingTarget from "../../Resource/RenderingTarget/IRenderingTarget";
+import Color4 from "grimoirejs-math/ref/Color4";
+import { LazyAttribute, StandardAttribute } from "grimoirejs/ref/Core/Attribute";
+import { companion, attribute, watch, component } from "grimoirejs/ref/Core/Decorator";
+
+/**
+ * Render to quad.
+ * Typically used for post effect processing.
+ */
 export default class RenderQuadComponent extends SingleBufferRenderStageBase {
-  public static attributes: { [key: string]: IAttributeDeclaration } = {
-    indexGroup: {
-      default: "default",
-      converter: "String",
-    },
-    technique: {
-      default: "default",
-      converter: "String",
-    },
-  };
+  public static componentName = "RenderQuadComponent";
 
-  public technique: string;
+  /**
+   * Technique to be rendered.
+   */
+  @attribute(StringConverter, "default")
+  public technique!: string;
+  /**
+   * Indexgroup of quad to be used.
+   * If specify this attribute as "wireframe", render quad using wireframe.
+   */
+  @attribute(StringConverter, "default")
+  public indexGroup!: string;
 
-  private indexGroup: string;
+  @companion("gl")
+  private _gl!: WebGLRenderingContext;
 
-  private _gl: WebGLRenderingContext;
+  private _quadGeometry!: Geometry;
 
-  private _geom: Geometry;
+  @component(MaterialContainer)
+  private _materialContainer!: MaterialContainer;
 
-  private _materialContainer: MaterialContainerComponent;
-
-  public $awake(): void {
-    super.$awake();
+  protected $awake(): void {
     this.metadata.type = "Quad";
-    this.getAttributeRaw("indexGroup").boundTo("indexGroup");
-    this.getAttributeRaw("technique").boundTo("technique");
-    this.getAttributeRaw("technique").watch((t: string) => {
-      this.metadata.technique = t;
-    }, true);
   }
 
   public async $mount(): Promise<void> {
-    this._gl = this.companion.get("gl");
-    this._materialContainer = this.node.getComponent(MaterialContainerComponent);
-    const geometryRegistry = this.companion.get("GeometryRegistory") as GeometryRegistoryComponent;
-    this._geom = await geometryRegistry.getGeometry("quad");
+    const geometryRegistry = this.companion.get("GeometryRegistry") as GeometryRegistryComponent;
+    this._quadGeometry = await geometryRegistry.getGeometry("quad");
   }
 
-  public $render(args: IRenderRendererMessage): void {
-    if (!this._materialContainer.materialReady || !this._geom) {
-      return;
-    }
-    if (!this.__beforeRender()) {
+  protected $renderRenderStage(args: IRenderRendererMessage): void {
+    if (!this._materialContainer.materialEnabled || !this._quadGeometry || !this.__beforeRender()) {
       return;
     }
     // make rendering argument
     const renderArgs = {
       indexGroup: this.indexGroup,
-      geometry: this._geom,
+      geometry: this._quadGeometry,
       camera: null,
       transform: null,
       viewport: this.out.getViewport(),
@@ -66,5 +67,10 @@ export default class RenderQuadComponent extends SingleBufferRenderStageBase {
     // do render
     this._materialContainer.material.draw(renderArgs);
     this._gl.flush();
+  }
+
+  @watch("technique", true)
+  private _onTechniqueChange(): void {
+    this.metadata.technique = this.technique;
   }
 }

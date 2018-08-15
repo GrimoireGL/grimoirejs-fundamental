@@ -1,261 +1,125 @@
-import GLM from "grimoirejs-math/ref/GLM";
+import GLM from 'grimoirejs-math/ref/GLM';
+import Matrix from 'grimoirejs-math/ref/Matrix';
+import Vector3 from 'grimoirejs-math/ref/Vector3';
+import Vector4 from 'grimoirejs-math/ref/Vector4';
+import { BooleanConverter } from 'grimoirejs/ref/Converter/BooleanConverter';
+import { NumberConverter } from 'grimoirejs/ref/Converter/NumberConverter';
+import Component from 'grimoirejs/ref/Core/Component';
+import { Nullable } from 'grimoirejs/ref/Tool/Types';
+
+import IRenderArgument from '../SceneRenderer/IRenderArgument';
+import RenderQueue from '../SceneRenderer/RenderQueue';
+import Timer from '../Util/Timer';
+import Scene from './SceneComponent';
+import Transform from './TransformComponent';
+import Identity from "grimoirejs/ref/Core/Identity"
+import { IStandardConverterDeclaration } from "grimoirejs/ref/Interface/IAttributeConverterDeclaration";
+import { attribute, watch, component, componentInAncestor } from 'grimoirejs/ref/Core/Decorator';
+
 const { vec3, vec4, mat4 } = GLM;
-import Matrix from "grimoirejs-math/ref/Matrix";
-import Vector3 from "grimoirejs-math/ref/Vector3";
-import Vector4 from "grimoirejs-math/ref/Vector4";
-import Component from "grimoirejs/ref/Node/Component";
-import GomlNode from "grimoirejs/ref/Node/GomlNode";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
-import IRenderArgument from "../SceneRenderer/IRenderArgument";
-import RenderQueue from "../SceneRenderer/RenderQueue";
-import Timer from "../Util/Timer";
-import SceneComponent from "./SceneComponent";
-import TransformComponent from "./TransformComponent";
 /**
  * シーンを描画するカメラのコンポーネント
  * このコンポーネントによって、透視射影や正方射影などの歪みを調整します。
  * また、このコンポーネントの付属するノードに属する`Transoform`によって、カメラの位置や向きが確定されます。
  */
 export default class CameraComponent extends Component {
-
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
-        /**
-         * カメラの視野角。
-         * orthogonal属性がtrueである場合この属性は無視されます。
-         */
-        fovy: {
-            default: "45d",
-            converter: "Angle2D",
-        },
-        /**
-         * カメラに映るもっとも近い距離です。
-         * 0よりも大きく、far属性よりも小さい必要があります。
-         */
-        near: {
-            default: 0.01,
-            converter: "Number",
-        },
-        /**
-         * カメラに映る最も遠い距離です。
-         * near属性よりも大きい必要があります。
-         *
-         * far - nearの値があまりにも大きいと、Z-fighting(手前の物体が奥に表示されたように見えたりする)現象が起きる可能性があります。
-         * この差があまりに大きい時、カメラに映る物体の座標の小さいz座標の値の差は0に近似されます。
-         * 逆にこの値が小さい時は、カメラに映る物体はある程度小さいz座標の差でも問題なく表示されます。
-         * **大切なのは、写したい空間よりも無駄に大きくしないこと。常に適切な値を設定するべきです**
-         */
-        far: {
-            default: 100,
-            converter: "Number",
-        },
-        /**
-         * カメラのアスペクト比
-         * カメラの横の大きさと縦の大きさの比率を指定します。autoAspect属性がtrueである時、毎回のレンダリング時にこの値を自動調整します。
-         */
-        aspect: {
-            default: 1.6,
-            converter: "Number",
-        },
-        /**
-         * アスペクト比の自動調整が有効か否か
-         * レンダリング時にそのビューポートの大きさに応じて比率を自動調整するかどうかを示します。
-         */
-        autoAspect: {
-            default: true,
-            converter: "Boolean",
-        },
-        /**
-         * 正射影時の横の基準サイズ
-         * 正射影時はfovy属性を用いて自動的に写す領域を決定できません。
-         * そのため、横の一片のサイズをこの属性で指定します。**アスペクト比は計算に用いられることに注意してください。**
-         */
-        orthoSize: {
-            default: 100,
-            converter: "Number",
-        },
-        /**
-         * このカメラが正射影かどうか
-         *
-         * この属性がfalseである場合、カメラは透視射影としてシーンをレンダリングします。この場合、レンダリング結果にパース(奥行き感)が出ます。
-         * 一方、この属性がtrueである場合、カメラは正射影としてシーンをレンダリングします。この場合、レンダリング結果には奥行き感は出ません。
-         */
-        orthogonal: {
-            default: false,
-            converter: "Boolean",
-        },
-    };
-
+    public static componentName = "Camera";
     private static _frontOrigin: Vector4 = new Vector4(0, 0, -1, 0);
-    private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0);
+    private static _upOrigin: Vector4 = new Vector4(0, 1, 0, 0)
+    /**
+     * Far clip distance
+     */
+    @attribute(NumberConverter, 100)
+    public far!: number;
+    /**
+     * Near clip distance
+     */
+    @attribute(NumberConverter, 0.01)
+    public near!: number;
+    /**
+     * Fovy angle in radians
+     */
+    @attribute("Angle2D", "45d")
+    public fovy!: number;
+    /**
+     * Frustom size
+     * This property is only used when orthogonal flag is true
+     */
+    @attribute(NumberConverter, 100)
+    public orthoSize!: number;
+    /**
+     * Aspect ratio
+     */
+    @attribute(NumberConverter, 1.6)
+    public aspect!: number;
+    /**
+     * Orthogonal mode or not
+     */
+    @attribute(BooleanConverter, false)
+    public orthogonal!: boolean;
 
-    public containedScene: SceneComponent;
+    /**
+     * Automatically adjust aspect ratio by viewport
+     */
+    @attribute(BooleanConverter, true)
+    public autoAspect!: boolean;
 
-    public transform: TransformComponent;
+    /**
+     * Contained scene of this camera.
+     */
+    @componentInAncestor(Scene)
+    public containedScene!: Scene;
+    /**
+     * Transform component of this node
+     */
+    @component(Transform)
+    public transform!: Transform;
 
-    protected __viewMatrix: Matrix = new Matrix();
-    protected __projectionMatrix: Matrix = new Matrix();
-    protected __invProjectionMatrix: Matrix = new Matrix();
-    protected __projectionViewMatrix: Matrix = new Matrix();
+    public readonly viewMatrix: Matrix = new Matrix();
+    public readonly projectionMatrix: Matrix = new Matrix();
+    public readonly invProjectionMatrix: Matrix = new Matrix();
+    public readonly projectionViewMatrix: Matrix = new Matrix();
 
-    private _autoAspect: boolean;
-
-    private _aspectCache: number;
+    private _aspectCache!: number;
 
     private _renderQueue: RenderQueue = new RenderQueue();
 
     private _eyeCache: Vector3 = Vector3.Zero;
     private _lookAtCache: Vector3 = Vector3.Zero;
     private _upCache: Vector3 = Vector3.Zero;
-    private _far: number;
-    private _near: number;
-    private _fovy: number;
-    private _orthoSize: number;
-    private _aspect: number;
-    private _orthographic = false;
 
-    public get ViewMatrix(): Matrix {
-        return this.__viewMatrix;
-    }
-    public get ProjectionMatrix(): Matrix {
-        return this.__projectionMatrix;
-    }
-    public get InvProjectionMatrix(): Matrix {
-        return this.__invProjectionMatrix;
-    }
-    public get ProjectionViewMatrix(): Matrix {
-        return this.__projectionViewMatrix;
-    }
-    public get Far(): number {
-        return this._far;
-    }
-    public set Far(far: number) {
-        this._far = far;
+    protected $mount(): void {
         this._recalculateProjection();
-    }
-    public get Near(): number {
-        return this._near;
-    }
-    public set Near(near: number) {
-        this._near = near;
-        this._recalculateProjection();
-    }
-    public get Aspect(): number {
-        return this._aspect;
-    }
-    public set Aspect(aspect: number) {
-        this._aspect = aspect;
-        this._recalculateProjection();
-    }
-    public get Fovy(): number {
-        return this._fovy;
-    }
-
-    public set Fovy(fov: number) {
-        this._fovy = fov;
-        this._recalculateProjection();
-    }
-
-    public get OrthoSize(): number {
-        return this._orthoSize;
-    }
-
-    public set OrthoSize(size: number) {
-        this._orthoSize = size;
-    }
-
-    public set OrthographicMode(isOrtho: boolean) {
-        this._orthographic = isOrtho;
-        this._recalculateProjection();
-    }
-
-    public get OrthographicMode(): boolean {
-        return this._orthographic;
-    }
-
-    public set AutoAspect(autoMode: boolean) {
-        if (this._autoAspect !== autoMode) {
-            this._autoAspect = autoMode;
-            this._recalculateProjection();
-        }
-    }
-
-    public get AutoAspect(): boolean {
-        return this._autoAspect;
-    }
-
-    /**
-   * Find scene tag recursively.
-   * @param  {GomlNode}       node [the node to searching currently]
-   * @return {SceneComponent}      [the scene component found]
-   */
-    private static _findContainedScene(node: GomlNode): SceneComponent {
-        if (node.parent) {
-            const scene = node.parent.getComponent(SceneComponent);
-            if (scene) {
-                return scene;
-            } else {
-                return CameraComponent._findContainedScene(node.parent);
-            }
-        } else {
-            return null;
-        }
-    }
-
-    public $awake(): void {
-        this.getAttributeRaw("far").watch((v) => {
-            this.Far = v;
-        }, true);
-        this.getAttributeRaw("near").watch((v) => {
-            this.Near = v;
-        }, true);
-        this.getAttributeRaw("fovy").watch((v) => {
-            this.Fovy = v;
-        }, true);
-        this.getAttributeRaw("aspect").watch((v) => {
-            this.Aspect = v;
-        }, true);
-        this.getAttributeRaw("orthoSize").watch((v) => {
-            this.OrthoSize = v;
-        }, true);
-        this.getAttributeRaw("orthogonal").watch((v) => {
-            this.OrthographicMode = v;
-        }, true);
-        this.getAttributeRaw("autoAspect").boundTo("_autoAspect");
-    }
-
-    public $mount(): void {
-        this.transform = this.node.getComponent(TransformComponent);
-        this.containedScene = CameraComponent._findContainedScene(this.node);
-        this.containedScene.queueRegistory.registerQueue(this._renderQueue);
+        this.containedScene.queueRegistry.registerQueue(this._renderQueue);
         this.node.on("transformUpdated", this.updateTransform.bind(this));
         this.updateTransform();
     }
 
-    public $unmount(): void {
-        this.containedScene.queueRegistory.unregisterQueue(this._renderQueue);
-        this.containedScene = null;
+    protected $unmount(): void {
+        this.containedScene!.queueRegistry.unregisterQueue(this._renderQueue);
+        delete this.containedScene
     }
 
     /**
      * Convert global position of transoform to viewport relative position.
-     * @param  {TransformComponent} transform The transform to convert position
+     * @param  {Transform} transform The transform to convert position
      * @return {Vector3}                      Viewport relative position
      */
-    public getViewportRelativePosition(transform: TransformComponent): Vector3;
+    public getViewportRelativePosition(transform: Transform): Vector3;
     /**
      * Convert specified world position to viewport relative position.
      * @param  {Vector3} worldPos [description]
      * @return {Vector3}          [description]
      */
     public getViewportRelativePosition(worldPos: Vector3): Vector3;
-    public getViewportRelativePosition(input: Vector3 | TransformComponent): Vector3 {
+    public getViewportRelativePosition(input: Vector3 | Transform): Vector3 {
         let inputVector;
-        if (input instanceof TransformComponent) {
+        if (input instanceof Transform) {
             inputVector = input.globalPosition;
         } else {
             inputVector = input;
         }
-        return Matrix.transformPoint(this.ProjectionViewMatrix, inputVector);
+        return Matrix.transformPoint(this.projectionViewMatrix, inputVector);
     }
 
     public updateContainedScene(timer: Timer): void {
@@ -273,17 +137,21 @@ export default class CameraComponent extends Component {
     }
 
     public updateTransform(): void {
-        const transform = this.transform;
-        vec3.transformMat4(this._eyeCache.rawElements, Vector3.Zero.rawElements, transform.globalTransform.rawElements);
-        vec4.transformMat4(this._lookAtCache.rawElements, CameraComponent._frontOrigin.rawElements, transform.globalTransform.rawElements);
+        const cameraTransform = this.__getCameraTransformMatrix();
+        vec3.transformMat4(this._eyeCache.rawElements, Vector3.Zero.rawElements, cameraTransform.rawElements);
+        vec4.transformMat4(this._lookAtCache.rawElements as any, CameraComponent._frontOrigin.rawElements, cameraTransform.rawElements);
         vec3.add(this._lookAtCache.rawElements, this._lookAtCache.rawElements, this._eyeCache.rawElements);
-        vec4.transformMat4(this._upCache.rawElements, CameraComponent._upOrigin.rawElements, transform.globalTransform.rawElements);
-        mat4.lookAt(this.__viewMatrix.rawElements, this._eyeCache.rawElements, this._lookAtCache.rawElements, this._upCache.rawElements);
-        mat4.mul(this.__projectionViewMatrix.rawElements, this.__projectionMatrix.rawElements, this.__viewMatrix.rawElements);
+        vec4.transformMat4(this._upCache.rawElements as any, CameraComponent._upOrigin.rawElements, cameraTransform.rawElements);
+        mat4.lookAt(this.viewMatrix.rawElements, this._eyeCache.rawElements, this._lookAtCache.rawElements, this._upCache.rawElements);
+        mat4.mul(this.projectionViewMatrix.rawElements, this.projectionMatrix.rawElements, this.viewMatrix.rawElements);
+    }
+
+    protected __getCameraTransformMatrix(): Matrix {
+        return this.transform.globalTransform;
     }
 
     private _justifyAspect(args: IRenderArgument): void {
-        if (this._autoAspect) {
+        if (this.autoAspect) {
             const asp = args.viewport.Width / args.viewport.Height;
             if (this._aspectCache !== asp) { // Detect changing viewport size
                 this.setAttribute("aspect", asp);
@@ -292,13 +160,20 @@ export default class CameraComponent extends Component {
         }
     }
 
+    @watch("far")
+    @watch("near")
+    @watch("fovy")
+    @watch("aspect")
+    @watch("orthoSize")
+    @watch("orthogonal")
+    @watch("autoAspect")
     private _recalculateProjection(): void {
-        if (!this._orthographic) {
-            mat4.perspective(this.__projectionMatrix.rawElements, this._fovy, this._aspect, this._near, this._far);
+        if (!this.orthogonal) {
+            mat4.perspective(this.projectionMatrix.rawElements, this.fovy, this.aspect, this.near, this.far);
         } else {
-            mat4.ortho(this.__projectionMatrix.rawElements, -this._orthoSize * this._aspect, this._orthoSize * this._aspect, -this._orthoSize, this._orthoSize, this._near, this._far);
+            mat4.ortho(this.projectionMatrix.rawElements, -this.orthoSize * this.aspect, this.orthoSize * this.aspect, -this.orthoSize, this.orthoSize, this.near, this.far);
         }
-        mat4.mul(this.__projectionViewMatrix.rawElements, this.__projectionMatrix.rawElements, this.__viewMatrix.rawElements);
-        mat4.invert(this.__invProjectionMatrix.rawElements, this.__projectionMatrix.rawElements);
+        mat4.mul(this.projectionViewMatrix.rawElements, this.projectionMatrix.rawElements, this.viewMatrix.rawElements);
+        mat4.invert(this.invProjectionMatrix.rawElements, this.projectionMatrix.rawElements);
     }
 }

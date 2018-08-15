@@ -1,0 +1,22 @@
+  @Pass{
+    FS_PREC(mediump,float)
+    varying vec2 vUV;
+    #ifdef VS
+    attribute vec3 position;
+    attribute vec2 texCoord;
+    @MODELVIEWPROJECTION
+    uniform mat4 _matMVP;
+    void main(){
+      vUV = texCoord;
+      vec3 p = position;
+      p.z *= -1.;
+      gl_Position = _matMVP * vec4(p,1);
+    }
+    #endif
+    #ifdef FS
+    uniform sampler2D src;
+      void main(){
+        gl_FragColor = texture2D(src,vUV);
+      }
+    #endif
+  }

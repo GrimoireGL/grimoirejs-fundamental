@@ -1,3 +1,5 @@
+import { Nullable } from "grimoirejs/ref/Tool/Types";
+
 /**
  * Provide abstraction of resolving named resource such as Geometry, Materials.
  */
@@ -36,6 +38,20 @@ export default class NameResolver<T> {
     }
 
     /**
+     * Obtain reference function which return a object have specified name.
+     * Returned object can be changed if specified named object was overwritten by register function.
+     * @param name The resource name to fetch
+     */
+    public getReferenceFunction(name: string): () => Nullable<T> {
+        return () => {
+            if (this._resolved[name] !== void 0) {
+                return this._resolved[name];
+            }
+            return null;
+        };
+    }
+
+    /**
      * Get status of specified resource.
      * This method would return NameResolver.UNLOADED,NameResolver.RESOLVED or NameResolver.RESOLVING
      * @param  {string} name resource name to check status
@@ -57,23 +73,24 @@ export default class NameResolver<T> {
      * @param  {Promise<T>} generator Promise to resolve the resource
      * @return {Promise<T>} The promise of resource
      */
-    public async register(name: string, generator: Promise<T> | T): Promise<T> {
+    public async register(name: string, generator: Promise<T> | T, noDupelicated = false): Promise<T> {
         if (this._isPromise(generator)) {
             try {
-                if (this._resolvers[name] !== void 0) {
+                if (this._resolvers[name] !== void 0 && noDupelicated) {
                     throw new Error(`Dupelicated named resource '${name}' was registered.`);
                 }
                 this._resolvers[name] = generator;
                 const resolved = await generator;
-                this._resolvers[name] = void 0;
+                delete this._resolvers[name];
                 this._callHandlers(name, resolved);
                 this._resolved[name] = resolved;
                 return resolved;
             } catch (e) {
-                throw new Error(`Unexpected error has occured during resolution of named resource '${name}'\n${e}`);
+                const a = e as Error;
+                throw new Error(`Unexpected error has occured during resolution of named resource '${name}'\n${a.message}\n${a.stack}\n\n`);
             }
         } else {
-            return this.register(name, Promise.resolve(generator));
+            return this.register(name, Promise.resolve(generator), noDupelicated);
         }
     }
 
@@ -106,7 +123,8 @@ export default class NameResolver<T> {
         delete this._handlers[name];
     }
 
+    // TODO:(type) Should be migrated to core
     private _isPromise(generator: Promise<T> | T): generator is Promise<T> {
-        return (typeof generator["then"] === "function");
+        return (typeof (generator as any)["then"] === "function");
     }
 }

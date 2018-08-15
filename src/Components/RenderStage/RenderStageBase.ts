@@ -1,12 +1,10 @@
 import GrimoireJS from "grimoirejs";
-import Component from "grimoirejs/ref/Node/Component";
-import IAttributeDeclaration from "grimoirejs/ref/Node/IAttributeDeclaration";
+import Component from "grimoirejs/ref/Core/Component";
+import { IAttributeDeclaration } from "grimoirejs/ref/Interface/IAttributeDeclaration";
 import ViewportBaseMouseState from "../../Objects/ViewportBaseMouseState";
 import ViewportMouseEvent from "../../Objects/ViewportMouseEvent";
 export default class RenderStageBase extends Component {
-    public static attributes: { [key: string]: IAttributeDeclaration } = {
-
-    };
+    public static componentName = "RenderStageBase";
 
     public rendererDescription: { [key: string]: any } = {
         mouse: {
@@ -24,36 +22,36 @@ export default class RenderStageBase extends Component {
 
     public metadata: { [key: string]: any } = {};
 
-    public $mousemove(v: ViewportMouseEvent): void {
+    protected $mousemove(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $mouseenter(v: ViewportMouseEvent): void {
+    protected $mouseenter(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $mouseleave(v: ViewportMouseEvent): void {
+    protected $mouseleave(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $mousedown(v: ViewportMouseEvent): void {
+    protected $mousedown(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $mouseup(v: ViewportMouseEvent): void {
+    protected $mouseup(v: ViewportMouseEvent): void {
         this._assignMouseState(v);
     }
 
-    public $click(v: ViewportMouseEvent): void {
+    protected $click(v: ViewportMouseEvent): void {
         return;
     }
 
-    public $dblclick(v: ViewportMouseEvent): void {
+    protected $dblclick(v: ViewportMouseEvent): void {
         return;
     }
 
     protected __beforeRender(): boolean {
-        if (GrimoireJS.debug && !!window["spector"]) {
+        if (GrimoireJS.debug && !!(window as any)["spector"]) {
             let metas = "";
             for (const key in this.metadata) {
                 if (this.metadata[key] === undefined) {
@@ -61,7 +59,7 @@ export default class RenderStageBase extends Component {
                 }
                 metas += `${key}=${this.metadata[key]}|`;
             }
-            window["spector"].setMarker(`Renderer|${metas}`);
+            (window as any)["spector"].setMarker(`Renderer|${metas}`);
         }
         return true;
     }

@@ -1,8 +1,11 @@
 import Rectangle from "grimoirejs-math/ref/Rectangle";
 import Viewport from "../Resource/Viewport";
+import { Nullable } from "grimoirejs/ref/Tool/Types";
+
+
 function _toPixel(parentSize: number, rep: string): number {
   const regex = /(\d+)\s*%/;
-  let regexResult: RegExpExecArray;
+  let regexResult: Nullable<RegExpExecArray>;
   if ((regexResult = regex.exec(rep))) {
     const percentage = Number.parseFloat(regexResult[1]);
     return Math.floor(parentSize * percentage * 0.01);
@@ -16,23 +19,28 @@ function _toPixel(parentSize: number, rep: string): number {
  * `左端,上端,幅,高さ`・・・キャンバスのサイズを具体的に指定する。
  * 数値を指定するとピクセル単位になるが、数値に%をつければ親のキャンバス基準での比率指定ができる。
  */
-export default function ViewportConverter(val: any): any {
-  if (val instanceof Rectangle) {
-    const vp = new Viewport(val.Left, val.Bottom, val.Width, val.Height);
-    return () => vp;
-  }else if (val instanceof Viewport){
-    return () => val;
-  }else if (typeof val === "string") {
-    if (val === "auto") {
-      return (canvas: HTMLCanvasElement) => new Viewport(0, 0, canvas.width, canvas.height);
-    } else {
-      const sizes = val.split(",");
-      if (sizes.length !== 4) {
-        throw new Error("Invalid viewport size was specified.");
+export const ViewportConverter = {
+  name: "Viewport",
+  convert(val: any): (canvas: HTMLCanvasElement) => Viewport {
+    if (val instanceof Rectangle) {
+      const vp = new Viewport(val.Left, val.Bottom, val.Width, val.Height);
+      return () => vp;
+    } else if (val instanceof Viewport) {
+      return () => val;
+    } else if (typeof val === "string") {
+      if (val === "auto") {
+        return (canvas: HTMLCanvasElement) => new Viewport(0, 0, canvas.width, canvas.height);
       } else {
-        return (canvas: HTMLCanvasElement) => new Viewport(_toPixel(canvas.width, sizes[0]), _toPixel(canvas.height, sizes[1]), _toPixel(canvas.width, sizes[2]), _toPixel(canvas.height, sizes[3]));
+        const sizes = val.split(",");
+        if (sizes.length !== 4) {
+          throw new Error("Invalid viewport size was specified.");
+        } else {
+          return (canvas: HTMLCanvasElement) => new Viewport(_toPixel(canvas.width, sizes[0]), _toPixel(canvas.height, sizes[1]), _toPixel(canvas.width, sizes[2]), _toPixel(canvas.height, sizes[3]));
+        }
       }
     }
+    throw new Error(`${val} could not be parsed`);
   }
-  throw new Error(`${val} could not be parsed`);
 }
+
+export default ViewportConverter;

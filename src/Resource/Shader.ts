@@ -1,7 +1,7 @@
 import GLResource from "./GLResource";
 export default class Shader extends GLResource<WebGLShader> {
   constructor(gl: WebGLRenderingContext, public readonly type: number, public sourceCode?: string) {
-    super(gl, gl.createShader(type));
+    super(gl, gl.createShader(type)!);
     if (sourceCode) {
       this.update(sourceCode);
     }

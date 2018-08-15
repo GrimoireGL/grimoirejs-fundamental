@@ -14,11 +14,13 @@ export type IUniformRegisterOnDispose = () => void;
 
 export type IUniformRegisterOnUpdate = (passProgram: PassProgram, newValue: any, oldValue: any) => void;
 
-export type IUniformRegisterer = (variableInfo: IVariableInfo, pass: Pass, technique: Technique, material: Material) => IUniformRegisterOnRegister | {
-    register: IUniformRegisterOnRegister,
-    dispose?: IUniformRegisterOnDispose,
-    update?: IUniformRegisterOnUpdate,
-  };
+
+export type IUniformRegistererResult = IUniformRegisterOnRegister | {
+  register: IUniformRegisterOnRegister,
+  dispose?: IUniformRegisterOnDispose,
+  update?: IUniformRegisterOnUpdate,
+};
+export type IUniformRegisterer = (variableInfo: IVariableInfo, pass: Pass, technique: Technique, material: Material) => IUniformRegistererResult;
 
 export class UniformResolverRegistry {
 

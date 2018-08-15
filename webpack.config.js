@@ -54,7 +54,7 @@ const getBuildTask = (fileName, plugins, needPolyfill) => {
       loaders: [{
         test: /\.ts$/,
         exclude: /node_modules/,
-        loader: "babel-loader?presets[]=es2015,presets[]=stage-2!ts-loader"
+        loader: "babel-loader?presets[]=env,presets[]=stage-2!ts-loader"
       }]
     },
     resolve: {

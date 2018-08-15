@@ -3,13 +3,14 @@
 const xmldom = require("xmldom");
 const Module = module.constructor;
 const require0 = Module.prototype.require;
-Module.prototype.require = function(str) {
+Module.prototype.require = function (str) {
   if (str.indexOf("raw-loader!") >= 0) {
     return "MOCKEDSTRING";
   }
   return require0.call(this, str);
 };
 const mockedWindow = global as any;
+mockedWindow.querySelectorAll = function () { }
 mockedWindow.DOMParser = xmldom.DOMParser;
 mockedWindow.window = mockedWindow;
 mockedWindow.document = {
@@ -18,6 +19,11 @@ mockedWindow.document = {
       getContext: () => null,
     };
   },
+  querySelectorAll() {
+    return {
+      length: 0
+    };
+  }
 };
 
 mockedWindow.WebGLRenderingContext = {
@@ -327,6 +333,17 @@ mockedWindow.window = {
   addEventListener() { },
   postMessage: () => { },
 };
+
+global["Node"] = {
+  ELEMENT_NODE: 1
+}
+global["XMLSerializer"] = require("xmlserializer").constructor;
+global["MutationObserver"] = function () {
+  return {
+    observe() { },
+    disconnect() { }
+  }
+}
 require("regenerator-runtime/runtime");
 require("grimoirejs/register");
 require("grimoirejs-math/register");

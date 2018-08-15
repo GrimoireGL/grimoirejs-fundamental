@@ -2,7 +2,7 @@ import GLResource from "./GLResource";
 
 export default class RenderBuffer extends GLResource<WebGLRenderbuffer> {
   constructor(gl: WebGLRenderingContext) {
-    super(gl, gl.createRenderbuffer());
+    super(gl, gl.createRenderbuffer()!);
   }
 
   public update(format: number, width: number, height: number): void {

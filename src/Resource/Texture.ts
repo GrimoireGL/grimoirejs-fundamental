@@ -1,23 +1,25 @@
+import GLConstantUtility from "../Util/GLConstantUtility";
 import TextureSizeCalculator from "../Util/TextureSizeCalculator";
 import GLResource from "./GLResource";
 import GLUtility from "./GLUtility";
+import ImageSource from "./ImageSource";
 import IResizeResult from "./IResizeResult";
+import ITextureUploadConfig from "./ITextureUploadConfig";
+/**
+ * Base class of texture related classes.
+ */
 export default abstract class Texture extends GLResource<WebGLTexture> {
 
-    private static _resizerCanvas: HTMLCanvasElement = document.createElement("canvas");
-
-    private static _resizerContext = Texture._resizerCanvas.getContext("2d");
+    /**
+     * A canvas referrence that is used for resizing, flipping and other misc texture manipulation.
+     * This instance is generated automatically and being shared with all texture referrences.
+     */
+    protected static __utilityCanvas: HTMLCanvasElement = document.createElement("canvas");
 
     /**
-     * Filters requires updating of mipmap
-     * @type {number[]}
-     */
-    private static _filtersNeedsMipmap: number[] = [
-        WebGLRenderingContext.LINEAR_MIPMAP_LINEAR,
-        WebGLRenderingContext.LINEAR_MIPMAP_NEAREST,
-        WebGLRenderingContext.NEAREST_MIPMAP_LINEAR,
-        WebGLRenderingContext.NEAREST_MIPMAP_NEAREST,
-    ];
+    * 2D context of Texture.__utilityCanvas
+    */
+    protected static __utilityContext: CanvasRenderingContext2D = Texture.__utilityCanvas.getContext("2d")!;
 
     public get magFilter(): number {
         return this._magFilter;
@@ -25,7 +27,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
 
     public set magFilter(filter: number) {
         if (this._magFilter !== filter) {
-            this._texParameterChanged = true;
+            this.__texParameterChanged = true;
             this._magFilter = filter;
         }
     }
@@ -36,7 +38,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
 
     public set minFilter(filter: number) {
         if (this._minFilter !== filter) {
-            this._texParameterChanged = true;
+            this.__texParameterChanged = true;
             this._minFilter = filter;
             this.__ensureMipmap();
         }
@@ -48,7 +50,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
 
     public set wrapS(filter: number) {
         if (this._wrapS !== filter) {
-            this._texParameterChanged = true;
+            this.__texParameterChanged = true;
             this._wrapS = filter;
         }
     }
@@ -59,7 +61,7 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
 
     public set wrapT(filter: number) {
         if (this._wrapT !== filter) {
-            this._texParameterChanged = true;
+            this.__texParameterChanged = true;
             this._wrapT = filter;
         }
     }
@@ -76,18 +78,26 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
 
     protected __type: number = WebGLRenderingContext.UNSIGNED_BYTE;
 
-    private _texParameterChanged = true;
+    protected __texParameterChanged = true;
 
     private _magFilter: number = WebGLRenderingContext.LINEAR;
 
-    private _minFilter: number = WebGLRenderingContext.LINEAR;
+    private _minFilter: number = WebGLRenderingContext.LINEAR_MIPMAP_NEAREST;
 
     private _wrapS: number = WebGLRenderingContext.REPEAT;
 
     private _wrapT: number = WebGLRenderingContext.REPEAT;
 
     constructor(gl: WebGLRenderingContext, public textureType: number) {
-        super(gl, gl.createTexture());
+        super(gl, gl.createTexture()!);
+    }
+
+    /**
+     * Should be called after rendering into this texture.
+     * This must be called before used as resource in next rendering.
+     */
+    public afterRender(): void {
+        this.__ensureMipmap(); // recalculate mipmap if needed
     }
 
     public destroy(): void {
@@ -96,22 +106,53 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
     }
 
     public register(registerNumber: number): void {
+        if (!this.valid) {
+            return;
+        }
+        // TODO: (performance) disable texture after use?
+        // Or reduce calling of activate texture
         this.gl.activeTexture(WebGLRenderingContext.TEXTURE0 + registerNumber);
         this.gl.bindTexture(this.textureType, this.resourceReference);
         this.__applyTexParameter();
     }
 
-    protected __getRawPixels<T extends ArrayBufferView = ArrayBufferView>(type: number, format: number, x = 0, y = 0, width: number, height: number, from: number): T {
-        const bufferCtor = GLUtility.typeToTypedArrayConstructor(type);
-        const buffer = new bufferCtor(width * height * GLUtility.formatToElementCount(format));
+    protected __prepareTextureUpload(uploadConfig?: ITextureUploadConfig, complement = { flipY: true, premultipliedAlpha: false }): void {
+        uploadConfig = {
+            ...complement,
+            ...uploadConfig
+        };
+        this.gl.pixelStorei(WebGLRenderingContext.UNPACK_FLIP_Y_WEBGL, uploadConfig.flipY ? 1 : 0);
+        this.gl.pixelStorei(WebGLRenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, uploadConfig.premultipliedAlpha ? 1 : 0);
+    }
+
+    /**
+     * Simply update texture. This method can resize source if need.
+     * @param target
+     * @param source
+     * @param format
+     * @param level
+     */
+    protected __updateWithSourceImage(target: number, source: ImageSource, format = WebGLRenderingContext.RGBA, level = 0): IResizeResult {
+        const resizedResource = this.__ensurePOT(source);
+        this.gl.texImage2D(target, level, format, format, WebGLRenderingContext.UNSIGNED_BYTE, resizedResource.result);
+        this.__type = WebGLRenderingContext.UNSIGNED_BYTE;
+        this.__format = format;
+        return resizedResource;
+    }
+
+    protected __getRawPixels<T extends ArrayBufferView = ArrayBufferView>(type: number, format: number, x = 0, y = 0, width: number, height: number, from: number, dest?: T): T {
+        if (!dest) {
+            const bufferCtor = GLUtility.typeToTypedArrayConstructor(type);
+            dest = new bufferCtor(width * height * GLUtility.formatToElementCount(format)) as T;
+        }
         const frame = this.gl.createFramebuffer();
         this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, frame);
         this.gl.framebufferTexture2D(WebGLRenderingContext.FRAMEBUFFER, WebGLRenderingContext.COLOR_ATTACHMENT0, from, this.resourceReference, 0);
         if (this.gl.checkFramebufferStatus(WebGLRenderingContext.FRAMEBUFFER) === WebGLRenderingContext.FRAMEBUFFER_COMPLETE) {
-            this.gl.readPixels(x, y, width, height, format, type, buffer);
+            this.gl.readPixels(x, y, width, height, format, type, dest);
         }
         this.gl.bindFramebuffer(WebGLRenderingContext.FRAMEBUFFER, null);
-        return buffer as T;
+        return dest as T;
     }
 
     /**
@@ -119,7 +160,14 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
      * If speciefied resource was NPOT, resize specified resource to POT.
      * @param image
      */
-    protected __ensurePOT(image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): IResizeResult {
+    protected __ensurePOT(image: ImageSource): IResizeResult {
+        if (image instanceof ImageData) {
+            const context = document.createElement("canvas").getContext("2d")!;
+            context.canvas.width = image.width;
+            context.canvas.height = image.height;
+            context.putImageData(image, 0, 0);
+            image = context.canvas;
+        }
         if (image instanceof HTMLImageElement) {
             return this._ensureImagePOT(image);
         } else if (image instanceof HTMLCanvasElement) {
@@ -131,28 +179,32 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
         }
     }
 
-    protected abstract __ensureMipmap(): void;
-
-    /**
-     * Check specified min filter requires mip map or not.
-     * @param minFilter min filter type
-     */
-    protected __needMipmap(minFilter: number): boolean {
-        return Texture._filtersNeedsMipmap.indexOf(minFilter) > -1;
+    protected __ensureMipmap(): void {
+        if (this.valid && GLConstantUtility.isUsingMipmap(this.minFilter)) {
+            this.gl.bindTexture(this.textureType, this.resourceReference);
+            this.gl.generateMipmap(this.textureType);
+        }
     }
 
     /**
      * Apply texParameteri parameters before updating texture
+     * Return true if texture parameter need to updated(When __texParameterChanged flag is true)
      */
-    protected __applyTexParameter(): void {
-        if (!this._texParameterChanged) {
-            return;
+    protected __applyTexParameter(): boolean {
+        if (!this.__texParameterChanged) {
+            return false;
         }
         this.gl.texParameteri(this.textureType, WebGLRenderingContext.TEXTURE_MIN_FILTER, this._minFilter);
         this.gl.texParameteri(this.textureType, WebGLRenderingContext.TEXTURE_MAG_FILTER, this._magFilter);
         this.gl.texParameteri(this.textureType, WebGLRenderingContext.TEXTURE_WRAP_S, this._wrapS);
         this.gl.texParameteri(this.textureType, WebGLRenderingContext.TEXTURE_WRAP_T, this._wrapT);
-        this._texParameterChanged = false;
+        this.__ensureMipmap();
+        this.__texParameterChanged = false;
+        return true;
+    }
+
+    protected __onValid(): void {
+        this.__ensureMipmap();
     }
 
     // There should be more effective way to resize texture
@@ -211,10 +263,10 @@ export default abstract class Texture extends GLResource<WebGLTexture> {
     }
 
     private _resizeImageOrVideo(resource: HTMLImageElement | HTMLVideoElement, width: number, height: number): HTMLCanvasElement {
-        const canv = Texture._resizerCanvas;
+        const canv = Texture.__utilityCanvas;
         canv.height = height;
         canv.width = width;
-        Texture._resizerContext.drawImage(resource, 0, 0, resource.width, resource.height, 0, 0, width, height);
-        return Texture._resizerCanvas;
+        Texture.__utilityContext!.drawImage(resource, 0, 0, resource.width, resource.height, 0, 0, width, height);
+        return Texture.__utilityCanvas;
     }
 }

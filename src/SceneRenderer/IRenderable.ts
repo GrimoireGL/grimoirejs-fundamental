@@ -5,6 +5,6 @@ interface IRenderable {
   renderArgs: { [key: string]: any };
   getRenderingPriorty(camera: CameraComponent, technique: string): number;
   render(renderArg: IRenderArgument): void;
-  setRenderableIndex(index: number);
+  setRenderableIndex(index: number): void;
 }
 export default IRenderable;

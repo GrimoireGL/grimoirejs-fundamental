@@ -2,6 +2,7 @@ import IMacro from "./IMacro";
 import IState from "./IState";
 import IVariableInfo from "./IVariableInfo";
 interface IPassRecipe {
+  extensions: string[];
   fragment: string;
   vertex: string;
   uniforms: {
